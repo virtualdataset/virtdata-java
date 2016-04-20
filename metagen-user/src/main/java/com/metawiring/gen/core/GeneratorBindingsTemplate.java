@@ -63,13 +63,13 @@ public class GeneratorBindingsTemplate<T> {
      * If you need thread-aware generation, be sure to call this in the proper thread. Each time this method
      * is called, it creates a new instance.
      */
-    public GenBindings<T> resolveBindings() {
+    public GenBindings resolveBindings() {
         List<Generator<?>> generators = new ArrayList<Generator<?>>();
         for (String generatorSpec : generatorSpecs) {
             Generator<?> generator = genlib.getGenerator(generatorSpec);
             generators.add(generator);
         }
-        return new GenBindings<T>(this,generators);
+        return new GenBindings(this,generators);
     }
 
     public String toString() {

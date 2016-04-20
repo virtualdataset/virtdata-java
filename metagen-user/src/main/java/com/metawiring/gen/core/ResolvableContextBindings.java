@@ -12,7 +12,7 @@ package com.metawiring.gen.core;
  */
 public abstract class ResolvableContextBindings<C,R> {
     private GeneratorBindingsTemplate<C> bindingsTemplate;
-    private GenBindings<C> genBindings;
+    private GenBindings genBindings;
     private C targetContext;
 
     /**
@@ -40,7 +40,7 @@ public abstract class ResolvableContextBindings<C,R> {
      * same scope from which it will be used.
      * The context object is returned
      */
-    public GenBindings<C> resolveBindings() {
+    public GenBindings resolveBindings() {
         targetContext = resolveTargetContext();
         this.genBindings = bindingsTemplate.resolveBindings();
         return genBindings;
