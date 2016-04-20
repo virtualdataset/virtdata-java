@@ -32,21 +32,16 @@ import java.util.List;
  * Maps a template of generator bind points and generator specs onto a set of generator
  * instances. Allows for streamlined calling of generator functions.
  */
-public class GeneratorBindings<T> {
-    private final static Logger logger = LoggerFactory.getLogger(GeneratorBindings.class);
+public class GenBindings {
+    private final static Logger logger = LoggerFactory.getLogger(GenBindings.class);
 
     private GeneratorBindingsTemplate template;
     private List<Generator<?>> generators = new ArrayList<Generator<?>>();
     private boolean tracing = false;
 
-    public GeneratorBindings(GeneratorBindingsTemplate template, List<Generator<?>> generators) {
+    public GenBindings(GeneratorBindingsTemplate template, List<Generator<?>> generators) {
         this.template = template;
         this.generators = generators;
-    }
-
-    public GeneratorBindings<T> setTracing(boolean traceEnabled) {
-        this.tracing = traceEnabled;
-        return this;
     }
 
     public String toString() {

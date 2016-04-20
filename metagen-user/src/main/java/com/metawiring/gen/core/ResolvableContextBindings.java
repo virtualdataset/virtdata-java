@@ -10,9 +10,9 @@ package com.metawiring.gen.core;
  * @param <C> The user context object. This is generally a template of some kind.
  * @param <R> The target of binding generated values to an object provided by the context object.
  */
-public abstract class ResolvableUserBindings<C,R> {
+public abstract class ResolvableContextBindings<C,R> {
     private GeneratorBindingsTemplate<C> bindingsTemplate;
-    private GeneratorBindings<C> generatorBindings;
+    private GenBindings<C> genBindings;
     private C targetContext;
 
     /**
@@ -20,16 +20,16 @@ public abstract class ResolvableUserBindings<C,R> {
      * If you use this constructor signature, override @link{resolveTargetContext} as well.
      * @param bindingsTemplate the resolvable bindings template
      */
-    public ResolvableUserBindings(GeneratorBindingsTemplate<C> bindingsTemplate) {
+    public ResolvableContextBindings(GeneratorBindingsTemplate<C> bindingsTemplate) {
         this.bindingsTemplate = bindingsTemplate;
     }
 
-    public ResolvableUserBindings(GeneratorBindingsTemplate<C> bindingsTemplate, C targetContext) {
+    public ResolvableContextBindings(GeneratorBindingsTemplate<C> bindingsTemplate, C targetContext) {
         this(bindingsTemplate);
         this.targetContext = targetContext;
     }
 
-    public ResolvableUserBindings(GeneratorBindingsTemplate<C> bindingsTemplate, C targetContext, boolean resolveImmediately) {
+    public ResolvableContextBindings(GeneratorBindingsTemplate<C> bindingsTemplate, C targetContext, boolean resolveImmediately) {
         this(bindingsTemplate,targetContext);
         if (resolveImmediately)
             resolveBindings();
@@ -38,10 +38,12 @@ public abstract class ResolvableUserBindings<C,R> {
     /**
      * Resolve and instantiate the associated generators and target object. This should be called from the
      * same scope from which it will be used.
+     * The context object is returned
      */
-    public void resolveBindings() {
-        this.generatorBindings = bindingsTemplate.resolveBindings();
+    public GenBindings<C> resolveBindings() {
         targetContext = resolveTargetContext();
+        this.genBindings = bindingsTemplate.resolveBindings();
+        return genBindings;
     }
 
     public C getTargetContext() {
@@ -54,7 +56,7 @@ public abstract class ResolvableUserBindings<C,R> {
      * @return target object R
      */
     public R bind(long value) {
-        Object[] all = generatorBindings.getAll(value);
+        Object[] all = genBindings.getAll(value);
         return bindValues(all, targetContext);
     }
 
