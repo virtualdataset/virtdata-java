@@ -25,21 +25,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * Maps a template of generator bind points and generator specs onto a set of generator
  * instances. Allows for streamlined calling of generator functions.
  */
-public class GenBindings {
-    private final static Logger logger = LoggerFactory.getLogger(GenBindings.class);
+public class Bindings {
+    private final static Logger logger = LoggerFactory.getLogger(Bindings.class);
 
-    private GeneratorBindingsTemplate template;
+    private BindingsTemplate template;
     private List<Generator<?>> generators = new ArrayList<Generator<?>>();
-    private boolean tracing = false;
 
-    public GenBindings(GeneratorBindingsTemplate template, List<Generator<?>> generators) {
+    public Bindings(BindingsTemplate template, List<Generator<?>> generators) {
         this.template = template;
         this.generators = generators;
     }
@@ -57,9 +55,6 @@ public class GenBindings {
         int offset=0;
         for (Generator generator: generators) {
             values[offset++]=generator.get(input);
-        }
-        if (tracing ) {
-            logger.info(Arrays.toString(values));
         }
         return values;
     }

@@ -35,18 +35,16 @@ import java.util.List;
  * The user is required to call @{link resolveBindings} when in the scope that the resulting
  * bindings will be used.
  */
-public class GeneratorBindingsTemplate<T> {
-    private final static Logger logger = LoggerFactory.getLogger(GeneratorBindingsTemplate.class);
+public class BindingsTemplate {
+    private final static Logger logger = LoggerFactory.getLogger(BindingsTemplate.class);
 
     private List<String> bindPointsNames = new ArrayList<String>();
     private List<String> generatorSpecs = new ArrayList<String>();
 
-    private T target;
     private GeneratorLibrary genlib = AllGenerators.get(); // by default
 
-    public GeneratorBindingsTemplate(T target, GeneratorLibrary genlib) {
+    public BindingsTemplate(GeneratorLibrary genlib) {
         this.genlib = genlib;
-        this.target = target;
     }
 
     public void addFieldBinding(String bindPointName, String genSpec) {
@@ -54,28 +52,23 @@ public class GeneratorBindingsTemplate<T> {
         this.generatorSpecs.add(genSpec);
     }
 
-    public T getTarget() {
-        return target;
-    }
-
     /**
      * Use the generator library and the generator specs to create instances of the generators.
      * If you need thread-aware generation, be sure to call this in the proper thread. Each time this method
      * is called, it creates a new instance.
      */
-    public GenBindings resolveBindings() {
+    public Bindings resolveBindings() {
         List<Generator<?>> generators = new ArrayList<Generator<?>>();
         for (String generatorSpec : generatorSpecs) {
             Generator<?> generator = genlib.getGenerator(generatorSpec);
             generators.add(generator);
         }
-        return new GenBindings(this,generators);
+        return new Bindings(this,generators);
     }
 
     public String toString() {
         String delim="";
-        StringBuilder sb = new StringBuilder(GeneratorBindingsTemplate.class.getSimpleName()).append(":");
-        sb.append((target!=null)? "owner:" + target : "owner:?");
+        StringBuilder sb = new StringBuilder(BindingsTemplate.class.getSimpleName()).append(":");
         for (int i = 0; i < bindPointsNames.size() - 1; i++) {
             sb.append(delim);
             sb.append("'").append(bindPointsNames.get(i)).append("'");
