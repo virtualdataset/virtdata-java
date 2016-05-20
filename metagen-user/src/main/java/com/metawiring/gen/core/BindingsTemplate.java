@@ -27,11 +27,12 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Maps a set of parameters on an associated object of type T to generators specs.
  * Allows for easy construction of GeneratorBindings when in the proper thread scope.
- *
+ * <p>
  * The user is required to call @{link resolveBindings} when in the scope that the resulting
  * bindings will be used.
  */
@@ -60,14 +61,28 @@ public class BindingsTemplate {
     public Bindings resolveBindings() {
         List<Generator<?>> generators = new ArrayList<Generator<?>>();
         for (String generatorSpec : generatorSpecs) {
-            Generator<?> generator = genlib.getGenerator(generatorSpec);
-            generators.add(generator);
+            Optional<Generator<Object>> optGenerator = genlib.getGenerator(generatorSpec);
+            if (optGenerator.isPresent()) {
+                generators.add(optGenerator.get());
+            } else {
+                logAvailableGenerators();
+                throw new RuntimeException(
+                        "generator binding was unsuccessful for "
+                                + "lib:" + genlib.getLibraryName()
+                                + ", spec:" + generatorSpec
+                                + ", see log for known generator names.");
+            }
         }
-        return new Bindings(this,generators);
+        return new Bindings(this, generators);
+    }
+
+    private void logAvailableGenerators() {
+        genlib.getGeneratorNames().stream()
+                .forEach(gn -> logger.info("GENERATOR " + gn));
     }
 
     public String toString() {
-        String delim="";
+        String delim = "";
         StringBuilder sb = new StringBuilder(BindingsTemplate.class.getSimpleName()).append(":");
         for (int i = 0; i < bindPointsNames.size() - 1; i++) {
             sb.append(delim);
@@ -75,7 +90,7 @@ public class BindingsTemplate {
             sb.append("=>");
             sb.append("\"").append(generatorSpecs.get(i)).append("\"");
             sb.append("=>");
-            delim=", ";
+            delim = ", ";
         }
         return sb.toString();
     }

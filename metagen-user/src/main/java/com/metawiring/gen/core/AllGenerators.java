@@ -3,7 +3,10 @@ package com.metawiring.gen.core;
 import com.metawiring.gen.metagenapi.Generator;
 import com.metawiring.gen.metagenapi.GeneratorLibrary;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class AllGenerators implements GeneratorLibrary {
@@ -24,8 +27,8 @@ public class AllGenerators implements GeneratorLibrary {
     }
 
     @Override
-    public <T> Generator<T> getGenerator(String spec) {
-        Generator<T> generator = null;
+    public <T> Optional<Generator<T>> getGenerator(String spec) {
+        Optional<Generator<T>> generator = null;
         for (GeneratorLibrary library : libraries) {
             generator = library.getGenerator(spec);
             if ( generator != null ) {
@@ -33,6 +36,19 @@ public class AllGenerators implements GeneratorLibrary {
             }
         }
         throw new RuntimeException("Unable to find spec:" + spec + " in any library, searched in " + toString());
+    }
+
+    @Override
+    public List<String> getGeneratorNames() {
+        List<String> genNames = new ArrayList<>();
+        for (GeneratorLibrary library : libraries) {
+            List<String> libGenNames = library.getGeneratorNames().stream()
+                    .map(genName -> library.getLibraryName() + "::" + genName)
+                    .collect(Collectors.toList());
+            genNames.addAll(libGenNames);
+        }
+        genNames.sort(Comparator.naturalOrder());
+        return genNames;
     }
 
     public String toString() {

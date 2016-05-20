@@ -1,12 +1,13 @@
 package com.metawiring.gen.metagenapi;
 
-public interface ValuesBinder<C,T> {
+public interface ValuesBinder<S, R> {
 
     /**
-     * Using context instance of type C, create and bind values to target object of type T
-     * @param context A context object that knows how to provide an instance of type T
-     * @param values An array of values which should be bound to the new T instance
-     * @return The new instance of T
+     * Using context instance of type S, AKA the source, create and bind values to
+     * target object of type R
+     * @param context A context object that knows how to provide an instance of type R
+     * @param values An array of values which should be bound to the new R instance
+     * @return The new result instance of R
      */
-    T bindValues(C context,Object[] values);
+    R bindValues(S context, Object[] values);
 }

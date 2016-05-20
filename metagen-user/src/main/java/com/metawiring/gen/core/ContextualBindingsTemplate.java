@@ -2,7 +2,7 @@ package com.metawiring.gen.core;
 
 import com.metawiring.gen.metagenapi.ValuesBinder;
 
-public abstract class ContextualBindingsTemplate<C,T> {
+public class ContextualBindingsTemplate<C,T> {
 
     private C context;
     private BindingsTemplate bindingsTemplate;
