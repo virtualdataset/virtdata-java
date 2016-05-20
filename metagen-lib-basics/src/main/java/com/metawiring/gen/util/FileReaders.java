@@ -55,7 +55,7 @@ public class FileReaders {
             }
         }
 
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        ClassLoader cl = FileReaders.class.getClassLoader();
 
         for (String searchPath : searchPaths) {
             String inClassPath = searchPath + File.separator + name;
