@@ -57,6 +57,12 @@ public class FileReaders {
 
         ClassLoader cl = FileReaders.class.getClassLoader();
 
+        stream = cl.getResourceAsStream(name);
+        if (stream!=null) {
+            logger.debug("Found resource in class path:" + name);
+            return stream;
+        }
+
         for (String searchPath : searchPaths) {
             String inClassPath = searchPath + File.separator + name;
             stream = cl.getResourceAsStream(inClassPath);
@@ -66,7 +72,8 @@ public class FileReaders {
             }
         }
 
-        throw new RuntimeException(name + " was missing from filesystem and classpath, with search paths:" + searchPaths);
+        throw new RuntimeException(name + " was missing from filesystem and classpath, with search paths:" +
+                Arrays.asList(searchPaths));
     }
 
 }

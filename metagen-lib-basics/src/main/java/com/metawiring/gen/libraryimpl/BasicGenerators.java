@@ -37,14 +37,18 @@ public class BasicGenerators implements GeneratorLibrary {
         Optional<Class<Generator>> generatorClass = resolveGeneratorClass(spec);
         Object[] generatorArgs = parseGeneratorArgs(spec);
 
-        return generatorClass.map(gc -> {
+        if (generatorClass.isPresent()) {
             try {
-                return ConstructorUtils.invokeConstructor(gc, generatorArgs);
+                Generator generator = ConstructorUtils.invokeConstructor(generatorClass.get(), generatorArgs);
+                return Optional.of(generator);
             } catch (Exception e) {
                 logger.error("Error instantiating generator:" + e.getMessage(), e);
-                return null;
+                return Optional.empty();
             }
-        });
+        } else {
+            logger.debug("Generator class not found: " + spec);
+            return Optional.empty();
+        }
     }
 
     @Override

@@ -35,7 +35,7 @@ public class ModuloLineToString implements Generator<String> {
 
     public ModuloLineToString(String filename) {
         this.filename = filename;
-        FileReaders.loadToStringList(filename);
+        this.lines = FileReaders.loadToStringList(filename);
     }
 
     @Override

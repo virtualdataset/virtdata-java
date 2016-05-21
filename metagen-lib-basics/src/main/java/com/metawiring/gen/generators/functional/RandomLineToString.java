@@ -40,7 +40,7 @@ public class RandomLineToString implements Generator<String> {
 
     public RandomLineToString(String filename) {
         this.filename = filename;
-        FileReaders.loadToStringList(filename);
+        this.lines = FileReaders.loadToStringList(filename);
         itemDistribution= new UniformIntegerDistribution(rng, 0, lines.size()-2);
     }
 
