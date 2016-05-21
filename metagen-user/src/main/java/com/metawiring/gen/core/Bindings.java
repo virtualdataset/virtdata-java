@@ -59,4 +59,7 @@ public class Bindings {
         return values;
     }
 
+    public BindingsTemplate getTemplate() {
+        return this.template;
+    }
 }

@@ -89,10 +89,28 @@ public class BindingsTemplate {
             sb.append("'").append(bindPointsNames.get(i)).append("'");
             sb.append("=>");
             sb.append("\"").append(generatorSpecs.get(i)).append("\"");
-            sb.append("=>");
             delim = ", ";
         }
         return sb.toString();
+    }
+
+    public String toString(Object[] values) {
+        String delim = "";
+        StringBuilder sb = new StringBuilder(BindingsTemplate.class.getSimpleName()).append(":");
+        for (int i = 0; i < bindPointsNames.size() - 1; i++) {
+            sb.append(delim);
+            sb.append("'").append(bindPointsNames.get(i)).append("'");
+            sb.append("=>");
+            sb.append("\"").append(generatorSpecs.get(i)).append("\"");
+            sb.append("=>[");
+            sb.append(values[i]);
+            sb.append("](");
+            sb.append((null!=values[i]) ? values[i].getClass().getSimpleName() : "NULL");
+            sb.append(")");
+            delim = ", ";
+        }
+        return sb.toString();
+
     }
 
 

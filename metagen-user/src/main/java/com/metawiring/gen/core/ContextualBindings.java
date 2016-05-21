@@ -1,17 +1,17 @@
 package com.metawiring.gen.core;
 
-import com.metawiring.gen.metagenapi.ValuesBinder;
+import com.metawiring.gen.metagenapi.ValuesArrayBinder;
 
-public class ContextualBindings<C,T> {
+public class ContextualBindings<C, T> {
 
     private final C context;
     private Bindings bindings;
-    private ValuesBinder<C,T> valuesBinder;
+    private ValuesArrayBinder<C, T> valuesArrayBinder;
 
-    public ContextualBindings(Bindings bindings, C context, ValuesBinder<C,T> valuesBinder) {
+    public ContextualBindings(Bindings bindings, C context, ValuesArrayBinder<C, T> valuesArrayBinder) {
         this.bindings = bindings;
         this.context = context;
-        this.valuesBinder = valuesBinder;
+        this.valuesArrayBinder = valuesArrayBinder;
     }
 
     public Bindings getBindings() {
@@ -24,7 +24,11 @@ public class ContextualBindings<C,T> {
 
     public T bind(long value) {
         Object[] allGeneratedValues = bindings.getAll(value);
-        T bound= valuesBinder.bindValues(context,allGeneratedValues);
-        return bound;
+        try { // Provide bindings context data where it may be useful
+            return valuesArrayBinder.bindValues(context, allGeneratedValues);
+        } catch (Exception e) {
+            throw new RuntimeException("Binding error:" + bindings.getTemplate().toString(allGeneratedValues), e);
+        }
+
     }
 }

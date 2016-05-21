@@ -19,12 +19,27 @@
 package com.metawiring.gen.generators.functional;
 
 import com.metawiring.gen.metagenapi.Generator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.math.BigInteger;
 
-public class StringCycleWrapper implements Generator<String> {
+public class ModuloToBigInt implements Generator<BigInteger> {
+    private final static Logger logger = LoggerFactory.getLogger(ModuloToBigInt.class);
+
+    private final long modulo;
+
+    public ModuloToBigInt(long modulo) {
+        this.modulo=modulo;
+    }
+    public ModuloToBigInt(String modulo) {
+        this(Long.valueOf(modulo));
+    }
 
     @Override
-    public String get(long input) {
-        return String.valueOf(input);
+    public BigInteger get(long input) {
+        long ret = (input % modulo) & Long.MAX_VALUE;
+        return BigInteger.valueOf(ret);
     }
+
 }

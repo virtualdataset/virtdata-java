@@ -29,15 +29,15 @@ import java.util.regex.Pattern;
  * concurrency. Note that once the thread number is cached, it will not be refreshed. This means
  * you can't change the thread name and get an updated value.
  */
-public class ThreadNumToInteger implements Generator<Integer> {
+public class ThreadNumToLong implements Generator<Long> {
 
     private static final Pattern pattern = Pattern.compile("^.*?(\\d+).*$");
-    private ThreadLocal<Integer> threadLocalInt = new ThreadLocal<Integer>() {
+    private ThreadLocal<Long> threadLocalInt = new ThreadLocal<Long>() {
         @Override
-        protected Integer initialValue() {
+        protected Long initialValue() {
             Matcher matcher = pattern.matcher(Thread.currentThread().getName());
             if (matcher.matches()) {
-                return Integer.valueOf(matcher.group(1));
+                return Long.valueOf(matcher.group(1));
             } else {
                 throw new RuntimeException(
                         "Unable to match a digit sequence in thread name:" + Thread.currentThread().getName()
@@ -47,7 +47,7 @@ public class ThreadNumToInteger implements Generator<Integer> {
     };
 
     @Override
-    public Integer get(long input) {
+    public Long get(long input) {
         return threadLocalInt.get();
     }
 }

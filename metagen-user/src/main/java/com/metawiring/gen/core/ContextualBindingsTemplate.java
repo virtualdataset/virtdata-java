@@ -1,19 +1,19 @@
 package com.metawiring.gen.core;
 
-import com.metawiring.gen.metagenapi.ValuesBinder;
+import com.metawiring.gen.metagenapi.ValuesArrayBinder;
 
 public class ContextualBindingsTemplate<C,T> {
 
     private C context;
     private BindingsTemplate bindingsTemplate;
-    private ValuesBinder<C,T> valuesBinder;
+    private ValuesArrayBinder<C,T> valuesArrayBinder;
 
     public ContextualBindingsTemplate(C context,
                                       BindingsTemplate bindingsTemplate,
-                                      ValuesBinder<C, T> valuesBinder) {
+                                      ValuesArrayBinder<C, T> valuesArrayBinder) {
         this.context = context;
         this.bindingsTemplate = bindingsTemplate;
-        this.valuesBinder = valuesBinder;
+        this.valuesArrayBinder = valuesArrayBinder;
     }
 
     public C getContext() {
@@ -24,13 +24,13 @@ public class ContextualBindingsTemplate<C,T> {
         return bindingsTemplate;
     }
 
-    public ValuesBinder<C,T> getValuesBinder() {
-        return valuesBinder;
+    public ValuesArrayBinder<C,T> getValuesArrayBinder() {
+        return valuesArrayBinder;
     }
 
     public ContextualBindings<C,T> resolveBindings() {
         Bindings bindings = bindingsTemplate.resolveBindings();
-        return new ContextualBindings<C,T>(bindings, context, valuesBinder);
+        return new ContextualBindings<C,T>(bindings, context, valuesArrayBinder);
     }
 
 }
