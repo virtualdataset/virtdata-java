@@ -1,9 +1,9 @@
-package com.metawiring.gen.generators.functional;
+package io.virtdata.functional;
 
-import com.metawiring.gen.metagenapi.Generator;
+import io.virtdata.api.Generator;
 import org.apache.commons.math3.random.MersenneTwister;
 
-public class RandomRangedToDouble implements Generator<Double>{
+public class RandomRangedToDouble implements Generator<Double> {
 
     private MersenneTwister theTwister = new MersenneTwister(System.nanoTime());
     private long min;

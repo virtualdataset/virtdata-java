@@ -1,13 +1,5 @@
 package io.virtdata.gen.generators;
 
-import com.metawiring.gen.libraryimpl.CurveGenerators;
-import com.metawiring.gen.metagenapi.Generator;
-import org.testng.annotations.Test;
-
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 public class DiscreteDistributionSamplerTest {
 
     public void testBinomialDist() {
@@ -15,6 +7,7 @@ public class DiscreteDistributionSamplerTest {
     }
 
 
+    /*
     @Test
     public void testDiscreteDistributionSamplerInstantiator() throws Exception {
         CurveGenerators curves = new CurveGenerators();
@@ -23,5 +16,6 @@ public class DiscreteDistributionSamplerTest {
         assertThat(generator.get()).isNotNull();
         assertThat(generator.get().get(1)).isNotNull();
     }
+    */
 
 }

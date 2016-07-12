@@ -1,7 +1,7 @@
-package com.metawiring.gen.generators.functional;
+package io.virtdata.functional;
 
-import com.metawiring.gen.metagenapi.Generator;
-import com.metawiring.gen.util.FileReaders;
+import io.virtdata.api.Generator;
+import io.virtdata.util.FileReaders;
 import org.apache.commons.math3.distribution.IntegerDistribution;
 import org.apache.commons.math3.distribution.UniformIntegerDistribution;
 import org.apache.commons.math3.random.MersenneTwister;
