@@ -24,8 +24,20 @@ import java.util.Date;
 
 public class ToDate implements Generator<Date> {
 
+    private long spacing;
+
     @Override
     public Date get(long input) {
+        input = input*spacing;
         return new Date(input);
+    }
+    public ToDate(int spacing){
+        this.spacing = spacing;
+    }
+    public ToDate(String spacing){
+        this(Integer.getInteger(spacing));
+    }
+    public ToDate(){
+        this.spacing=1;
     }
 }
