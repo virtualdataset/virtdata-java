@@ -31,13 +31,16 @@ public class ToDate implements Generator<Date> {
         input = input*spacing;
         return new Date(input);
     }
-    public ToDate(int spacing){
+    public ToDate(Integer spacing){
         this.spacing = spacing;
     }
     public ToDate(String spacing){
-        this(Integer.getInteger(spacing));
+        this(Integer.valueOf(spacing));
     }
     public ToDate(){
         this.spacing=1;
+    }
+    public String toString() {
+        return getClass().getSimpleName() + ":" + spacing;
     }
 }
