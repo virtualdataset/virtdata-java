@@ -20,8 +20,7 @@ public class FileReaders {
     }
 
     public static CharBuffer loadFileToCharBuffer(String filename, String... searchPaths) {
-
-        InputStream stream = mapInputResource(filename, searchPaths);
+        InputStream stream = mapInputResource(filename, "./");
 
         CharBuffer linesImage;
         try {
