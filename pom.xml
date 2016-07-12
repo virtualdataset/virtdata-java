@@ -5,7 +5,14 @@
   <groupId>com.metawiring</groupId>
   <artifactId>metagen</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <packaging>pom</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>com.metawiring.tools</groupId>
+            <artifactId>metagen-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+    <packaging>pom</packaging>
 
   <name>metagen</name>
   <url>http://github.com/jshook/metagen/</url>
@@ -14,6 +21,7 @@
       <module>metagen-api</module>
       <module>metagen-user</module>
       <module>metagen-lib-basics</module>
+      <module>metagen-lib-curves</module>
   </modules>
 
   <properties>

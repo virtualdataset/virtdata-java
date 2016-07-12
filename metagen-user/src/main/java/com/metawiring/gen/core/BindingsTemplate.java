@@ -39,7 +39,7 @@ import java.util.Optional;
 public class BindingsTemplate {
     private final static Logger logger = LoggerFactory.getLogger(BindingsTemplate.class);
 
-    private List<String> bindPointsNames = new ArrayList<String>();
+    private List<String> bindPointNames = new ArrayList<String>();
     private List<String> generatorSpecs = new ArrayList<String>();
 
     private GeneratorLibrary genlib = AllGenerators.get(); // by default
@@ -49,7 +49,7 @@ public class BindingsTemplate {
     }
 
     public void addFieldBinding(String bindPointName, String genSpec) {
-        this.bindPointsNames.add(bindPointName);
+        this.bindPointNames.add(bindPointName);
         this.generatorSpecs.add(genSpec);
     }
 
@@ -81,12 +81,20 @@ public class BindingsTemplate {
                 .forEach(gn -> logger.info("GENERATOR " + gn));
     }
 
+    public List<String> getBindPointNames() {
+        return this.bindPointNames;
+    }
+
+    public List<String> getGeneratorSpecs() {
+        return this.generatorSpecs;
+    }
+
     public String toString() {
         String delim = "";
         StringBuilder sb = new StringBuilder(BindingsTemplate.class.getSimpleName()).append(":");
-        for (int i = 0; i < bindPointsNames.size() - 1; i++) {
+        for (int i = 0; i < bindPointNames.size() - 1; i++) {
             sb.append(delim);
-            sb.append("'").append(bindPointsNames.get(i)).append("'");
+            sb.append("'").append(bindPointNames.get(i)).append("'");
             sb.append("=>");
             sb.append("\"").append(generatorSpecs.get(i)).append("\"");
             delim = ", ";
@@ -97,9 +105,9 @@ public class BindingsTemplate {
     public String toString(Object[] values) {
         String delim = "";
         StringBuilder sb = new StringBuilder(BindingsTemplate.class.getSimpleName()).append(":");
-        for (int i = 0; i < bindPointsNames.size() - 1; i++) {
+        for (int i = 0; i < bindPointNames.size() - 1; i++) {
             sb.append(delim);
-            sb.append("'").append(bindPointsNames.get(i)).append("'");
+            sb.append("'").append(bindPointNames.get(i)).append("'");
             sb.append("=>");
             sb.append("\"").append(generatorSpecs.get(i)).append("\"");
             sb.append("=>[");

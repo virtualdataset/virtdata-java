@@ -12,10 +12,10 @@ package com.metawiring.gen.metagenapi;
  * </ul>
  * </p>
  *
- * @param <S> The template type
+ * @param <T> The template type
  * @param <R> The result type
  */
-public interface ValuesArrayBinder<S, R> {
+public interface ValuesArrayBinder<T, R> {
 
     /**
      * Using context instance of type S, AKA the template, create and bind values to
@@ -24,5 +24,5 @@ public interface ValuesArrayBinder<S, R> {
      * @param values An array of values which should be bound to the new R instance
      * @return The new result instance of R
      */
-    R bindValues(S context, Object[] values);
+    R bindValues(T context, Object[] values);
 }
