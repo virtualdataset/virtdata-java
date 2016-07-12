@@ -3,6 +3,7 @@ package com.metawiring.gen.libraryimpl;
 import com.metawiring.gen.metagenapi.Generator;
 import org.testng.annotations.Test;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +32,15 @@ public class BasicGeneratorsTest {
         assertThat(gnames.size()>5);
         assertThat(gnames.contains("StaticStringGenerator")).isTrue();
 
+    }
+
+    @Test
+    public void testToDateInstantiator() throws Exception {
+        BasicGenerators basics = new BasicGenerators();
+        Optional<Generator<Date>> generator = basics.getGenerator("ToDate:1000");
+        assertThat(generator).isNotNull();
+        assertThat(generator.get()).isNotNull();
+        assertThat(generator.get().get(1).after(new Date(1)));
     }
 
 }
