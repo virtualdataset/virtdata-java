@@ -13,7 +13,7 @@ public class FileReaders {
     private static final Logger logger = LoggerFactory.getLogger(FileReaders.class);
 
     public static List<String> loadToStringList(String resource) {
-        CharBuffer charBuffer = loadFileToCharBuffer(resource);
+        CharBuffer charBuffer = loadFileToCharBuffer(resource, "./");
         String[] split = charBuffer.toString().split("\\r*\\n");
         List<String> strings = Arrays.asList(split);
         return Collections.unmodifiableList(strings);
