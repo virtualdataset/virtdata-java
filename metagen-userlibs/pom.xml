@@ -42,6 +42,25 @@
             <!--</configuration>-->
             <!--</plugin>-->
 
+            <!-- Javadoc -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.3</version>
+                <configuration>
+                    <doctitle>Metagen API</doctitle>
+                    <windowtitle>Metagen API</windowtitle>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadoc</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -73,7 +92,7 @@
                                 <!--<transformer implementation="org.apache.maven.plugins.shade.resources.IncludeResourceTransformer">-->
                                 <!--</transformer>-->
                             </transformers>
-                            <createSourcesJar>true</createSourcesJar>
+                            <createSourcesJar>false</createSourcesJar>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <minimizeJar>false</minimizeJar>
                         </configuration>
