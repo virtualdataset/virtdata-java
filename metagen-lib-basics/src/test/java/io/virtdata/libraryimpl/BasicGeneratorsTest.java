@@ -46,4 +46,13 @@ public class BasicGeneratorsTest {
         assertThat(d2).isAfter(d1);
     }
 
+    @Test
+    public void testRandomLineToIntInstantiator() throws Exception {
+        BasicGenerators basics = new BasicGenerators();
+        Optional<Generator<Integer>> generator = basics.getGenerator("RandomLineToInt:data/numbers.txt");
+        assertThat(generator).isNotNull();
+        assertThat(generator.get()).isNotNull();
+        assertThat(generator.get().get(1)).isNotNull();
+    }
+
 }
