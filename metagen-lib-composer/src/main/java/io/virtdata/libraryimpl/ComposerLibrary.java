@@ -19,6 +19,7 @@ public class ComposerLibrary implements GeneratorLibrary {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> Optional<Generator<T>> getGenerator(String specline) {
         if (!specline.startsWith("compose ")) {
             return Optional.empty();
@@ -43,7 +44,7 @@ public class ComposerLibrary implements GeneratorLibrary {
         for (Object function : functions) {
             assy.andThen(function);
         }
-        Generator<T> generator = assy.getGenerator();
+        Generator<T> generator = (Generator<T>) assy.getGenerator();
         return Optional.of(generator);
 
     }

@@ -7,10 +7,11 @@ import java.util.function.Function;
 import java.util.function.LongFunction;
 import java.util.function.LongUnaryOperator;
 
+
 public class FunctionAssembler {
 
     LongUnaryOperator longlongfunction;
-    LongFunction longRFunction;
+    LongFunction<?> longRFunction;
 
     // ((LongFunction<Object>)longRFunction).apply(l)
     public FunctionAssembler() {
@@ -59,18 +60,20 @@ public class FunctionAssembler {
     public FunctionAssembler andThen(LongFunction andThen) {
 
         if (longRFunction == null) {
-            if (longlongfunction==null) {
-                // no previous functions, this one becomes the compose function
-                longRFunction = andThen;
-            } else {
-                // We have an inner composed function for longs already, compose this around it.
-                longRFunction = (long l) -> andThen.apply(longlongfunction.applyAsLong(l));
-                longlongfunction=null; // reset this. The longRFunction is not the centerpiece.
-            }
+            longRFunction = andThen;
         } else {
             // We'll presume that the outer type of the inner function is already a Long, and try to coerce a lambda
-            longRFunction = (long l) -> andThen.apply(((LongFunction<Long>)longRFunction).apply(l));
+            final LongFunction<Long> extant = (LongFunction<Long>) longRFunction;
+            longRFunction = (long l) -> andThen.apply(extant.apply(l));
         }
+
+        // prepend extant long operators and clear them
+        if (longlongfunction != null) {
+            final LongUnaryOperator luo = longlongfunction;
+            longRFunction = (long l) -> andThen.apply(luo.applyAsLong(l));
+            longlongfunction = null;
+        }
+
         return this;
     }
 
@@ -78,25 +81,45 @@ public class FunctionAssembler {
      * <p>Allows for mapping generic functions into the composed lambda. This is not yet type safe, because type erasure.</p>
      * <p>If this is called after a LongFunction&lt;?&gt; has been added, then the types are presumed to match, and the
      * lamda is coerced via casting.</p>
+     *
      * @param andThen Function to add to the outer calling layer
      * @return this FunctionAssembler
      */
     @SuppressWarnings("unchecked")
     public FunctionAssembler andThen(Function andThen) {
-        if (longRFunction==null) {
-            longRFunction=new LongIdentity();
+        if (longRFunction == null) {
+            if (longlongfunction == null) {
+                // If you provided nothing but Function<T,R>, then assume T==Long
+                longRFunction = ((Function<Long, ?>) andThen)::apply;
+            } else {
+                // If you provided long unary operators and then a Function<T,R>, assume T==Long
+                // else you'll get an exception
+                longRFunction = (long l) -> ((Function<Long, ?>) andThen).apply(longlongfunction.applyAsLong(l));
+            }
+        } else {
+            // attempt to wrap existing function with generic signature
+            final LongFunction<?> extant = (LongFunction<?>) longRFunction;
+            longRFunction = (long l) -> andThen.apply(extant.apply(l));
         }
-        longRFunction = (long l) -> andThen.apply(((LongFunction<?>)longRFunction).apply(l));
         return this;
     }
 
-    public LongFunction getFunction() {
-        return longRFunction;
+    public LongFunction<?> getFunction() {
+        if (longRFunction != null) {
+            return longRFunction;
+        }
+        if (longlongfunction != null) {
+            return (long l) -> longlongfunction.applyAsLong(l);
+        }
+
+        throw new RuntimeException("There are no functions added to this FunctionAssembler.");
     }
 
+    @SuppressWarnings("unchecked")
     public <T> Generator<T> getGenerator() {
-        return GeneratorFunctionMapper.map(longRFunction);
+        return (Generator<T>) GeneratorFunctionMapper.map(getFunction());
     }
+
 
     public static class LongIdentity implements LongFunction<Long> {
         @Override
@@ -104,6 +127,5 @@ public class FunctionAssembler {
             return input;
         }
     }
-
 
 }
