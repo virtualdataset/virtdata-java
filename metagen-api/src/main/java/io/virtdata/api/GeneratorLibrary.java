@@ -1,6 +1,7 @@
 package io.virtdata.api;
 
 import io.virtdata.core.GeneratorFunctionMapper;
+import io.virtdata.core.ResolvedFunction;
 
 import java.util.List;
 import java.util.Optional;

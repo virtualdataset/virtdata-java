@@ -2,7 +2,6 @@ package io.virtdata.core;
 
 import io.virtdata.api.Generator;
 import io.virtdata.api.GeneratorLibrary;
-import io.virtdata.api.ResolvedFunction;
 
 import java.util.ArrayList;
 import java.util.Comparator;

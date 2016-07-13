@@ -3,7 +3,7 @@ package io.virtdata;
 import com.google.auto.service.AutoService;
 import io.virtdata.api.Generator;
 import io.virtdata.api.GeneratorLibrary;
-import io.virtdata.api.ResolvedFunction;
+import io.virtdata.core.ResolvedFunction;
 import io.virtdata.functional.StaticStringGenerator;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.reflections.Reflections;

@@ -2,7 +2,7 @@ package io.virtdata.libraryimpl;
 
 import com.google.auto.service.AutoService;
 import io.virtdata.api.GeneratorLibrary;
-import io.virtdata.api.ResolvedFunction;
+import io.virtdata.core.ResolvedFunction;
 import io.virtdata.core.AllGenerators;
 
 import java.util.ArrayList;

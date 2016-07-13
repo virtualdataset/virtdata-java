@@ -1,4 +1,7 @@
-package io.virtdata.api;
+package io.virtdata.core;
+
+import io.virtdata.api.FunctionType;
+import io.virtdata.api.GeneratorLibrary;
 
 public class ResolvedFunction {
 
