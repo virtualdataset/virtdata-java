@@ -14,7 +14,6 @@ public interface GeneratorLibrary {
     /**
      * Find the implementation for and construct an instance of a generator, as described.
      * @param spec A specifier that describes the type and or parameterization of a new generator.
-     * @param <T> The type of generator produced. This can be "Object" in most cases.
      * @return An optional generator instances.
      */
     <T> Optional<Generator<T>> getGenerator(String spec);

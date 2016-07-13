@@ -29,7 +29,7 @@ public class RandomGeneratorAdapter extends AbstractRandomGenerator {
 
     @Override
     public double nextDouble() {
-        // Because of IEEE 754, you have to let the ALU do it's work to yield this value,
+        // Because of IEEE 754, you should let the ALU do it's work to yield this value,
         // Sure, there's an off by 1 precision error here, but who's counting 1/2^64
         // The precision bias is likely to be a worse issue (1.0 and 0.0 vs 0.5)
         // There are no shortcuts for this unless you are using the Int form, which will

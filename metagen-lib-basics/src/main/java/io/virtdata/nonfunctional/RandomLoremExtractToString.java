@@ -6,7 +6,7 @@
  *   you may not use this file except in compliance with the License.
  *   You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.pache.org/licenses/LICENSE-2.0
  *
  *   Unless required by applicable law or agreed to in writing, software
  *   distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,28 +16,20 @@
  *
  */
 
-package io.virtdata.functional;
+package io.virtdata.nonfunctional;
 
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.LongFunction;
 
-/**
- * Integer devide the cycle, the other side of modulo.
- */
-public class DivideToLongToString implements LongFunction<String> {
+public class RandomLoremExtractToString implements LongFunction<String> {
 
-    private final long divisor;
-    AtomicLong seq=new AtomicLong(0);
+    private final RandomFileExtractToString coreGenerator;
 
-    public DivideToLongToString(long divisor) {
-        this.divisor=divisor;
-    }
-    public DivideToLongToString(String divisor) {
-        this(Long.valueOf(divisor));
+    public RandomLoremExtractToString(String minsize, String maxsize) {
+        coreGenerator = new RandomFileExtractToString("lorem-ipsum.txt", minsize, maxsize);
     }
 
     @Override
-    public String apply(long operand) {
-        return String.valueOf((operand / divisor));
+    public String apply(long input) {
+        return coreGenerator.apply(input);
     }
 }

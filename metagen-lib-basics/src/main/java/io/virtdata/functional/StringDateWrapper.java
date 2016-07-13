@@ -18,12 +18,13 @@
 
 package io.virtdata.functional;
 
-import io.virtdata.api.Generator;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.util.function.LongFunction;
 
-public class StringDateWrapper implements Generator<String> {
+
+public class StringDateWrapper implements LongFunction<String> {
 
     private DateTimeFormatter formatter;
 
@@ -32,7 +33,7 @@ public class StringDateWrapper implements Generator<String> {
     }
 
     @Override
-    public String get(long input) {
+    public String apply(long input) {
         String value = formatter.print(input);
         return value;
     }

@@ -18,26 +18,12 @@
 
 package io.virtdata.functional;
 
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.LongFunction;
 
-/**
- * Integer devide the cycle, the other side of modulo.
- */
-public class DivideToLongToString implements LongFunction<String> {
-
-    private final long divisor;
-    AtomicLong seq=new AtomicLong(0);
-
-    public DivideToLongToString(long divisor) {
-        this.divisor=divisor;
-    }
-    public DivideToLongToString(String divisor) {
-        this(Long.valueOf(divisor));
-    }
+public class LongToString implements LongFunction<String> {
 
     @Override
     public String apply(long operand) {
-        return String.valueOf((operand / divisor));
+        return String.valueOf(operand);
     }
 }

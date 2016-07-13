@@ -18,13 +18,13 @@
 
 package io.virtdata.functional;
 
-import io.virtdata.api.Generator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
+import java.util.function.LongFunction;
 
-public class ModuloToBigInt implements Generator<BigInteger> {
+public class ModuloToBigInt implements LongFunction<BigInteger> {
     private final static Logger logger = LoggerFactory.getLogger(ModuloToBigInt.class);
 
     private final long modulo;
@@ -37,9 +37,8 @@ public class ModuloToBigInt implements Generator<BigInteger> {
     }
 
     @Override
-    public BigInteger get(long input) {
-        long ret = (input % modulo) & Long.MAX_VALUE;
+    public BigInteger apply(long value) {
+        long ret = (value % modulo) & Long.MAX_VALUE;
         return BigInteger.valueOf(ret);
     }
-
 }

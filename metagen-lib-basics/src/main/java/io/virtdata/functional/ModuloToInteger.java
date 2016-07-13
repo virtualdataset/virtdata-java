@@ -18,11 +18,12 @@
 
 package io.virtdata.functional;
 
-import io.virtdata.api.Generator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ModuloToInteger implements Generator<Integer> {
+import java.util.function.LongToIntFunction;
+
+public class ModuloToInteger implements LongToIntFunction {
     private final static Logger logger = LoggerFactory.getLogger(ModuloToInteger.class);
 
     private final int modulo;
@@ -35,9 +36,8 @@ public class ModuloToInteger implements Generator<Integer> {
     }
 
     @Override
-    public Integer get(long input) {
-        int ret = (int) (input % modulo) & Integer.MAX_VALUE;
+    public int applyAsInt(long operand) {
+        int ret = (int) (operand % modulo) & Integer.MAX_VALUE;
         return ret;
     }
-
 }

@@ -1,24 +1,27 @@
 package io.virtdata.gen.generators;
 
-import io.virtdata.gen.internal.RandomGeneratorAdapter;
-import io.virtdata.api.Generator;
-import org.apache.commons.math3.distribution.BinomialDistribution;
-import org.apache.commons.math3.distribution.IntegerDistribution;
+import io.virtdata.gen.internal.Murmur3Hash;
+import io.virtdata.gen.internal.BinomialAdapter;
 
-public class ToBinomial implements Generator<Long> {
+import java.util.function.LongUnaryOperator;
 
-    private final RandomGeneratorAdapter randomGeneratorAdapter;
-    private final IntegerDistribution distribution;
+public class ToBinomial implements LongUnaryOperator {
 
-    public ToBinomial(int trials, double p) {
-        this.randomGeneratorAdapter = new RandomGeneratorAdapter();
-        this.distribution = new BinomialDistribution(randomGeneratorAdapter,trials,p);
+    private final BinomialAdapter binomialAdapter;
+    private Murmur3Hash m3h;
+
+    public ToBinomial(String tries, String probability) {
+        this(Integer.valueOf(tries),Double.valueOf(probability));
+    }
+
+    public ToBinomial(int tries, double probability) {
+        binomialAdapter = new BinomialAdapter(tries, probability);
     }
 
     @Override
-    public Long get(long input) {
-        randomGeneratorAdapter.setSeed(input);
-        distribution.reseedRandomGenerator(input);
-        return null;
+    public long applyAsLong(long operand) {
+        long hashed = m3h.applyAsLong(operand);
+        long value = binomialAdapter.applyAsLong(hashed);
+        return value;
     }
 }

@@ -1,7 +1,8 @@
-package io.virtdata.libraryimpl;
+package io.virtdata;
 
 import com.google.auto.service.AutoService;
-import io.virtdata.gen.generators.DiscreteDistributionSampler;
+import io.virtdata.core.GeneratorFunctionMapper;
+import io.virtdata.functional.StaticStringGenerator;
 import io.virtdata.api.Generator;
 import io.virtdata.api.GeneratorLibrary;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
@@ -17,10 +18,10 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("Duplicates")
+@SuppressWarnings({"unchecked", "Duplicates"})
 @AutoService(GeneratorLibrary.class)
-public class CurveGenerators implements GeneratorLibrary {
-    private static final Logger logger = LoggerFactory.getLogger(CurveGenerators.class);
+public class BasicGenerators implements GeneratorLibrary {
+    private static final Logger logger = LoggerFactory.getLogger(BasicGenerators.class);
 
     private static Object[] parseGeneratorArgs(String generatorType) {
         String[] parts = generatorType.split(":");
@@ -33,14 +34,15 @@ public class CurveGenerators implements GeneratorLibrary {
     }
 
     @Override
-    public Optional<Generator<?>> getGenerator(String spec) {
+    public <T> Optional<Generator<T>> getGenerator(String spec) {
         Optional<Class<Generator>> generatorClass = resolveGeneratorClass(spec);
         Object[] generatorArgs = parseGeneratorArgs(spec);
 
         if (generatorClass.isPresent()) {
             try {
-                Generator generator = ConstructorUtils.invokeConstructor(generatorClass.get(), generatorArgs);
-                return Optional.of(generator);
+                Object genr = ConstructorUtils.invokeConstructor(generatorClass.get(), generatorArgs);
+                Generator<?> generator = GeneratorFunctionMapper.map(genr);
+                return Optional.of((Generator<T>)generator);
             } catch (Exception e) {
                 logger.error("Error instantiating generator:" + e.getMessage(), e);
                 return Optional.empty();
@@ -63,7 +65,7 @@ public class CurveGenerators implements GeneratorLibrary {
         Reflections reflections = new Reflections(new ConfigurationBuilder()
                 .setScanners(new SubTypesScanner(false /* don't exclude Object.class */), new ResourcesScanner())
                 .setUrls(ClasspathHelper.forClassLoader(classLoadersList.toArray(new ClassLoader[0])))
-                .filterInputsBy(new FilterBuilder().include(FilterBuilder.prefix(DiscreteDistributionSampler.class.getPackage().getName()))));
+                .filterInputsBy(new FilterBuilder().include(FilterBuilder.prefix(StaticStringGenerator.class.getPackage().getName()))));
 
 
         Set<Class<?>> subTypesOf =
@@ -83,7 +85,7 @@ public class CurveGenerators implements GeneratorLibrary {
         Class<Generator> generatorClass = null;
         String className = (generatorSpec.split(":"))[0];
         if (!className.contains(".")) {
-            className = DiscreteDistributionSampler.class.getPackage().getName() + "." + className;
+            className = StaticStringGenerator.class.getPackage().getName() + "." + className;
         }
 
         try {

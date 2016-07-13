@@ -1,12 +1,11 @@
 package io.virtdata.functional;
 
-import io.virtdata.api.Generator;
-
 import java.math.BigInteger;
+import java.util.function.LongFunction;
 
-public class ToBigInt implements Generator<BigInteger> {
+public class ToBigInt implements LongFunction<BigInteger> {
     @Override
-    public BigInteger get(long input) {
+    public BigInteger apply(long input) {
         return BigInteger.valueOf(input);
     }
 }

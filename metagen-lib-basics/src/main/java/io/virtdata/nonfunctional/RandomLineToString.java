@@ -16,9 +16,12 @@
  *
  */
 
-package io.virtdata.functional;
+package io.virtdata.nonfunctional;
 
 import io.virtdata.util.FileReaders;
+import org.apache.commons.math3.distribution.IntegerDistribution;
+import org.apache.commons.math3.distribution.UniformIntegerDistribution;
+import org.apache.commons.math3.random.MersenneTwister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,28 +29,33 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.LongFunction;
 
-public class ModuloLineToString implements LongFunction<String> {
-    private final static Logger logger = LoggerFactory.getLogger(ModuloLineToString.class);
+/**
+ * TODO: Redo this a functional with murmur3F
+ */
+public class RandomLineToString implements LongFunction<String> {
+    private final static Logger logger = LoggerFactory.getLogger(RandomLineToString.class);
 
     private List<String> lines = new ArrayList<>();
 
+    MersenneTwister rng = new MersenneTwister(System.nanoTime());
+    private IntegerDistribution itemDistribution;
     private String filename;
 
-    public ModuloLineToString(String filename) {
+    public RandomLineToString(String filename) {
         this.filename = filename;
         this.lines = FileReaders.loadToStringList(filename);
-    }
-
-    @Override
-    public String apply(long input) {
-        int itemIdx = (int) (input % lines.size()) % Integer.MAX_VALUE;
-        String item = lines.get(itemIdx);
-        return item;
+        itemDistribution= new UniformIntegerDistribution(rng, 0, lines.size()-2);
     }
 
     public String toString() {
         return getClass().getSimpleName() + ":" + filename;
     }
 
+    @Override
+    public String apply(long operand) {
+        int itemIdx = itemDistribution.sample();
+        String item = lines.get(itemIdx);
+        return item;
+    }
 
 }

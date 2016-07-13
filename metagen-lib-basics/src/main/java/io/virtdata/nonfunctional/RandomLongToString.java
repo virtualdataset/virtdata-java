@@ -16,28 +16,18 @@
  *
  */
 
-package io.virtdata.functional;
+package io.virtdata.nonfunctional;
 
-import java.util.concurrent.atomic.AtomicLong;
+import org.apache.commons.math3.random.MersenneTwister;
+
 import java.util.function.LongFunction;
 
-/**
- * Integer devide the cycle, the other side of modulo.
- */
-public class DivideToLongToString implements LongFunction<String> {
-
-    private final long divisor;
-    AtomicLong seq=new AtomicLong(0);
-
-    public DivideToLongToString(long divisor) {
-        this.divisor=divisor;
-    }
-    public DivideToLongToString(String divisor) {
-        this(Long.valueOf(divisor));
-    }
+public class RandomLongToString implements LongFunction<String> {
+    private MersenneTwister theTwister = new MersenneTwister(System.nanoTime());
 
     @Override
-    public String apply(long operand) {
-        return String.valueOf((operand / divisor));
+    public String apply(long input) {
+        return String.valueOf(Math.abs(theTwister.nextLong()));
     }
+
 }

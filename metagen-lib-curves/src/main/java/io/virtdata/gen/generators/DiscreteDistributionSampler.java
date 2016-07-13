@@ -1,16 +1,16 @@
 package io.virtdata.gen.generators;
 
 import io.virtdata.gen.internal.HashedDiscreteSamplingAdapter;
-import io.virtdata.api.Generator;
 
 import java.security.InvalidParameterException;
 import java.util.Arrays;
+import java.util.function.LongUnaryOperator;
 import java.util.stream.Collectors;
 
 /**
  * This is *NOT* threadsafe. It will be reworked to provide a more functional integration with apache commons math, if possible.
  */
-public class DiscreteDistributionSampler implements Generator<Long> {
+public class DiscreteDistributionSampler implements LongUnaryOperator {
 
     private String[] distributionDef;
     private HashedDiscreteSamplingAdapter samplingAdapter;
@@ -45,14 +45,15 @@ public class DiscreteDistributionSampler implements Generator<Long> {
         this.samplingAdapter = new HashedDiscreteSamplingAdapter(distributionDef);
     }
 
-    @Override
-    public Long get(long input) {
-        long sample = samplingAdapter.sample(input);
-        return sample;
-    }
 
     public String toString() {
         return "distName:" + distributionDef[0] + ", params:" +
                 Arrays.asList(distributionDef).stream().skip(1).collect(Collectors.joining(","));
+    }
+
+    @Override
+    public long applyAsLong(long operand) {
+        long sample = samplingAdapter.sample(operand);
+        return sample;
     }
 }

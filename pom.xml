@@ -19,9 +19,9 @@
 
   <modules>
       <module>metagen-api</module>
-      <module>metagen-user</module>
       <module>metagen-lib-basics</module>
       <module>metagen-lib-curves</module>
+      <module>metagen-lib-composer</module>
   </modules>
 
   <properties>
