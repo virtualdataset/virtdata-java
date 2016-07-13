@@ -1,16 +1,15 @@
 package io.virtdata.api;
 
 /**
- * ValuesArrayBinder provides a way to apply an array of object values to a template
+ * <p>ValuesArrayBinder provides a way to apply an array of object values to a template
  * object of type S to yield a new object instance of type R. The object array is
- * a positional argument list. There is no named-argument facility.
+ * a positional argument list. There is no named-argument facility.</p>
  *
- * <p>Parameter Examples:
+ * <p>Parameter Examples:</p>
  * <ul>
  *     <LI>S: prepared Statement, R: bound statement</LI>
  *     <LI>S: string template, R: interpolated string value</LI>
  * </ul>
- * </p>
  *
  * @param <T> The template type
  * @param <R> The result type

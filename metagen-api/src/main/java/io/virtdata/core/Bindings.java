@@ -48,6 +48,7 @@ public class Bindings {
 
     /**
      * Get a value from each generator in the bindings list
+     * @param input The long value which the bound generators will use as in input
      * @return An array of objects, the values generated from each generator in the list
      */
     public Object[] getAll(long input) {

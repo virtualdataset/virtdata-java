@@ -2,10 +2,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.virtdata</groupId>
     <artifactId>metagen-lib-basics</artifactId>
-    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+
+    <parent>
+        <artifactId>project-defaults</artifactId>
+        <groupId>io.virtdata</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../project-defaults</relativePath>
+    </parent>
+
 
     <name>metagen-lib-basics</name>
     <url>http://virtdata.io/</url>
@@ -22,7 +28,7 @@
         <dependency>
             <groupId>io.virtdata</groupId>
             <artifactId>metagen-api</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

@@ -57,6 +57,7 @@ public class BindingsTemplate {
      * Use the generator library and the generator specs to create instances of the generators.
      * If you need thread-aware generation, be sure to call this in the proper thread. Each time this method
      * is called, it creates a new instance.
+     * @return A set of bindings that can be used to generate object values later
      */
     public Bindings resolveBindings() {
         List<Generator<?>> generators = new ArrayList<Generator<?>>();
