@@ -5,16 +5,16 @@ import io.virtdata.gen.internal.BinomialAdapter;
 
 import java.util.function.LongUnaryOperator;
 
-public class ToBinomial implements LongUnaryOperator {
+public class Binomial implements LongUnaryOperator {
 
     private final BinomialAdapter binomialAdapter;
-    private Murmur3Hash m3h;
+    private Murmur3Hash m3h = new Murmur3Hash();
 
-    public ToBinomial(String tries, String probability) {
-        this(Integer.valueOf(tries),Double.valueOf(probability));
+    public Binomial(String tries, String probability) {
+        this(Integer.valueOf(tries), Double.valueOf(probability));
     }
 
-    public ToBinomial(int tries, double probability) {
+    public Binomial(int tries, double probability) {
         binomialAdapter = new BinomialAdapter(tries, probability);
     }
 

@@ -62,7 +62,7 @@ public class GeneratorLibraryFinder {
      * in alphabetical order of their type names.
      * @return a list of GeneratorLibrary instances.
      */
-    public static List<GeneratorLibrary> getAll() {
+    public synchronized static List<GeneratorLibrary> getAll() {
         List<GeneratorLibrary> libraries = new ArrayList<>(getLibraries().values());
         libraries.sort((o1, o2) -> o1.getLibraryName().compareTo(o2.getLibraryName()));
         return Collections.unmodifiableList(libraries);

@@ -2,6 +2,7 @@ package io.virtdata.core;
 
 import io.virtdata.api.Generator;
 import io.virtdata.api.GeneratorLibrary;
+import io.virtdata.api.ResolvedFunction;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -27,12 +28,12 @@ public class AllGenerators implements GeneratorLibrary {
     }
 
     @Override
-    public <T> Optional<Generator<T>> getGenerator(String spec) {
-        Optional<Generator<T>> generator = null;
+    public Optional<ResolvedFunction> resolveFunction(String spec) {
+        Optional<Generator<?>> generator = null;
         for (GeneratorLibrary library : libraries) {
-            generator = library.getGenerator(spec);
-            if ( generator != null ) {
-                return generator;
+            Optional<ResolvedFunction> resolvedFunction = library.resolveFunction(spec);
+            if (resolvedFunction.isPresent()) {
+                return resolvedFunction;
             }
         }
         throw new RuntimeException("Unable to find spec:" + spec + " in any library, searched in " + toString());

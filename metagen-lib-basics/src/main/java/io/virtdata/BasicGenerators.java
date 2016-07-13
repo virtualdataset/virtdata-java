@@ -1,10 +1,10 @@
 package io.virtdata;
 
 import com.google.auto.service.AutoService;
-import io.virtdata.core.GeneratorFunctionMapper;
-import io.virtdata.functional.StaticStringGenerator;
 import io.virtdata.api.Generator;
 import io.virtdata.api.GeneratorLibrary;
+import io.virtdata.api.ResolvedFunction;
+import io.virtdata.functional.StaticStringGenerator;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
@@ -34,15 +34,14 @@ public class BasicGenerators implements GeneratorLibrary {
     }
 
     @Override
-    public <T> Optional<Generator<T>> getGenerator(String spec) {
-        Optional<Class<Generator>> generatorClass = resolveGeneratorClass(spec);
+    public Optional<ResolvedFunction> resolveFunction(String spec) {
+        Optional<Class<?>> functionClass = resolveFunctionClass(spec);
         Object[] generatorArgs = parseGeneratorArgs(spec);
 
-        if (generatorClass.isPresent()) {
+        if (functionClass.isPresent()) {
             try {
-                Object genr = ConstructorUtils.invokeConstructor(generatorClass.get(), generatorArgs);
-                Generator<?> generator = GeneratorFunctionMapper.map(genr);
-                return Optional.of((Generator<T>)generator);
+                Object genr = ConstructorUtils.invokeConstructor(functionClass.get(), generatorArgs);
+                return Optional.of(genr).map(g -> new ResolvedFunction(g, this));
             } catch (Exception e) {
                 logger.error("Error instantiating generator:" + e.getMessage(), e);
                 return Optional.empty();
@@ -67,10 +66,8 @@ public class BasicGenerators implements GeneratorLibrary {
                 .setUrls(ClasspathHelper.forClassLoader(classLoadersList.toArray(new ClassLoader[0])))
                 .filterInputsBy(new FilterBuilder().include(FilterBuilder.prefix(StaticStringGenerator.class.getPackage().getName()))));
 
-
         Set<Class<?>> subTypesOf =
-                reflections.getSubTypesOf(Object.class)
-                ;
+                reflections.getSubTypesOf(Object.class);
 
         ArrayList<String> collected = subTypesOf.stream()
                 .map(Class::getSimpleName)
@@ -81,7 +78,7 @@ public class BasicGenerators implements GeneratorLibrary {
     }
 
     @SuppressWarnings("unchecked")
-    private Optional<Class<Generator>> resolveGeneratorClass(String generatorSpec) {
+    private Optional<Class<?>> resolveFunctionClass(String generatorSpec) {
         Class<Generator> generatorClass = null;
         String className = (generatorSpec.split(":"))[0];
         if (!className.contains(".")) {

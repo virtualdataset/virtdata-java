@@ -1,6 +1,4 @@
-package io.virtdata.gen.generators;
-
-import io.virtdata.gen.internal.HashedDiscreteSamplingAdapter;
+package io.virtdata.gen.internal;
 
 import java.security.InvalidParameterException;
 import java.util.Arrays;

@@ -14,7 +14,7 @@ import org.apache.commons.math3.random.AbstractRandomGenerator;
  *
  * Basically, it allows manual control of the RNG input to a distribution function.
  */
-public class RandomGeneratorAdapter extends AbstractRandomGenerator {
+public class RandomBypassAdapter extends AbstractRandomGenerator {
 
     private long seed;
 

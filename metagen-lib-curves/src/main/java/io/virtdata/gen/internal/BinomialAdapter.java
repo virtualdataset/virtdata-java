@@ -20,12 +20,12 @@ import java.util.function.LongUnaryOperator;
  */
 public class BinomialAdapter implements LongUnaryOperator {
 
-    private final RandomGeneratorAdapter randomGeneratorAdapter;
+    private final RandomBypassAdapter randomBypassAdapter;
     private final IntegerDistribution distribution;
 
     public BinomialAdapter(int trials, double p) {
-        this.randomGeneratorAdapter = new RandomGeneratorAdapter();
-        this.distribution = new BinomialDistribution(randomGeneratorAdapter,trials,p);
+        this.randomBypassAdapter = new RandomBypassAdapter();
+        this.distribution = new BinomialDistribution(randomBypassAdapter,trials,p);
     }
 
 
@@ -35,7 +35,7 @@ public class BinomialAdapter implements LongUnaryOperator {
 
     @Override
     public long applyAsLong(long operand) {
-        randomGeneratorAdapter.setSeed(operand);
+        randomBypassAdapter.setSeed(operand);
         return (long) distribution.sample();
     }
 }

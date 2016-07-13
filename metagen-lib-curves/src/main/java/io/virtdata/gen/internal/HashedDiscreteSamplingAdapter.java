@@ -7,18 +7,18 @@ import org.apache.commons.math3.distribution.IntegerDistribution;
  */
 public class HashedDiscreteSamplingAdapter {
 
-    private RandomGeneratorAdapter randomMapper;
+    private RandomBypassAdapter randomMapper;
     private IntegerDistribution dist;
 
 
     public HashedDiscreteSamplingAdapter(int minValue, int maxValue, String distributionName, String... distributionParams) {
-        randomMapper = new RandomGeneratorAdapter();
+        randomMapper = new RandomBypassAdapter();
         Class<? extends IntegerDistribution> distClass = SizedDistributionMapper.mapIntegerDistributionClass(distributionName);
         dist = SizedDistributionMapper.mapIntegerDistribution(distClass, minValue, maxValue, randomMapper, distributionParams);
     }
 
     public HashedDiscreteSamplingAdapter(String[] distributionDef) {
-        randomMapper = new RandomGeneratorAdapter();
+        randomMapper = new RandomBypassAdapter();
         dist = SizedDistributionMapper.mapIntegerDistribution(randomMapper, distributionDef);
     }
 

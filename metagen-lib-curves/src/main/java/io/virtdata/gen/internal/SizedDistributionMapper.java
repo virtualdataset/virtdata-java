@@ -115,7 +115,7 @@ public class SizedDistributionMapper {
 
     }
 
-    public static RealDistribution mapRealDistribution(RandomGeneratorAdapter randomMapper, String[] def) {
+    public static RealDistribution mapRealDistribution(RandomBypassAdapter randomMapper, String[] def) {
         if (def.length<1) {
             throw new InvalidParameterException("def must have at least 1 parameter, the distribution name. This one has zero.");
         }
@@ -144,7 +144,7 @@ public class SizedDistributionMapper {
 
     }
 
-    public static IntegerDistribution mapIntegerDistribution(RandomGeneratorAdapter rng, String[] def) {
+    public static IntegerDistribution mapIntegerDistribution(RandomBypassAdapter rng, String[] def) {
         if (def.length<1) {
             throw new InvalidParameterException("def must have at least 1 parameter, the distribution name. This one has zero.");
         }

@@ -1,14 +1,15 @@
 package io.virtdata.libraryimpl;
 
 import com.google.auto.service.AutoService;
-import io.virtdata.api.Generator;
 import io.virtdata.api.GeneratorLibrary;
+import io.virtdata.api.ResolvedFunction;
 import io.virtdata.core.AllGenerators;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.LongFunction;
 
 @AutoService(GeneratorLibrary.class)
 public class ComposerLibrary implements GeneratorLibrary {
@@ -20,33 +21,30 @@ public class ComposerLibrary implements GeneratorLibrary {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> Optional<Generator<T>> getGenerator(String specline) {
+    public Optional<ResolvedFunction> resolveFunction(String specline) {
         if (!specline.startsWith("compose ")) {
             return Optional.empty();
         }
 
         String[] specs = specline.substring("compose ".length()).split(" ");
 
-        List<Object> functions = new LinkedList<>();
+        List<ResolvedFunction> resolvedFunctions = new LinkedList<>();
 
         Object composed = null;
         for (String spec : specs) {
-
-            Optional<Generator<T>> optionalGenerator =
-                    AllGenerators.get().getGenerator(spec);
-
-            Object generator = optionalGenerator.orElseThrow(() -> new RuntimeException("Unable to find generator for " + spec));
-
-            // because debugging
-            functions.add(generator);
+            Optional<ResolvedFunction> resolvedFunction = AllGenerators.get().resolveFunction(spec);
+            resolvedFunctions.add(resolvedFunction.orElseThrow(
+                    () -> new RuntimeException("Unable to find generator for " + spec)
+            ));
         }
         FunctionAssembler assy = new FunctionAssembler();
-        for (Object function : functions) {
-            assy.andThen(function);
-        }
-        Generator<T> generator = (Generator<T>) assy.getGenerator();
-        return Optional.of(generator);
 
+        for (ResolvedFunction resolvedFunction : resolvedFunctions) {
+            assy.andThen(resolvedFunction.getFunctionObject());
+        }
+        LongFunction<?> function = assy.getFunction();
+        ResolvedFunction composedFunction = new ResolvedFunction(function, this);
+        return Optional.of(composedFunction);
     }
 
 

@@ -1,9 +1,11 @@
 package io.virtdata.libraryimpl;
 
 import com.google.auto.service.AutoService;
-import io.virtdata.gen.generators.DiscreteDistributionSampler;
 import io.virtdata.api.Generator;
 import io.virtdata.api.GeneratorLibrary;
+import io.virtdata.api.ResolvedFunction;
+import io.virtdata.gen.generators.Binomial;
+import io.virtdata.gen.internal.DiscreteDistributionSampler;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
@@ -23,24 +25,24 @@ public class CurveGenerators implements GeneratorLibrary {
     private static final Logger logger = LoggerFactory.getLogger(CurveGenerators.class);
 
     private static Object[] parseGeneratorArgs(String generatorType) {
-        String[] parts = generatorType.split(":");
+        String[] parts = generatorType.split("[,:]");
         return Arrays.copyOfRange(parts, 1, parts.length);
     }
 
     @Override
     public String getLibraryName() {
-        return "basics";
+        return "curves";
     }
 
     @Override
-    public Optional<Generator<?>> getGenerator(String spec) {
-        Optional<Class<Generator>> generatorClass = resolveGeneratorClass(spec);
+    public Optional<ResolvedFunction> resolveFunction(String spec) {
+        Optional<Class<?>> functionClass = resolveFunctionClass(spec);
         Object[] generatorArgs = parseGeneratorArgs(spec);
 
-        if (generatorClass.isPresent()) {
+        if (functionClass.isPresent()) {
             try {
-                Generator generator = ConstructorUtils.invokeConstructor(generatorClass.get(), generatorArgs);
-                return Optional.of(generator);
+                Object genr = ConstructorUtils.invokeConstructor(functionClass.get(), generatorArgs);
+                return Optional.of(genr).map(g -> new ResolvedFunction(g, this));
             } catch (Exception e) {
                 logger.error("Error instantiating generator:" + e.getMessage(), e);
                 return Optional.empty();
@@ -79,11 +81,11 @@ public class CurveGenerators implements GeneratorLibrary {
     }
 
     @SuppressWarnings("unchecked")
-    private Optional<Class<Generator>> resolveGeneratorClass(String generatorSpec) {
+    private Optional<Class<?>> resolveFunctionClass(String generatorSpec) {
         Class<Generator> generatorClass = null;
         String className = (generatorSpec.split(":"))[0];
         if (!className.contains(".")) {
-            className = DiscreteDistributionSampler.class.getPackage().getName() + "." + className;
+            className = Binomial.class.getPackage().getName() + "." + className;
         }
 
         try {

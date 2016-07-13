@@ -21,22 +21,25 @@ import java.util.function.LongUnaryOperator;
  * for types listed in TypeMap, as well as generic functions, with generic
  * functions as the last resort.</p>
  */
+@SuppressWarnings("unchecked")
 public class GeneratorFunctionMapper {
 
-    public static Generator<?> map(Object function) {
+    public  static <T> Generator<T> map(Object function) {
         if (function instanceof Generator) {
             return (Generator) function;
         }
         if (function instanceof LongUnaryOperator) {
-            return map((LongUnaryOperator)function);
+            return (Generator<T>) map((LongUnaryOperator)function);
         }
         if (function instanceof LongFunction) {
-            return map((LongFunction) function);
+            return (Generator<T>) map((LongFunction) function);
         }
         if (function instanceof Function) {
-            return map ((Function)function);
+            return (Generator<T>) map ((Function)function);
         }
-        throw new RuntimeException("Function object was not a recognized type for mapping to a generator lambda, object" + function.toString());
+        throw new RuntimeException(
+                "Function object was not a recognized type for mapping to a generator lambda, object"
+                        + function.toString());
     }
 
     public static Generator<Long> map(LongUnaryOperator f) {

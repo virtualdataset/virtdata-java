@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ToBinomialAdapterTest {
+public class BinomialAdapterTest {
 
     @Test
     public void ToBinomialProbabilityTest() {
