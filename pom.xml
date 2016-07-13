@@ -20,6 +20,7 @@
         <module>metagen-lib-basics</module>
         <module>metagen-lib-curves</module>
         <module>metagen-lib-composer</module>
+        <module>metagen-userlibs</module>
     </modules>
 
     <scm>
