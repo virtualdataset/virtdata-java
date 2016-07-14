@@ -36,7 +36,6 @@ public class LogNormal implements LongFunction<Double> {
 
         @Override
         protected LogNormalAdapter initialValue() {
-
             return new LogNormalAdapter(mean, stddev);
         }
     }
