@@ -18,14 +18,13 @@
 
 package io.virtdata.functional;
 
-import io.virtdata.api.Generator;
-
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.LongFunction;
 
 /**
  * Integer devide the cycle, the other side of modulo.
  */
-public class DivideToLongToString implements Generator<String> {
+public class DivideToLongToString implements LongFunction<String> {
 
     private final long divisor;
     AtomicLong seq=new AtomicLong(0);
@@ -38,8 +37,7 @@ public class DivideToLongToString implements Generator<String> {
     }
 
     @Override
-    public String get(long input) {
-        return String.valueOf((input / divisor));
+    public String apply(long operand) {
+        return String.valueOf((operand / divisor));
     }
-
 }

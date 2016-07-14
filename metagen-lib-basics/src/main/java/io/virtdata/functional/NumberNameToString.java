@@ -18,15 +18,16 @@
 
 package io.virtdata.functional;
 
-import io.virtdata.api.Generator;
 import uk.ydubey.formatter.numtoword.NumberInWordsFormatter;
 
-public class NumberNameToString implements Generator<String> {
+import java.util.function.LongFunction;
+
+public class NumberNameToString implements LongFunction<String> {
 
     private final NumberInWordsFormatter formatter = NumberInWordsFormatter.getInstance();
 
     @Override
-    public String get(long input) {
+    public String apply(long input) {
         String result = formatter.format((int) input % Integer.MAX_VALUE);
         return result;
     }

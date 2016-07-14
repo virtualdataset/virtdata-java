@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RandomLineToInt implements Generator<Integer> {
-    private final static Logger logger = LoggerFactory.getLogger(RandomLineToString.class);
+    private final static Logger logger = LoggerFactory.getLogger(RandomLineToInt.class);
 
     private List<String> lines = new ArrayList<>();
 

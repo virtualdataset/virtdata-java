@@ -18,9 +18,9 @@
 
 package io.virtdata.functional;
 
-import io.virtdata.api.Generator;
+import java.util.function.LongFunction;
 
-public class StaticStringGenerator implements Generator<String> {
+public class StaticStringGenerator implements LongFunction<String> {
 
     private final String string;
 
@@ -29,7 +29,7 @@ public class StaticStringGenerator implements Generator<String> {
     }
 
     @Override
-    public String get(long input) {
+    public String apply(long input) {
         return string;
     }
 

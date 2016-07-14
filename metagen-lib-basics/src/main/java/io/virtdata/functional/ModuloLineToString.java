@@ -18,15 +18,15 @@
 
 package io.virtdata.functional;
 
-import io.virtdata.api.Generator;
 import io.virtdata.util.FileReaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.LongFunction;
 
-public class ModuloLineToString implements Generator<String> {
+public class ModuloLineToString implements LongFunction<String> {
     private final static Logger logger = LoggerFactory.getLogger(ModuloLineToString.class);
 
     private List<String> lines = new ArrayList<>();
@@ -39,7 +39,7 @@ public class ModuloLineToString implements Generator<String> {
     }
 
     @Override
-    public String get(long input) {
+    public String apply(long input) {
         int itemIdx = (int) (input % lines.size()) % Integer.MAX_VALUE;
         String item = lines.get(itemIdx);
         return item;
