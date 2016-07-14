@@ -4,6 +4,7 @@ import io.virtdata.api.Generator;
 
 import java.util.function.Function;
 import java.util.function.LongFunction;
+import java.util.function.LongToIntFunction;
 import java.util.function.LongUnaryOperator;
 
 /**
@@ -37,6 +38,9 @@ public class GeneratorFunctionMapper {
         if (function instanceof Function) {
             return (Generator<T>) map ((Function)function);
         }
+        if (function instanceof LongToIntFunction) {
+            return (Generator<T>) map ((LongToIntFunction) function);
+        }
         throw new RuntimeException(
                 "Function object was not a recognized type for mapping to a generator lambda, object"
                         + function.toString());
@@ -52,6 +56,10 @@ public class GeneratorFunctionMapper {
 
     public static <R> Generator<R> map(Function<Long,R> f) {
         return f::apply;
+    }
+
+    public static Generator<Integer> map(LongToIntFunction f){
+        return f::applyAsInt;
     }
 
 }
