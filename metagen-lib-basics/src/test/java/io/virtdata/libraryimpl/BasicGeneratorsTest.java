@@ -90,5 +90,13 @@ public class BasicGeneratorsTest {
         assertThat(generator.get()).isNotNull();
         assertThat(generator.get().get(1)).isNotNull();
     }
+    @Test
+    public void testRandomLineTosStringInstantiator() throws Exception {
+        BasicGenerators basics = new BasicGenerators();
+        Optional<Generator<Integer>> generator = basics.getGenerator("RandomLineToString:data/numbers.txt");
+        assertThat(generator).isNotNull();
+        assertThat(generator.get()).isNotNull();
+        assertThat(generator.get().get(1)).isNotNull();
+    }
 
 }
