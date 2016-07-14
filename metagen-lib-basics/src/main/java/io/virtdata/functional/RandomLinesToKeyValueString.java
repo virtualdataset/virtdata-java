@@ -16,7 +16,7 @@
  *
  */
 
-package io.virtdata.nonfunctional;
+package io.virtdata.functional;
 
 import org.apache.commons.math3.distribution.IntegerDistribution;
 import org.apache.commons.math3.random.MersenneTwister;

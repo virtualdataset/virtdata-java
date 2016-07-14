@@ -6,7 +6,7 @@
  *   you may not use this file except in compliance with the License.
  *   You may obtain a copy of the License at
  *
- *   http://www.pache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  *   Unless required by applicable law or agreed to in writing, software
  *   distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,20 +16,27 @@
  *
  */
 
-package io.virtdata.nonfunctional;
+package io.virtdata.functional;
 
+import org.apache.commons.math3.random.MersenneTwister;
+
+import java.nio.ByteBuffer;
 import java.util.function.LongFunction;
 
-public class RandomLoremExtractToString implements LongFunction<String> {
+public class RandomToByteBuffer implements LongFunction<ByteBuffer> {
 
-    private final RandomFileExtractToString coreGenerator;
+    private MersenneTwister twister = new MersenneTwister();
+    private int length;
 
-    public RandomLoremExtractToString(String minsize, String maxsize) {
-        coreGenerator = new RandomFileExtractToString("lorem-ipsum.txt", minsize, maxsize);
+    public RandomToByteBuffer(int length) {
+        this.length = length;
     }
 
     @Override
-    public String apply(long input) {
-        return coreGenerator.apply(input);
+    public ByteBuffer apply(long input) {
+        byte[] buffer = new byte[length];
+        twister.nextBytes(buffer);
+        return ByteBuffer.wrap(buffer);
     }
+
 }

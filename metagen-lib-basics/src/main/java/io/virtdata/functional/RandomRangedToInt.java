@@ -16,19 +16,19 @@
  *
  */
 
-package io.virtdata.nonfunctional;
+package io.virtdata.functional;
 
 import org.apache.commons.math3.random.MersenneTwister;
 
 import java.util.function.LongFunction;
 
-public class RandomRangedToString implements LongFunction<String> {
+public class RandomRangedToInt implements LongFunction<Integer> {
     private MersenneTwister theTwister = new MersenneTwister(System.nanoTime());
     private long min;
     private long max;
     private long _length;
 
-    public RandomRangedToString(long min, long max) {
+    public RandomRangedToInt(int min, int max) {
         if (max<=min) {
             throw new RuntimeException("max must be >= min");
         }
@@ -37,20 +37,20 @@ public class RandomRangedToString implements LongFunction<String> {
         this._length = max - min;
     }
 
-    public RandomRangedToString(String min, String max) {
-        this(Long.valueOf(min), Long.valueOf(max));
+    public RandomRangedToInt(String min, String max) {
+        this(Integer.valueOf(min), Integer.valueOf(max));
     }
 
-    @Override
-    public String apply(long input) {
-        long value = Math.abs(theTwister.nextLong());
-        value %= _length;
-        value += min;
-        return String.valueOf(value);
-    }
 
     public String toString() {
         return getClass().getSimpleName() + ":" + min + ":" + max;
     }
 
+    @Override
+    public Integer apply(long operand) {
+        long value = Math.abs(theTwister.nextLong());
+        value %= _length;
+        value += min;
+        return (int) value;
+    }
 }
