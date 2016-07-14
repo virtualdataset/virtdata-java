@@ -1,6 +1,9 @@
 package io.virtdata.gen.internal;
 
 import org.apache.commons.math3.random.AbstractRandomGenerator;
+import org.apache.commons.math3.util.FastMath;
+
+import java.util.Random;
 
 /**
  * This is just a way to make apache commons math distributions work with
@@ -17,6 +20,9 @@ import org.apache.commons.math3.random.AbstractRandomGenerator;
 public class RandomBypassAdapter extends AbstractRandomGenerator {
 
     private long seed;
+
+    // used to support ziggurat methods for now
+    private Random gaussianStub = new Random(0L);
 
     /**
      * This is expected to be set with a hashed value before being accessed.
@@ -36,5 +42,33 @@ public class RandomBypassAdapter extends AbstractRandomGenerator {
         // still suffer from precision bias.
         double next = ((double) seed ) / ((double) Long.MAX_VALUE);
         return next;
+    }
+
+    private double cachedNormalDeviate = Double.NaN;
+
+    @Override
+    public double nextGaussian() {
+        gaussianStub.setSeed(seed);
+
+        //throw new RuntimeException("This must be implemented with internal resampling, because zigurrat methods are not purely functional and get stuck in a loop.");
+
+        if (!Double.isNaN(cachedNormalDeviate)) {
+            double dev = cachedNormalDeviate;
+            cachedNormalDeviate = Double.NaN;
+            return dev;
+        }
+        double v1 = 0;
+        double v2 = 0;
+        double s = 1;
+        while (s >=1 ) {
+            v1 = 2 * gaussianStub.nextDouble() - 1;
+            v2 = 2 * gaussianStub.nextDouble() - 1;
+            s = v1 * v1 + v2 * v2;
+        }
+        if (s != 0) {
+            s = FastMath.sqrt(-2 * FastMath.log(s) / s);
+        }
+        cachedNormalDeviate = v2 * s;
+        return v1 * s;
     }
 }
