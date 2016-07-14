@@ -7,7 +7,7 @@ import java.util.function.LongUnaryOperator;
 
 public class Binomial implements LongUnaryOperator {
 
-    private final BinomialAdapter binomialAdapter;
+    private ThreadLocal<BinomialAdapter> binomialAdapter;
     private Murmur3Hash m3h = new Murmur3Hash();
 
     public Binomial(String tries, String probability) {
@@ -15,13 +15,28 @@ public class Binomial implements LongUnaryOperator {
     }
 
     public Binomial(int tries, double probability) {
-        binomialAdapter = new BinomialAdapter(tries, probability);
+        binomialAdapter = new ThreadLocalBinomialAdapter(tries,probability);
     }
 
     @Override
     public long applyAsLong(long operand) {
         long hashed = m3h.applyAsLong(operand);
-        long value = binomialAdapter.applyAsLong(hashed);
+        long value = binomialAdapter.get().applyAsLong(hashed);
         return value;
+    }
+
+    private static class ThreadLocalBinomialAdapter extends ThreadLocal<BinomialAdapter> {
+        private int tries;
+        private double probability;
+
+        public ThreadLocalBinomialAdapter(int tries, double probability) {
+            this.tries = tries;
+            this.probability = probability;
+        }
+
+        @Override
+        protected BinomialAdapter initialValue() {
+            return new BinomialAdapter(tries,probability);
+        }
     }
 }

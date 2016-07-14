@@ -18,13 +18,9 @@
 
 package io.virtdata.functional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.function.LongFunction;
 
-import java.util.function.LongToIntFunction;
-
-public class ModuloToInteger implements LongToIntFunction {
-    private final static Logger logger = LoggerFactory.getLogger(ModuloToInteger.class);
+public class ModuloToInteger implements LongFunction<Integer> {
 
     private final int modulo;
 
@@ -36,7 +32,7 @@ public class ModuloToInteger implements LongToIntFunction {
     }
 
     @Override
-    public int applyAsInt(long operand) {
+    public Integer apply(long operand) {
         int ret = (int) (operand % modulo) & Integer.MAX_VALUE;
         return ret;
     }

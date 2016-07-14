@@ -20,9 +20,9 @@ package io.virtdata.nonfunctional;
 
 import org.apache.commons.math3.random.MersenneTwister;
 
-import java.util.function.LongToIntFunction;
+import java.util.function.LongFunction;
 
-public class RandomRangedToInt implements LongToIntFunction {
+public class RandomRangedToInt implements LongFunction<Integer> {
     private MersenneTwister theTwister = new MersenneTwister(System.nanoTime());
     private long min;
     private long max;
@@ -47,7 +47,7 @@ public class RandomRangedToInt implements LongToIntFunction {
     }
 
     @Override
-    public int applyAsInt(long operand) {
+    public Integer apply(long operand) {
         long value = Math.abs(theTwister.nextLong());
         value %= _length;
         value += min;

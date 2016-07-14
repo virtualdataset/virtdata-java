@@ -18,7 +18,7 @@
 
 package io.virtdata.functional;
 
-import java.util.function.LongToIntFunction;
+import java.util.function.LongFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
  * concurrency. Note that once the thread number is cached, it will not be refreshed. This means
  * you can't change the thread name and get an updated value.
  */
-public class ThreadNumToInteger implements LongToIntFunction {
+public class ThreadNumToInteger implements LongFunction<Integer> {
 
     private static final Pattern pattern = Pattern.compile("^.*?(\\d+).*$");
 
@@ -47,7 +47,7 @@ public class ThreadNumToInteger implements LongToIntFunction {
     };
 
     @Override
-    public int applyAsInt(long value) {
+    public Integer apply(long value) {
         return threadLocalInt.get();
     }
 }
