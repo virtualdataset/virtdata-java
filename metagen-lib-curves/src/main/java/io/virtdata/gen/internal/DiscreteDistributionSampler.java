@@ -33,7 +33,7 @@ public class DiscreteDistributionSampler implements LongUnaryOperator {
 
     /**
      * Create a discrete distribution sampler.
-     * @param distributionDef
+     * @param distributionDef arguments for a discrete distribution, starting with the simple name
      */
     public DiscreteDistributionSampler(String[] distributionDef) {
         if (distributionDef.length < 1) {
