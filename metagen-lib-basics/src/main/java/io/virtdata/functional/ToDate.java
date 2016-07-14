@@ -25,22 +25,27 @@ import java.util.Date;
 public class ToDate implements Generator<Date> {
 
     private long spacing;
+    private long repeat_count;
 
     @Override
     public Date get(long input) {
-        input = input*spacing;
+        input = (long) Math.ceil((input*spacing)/repeat_count);
         return new Date(input);
     }
-    public ToDate(Integer spacing){
+    public ToDate(Integer spacing, Integer repeat_count){
         this.spacing = spacing;
+        this.repeat_count = repeat_count;
     }
     public ToDate(String spacing){
-        this(Integer.valueOf(spacing));
+        this(Integer.valueOf(spacing), 1);
+    }
+    public ToDate(String spacing, String repeat_count){
+        this(Integer.valueOf(spacing), Integer.valueOf(repeat_count));
     }
     public ToDate(){
         this.spacing=1;
     }
     public String toString() {
-        return getClass().getSimpleName() + ":" + spacing;
+        return getClass().getSimpleName() + ":" + spacing+ ":" + repeat_count;
     }
 }
