@@ -38,7 +38,10 @@ public class ThreadNumToInteger implements LongToIntFunction {
             Matcher matcher = pattern.matcher(Thread.currentThread().getName());
             if (matcher.matches()) {
                 return Integer.valueOf(matcher.group(1));
-            } else {
+            } else if(Thread.currentThread().getName().equals("main")){
+                return 0;
+            }
+            else {
                 throw new RuntimeException(
                         "Unable to match a digit sequence in thread name:" + Thread.currentThread().getName()
                 );
