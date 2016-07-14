@@ -1,31 +1,59 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>io.virtdata</groupId>
-  <artifactId>metagen</artifactId>
-  <version>1.0-SNAPSHOT</version>
-    <dependencies>
-        <dependency>
-            <groupId>io.virtdata</groupId>
-            <artifactId>metagen-api</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
+    <artifactId>metagen</artifactId>
     <packaging>pom</packaging>
 
-  <name>metagen</name>
-  <url>http://virtdata.io/</url>
+    <parent>
+        <artifactId>project-defaults</artifactId>
+        <groupId>io.virtdata</groupId>
+        <version>1.0.6-SNAPSHOT</version>
+        <relativePath>project-defaults</relativePath>
+    </parent>
 
-  <modules>
-      <module>metagen-api</module>
-      <module>metagen-user</module>
-      <module>metagen-lib-basics</module>
-      <module>metagen-lib-curves</module>
-  </modules>
+    <name>metagen</name>
+    <url>http://virtdata.io/</url>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+    <modules>
+        <module>project-defaults</module>
+        <module>metagen-api</module>
+        <module>metagen-lib-basics</module>
+        <module>metagen-lib-curves</module>
+        <module>metagen-lib-composer</module>
+        <module>metagen-userlibs</module>
+    </modules>
+
+    <scm>
+        <connection>scm:git:https://github.com/virtualdataset/metagen-java.git</connection>
+        <developerConnection>scm:git:https://github.com/virtualdataset/metagen-java.git</developerConnection>
+        <!--<developerConnection>scm:git:git@github.com:engineblock/engineblock.git</developerConnection> broken? -->
+        <url>scm:git:git@github.com:virtualdataset/metagen-java.git</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <build>
+        <plugins>
+            <!-- Force version on maven-release-plugin -->
+            <plugin>
+                <version>2.5.3</version>
+                <artifactId>maven-release-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <configuration>
+                    <useReleaseProfile>true</useReleaseProfile>
+                    <releaseProfiles>release</releaseProfiles>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
 
 </project>

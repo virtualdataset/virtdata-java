@@ -18,17 +18,16 @@
 
 package io.virtdata.functional;
 
-import io.virtdata.api.Generator;
-
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.LongFunction;
 
-public class ToInetAddressToString implements Generator<String> {
+public class ToInetAddressToString implements LongFunction<String> {
 
     private AtomicInteger atomicInt = new AtomicInteger();
     private ToInetAddress coregen = new ToInetAddress();
 
     @Override
-    public String get(long input) {
-        return coregen.get(input).toString();
+    public String apply(long input) {
+        return coregen.apply(input).toString();
     }
 }

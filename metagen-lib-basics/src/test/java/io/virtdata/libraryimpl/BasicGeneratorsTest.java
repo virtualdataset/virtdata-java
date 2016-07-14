@@ -1,5 +1,6 @@
 package io.virtdata.libraryimpl;
 
+import io.virtdata.BasicGenerators;
 import io.virtdata.api.Generator;
 import org.testng.annotations.Test;
 
@@ -20,7 +21,7 @@ public class BasicGeneratorsTest {
 
     @Test
     public void testGetGenerator() throws Exception {
-        Optional<Generator<String>> generator = new BasicGenerators().getGenerator("StaticStringGenerator:foo");
+        Optional<Generator<Object>> generator = new BasicGenerators().getGenerator("StaticStringGenerator:foo");
         assertThat(generator.isPresent()).isTrue();
         assertThat(generator.get().get(5)).isEqualTo("foo");
     }
@@ -40,7 +41,9 @@ public class BasicGeneratorsTest {
         Optional<Generator<Date>> generator = basics.getGenerator("ToDate:1000");
         assertThat(generator).isNotNull();
         assertThat(generator.get()).isNotNull();
-        assertThat(generator.get().get(1).after(new Date(1)));
+        Date d1 = generator.get().get(1);
+        Date d2 = generator.get().get(2);
+        assertThat(d2).isAfter(d1);
     }
 
     @Test

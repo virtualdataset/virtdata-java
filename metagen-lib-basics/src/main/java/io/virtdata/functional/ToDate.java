@@ -18,17 +18,16 @@
 
 package io.virtdata.functional;
 
-import io.virtdata.api.Generator;
-
 import java.util.Date;
+import java.util.function.LongFunction;
 
-public class ToDate implements Generator<Date> {
+public class ToDate implements LongFunction<Date> {
 
     private long spacing;
     private long repeat_count;
 
     @Override
-    public Date get(long input) {
+    public Date apply(long input) {
         input = (long) Math.ceil((input*spacing)/repeat_count);
         return new Date(input);
     }

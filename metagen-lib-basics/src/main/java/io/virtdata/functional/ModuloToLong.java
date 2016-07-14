@@ -18,11 +18,12 @@
 
 package io.virtdata.functional;
 
-import io.virtdata.api.Generator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ModuloToLong implements Generator<Long> {
+import java.util.function.LongUnaryOperator;
+
+public class ModuloToLong implements LongUnaryOperator {
     private final static Logger logger = LoggerFactory.getLogger(ModuloToLong.class);
 
     private final long modulo;
@@ -35,7 +36,7 @@ public class ModuloToLong implements Generator<Long> {
     }
 
     @Override
-    public Long get(long input) {
+    public long applyAsLong(long input) {
         long ret = (input % modulo) & Long.MAX_VALUE;
         return ret;
     }

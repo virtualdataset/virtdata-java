@@ -1,5 +1,7 @@
 package io.virtdata.gen.generators;
 
+import io.virtdata.gen.internal.DiscreteDistributionSampler;
+
 public class DiscreteDistributionSamplerTest {
 
     public void testBinomialDist() {

@@ -17,12 +17,13 @@
  */
 
 package io.virtdata.functional;
-import io.virtdata.api.Generator;
 
-public class ModuloToBoolean implements Generator<Boolean> {
+import java.util.function.LongFunction;
+
+public class ModuloToBoolean implements LongFunction<Boolean> {
 
     @Override
-    public Boolean get(long input) {
+    public Boolean apply(long input) {
         return ((input % 2)==0);
     }
 }

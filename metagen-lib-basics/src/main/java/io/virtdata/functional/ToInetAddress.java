@@ -18,17 +18,16 @@
 
 package io.virtdata.functional;
 
-import io.virtdata.api.Generator;
-
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.util.function.LongFunction;
 
-public class ToInetAddress implements Generator<InetAddress> {
+public class ToInetAddress implements LongFunction<InetAddress> {
 
     @Override
-    public InetAddress get(long input) {
+    public InetAddress apply(long input) {
 
         int image = (int) input % Integer.MAX_VALUE;
 

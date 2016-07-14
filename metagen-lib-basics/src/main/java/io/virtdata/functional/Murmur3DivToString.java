@@ -18,10 +18,11 @@
 
 package io.virtdata.functional;
 
-import io.virtdata.api.Generator;
 import de.greenrobot.common.hash.Murmur3F;
 
-public class Murmur3DivToString implements Generator<String> {
+import java.util.function.LongFunction;
+
+public class Murmur3DivToString implements LongFunction<String> {
 
     private Murmur3F murmur3f = new Murmur3F();
     private DivideToLong longDivSequenceGenerator;
@@ -34,8 +35,8 @@ public class Murmur3DivToString implements Generator<String> {
     }
 
     @Override
-    public String get(long input) {
-        long divided= longDivSequenceGenerator.get(input);
+    public String apply(long input) {
+        long divided= longDivSequenceGenerator.applyAsLong(input);
         murmur3f.update((int) (divided % Integer.MAX_VALUE));
         return String.valueOf(murmur3f.getValue());
     }

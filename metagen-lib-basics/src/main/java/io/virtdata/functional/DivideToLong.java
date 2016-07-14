@@ -18,12 +18,12 @@
 
 package io.virtdata.functional;
 
-import io.virtdata.api.Generator;
+import java.util.function.LongUnaryOperator;
 
 /**
  * Integer devide the cycle, the other side of modulo.
  */
-public class DivideToLong implements Generator<Long> {
+public class DivideToLong implements LongUnaryOperator {
 
     private final long divisor;
 
@@ -35,7 +35,7 @@ public class DivideToLong implements Generator<Long> {
     }
 
     @Override
-    public Long get(long input) {
+    public long applyAsLong(long input) {
         return (input / divisor);
     }
 }
