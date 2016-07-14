@@ -36,7 +36,7 @@ public class BasicGeneratorsTest {
     }
 
     @Test
-    public void testToDateInstantiator() throws Exception {
+    public void testToDateSpaceInstantiator() throws Exception {
         BasicGenerators basics = new BasicGenerators();
         Optional<Generator<Date>> generator = basics.getGenerator("ToDate:1000");
         assertThat(generator).isNotNull();
@@ -44,6 +44,25 @@ public class BasicGeneratorsTest {
         Date d1 = generator.get().get(1);
         Date d2 = generator.get().get(2);
         assertThat(d2).isAfter(d1);
+    }
+    @Test
+    public void testToDateSpaceAndCountInstantiator() throws Exception {
+        BasicGenerators basics = new BasicGenerators();
+        Optional<Generator<Date>> generator = basics.getGenerator("ToDate:1000:10");
+        assertThat(generator).isNotNull();
+        assertThat(generator.get()).isNotNull();
+        Date d1 = generator.get().get(1);
+        Date d2 = generator.get().get(2);
+        assertThat(d2).isAfter(d1);
+    }
+    @Test
+    public void testToDateInstantiator() throws Exception {
+        BasicGenerators basics = new BasicGenerators();
+        Optional<Generator<Date>> generator = basics.getGenerator("ToDate");
+        assertThat(generator).isNotNull();
+        assertThat(generator.get()).isNotNull();
+        Date d1 = generator.get().get(1);
+        Date d2 = generator.get().get(2);
     }
 
     @Test

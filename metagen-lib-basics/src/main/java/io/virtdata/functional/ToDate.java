@@ -43,6 +43,7 @@ public class ToDate implements LongFunction<Date> {
     }
     public ToDate(){
         this.spacing=1;
+        this.repeat_count=1;
     }
     public String toString() {
         return getClass().getSimpleName() + ":" + spacing+ ":" + repeat_count;
