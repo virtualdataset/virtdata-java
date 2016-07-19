@@ -23,14 +23,13 @@ public class composerLogicTest {
     @Test
     public void testComplexComposition() {
         ComposerLibrary cl = new ComposerLibrary();
-        Optional<Generator<Object>> generator = cl.getGenerator("compose Murmur3Hash normal:50,10.0 AddLong:50 ToString Suffix:_stuff");
+        Optional<Generator<Object>> generator = cl.getGenerator("compose Murmur3Hash mapto_normal:50,10.0 AddLong:50 ToString Suffix:avgdays");
         assertThat(generator).isNotNull();
         assertThat(generator.isPresent()).isTrue();
         assertThat(generator.get().get(1)).isNotNull();
-        for (int i = 0; i < 1000; i++) {
-            System.out.println(generator.get().get(i));
-        }
-
+//        for (int i = 0; i < 1000; i++) {
+//            System.out.println(generator.get().get(i));
+//        }
     }
 
 }
