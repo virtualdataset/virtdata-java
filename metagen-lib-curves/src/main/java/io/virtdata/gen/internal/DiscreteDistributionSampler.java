@@ -15,6 +15,7 @@ public class DiscreteDistributionSampler implements LongUnaryOperator {
 
     // Odd constructors to work around commons reflection utils not recognizing varargs
 
+
     public DiscreteDistributionSampler(String distName) {
         this(new String[]{distName});
     }

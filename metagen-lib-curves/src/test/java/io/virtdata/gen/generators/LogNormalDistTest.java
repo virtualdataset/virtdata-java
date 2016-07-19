@@ -7,7 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 @Test
-public class LogNormalTest {
+public class LogNormalDistTest {
 
     @Test(enabled=false)
     public void testLogNormalVisually() throws IOException {

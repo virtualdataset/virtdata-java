@@ -2,14 +2,13 @@ package io.virtdata.libraryimpl;
 
 import com.google.auto.service.AutoService;
 import io.virtdata.api.GeneratorLibrary;
-import io.virtdata.core.ResolvedFunction;
 import io.virtdata.core.AllGenerators;
+import io.virtdata.core.ResolvedFunction;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.LongFunction;
 
 @AutoService(GeneratorLibrary.class)
 public class ComposerLibrary implements GeneratorLibrary {
@@ -37,12 +36,16 @@ public class ComposerLibrary implements GeneratorLibrary {
                     () -> new RuntimeException("Unable to find generator for " + spec)
             ));
         }
-        FunctionAssembler assy = new FunctionAssembler();
 
+        FunctionComposer fc=null;
         for (ResolvedFunction resolvedFunction : resolvedFunctions) {
-            assy.andThen(resolvedFunction.getFunctionObject());
+            if (fc==null) {
+                fc = FunctionComposers.composerFor(resolvedFunction.getFunctionObject());
+            } else {
+                fc = fc.andThen(resolvedFunction.getFunctionObject());
+            }
         }
-        LongFunction<?> function = assy.getFunction();
+        Object function =fc.getComposedFunction();
         ResolvedFunction composedFunction = new ResolvedFunction(function, this);
         return Optional.of(composedFunction);
     }

@@ -9,12 +9,12 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Test
-public class TestIntegration {
+public class testComposerLogic {
 
     @Test
     public void  testIntegratedComposer() {
         ComposerLibrary cl = new ComposerLibrary();
-        Optional<Generator<Object>> generator = cl.getGenerator("compose Binomial:8,0.5 ToDate");
+        Optional<Generator<Object>> generator = cl.getGenerator("compose binomial:8,0.5 ToDate");
         assertThat(generator).isNotNull();
         assertThat(generator.isPresent()).isTrue();
         assertThat(generator.get().get(1)).isNotNull();

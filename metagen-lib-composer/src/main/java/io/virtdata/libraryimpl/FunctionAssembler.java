@@ -27,8 +27,10 @@ public class FunctionAssembler {
         if (functionObject instanceof Function) {
             return andThen((Function) functionObject);
         }
-        throw new RuntimeException("Function object was not a type recognized by " + FunctionAssembler.class.getSimpleName());
+        throw new RuntimeException("Function object was not a type recognized by " + FunctionAssembler.class.getSimpleName()
+        + ", object:" + functionObject);
     }
+
 
     /**
      * Valid for any number of calls from the beginning of assembly.

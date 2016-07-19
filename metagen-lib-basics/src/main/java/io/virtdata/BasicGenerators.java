@@ -4,6 +4,7 @@ import com.google.auto.service.AutoService;
 import io.virtdata.api.Generator;
 import io.virtdata.api.GeneratorLibrary;
 import io.virtdata.core.ResolvedFunction;
+import io.virtdata.core.SpecReader;
 import io.virtdata.functional.StaticStringGenerator;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.reflections.Reflections;
@@ -23,11 +24,6 @@ import java.util.stream.Collectors;
 public class BasicGenerators implements GeneratorLibrary {
     private static final Logger logger = LoggerFactory.getLogger(BasicGenerators.class);
 
-    private static Object[] parseGeneratorArgs(String generatorType) {
-        String[] parts = generatorType.split(":");
-        return Arrays.copyOfRange(parts, 1, parts.length);
-    }
-
     @Override
     public String getLibraryName() {
         return "basics";
@@ -35,8 +31,8 @@ public class BasicGenerators implements GeneratorLibrary {
 
     @Override
     public Optional<ResolvedFunction> resolveFunction(String spec) {
-        Optional<Class<?>> functionClass = resolveFunctionClass(spec);
-        Object[] generatorArgs = parseGeneratorArgs(spec);
+        Optional<Class<?>> functionClass = resolveFunctionClass(SpecReader.first(spec));
+        Object[] generatorArgs = SpecReader.afterFirst(spec);
 
         if (functionClass.isPresent()) {
             try {
@@ -78,19 +74,18 @@ public class BasicGenerators implements GeneratorLibrary {
     }
 
     @SuppressWarnings("unchecked")
-    private Optional<Class<?>> resolveFunctionClass(String generatorSpec) {
+    private Optional<Class<?>> resolveFunctionClass(String className) {
         Class<Generator> generatorClass = null;
-        String className = (generatorSpec.split(":"))[0];
         if (!className.contains(".")) {
             className = StaticStringGenerator.class.getPackage().getName() + "." + className;
         }
 
         try {
             generatorClass = (Class<Generator>) Class.forName(className);
-            logger.debug("Initialized class:" + generatorClass.getSimpleName() + " for generator type: " + generatorSpec);
+            logger.debug("Initialized class:" + generatorClass.getSimpleName() + " for generator type: " + className);
             return Optional.of(generatorClass);
         } catch (ClassNotFoundException e) {
-            logger.debug("Unable to map generator class " + generatorSpec);
+            logger.debug("Unable to map generator class " + className);
             return Optional.empty();
         }
     }

@@ -3,6 +3,8 @@ package io.virtdata.api;
 import java.util.function.LongUnaryOperator;
 import java.util.function.LongFunction;
 import java.util.function.Function;
+import java.util.function.LongToDoubleFunction;
+import java.util.function.LongToIntFunction;
 
 /**
  * <p>Captures the list of function object types which may be used
@@ -20,9 +22,11 @@ import java.util.function.Function;
  */
 public enum FunctionType {
 
-    LongUnaryOperator(LongUnaryOperator.class),
-    LongFunction(LongFunction.class),
-    Function(Function.class);
+    long_long (LongUnaryOperator.class),
+    long_T(LongFunction.class),
+    long_int(LongToIntFunction.class),
+    long_double(LongToDoubleFunction.class),
+    R_T(Function.class);
 
     private final Class<?> functionClass;
 
@@ -32,7 +36,7 @@ public enum FunctionType {
 
     public static FunctionType valueOf(Object g) {
         for (FunctionType functionType : FunctionType.values()) {
-            if (functionType.functionClass.isAssignableFrom(functionType.functionClass)) {
+            if (functionType.functionClass.isAssignableFrom(g.getClass())) {
                 return functionType;
             }
         }

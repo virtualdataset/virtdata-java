@@ -13,7 +13,7 @@ public class ResolvedFunction {
     public ResolvedFunction(Object g, GeneratorLibrary library) {
         this.library = library;
         functionObject = g;
-        functionType = FunctionType.valueOf(g);
+        functionType = FunctionType.valueOf(g); // sanity check the type of g
     }
 
     public FunctionType getFunctionType() {
