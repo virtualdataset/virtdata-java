@@ -45,10 +45,6 @@ public class RandomFileExtractToString implements LongFunction<String> {
         this.maxsize = maxsize;
     }
 
-    public RandomFileExtractToString(String fileName, String minsize, String maxsize) {
-        this(fileName, Integer.valueOf(minsize), Integer.valueOf(maxsize));
-    }
-
     @Override
     public String apply(long input) {
 

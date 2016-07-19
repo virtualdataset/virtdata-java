@@ -30,9 +30,6 @@ public class Murmur3DivToString implements LongFunction<String> {
     public Murmur3DivToString(long divisor) {
         this.longDivSequenceGenerator = new DivideToLong(divisor);
     }
-    public Murmur3DivToString(String divisor) {
-        this(Long.valueOf(divisor));
-    }
 
     @Override
     public String apply(long input) {

@@ -37,10 +37,6 @@ public class RandomRangedToString implements LongFunction<String> {
         this._length = max - min;
     }
 
-    public RandomRangedToString(String min, String max) {
-        this(Long.valueOf(min), Long.valueOf(max));
-    }
-
     @Override
     public String apply(long input) {
         long value = Math.abs(theTwister.nextLong());

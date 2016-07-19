@@ -39,4 +39,8 @@ public class ResolvedFunction {
     public void setLibrary(GeneratorLibrary library) {
         this.library = library;
     }
+
+    public String toString() {
+        return "FunctionType:" + functionType + ", lib:" + library.getLibraryName() + ", fn:" + functionObject;
+    }
 }

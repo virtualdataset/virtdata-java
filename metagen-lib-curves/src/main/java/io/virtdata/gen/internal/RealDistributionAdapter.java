@@ -37,6 +37,7 @@ public class RealDistributionAdapter<T extends RealDistribution> implements Long
     @Override
     public double applyAsDouble(long value) {
         randomBypassAdapter.setSeed(value);
-        return (long) distribution.sample();
+        double sample = distribution.sample();
+        return sample;
     }
 }

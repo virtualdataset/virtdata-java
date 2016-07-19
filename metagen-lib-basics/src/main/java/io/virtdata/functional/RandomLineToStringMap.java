@@ -38,10 +38,6 @@ public class RandomLineToStringMap implements LongFunction<Map<String,String>> {
         this.paramGenerator = new RandomLineToString(paramFile);
     }
 
-    public RandomLineToStringMap(String paramFile, String sizeDistribution) {
-        this(paramFile, Integer.valueOf(sizeDistribution));
-    }
-
     @Override
     public Map<String, String> apply(long input) {
         int mapSize = sizeDistribution.sample();

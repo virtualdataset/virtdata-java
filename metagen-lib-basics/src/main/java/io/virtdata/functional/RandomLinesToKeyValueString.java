@@ -32,10 +32,6 @@ public class RandomLinesToKeyValueString implements LongFunction<String> {
     private IntegerDistribution sizeDistribution;
     private MersenneTwister rng = new MersenneTwister(System.nanoTime());
 
-    public RandomLinesToKeyValueString(String paramFile, String sizeDistribution) {
-        this(paramFile, Integer.valueOf(sizeDistribution));
-    }
-
     public RandomLinesToKeyValueString(String paramFile, int sizeDistribution) {
         coreGenerator = new RandomLineToStringMap(paramFile, sizeDistribution);
     }

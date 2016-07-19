@@ -32,9 +32,6 @@ public class DivideToLongToString implements LongFunction<String> {
     public DivideToLongToString(long divisor) {
         this.divisor=divisor;
     }
-    public DivideToLongToString(String divisor) {
-        this(Long.valueOf(divisor));
-    }
 
     @Override
     public String apply(long operand) {

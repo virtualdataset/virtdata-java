@@ -24,7 +24,7 @@ public class RandomLoremExtractToString implements LongFunction<String> {
 
     private final RandomFileExtractToString coreGenerator;
 
-    public RandomLoremExtractToString(String minsize, String maxsize) {
+    public RandomLoremExtractToString(int minsize, int maxsize) {
         coreGenerator = new RandomFileExtractToString("lorem-ipsum.txt", minsize, maxsize);
     }
 

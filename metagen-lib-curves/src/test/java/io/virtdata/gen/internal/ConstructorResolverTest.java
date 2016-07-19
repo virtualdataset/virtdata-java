@@ -1,5 +1,7 @@
 package io.virtdata.gen.internal;
 
+import io.virtdata.reflection.ConstructorResolver;
+import io.virtdata.reflection.DeferredConstructor;
 import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

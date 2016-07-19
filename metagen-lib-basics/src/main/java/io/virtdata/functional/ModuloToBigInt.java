@@ -32,9 +32,6 @@ public class ModuloToBigInt implements LongFunction<BigInteger> {
     public ModuloToBigInt(long modulo) {
         this.modulo=modulo;
     }
-    public ModuloToBigInt(String modulo) {
-        this(Long.valueOf(modulo));
-    }
 
     @Override
     public BigInteger apply(long value) {

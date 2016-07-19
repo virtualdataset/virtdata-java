@@ -19,10 +19,6 @@ public class RandomRangedToDouble implements Generator<Double> {
         this._length = max - min;
     }
 
-    public RandomRangedToDouble(String min, String max) {
-        this(Long.valueOf(min), Long.valueOf(max));
-    }
-
     @Override
     public Double get(long input) {
         Double value = Math.abs(theTwister.nextDouble());

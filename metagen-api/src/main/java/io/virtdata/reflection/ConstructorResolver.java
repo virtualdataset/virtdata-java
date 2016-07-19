@@ -1,4 +1,4 @@
-package io.virtdata.gen.internal;
+package io.virtdata.reflection;
 
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 
@@ -128,7 +128,8 @@ public class ConstructorResolver {
         BYTE(Byte.class, byte.class, Byte::valueOf),
         DOUBLE(Double.class, double.class, Double::valueOf),
         CHAR(Character.class, char.class, (String c) -> c.charAt(0)),
-        FLOAT(Float.class, float.class, Float::valueOf);
+        FLOAT(Float.class, float.class, Float::valueOf),
+        LONG(Long.class, long.class, Long::valueOf);
 
         private final Class<?> targetClass;
         private final Class<?> primitiveClass;

@@ -31,9 +31,6 @@ public class ModuloToLong implements LongUnaryOperator {
     public ModuloToLong(long modulo) {
         this.modulo=modulo;
     }
-    public ModuloToLong(String modulo) {
-        this(Long.valueOf(modulo));
-    }
 
     @Override
     public long applyAsLong(long input) {

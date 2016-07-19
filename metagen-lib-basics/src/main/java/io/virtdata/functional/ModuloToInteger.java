@@ -27,9 +27,6 @@ public class ModuloToInteger implements LongFunction<Integer> {
     public ModuloToInteger(int modulo) {
         this.modulo=modulo;
     }
-    public ModuloToInteger(String modulo) {
-        this(Integer.valueOf(modulo));
-    }
 
     @Override
     public Integer apply(long operand) {

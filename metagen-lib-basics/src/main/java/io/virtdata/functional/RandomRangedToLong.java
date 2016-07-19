@@ -37,10 +37,6 @@ public class RandomRangedToLong implements LongUnaryOperator {
         this._length = max - min;
     }
 
-    public RandomRangedToLong(String min, String max) {
-        this(Long.valueOf(min), Long.valueOf(max));
-    }
-
     @Override
     public long applyAsLong(long input) {
         long value = Math.abs(theTwister.nextLong());

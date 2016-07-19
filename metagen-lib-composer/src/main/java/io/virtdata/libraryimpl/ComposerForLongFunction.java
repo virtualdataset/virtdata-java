@@ -32,9 +32,11 @@ public class ComposerForLongFunction implements FunctionComposer<LongFunction<?>
             case long_double:
                 final LongToDoubleFunction f4 =
                         (long l) -> ((LongToDoubleFunction) outer).applyAsDouble(((LongFunction<Long>) inner).apply(l));
+                return new ComposerForLongToDouble(f4);
             case R_T:
                 final LongFunction<?> f5 =
                         (long l) -> ((Function<Long,?>)outer).apply(((LongFunction<Long>)inner).apply(l));
+                return new ComposerForLongFunction(f5);
 
             default:
                 throw new RuntimeException(functionType + " is not recognized");

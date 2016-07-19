@@ -31,6 +31,8 @@ public class RandomBypassAdapter extends AbstractRandomGenerator {
     @Override
     public void setSeed(long seed) {
         this.seed= seed;
+        gaussianStub.setSeed(seed);
+
     }
 
     @Override
@@ -48,7 +50,6 @@ public class RandomBypassAdapter extends AbstractRandomGenerator {
 
     @Override
     public double nextGaussian() {
-        gaussianStub.setSeed(seed);
 
         //throw new RuntimeException("This must be implemented with internal resampling, because zigurrat methods are not purely functional and get stuck in a loop.");
 

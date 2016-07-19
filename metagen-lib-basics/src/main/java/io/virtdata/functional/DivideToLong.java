@@ -30,9 +30,6 @@ public class DivideToLong implements LongUnaryOperator {
     public DivideToLong(long divisor) {
         this.divisor=divisor;
     }
-    public DivideToLong(String divisor) {
-        this(Long.valueOf(divisor));
-    }
 
     @Override
     public long applyAsLong(long input) {

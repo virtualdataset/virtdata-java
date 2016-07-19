@@ -1,7 +1,10 @@
 package io.virtdata.gen.internal;
 
+import io.virtdata.reflection.ConstructorResolver;
+import io.virtdata.reflection.DeferredConstructor;
 import org.apache.commons.math3.distribution.RealDistribution;
 
+import java.util.Arrays;
 import java.util.function.LongToDoubleFunction;
 
 /**
@@ -13,10 +16,12 @@ import java.util.function.LongToDoubleFunction;
  */
 public class TLRDA<T extends RealDistribution> implements LongToDoubleFunction {
 
+    private final String[] args;
     private ThreadLocalRDA tlrda;
 
     public TLRDA(String... args) {
         tlrda = new ThreadLocalRDA(args);
+        this.args = args;
     }
 
     @Override
@@ -35,9 +40,13 @@ public class TLRDA<T extends RealDistribution> implements LongToDoubleFunction {
 
         @Override
         protected RealDistributionAdapter initialValue() {
-            RealDistribution rdist = rdistConstructor.construct();
+            RandomBypassAdapter bypass = new RandomBypassAdapter();
+            RealDistribution rdist = rdistConstructor.prefixArgs(bypass).construct();
             return new RealDistributionAdapter(rdist);
         }
     }
 
+    public String toString() {
+        return TLRDA.class.getSimpleName() + ": " + Arrays.toString(args);
+    }
 }

@@ -1,4 +1,4 @@
-package io.virtdata.gen.generators;
+package io.virtdata.math;
 
 import de.greenrobot.common.hash.Murmur3F;
 

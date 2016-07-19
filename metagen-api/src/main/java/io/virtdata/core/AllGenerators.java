@@ -35,7 +35,7 @@ public class AllGenerators implements GeneratorLibrary {
                 return resolvedFunction;
             }
         }
-        throw new RuntimeException("Unable to find spec:" + spec + " in any library, searched in " + toString());
+        throw new RuntimeException("Unable to find generator for spec '" + spec + "' in any library, searched in " + toString());
     }
 
     @Override

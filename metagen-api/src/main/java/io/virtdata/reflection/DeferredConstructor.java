@@ -1,4 +1,4 @@
-package io.virtdata.gen.internal;
+package io.virtdata.reflection;
 
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 
@@ -12,6 +12,13 @@ public class DeferredConstructor<T> {
     public DeferredConstructor(Class<T> classToConstruct, Object... args) {
         this.classToConstruct = classToConstruct;
         this.args = args;
+    }
+
+    public DeferredConstructor<T> prefixArgs(Object... prefixArgs) {
+        Object[] fullArgs = new Object[ prefixArgs.length + args.length ];
+        System.arraycopy(prefixArgs,0,fullArgs,0,prefixArgs.length);
+        System.arraycopy(args,0,fullArgs,prefixArgs.length,args.length);
+        return new DeferredConstructor<T>(classToConstruct, fullArgs);
     }
 
     public T construct() {

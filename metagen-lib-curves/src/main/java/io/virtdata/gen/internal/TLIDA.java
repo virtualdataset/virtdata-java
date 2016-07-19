@@ -1,7 +1,10 @@
 package io.virtdata.gen.internal;
 
+import io.virtdata.reflection.ConstructorResolver;
+import io.virtdata.reflection.DeferredConstructor;
 import org.apache.commons.math3.distribution.IntegerDistribution;
 
+import java.util.Arrays;
 import java.util.function.LongUnaryOperator;
 
 /**
@@ -13,10 +16,12 @@ import java.util.function.LongUnaryOperator;
  */
 public class TLIDA<T extends IntegerDistribution> implements LongUnaryOperator {
 
+    private final String[] args;
     private ThreadLocalIDA tlida;
 
     public TLIDA(String... args) {
         tlida = new ThreadLocalIDA(args);
+        this.args = args;
     }
 
     @Override
@@ -37,9 +42,14 @@ public class TLIDA<T extends IntegerDistribution> implements LongUnaryOperator {
 
         @Override
         protected IntegerDistributionAdapter initialValue() {
-            IntegerDistribution idist = idistConstructor.construct();
+            RandomBypassAdapter bypass = new RandomBypassAdapter();
+            IntegerDistribution idist = idistConstructor.prefixArgs(bypass).construct();
             return new IntegerDistributionAdapter(idist);
         }
+    }
+
+    public String toString() {
+        return TLRDA.class.getSimpleName() + ": " + Arrays.toString(args);
     }
 
 }

@@ -37,11 +37,6 @@ public class RandomRangedToInt implements LongFunction<Integer> {
         this._length = max - min;
     }
 
-    public RandomRangedToInt(String min, String max) {
-        this(Integer.valueOf(min), Integer.valueOf(max));
-    }
-
-
     public String toString() {
         return getClass().getSimpleName() + ":" + min + ":" + max;
     }

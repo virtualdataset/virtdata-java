@@ -30,9 +30,6 @@ public class Murmur3DivToLong implements LongUnaryOperator {
     public Murmur3DivToLong(long divisor) {
         this.longDivSequenceGenerator = new DivideToLong(divisor);
     }
-    public Murmur3DivToLong(String divisor) {
-        this(Long.valueOf(divisor));
-    }
 
     @Override
     public long applyAsLong(long input) {
