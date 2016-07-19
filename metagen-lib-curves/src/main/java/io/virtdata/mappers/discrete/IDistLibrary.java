@@ -1,11 +1,10 @@
-package io.virtdata.libraryimpl;
+package io.virtdata.mappers.discrete;
 
 import com.google.auto.service.AutoService;
 import io.virtdata.api.Generator;
 import io.virtdata.api.GeneratorLibrary;
 import io.virtdata.core.ResolvedFunction;
 import io.virtdata.core.SpecReader;
-import io.virtdata.gen.generators.ToIntegerDistribution;
 import org.apache.commons.math3.distribution.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +17,9 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("Duplicates")
 @AutoService(GeneratorLibrary.class)
-public class DiscreteProbabilityDistributions implements GeneratorLibrary {
+public class IDistLibrary implements GeneratorLibrary {
 
-    private static final Logger logger = LoggerFactory.getLogger(DiscreteProbabilityDistributions.class);
+    private static final Logger logger = LoggerFactory.getLogger(IDistLibrary.class);
 
     @Override
     public String getLibraryName() {
@@ -38,7 +37,7 @@ public class DiscreteProbabilityDistributions implements GeneratorLibrary {
 
         if (functionClass.isPresent()) {
             try {
-                ToIntegerDistribution tcd = new ToIntegerDistribution(generatorArgs);
+                IDistTransform tcd = new IDistTransform(generatorArgs);
                 ResolvedFunction resolvedFunction = new ResolvedFunction(tcd, this);
                 return Optional.of(resolvedFunction);
             } catch (Exception e) {
@@ -74,7 +73,7 @@ public class DiscreteProbabilityDistributions implements GeneratorLibrary {
     private enum DiscreteDistributions {
 
         pascal(PascalDistribution.class),
-        binomial (BinomialDistribution.class),
+        binomial(BinomialDistribution.class),
         zipf(ZipfDistribution.class),
         hypergeometric(HypergeometricDistribution.class),
         uniform_integer(UniformIntegerDistribution.class),

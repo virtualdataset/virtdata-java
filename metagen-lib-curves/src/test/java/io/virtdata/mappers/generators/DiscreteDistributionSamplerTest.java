@@ -1,6 +1,4 @@
-package io.virtdata.gen.generators;
-
-import io.virtdata.gen.internal.DiscreteDistributionSampler;
+package io.virtdata.mappers.generators;
 
 public class DiscreteDistributionSamplerTest {
 

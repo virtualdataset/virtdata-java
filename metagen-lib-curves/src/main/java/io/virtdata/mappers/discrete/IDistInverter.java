@@ -1,5 +1,6 @@
-package io.virtdata.gen.internal;
+package io.virtdata.mappers.discrete;
 
+import io.virtdata.mappers.internal.RandomBypassAdapter;
 import org.apache.commons.math3.distribution.IntegerDistribution;
 
 import java.util.function.LongUnaryOperator;
@@ -17,7 +18,7 @@ import java.util.function.LongUnaryOperator;
  * It is instead a value from the set of positive long values.</p>
  *
  */
-public class IntegerDistributionAdapter<T extends IntegerDistribution> implements LongUnaryOperator {
+public class IDistInverter<T extends IntegerDistribution> implements LongUnaryOperator {
 
     private final RandomBypassAdapter randomBypassAdapter;
     private final IntegerDistribution distribution;
@@ -25,7 +26,7 @@ public class IntegerDistributionAdapter<T extends IntegerDistribution> implement
     private Class<T> distributionClass;
     private Object[] args;
 
-    public IntegerDistributionAdapter(IntegerDistribution integerDistribution) {
+    public IDistInverter(IntegerDistribution integerDistribution) {
         this.randomBypassAdapter = new RandomBypassAdapter();
         this.distribution = integerDistribution;
     }

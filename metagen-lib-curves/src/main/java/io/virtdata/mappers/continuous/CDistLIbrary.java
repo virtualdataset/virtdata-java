@@ -1,11 +1,10 @@
-package io.virtdata.libraryimpl;
+package io.virtdata.mappers.continuous;
 
 import com.google.auto.service.AutoService;
 import io.virtdata.api.Generator;
 import io.virtdata.api.GeneratorLibrary;
 import io.virtdata.core.ResolvedFunction;
 import io.virtdata.core.SpecReader;
-import io.virtdata.gen.generators.ToContinuousDistribution;
 import org.apache.commons.math3.distribution.*;
 import org.apache.commons.math3.random.EmpiricalDistribution;
 import org.slf4j.Logger;
@@ -19,9 +18,9 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("Duplicates")
 @AutoService(GeneratorLibrary.class)
-public class ContinuousProbabilityDistributions implements GeneratorLibrary {
+public class CDistLIbrary implements GeneratorLibrary {
 
-    private static final Logger logger = LoggerFactory.getLogger(ContinuousProbabilityDistributions.class);
+    private static final Logger logger = LoggerFactory.getLogger(CDistLIbrary.class);
 
     @Override
     public String getLibraryName() {
@@ -39,7 +38,7 @@ public class ContinuousProbabilityDistributions implements GeneratorLibrary {
 
         if (functionClass.isPresent()) {
             try {
-                ToContinuousDistribution tcd = new ToContinuousDistribution(generatorArgs);
+                CDistTransform tcd = new CDistTransform(generatorArgs);
                 ResolvedFunction resolvedFunction = new ResolvedFunction(tcd, this);
                 return Optional.of(resolvedFunction);
             } catch (Exception e) {

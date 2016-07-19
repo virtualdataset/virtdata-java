@@ -1,4 +1,4 @@
-package io.virtdata.gen.internal;
+package io.virtdata.mappers.internal;
 
 import io.virtdata.reflection.ConstructorResolver;
 import io.virtdata.reflection.DeferredConstructor;

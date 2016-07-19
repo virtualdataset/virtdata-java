@@ -1,6 +1,5 @@
-package io.virtdata.gen.generators;
+package io.virtdata.mappers.generators;
 
-import io.virtdata.gen.internal.LogNormalAdapter;
 import org.testng.annotations.Test;
 
 import java.io.FileWriter;

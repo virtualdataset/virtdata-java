@@ -1,5 +1,6 @@
-package io.virtdata.gen.internal;
+package io.virtdata.mappers.continuous;
 
+import io.virtdata.mappers.internal.RandomBypassAdapter;
 import org.apache.commons.math3.distribution.RealDistribution;
 
 import java.util.function.LongToDoubleFunction;
@@ -17,7 +18,7 @@ import java.util.function.LongToDoubleFunction;
  * It is instead a value from the set of positive long values.</p>
  *
  */
-public class RealDistributionAdapter<T extends RealDistribution> implements LongToDoubleFunction {
+public class CDistInverter<T extends RealDistribution> implements LongToDoubleFunction {
 
     private final RandomBypassAdapter randomBypassAdapter;
     private final RealDistribution distribution;
@@ -25,7 +26,7 @@ public class RealDistributionAdapter<T extends RealDistribution> implements Long
     private Class<T> distributionClass;
     private Object[] args;
 
-    public RealDistributionAdapter(RealDistribution distribution) {
+    public CDistInverter(RealDistribution distribution) {
         this.randomBypassAdapter = new RandomBypassAdapter();
         this.distribution = distribution;
     }

@@ -1,6 +1,9 @@
-package io.virtdata.gen.generators;
+package io.virtdata.mappers.generators;
 
-import io.virtdata.gen.internal.BinomialAdapter;
+import io.virtdata.mappers.continuous.CDistTransform;
+import io.virtdata.mappers.discrete.IDistInverter;
+import io.virtdata.mappers.discrete.IDistThreadLocal;
+import org.apache.commons.math3.distribution.BinomialDistribution;
 import org.apache.commons.math3.distribution.IntegerDistribution;
 import org.assertj.core.data.Offset;
 import org.testng.annotations.Test;
@@ -11,9 +14,15 @@ public class ToHashedBinomialDistAdapterTest {
 
     @Test
     public void ToBinomialProbabilityTest() {
-        BinomialAdapter tb = new BinomialAdapter(8,0.5D);
+        CDistTransform tb = new CDistTransform("binomial","8.0","5.0");
+
+        IDistThreadLocal<BinomialDistribution> adapter = new IDistThreadLocal<>("binomial","8.0","5.0");
+
         IntegerDistribution distribution = tb.getDistribution();
         Offset<Double> offset = Offset.offset(0.00001d);
+
+        IDistInverter<BinomialDistribution> adapter =
+                new IDistInverter<>()
         assertThat(distribution.probability(0)).isCloseTo(0.00390d,offset);
         assertThat(distribution.probability(1)).isCloseTo(0.03125d,offset);
         assertThat(distribution.probability(2)).isCloseTo(0.10937d,offset);

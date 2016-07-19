@@ -1,5 +1,7 @@
-package io.virtdata.gen.internal;
+package io.virtdata.mappers.discrete;
 
+import io.virtdata.mappers.internal.RandomBypassAdapter;
+import io.virtdata.mappers.continuous.CDistThreadLocal;
 import io.virtdata.reflection.ConstructorResolver;
 import io.virtdata.reflection.DeferredConstructor;
 import org.apache.commons.math3.distribution.IntegerDistribution;
@@ -14,42 +16,43 @@ import java.util.function.LongUnaryOperator;
  * way to utilize all the apache commons math stat curves. A future implementation
  * may simply implement just the necessary curve sampling logic to avoid this ugliness.</p>
  */
-public class TLIDA<T extends IntegerDistribution> implements LongUnaryOperator {
+public class IDistThreadLocal<T extends IntegerDistribution> implements LongUnaryOperator {
 
     private final String[] args;
-    private ThreadLocalIDA tlida;
+    private ThreadLocalIDistInverter iDistInverter;
 
-    public TLIDA(String... args) {
-        tlida = new ThreadLocalIDA(args);
+    public IDistThreadLocal(String... args) {
+        iDistInverter = new ThreadLocalIDistInverter(args);
         this.args = args;
     }
 
     @Override
     public long applyAsLong(long operand) {
-        long result = tlida.get().applyAsLong(operand);
+        long result = iDistInverter.get().applyAsLong(operand);
         return result;
     }
 
-    private static class ThreadLocalIDA extends ThreadLocal<IntegerDistributionAdapter> {
+    public String toString() {
+        return CDistThreadLocal.class.getSimpleName() + ": " + Arrays.toString(args);
+    }
+
+
+    private static class ThreadLocalIDistInverter extends ThreadLocal<IDistInverter> {
 
         private final DeferredConstructor<IntegerDistribution> idistConstructor;
-        IntegerDistributionAdapter ida;
+        IDistInverter ida;
 
-        ThreadLocalIDA(String... args) {
+        ThreadLocalIDistInverter(String... args) {
             ConstructorResolver.resolve(args).construct();
             idistConstructor = ConstructorResolver.resolve(args);
         }
 
         @Override
-        protected IntegerDistributionAdapter initialValue() {
+        protected IDistInverter initialValue() {
             RandomBypassAdapter bypass = new RandomBypassAdapter();
             IntegerDistribution idist = idistConstructor.prefixArgs(bypass).construct();
-            return new IntegerDistributionAdapter(idist);
+            return new IDistInverter(idist);
         }
-    }
-
-    public String toString() {
-        return TLRDA.class.getSimpleName() + ": " + Arrays.toString(args);
     }
 
 }
