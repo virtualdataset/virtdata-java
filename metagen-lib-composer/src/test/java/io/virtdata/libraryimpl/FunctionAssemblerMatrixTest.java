@@ -8,10 +8,12 @@ import org.testng.annotations.Test;
 import java.util.function.*;
 
 @Test
-public class FunctionAssemblerMatrix {
+public class FunctionAssemblerMatrixTest {
 
+    @Test
     public void testFullPrimitiveMatrix() {
 
+        // TODO: Enable full functional introspection and remove the generic skips below
         for (FunctionType ft1 : FunctionType.values()) {
             if (ft1==FunctionType.R_T || ft1==FunctionType.long_T) {
                 continue;
@@ -22,7 +24,7 @@ public class FunctionAssemblerMatrix {
                 }
                 Object f1 = genFunction(ft1);
                 Object f2 = genFunction(ft2);
-                System.out.println("testing: ft1:" + ft1 + ", ft2:" +ft2 + ", f1:" + f1 +", f2:" + f2);
+                System.out.print("testing: ft1:" + ft1 + ", ft2:" +ft2 + ", f1:" + f1 +", f2:" + f2);
                 AdvancedAssembler assy = new AdvancedAssembler();
 
                 assy.andThen(f1);
@@ -31,6 +33,7 @@ public class FunctionAssemblerMatrix {
                 Object function = assy.getFunction();
                 Generator g = GeneratorFunctionMapper.map(function);
                 Object o = g.get(1L);
+                System.out.println(" out:" + o);
 
             }
         }
@@ -72,16 +75,16 @@ public class FunctionAssemblerMatrix {
             return operand;
         }
     }
-    private static class F_long_T implements LongFunction<String> {
+    private static class F_long_T implements LongFunction<Long> {
         @Override
-        public String apply(long value) {
-            return String.valueOf(value);
+        public Long apply(long value) {
+            return value;
         }
     }
-    private static class F_R_T implements Function<String,String> {
+    private static class F_R_T implements Function<Long,Long> {
         @Override
-        public String apply(String s) {
-            return s;
+        public Long apply(Long aLong) {
+            return aLong;
         }
     }
 

@@ -10,15 +10,6 @@ import java.util.function.LongToIntFunction;
  * <p>Captures the list of function object types which may be used
  * to implement generators. Library implementations may rely on this
  * for type metadata.</p>
- * <p>Presently, the types that are allowed for mapping functions:</p>
- * <ul>
- * <li>{@link java.util.function.LongUnaryOperator}</li>
- * <li>{@link java.util.function.LongFunction}</li>
- * <li>{@link java.util.function.Function}</li>
- * </ul>
- * <p>
- * Metagener libraries are required to support these types for mapping function implementations.
- * </p>
  */
 public enum FunctionType {
 

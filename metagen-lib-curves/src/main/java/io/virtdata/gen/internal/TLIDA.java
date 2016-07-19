@@ -5,11 +5,7 @@ import org.apache.commons.math3.distribution.IntegerDistribution;
 import java.util.function.LongUnaryOperator;
 
 /**
- * <p>TLIDA: ThreadLocal IntegerDistribution Adapter with deferred construction</p>
- * <p>
- * Generates a long value representing a sampled value from a cumulative
- * density function for a binomial curve.
- * <p>
+ * <p>Thread Local Real Distribution Adapter, with deferred construction.</p>
  * <p>This class uses thread local instances of both the distribution and the
  * random bypass adapter. While this may seem wasteful, it provides a thread-safe
  * way to utilize all the apache commons math stat curves. A future implementation
