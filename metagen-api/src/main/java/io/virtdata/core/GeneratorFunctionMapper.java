@@ -10,12 +10,10 @@ import java.util.function.*;
  * mapping complexity by way of doublish dispatch. It was preferred over a more
  * generalized reflection and annotation-based approach. If it gets too verbose,
  * (for some definition of "too"), then it may be refactored.</p>
- * <p>
  * <p>The primary goal of this approach is to allow for primitive-level
  * lambdas when function are composed together. This will allow for significant
  * performance gains when there are only a few steps in a composed function
  * which are non-primitive, which is the general case.</p>
- * <p>
  * <p>Composition should be supported between all primitive functions
  * for types listed in TypeMap, as well as generic functions, with generic
  * functions as the last resort.</p>
