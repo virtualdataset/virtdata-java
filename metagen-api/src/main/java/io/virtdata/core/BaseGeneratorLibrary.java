@@ -77,7 +77,7 @@ public abstract class BaseGeneratorLibrary implements GeneratorLibrary {
     private Optional<Class<?>> resolveFunctionClass(String className) {
         Class generatorClass = null;
         if (className.contains(".")) {
-            throw new RuntimeException("Search packages must be designated by generator library.");
+            throw new RuntimeException("Search packages must be designated by generator libimpl.");
         }
 
         for (Package aPackage : getSearchPackages()) {

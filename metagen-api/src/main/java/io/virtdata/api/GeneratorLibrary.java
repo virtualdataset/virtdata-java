@@ -9,9 +9,9 @@ import java.util.Optional;
 public interface GeneratorLibrary {
 
     /**
-     * <p>Return the library name for this generator library, as it can be used in spec strings, etc.</p>
+     * <p>Return the libimpl name for this generator libimpl, as it can be used in spec strings, etc.</p>
      *
-     * @return Simple lower-case canonical library name
+     * @return Simple lower-case canonical libimpl name
      */
     String getLibraryName();
 
@@ -31,7 +31,7 @@ public interface GeneratorLibrary {
 
     /**
      * <p>Metagen functions can be implemented in various functional types in Java. The FunctionResolver
-     * is the part of a library that is responsible for finding and instantiating one of the allowed types.</p>
+     * is the part of a libimpl that is responsible for finding and instantiating one of the allowed types.</p>
      * <p>The {@link FunctionType} enum shows the allowed types of functions.</p>
      *
      * @param spec A specifier that describes the type and or parameterization of a new generator.

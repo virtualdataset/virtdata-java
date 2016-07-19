@@ -1,10 +1,11 @@
-package io.virtdata.mappers.continuous;
+package io.virtdata.libimpl;
 
 import com.google.auto.service.AutoService;
 import io.virtdata.api.Generator;
 import io.virtdata.api.GeneratorLibrary;
 import io.virtdata.core.ResolvedFunction;
 import io.virtdata.core.SpecReader;
+import io.virtdata.mappers.mapped_continuous.CDistMapper;
 import org.apache.commons.math3.distribution.*;
 import org.apache.commons.math3.random.EmpiricalDistribution;
 import org.slf4j.Logger;
@@ -18,13 +19,13 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("Duplicates")
 @AutoService(GeneratorLibrary.class)
-public class CDistLIbrary implements GeneratorLibrary {
+public class CDistHashedLibrary implements GeneratorLibrary {
 
-    private static final Logger logger = LoggerFactory.getLogger(CDistLIbrary.class);
+    private static final Logger logger = LoggerFactory.getLogger(CDistHashedLibrary.class);
 
     @Override
     public String getLibraryName() {
-        return "cdist";
+        return "hashto_cdist";
     }
 
     @Override
@@ -38,7 +39,7 @@ public class CDistLIbrary implements GeneratorLibrary {
 
         if (functionClass.isPresent()) {
             try {
-                CDistTransform tcd = new CDistTransform(generatorArgs);
+                CDistMapper tcd = new CDistMapper(generatorArgs);
                 ResolvedFunction resolvedFunction = new ResolvedFunction(tcd, this);
                 return Optional.of(resolvedFunction);
             } catch (Exception e) {

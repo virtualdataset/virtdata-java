@@ -1,10 +1,11 @@
-package io.virtdata.mappers.discrete;
+package io.virtdata.libimpl;
 
 import com.google.auto.service.AutoService;
 import io.virtdata.api.Generator;
 import io.virtdata.api.GeneratorLibrary;
 import io.virtdata.core.ResolvedFunction;
 import io.virtdata.core.SpecReader;
+import io.virtdata.mappers.mapped_discrete.IDistMapper;
 import org.apache.commons.math3.distribution.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,13 +18,13 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("Duplicates")
 @AutoService(GeneratorLibrary.class)
-public class IDistLibrary implements GeneratorLibrary {
+public class IDistMappedLibrary implements GeneratorLibrary {
 
-    private static final Logger logger = LoggerFactory.getLogger(IDistLibrary.class);
+    private static final Logger logger = LoggerFactory.getLogger(IDistMappedLibrary.class);
 
     @Override
     public String getLibraryName() {
-        return "ddist";
+        return "mapto_idist";
     }
 
     @Override
@@ -37,7 +38,7 @@ public class IDistLibrary implements GeneratorLibrary {
 
         if (functionClass.isPresent()) {
             try {
-                IDistTransform tcd = new IDistTransform(generatorArgs);
+                IDistMapper tcd = new IDistMapper(generatorArgs);
                 ResolvedFunction resolvedFunction = new ResolvedFunction(tcd, this);
                 return Optional.of(resolvedFunction);
             } catch (Exception e) {
@@ -72,14 +73,14 @@ public class IDistLibrary implements GeneratorLibrary {
 
     private enum DiscreteDistributions {
 
-        pascal(PascalDistribution.class),
-        binomial(BinomialDistribution.class),
-        zipf(ZipfDistribution.class),
-        hypergeometric(HypergeometricDistribution.class),
-        uniform_integer(UniformIntegerDistribution.class),
-        enumerated_integer(EnumeratedIntegerDistribution.class),
-        geometric(GeometricDistribution.class),
-        poisson(PoissonDistribution.class);
+        mapto_pascal(PascalDistribution.class),
+        mapto_binomial(BinomialDistribution.class),
+        mapto_zipf(ZipfDistribution.class),
+        mapto_hypergeometric(HypergeometricDistribution.class),
+        mapto_uniform_integer(UniformIntegerDistribution.class),
+        mapto_enumerated_integer(EnumeratedIntegerDistribution.class),
+        mapto_geometric(GeometricDistribution.class),
+        mapto_poisson(PoissonDistribution.class);
 
         private final Class<? extends IntegerDistribution> distClass;
 

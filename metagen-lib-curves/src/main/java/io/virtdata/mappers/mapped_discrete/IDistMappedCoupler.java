@@ -1,6 +1,6 @@
-package io.virtdata.mappers.discrete;
+package io.virtdata.mappers.mapped_discrete;
 
-import io.virtdata.mappers.internal.RandomBypassAdapter;
+import io.virtdata.libimpl.RandomBypassAdapter;
 import org.apache.commons.math3.distribution.IntegerDistribution;
 
 import java.util.function.LongUnaryOperator;
@@ -14,11 +14,11 @@ import java.util.function.LongUnaryOperator;
  * transform between the "U" unit-interval value that you would get
  * from that phase and the resulting value on the cumulative density curve.</p>
  *
- * <p>Furthermore, the input value is not in actual "U" unit-interval form.
+ * <p>Specifically, the input value is not in actual "U" unit-interval form.
  * It is instead a value from the set of positive long values.</p>
  *
  */
-public class IDistInverter<T extends IntegerDistribution> implements LongUnaryOperator {
+public class IDistMappedCoupler<T extends IntegerDistribution> implements LongUnaryOperator {
 
     private final RandomBypassAdapter randomBypassAdapter;
     private final IntegerDistribution distribution;
@@ -26,11 +26,14 @@ public class IDistInverter<T extends IntegerDistribution> implements LongUnaryOp
     private Class<T> distributionClass;
     private Object[] args;
 
-    public IDistInverter(IntegerDistribution integerDistribution) {
-        this.randomBypassAdapter = new RandomBypassAdapter();
+    public IDistMappedCoupler(IntegerDistribution integerDistribution, RandomBypassAdapter bypass) {
+        this.randomBypassAdapter = bypass;
         this.distribution = integerDistribution;
     }
 
+    public RandomBypassAdapter getRandomBypassAdapter() {
+        return randomBypassAdapter;
+    }
     public IntegerDistribution getDistribution() {
         return distribution;
     }

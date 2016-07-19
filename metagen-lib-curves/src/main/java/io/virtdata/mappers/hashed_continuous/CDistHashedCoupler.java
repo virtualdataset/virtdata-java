@@ -1,8 +1,10 @@
-package io.virtdata.mappers.continuous;
+package io.virtdata.mappers.hashed_continuous;
 
-import io.virtdata.mappers.internal.RandomBypassAdapter;
+import de.greenrobot.common.hash.Murmur3F;
+import io.virtdata.libimpl.RandomBypassAdapter;
 import org.apache.commons.math3.distribution.RealDistribution;
 
+import java.nio.ByteBuffer;
 import java.util.function.LongToDoubleFunction;
 
 /**
@@ -18,16 +20,18 @@ import java.util.function.LongToDoubleFunction;
  * It is instead a value from the set of positive long values.</p>
  *
  */
-public class CDistInverter<T extends RealDistribution> implements LongToDoubleFunction {
+public class CDistHashedCoupler<T extends RealDistribution> implements LongToDoubleFunction {
 
     private final RandomBypassAdapter randomBypassAdapter;
     private final RealDistribution distribution;
+    private final Murmur3F murmur3F = new Murmur3F();
+    private final ByteBuffer bb = ByteBuffer.allocate(Long.BYTES);
 
     private Class<T> distributionClass;
     private Object[] args;
 
-    public CDistInverter(RealDistribution distribution) {
-        this.randomBypassAdapter = new RandomBypassAdapter();
+    public CDistHashedCoupler(RealDistribution distribution, RandomBypassAdapter bypass) {
+        this.randomBypassAdapter = bypass;
         this.distribution = distribution;
     }
 
@@ -37,6 +41,12 @@ public class CDistInverter<T extends RealDistribution> implements LongToDoubleFu
 
     @Override
     public double applyAsDouble(long value) {
+        murmur3F.reset();
+        bb.putLong(0,value);
+        bb.position(0);
+        murmur3F.update(bb.array());
+        long result= Math.abs(murmur3F.getValue());
+
         randomBypassAdapter.setSeed(value);
         double sample = distribution.sample();
         return sample;

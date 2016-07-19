@@ -1,4 +1,4 @@
-package io.virtdata.mappers.internal;
+package io.virtdata.libimpl;
 
 import org.apache.commons.math3.random.AbstractRandomGenerator;
 import org.apache.commons.math3.util.FastMath;

@@ -27,9 +27,8 @@ public class Murmur3Hash implements LongUnaryOperator {
     public long applyAsLong(long value) {
         ByteBuffer bb = tlbb.get();
         murmur3F.reset();
-        bb.clear();
-        bb.putLong(value);
-        bb.flip();
+        bb.putLong(0,value);
+        bb.position(0);
         murmur3F.update(bb.array());
         long result= Math.abs(murmur3F.getValue());
         return result;
