@@ -1,6 +1,7 @@
-package io.virtdata.libraryimpl;
+package io.virtdata.libraryimpl.composers;
 
 import io.virtdata.api.FunctionType;
+import io.virtdata.libraryimpl.FunctionComposer;
 
 import java.util.function.*;
 
@@ -10,6 +11,11 @@ public class ComposerForLongFunction implements FunctionComposer<LongFunction<?>
 
     public ComposerForLongFunction(LongFunction<?> inner) {
         this.inner = inner;
+    }
+
+    @Override
+    public Object getFunctionObject() {
+        return inner;
     }
 
     @Override
@@ -37,15 +43,14 @@ public class ComposerForLongFunction implements FunctionComposer<LongFunction<?>
                 final LongFunction<?> f5 =
                         (long l) -> ((Function<Long,?>)outer).apply(((LongFunction<Long>)inner).apply(l));
                 return new ComposerForLongFunction(f5);
+            case int_int:
+                final LongToIntFunction f6 =
+                        (long l) -> ((IntUnaryOperator)outer).applyAsInt(((LongFunction<Integer>)inner).apply(l));
+                return new ComposerForLongToIntFunction(f6);
 
             default:
                 throw new RuntimeException(functionType + " is not recognized");
 
         }
-    }
-
-    @Override
-    public LongFunction<?> getComposedFunction() {
-        return inner;
     }
 }

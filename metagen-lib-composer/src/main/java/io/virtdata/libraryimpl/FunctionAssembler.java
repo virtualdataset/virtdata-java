@@ -36,7 +36,7 @@ public class FunctionAssembler {
      * Valid for any number of calls from the beginning of assembly.
      *
      * @param andThen a LongUnaryOperator
-     * @return this FunctionAssembler
+     * @return this FunctionAssemble
      */
     public FunctionAssembler andThen(LongUnaryOperator andThen) {
 

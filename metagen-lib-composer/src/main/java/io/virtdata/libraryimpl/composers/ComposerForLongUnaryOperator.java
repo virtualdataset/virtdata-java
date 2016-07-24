@@ -1,6 +1,7 @@
-package io.virtdata.libraryimpl;
+package io.virtdata.libraryimpl.composers;
 
 import io.virtdata.api.FunctionType;
+import io.virtdata.libraryimpl.FunctionComposer;
 
 import java.util.function.*;
 
@@ -13,7 +14,13 @@ public class ComposerForLongUnaryOperator implements FunctionComposer<LongUnaryO
     }
 
     @Override
-    public FunctionComposer andThen(Object outer) {
+    public Object getFunctionObject() {
+        return inner;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public FunctionComposer<?> andThen(Object outer) {
         FunctionType functionType = FunctionType.valueOf(outer);
         switch (functionType) {
             case long_long:
@@ -36,14 +43,30 @@ public class ComposerForLongUnaryOperator implements FunctionComposer<LongUnaryO
                 final LongFunction<?> f5 =
                         (long l) -> ((Function<Long,?>)outer).apply(inner.applyAsLong(l));
                 return new ComposerForLongFunction(f5);
+            case int_int:
+                final LongToIntFunction f6 =
+                        (long l) -> ((IntUnaryOperator)outer).applyAsInt((int) inner.applyAsLong(l));
+                return new ComposerForLongToIntFunction(f6);
+            case int_long:
+                final LongUnaryOperator f7 =
+                        (long l) -> ((IntToLongFunction)outer).applyAsLong((int) inner.applyAsLong(l));
+                return new ComposerForLongUnaryOperator(f7);
+
+            case int_double:
+                final LongToDoubleFunction f8 =
+                        (long l) -> ((IntToDoubleFunction)outer).applyAsDouble((int) inner.applyAsLong(l));
+                return new ComposerForLongToDouble(f8);
+
+            case int_T:
+                final LongFunction<?> f9 =
+                        (long l) ->
+                                ((IntFunction<?>)outer).apply((int) inner.applyAsLong(l));
+                return new ComposerForLongFunction(f9);
+
             default:
                 throw new RuntimeException(functionType + " is not recognized");
 
         }
     }
 
-    @Override
-    public LongUnaryOperator getComposedFunction() {
-        return inner;
-    }
 }

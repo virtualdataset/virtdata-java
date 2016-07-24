@@ -35,30 +35,64 @@ public class GeneratorFunctionMapper {
                 return (Generator<T>) map((LongFunction) function);
             case R_T:
                 return (Generator<T>) map((Function) function);
-            default:
-                throw new RuntimeException(
-                        "Function object was not a recognized type for mapping to a generator lambda, object"
-                                + function.toString());
+            case int_int:
+                return (Generator<T>) map((IntUnaryOperator) function);
+            case int_long:
+                return (Generator<T>) map((IntToLongFunction) function);
+            case int_double:
+                return (Generator<T>) map((IntToDoubleFunction) function);
+            case int_T:
+                return (Generator<T>) map((IntFunction) function);
         }
+
+        throw new RuntimeException(
+                "Function object was not a recognized type for mapping to a generator lambda, object"
+                        + function.toString());
+
 
     }
 
+    @org.jetbrains.annotations.Contract(pure = true)
+    public static <R> Generator<R> map(IntFunction<R> f) {
+        return (long l) -> f.apply((int) l);
+    }
+
+    @org.jetbrains.annotations.Contract(pure = true)
+    public static Generator<Long> map(IntToDoubleFunction f) {
+        return (long l) -> (long) f.applyAsDouble((int) l);
+    }
+
+    @org.jetbrains.annotations.Contract(pure = true)
+    public static Generator<Long> map(IntToLongFunction f) {
+        return (long l) -> f.applyAsLong((int) l);
+    }
+
+    @org.jetbrains.annotations.Contract(pure = true)
+    public static Generator<Integer> map(IntUnaryOperator f) {
+        return (long l) -> f.applyAsInt((int) l);
+    }
+
+    @org.jetbrains.annotations.Contract(pure = true)
     public static Generator<Double> map(LongToDoubleFunction f) {
         return f::applyAsDouble;
     }
 
+    @org.jetbrains.annotations.Contract(pure = true)
     public static Generator<Integer> map(LongToIntFunction f) {
         return f::applyAsInt;
     }
 
+    @org.jetbrains.annotations.Contract(pure = true)
     public static Generator<Long> map(LongUnaryOperator f) {
         return f::applyAsLong;
     }
 
+    @org.jetbrains.annotations.Contract(pure = true)
     public static <R> Generator<R> map(LongFunction<R> f) {
         return f::apply;
     }
 
+    @org.jetbrains.annotations.Contract(pure = true)
     public static <R> Generator<R> map(Function<Long, R> f) {
         return f::apply;
     }

@@ -4,7 +4,7 @@ import com.google.auto.service.AutoService;
 import io.virtdata.api.GeneratorLibrary;
 import io.virtdata.core.BaseGeneratorLibrary;
 import io.virtdata.functional.StaticStringGenerator;
-import io.virtdata.math.AddLong;
+import io.virtdata.longs.AddLong;
 import io.virtdata.strings.Suffix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

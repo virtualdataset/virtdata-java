@@ -1,10 +1,6 @@
 package io.virtdata.api;
 
-import java.util.function.LongUnaryOperator;
-import java.util.function.LongFunction;
-import java.util.function.Function;
-import java.util.function.LongToDoubleFunction;
-import java.util.function.LongToIntFunction;
+import java.util.function.*;
 
 /**
  * <p>Captures the list of function object types which may be used
@@ -13,10 +9,14 @@ import java.util.function.LongToIntFunction;
  */
 public enum FunctionType {
 
-    long_long (LongUnaryOperator.class),
-    long_T(LongFunction.class),
+    long_long(LongUnaryOperator.class),
     long_int(LongToIntFunction.class),
     long_double(LongToDoubleFunction.class),
+    long_T(LongFunction.class),
+    int_int(IntUnaryOperator.class),
+    int_long(IntToLongFunction.class),
+    int_double(IntToDoubleFunction.class),
+    int_T(IntFunction.class),
     R_T(Function.class);
 
     private final Class<?> functionClass;

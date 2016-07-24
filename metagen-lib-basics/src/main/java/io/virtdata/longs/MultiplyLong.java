@@ -1,4 +1,4 @@
-package io.virtdata.math;
+package io.virtdata.longs;
 
 import java.util.function.LongUnaryOperator;
 

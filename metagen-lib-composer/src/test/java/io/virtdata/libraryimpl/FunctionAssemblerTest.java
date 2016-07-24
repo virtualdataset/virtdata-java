@@ -14,7 +14,7 @@ public class FunctionAssemblerTest {
 
     @Test
     public void testLongUnary() {
-        FunctionAssembler fass = new FunctionAssembler();
+        FunctionComposer fass = new FunctionAssembly();
         fass.andThen(new IdentityOperator());
         Generator<Long> generator = fass.getGenerator();
         Long aLong = generator.get(5);
@@ -23,7 +23,7 @@ public class FunctionAssemblerTest {
 
     @Test
     public void testLongUnaryLongUnary() {
-        FunctionAssembler fass = new FunctionAssembler();
+        FunctionComposer fass = new FunctionAssembly();
         fass.andThen(new IdentityOperator());
         fass.andThen(new IdentityOperator());
         Generator<Long> generator = fass.getGenerator();
@@ -34,7 +34,7 @@ public class FunctionAssemblerTest {
     @SuppressWarnings("Duplicates")
     @Test
     public void testLongFunction() throws Exception {
-        FunctionAssembler fass = new FunctionAssembler();
+        FunctionComposer fass = new FunctionAssembly();
         fass.andThen(new LongAddFiveFunction());
         Generator<Long> generator = fass.getGenerator();
         Long aLong = generator.get(5);
@@ -44,7 +44,7 @@ public class FunctionAssemblerTest {
 
     @Test
     public void testLongFunctionLongFunctionProper() {
-        FunctionAssembler fass = new FunctionAssembler();
+        FunctionComposer fass = new FunctionAssembly();
         fass.andThen(new LongAddFiveFunction());
         fass.andThen(new LongAddFiveFunction());
         Generator<Long> generator = fass.getGenerator();
@@ -54,7 +54,7 @@ public class FunctionAssemblerTest {
 
     @Test(expectedExceptions = {ClassCastException.class})
     public void testLongFunctionLongFunctionMistyped() throws Exception {
-        FunctionAssembler fass = new FunctionAssembler();
+        FunctionComposer fass = new FunctionAssembly();
         fass.andThen(new LongAddFiveFunction());
         fass.andThen(new GenericStringCat());
         Generator<String> generator = fass.getGenerator();
@@ -63,7 +63,7 @@ public class FunctionAssemblerTest {
 
     @Test
     public void testAndThenFunction() {
-        FunctionAssembler fass = new FunctionAssembler();
+        FunctionComposer fass = new FunctionAssembly();
         fass.andThen(new GenericLongToString());
         Generator<String> generator = fass.getGenerator();
         String s = generator.get(5);
@@ -72,7 +72,7 @@ public class FunctionAssemblerTest {
 
     @Test
     public void testFunctionFunctionProper() {
-        FunctionAssembler fass = new FunctionAssembler();
+        FunctionComposer fass = new FunctionAssembly();
         fass.andThen(new GenericLongToString());
         fass.andThen(new GenericStringCat());
         Generator<String> generator = fass.getGenerator();
@@ -82,7 +82,7 @@ public class FunctionAssemblerTest {
 
     @Test(expectedExceptions = {ClassCastException.class})
     public void testFunctionFunctionMistyped() {
-        FunctionAssembler fass = new FunctionAssembler();
+        FunctionComposer fass = new FunctionAssembly();
         fass.andThen(new GenericStringCat());
         Generator<String> generator = fass.getGenerator();
         String s = generator.get(5);
@@ -90,7 +90,7 @@ public class FunctionAssemblerTest {
 
     @Test
     public void testLongUnaryLongFunctionFunctionProper() {
-        FunctionAssembler fass = new FunctionAssembler();
+        FunctionComposer fass = new FunctionAssembly();
         fass.andThen(new IdentityOperator());
         fass.andThen(new LongAddFiveFunction());
         fass.andThen(new GenericLongToString());

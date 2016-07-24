@@ -37,16 +37,11 @@ public class ComposerLibrary implements GeneratorLibrary {
             ));
         }
 
-        FunctionComposer fc=null;
+        FunctionAssembly fassy = new FunctionAssembly();
         for (ResolvedFunction resolvedFunction : resolvedFunctions) {
-            if (fc==null) {
-                fc = FunctionComposers.composerFor(resolvedFunction.getFunctionObject());
-            } else {
-                fc = fc.andThen(resolvedFunction.getFunctionObject());
-            }
+            fassy.andThen(resolvedFunction.getFunctionObject());
         }
-        Object function =fc.getComposedFunction();
-        ResolvedFunction composedFunction = new ResolvedFunction(function, this);
+        ResolvedFunction composedFunction = fassy.getResolvedFunction();
         return Optional.of(composedFunction);
     }
 

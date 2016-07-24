@@ -1,17 +1,20 @@
-package io.virtdata.libraryimpl;
+package io.virtdata.libraryimpl.composers;
 
 import io.virtdata.api.FunctionType;
+import io.virtdata.libraryimpl.FunctionComposer;
 
-import java.util.function.LongFunction;
-import java.util.function.LongToDoubleFunction;
-import java.util.function.LongToIntFunction;
-import java.util.function.LongUnaryOperator;
+import java.util.function.*;
 
 public class ComposerForLongToDouble implements FunctionComposer<LongToDoubleFunction> {
     private final LongToDoubleFunction inner;
 
     public ComposerForLongToDouble(LongToDoubleFunction inner) {
         this.inner = inner;
+    }
+
+    @Override
+    public Object getFunctionObject() {
+        return inner;
     }
 
     @Override
@@ -38,13 +41,30 @@ public class ComposerForLongToDouble implements FunctionComposer<LongToDoubleFun
                 final LongFunction<?> f5 =
                         (long l) -> ((LongFunction<?>) outer).apply((long) inner.applyAsDouble(l));
                 return new ComposerForLongFunction(f5);
+            case int_int:
+                final LongToIntFunction f6 =
+                        (long l) ->
+                                ((IntUnaryOperator) outer).applyAsInt((int) inner.applyAsDouble(l));
+                return new ComposerForLongToIntFunction(f6);
+            case int_long:
+                final LongUnaryOperator f7 =
+                        (long l) -> ((IntToLongFunction) outer).applyAsLong((int) inner.applyAsDouble(l));
+                return new ComposerForLongUnaryOperator(f7);
+
+            case int_double:
+                final LongToDoubleFunction f8 =
+                        (long l) ->
+                                ((IntToDoubleFunction) outer).applyAsDouble((int) inner.applyAsDouble(l));
+                return new ComposerForLongToDouble(f8);
+            case int_T:
+                final LongFunction<?> f9 =
+                        (long l) ->
+                                ((IntFunction<?>) outer).apply((int) inner.applyAsDouble(l));
+                return new ComposerForLongFunction(f9);
+
             default:
                 throw new RuntimeException(functionType + " is not recognized");
         }
     }
 
-    @Override
-    public LongToDoubleFunction getComposedFunction() {
-        return inner;
-    }
 }

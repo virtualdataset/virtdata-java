@@ -15,23 +15,22 @@ public class FunctionAssemblerMatrixTest {
 
         // TODO: Enable full functional introspection and remove the generic skips below
         for (FunctionType ft1 : FunctionType.values()) {
-            if (ft1==FunctionType.R_T || ft1==FunctionType.long_T) {
+            if (ft1 == FunctionType.R_T || ft1 == FunctionType.long_T || ft1 == FunctionType.int_T) {
                 continue;
             }
             for (FunctionType ft2 : FunctionType.values()) {
-                if (ft2==FunctionType.R_T || ft2==FunctionType.long_T) {
+                if (ft2 == FunctionType.R_T || ft2 == FunctionType.long_T || ft2 == FunctionType.int_T) {
                     continue;
                 }
                 Object f1 = genFunction(ft1);
                 Object f2 = genFunction(ft2);
-                System.out.print("testing: ft1:" + ft1 + ", ft2:" +ft2 + ", f1:" + f1 +", f2:" + f2);
-                AdvancedAssembler assy = new AdvancedAssembler();
+                System.out.print("testing: ft1:" + ft1 + ", ft2:" + ft2 + ", f1:" + f1 + ", f2:" + f2);
+                FunctionComposer assy = new FunctionAssembly();
 
-                assy.andThen(f1);
-                assy.andThen(f2);
+                assy = assy.andThen(f1);
+                assy = assy.andThen(f2);
 
-                Object function = assy.getFunction();
-                Generator g = GeneratorFunctionMapper.map(function);
+                Generator g = GeneratorFunctionMapper.map(assy.getResolvedFunction().getFunctionObject());
                 Object o = g.get(1L);
                 System.out.println(" out:" + o);
 
@@ -49,8 +48,16 @@ public class FunctionAssemblerMatrixTest {
                 return new F_long_long();
             case long_T:
                 return new F_long_T();
+            case int_int:
+                return new F_int_int();
             case R_T:
                 return new F_R_T();
+            case int_long:
+                return new F_int_long();
+            case int_double:
+                return new F_int_double();
+            case int_T:
+                return new F_int_T();
             default:
                 throw new RuntimeException("unrecognized function type: " + ftype);
         }
@@ -63,25 +70,29 @@ public class FunctionAssemblerMatrixTest {
             return (double) value;
         }
     }
+
     private static class F_long_int implements LongToIntFunction {
         @Override
         public int applyAsInt(long value) {
             return (int) value;
         }
     }
+
     private static class F_long_long implements LongUnaryOperator {
         @Override
         public long applyAsLong(long operand) {
             return operand;
         }
     }
+
     private static class F_long_T implements LongFunction<Long> {
         @Override
         public Long apply(long value) {
             return value;
         }
     }
-    private static class F_R_T implements Function<Long,Long> {
+
+    private static class F_R_T implements Function<Long, Long> {
         @Override
         public Long apply(Long aLong) {
             return aLong;
@@ -89,5 +100,31 @@ public class FunctionAssemblerMatrixTest {
     }
 
 
+    private static class F_int_int implements IntUnaryOperator {
+        @Override
+        public int applyAsInt(int operand) {
+            return operand;
+        }
+    }
 
+    private static class F_int_long implements IntToLongFunction {
+        @Override
+        public long applyAsLong(int value) {
+            return value;
+        }
+    }
+
+    private static class F_int_double implements IntToDoubleFunction {
+        @Override
+        public double applyAsDouble(int value) {
+            return value;
+        }
+    }
+
+    private static class F_int_T implements IntFunction<Long> {
+        @Override
+        public Long apply(int value) {
+            return (long) value;
+        }
+    }
 }
