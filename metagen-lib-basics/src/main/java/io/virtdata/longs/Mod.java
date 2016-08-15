@@ -14,5 +14,18 @@
 */
 package io.virtdata.longs;
 
-public class Mod {
+import java.util.function.LongUnaryOperator;
+
+public class Mod implements LongUnaryOperator {
+
+    private Long modulo;
+
+    public Mod(Long modulo) {
+        this.modulo = modulo;
+    }
+
+    @Override
+    public long applyAsLong(long operand) {
+        return operand % modulo;
+    }
 }

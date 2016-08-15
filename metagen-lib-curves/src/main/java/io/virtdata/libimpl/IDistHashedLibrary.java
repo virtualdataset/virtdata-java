@@ -24,7 +24,7 @@ public class IDistHashedLibrary implements GeneratorLibrary {
 
     @Override
     public String getLibraryName() {
-        return "hashto_ddist";
+        return "hashto_idist";
     }
 
     @Override

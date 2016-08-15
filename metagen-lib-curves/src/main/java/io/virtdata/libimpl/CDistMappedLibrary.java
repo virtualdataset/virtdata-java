@@ -53,6 +53,16 @@ public class CDistMappedLibrary implements GeneratorLibrary {
     }
 
     @Override
+    public List<ResolvedFunction> resolveFunctions(String spec) {
+        List<ResolvedFunction> resolvedFunctions = new ArrayList<>();
+        Optional<ResolvedFunction> resolvedFunction = this.resolveFunction(spec);
+        if (resolvedFunction.isPresent()) {
+            resolvedFunctions.add(resolvedFunction.get());
+        }
+        return resolvedFunctions;
+    }
+
+    @Override
     public List<String> getGeneratorNames() {
         List<String> genNames = new ArrayList<>();
         return Arrays.stream(ContinuousDistributions.values()).map(Enum::toString).collect(Collectors.toList());

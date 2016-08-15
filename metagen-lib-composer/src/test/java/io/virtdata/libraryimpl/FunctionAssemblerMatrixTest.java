@@ -1,6 +1,6 @@
 package io.virtdata.libraryimpl;
 
-import io.virtdata.api.FunctionType;
+import io.virtdata.api.types.FunctionType;
 import io.virtdata.api.Generator;
 import io.virtdata.core.GeneratorFunctionMapper;
 import org.testng.annotations.Test;

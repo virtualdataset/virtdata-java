@@ -13,15 +13,18 @@ package io.virtdata.api.types;/*
 *   limitations under the License.
 */
 
-import com.sun.tools.classfile.TypeAnnotation;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * This annotation is used to mark the output type for a functional interface which
+ * uses generics, like LongFunction, IntFunction, or Function.
+ * It is only used when then input type of a function can't be found via reflection.
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface Input {
+public @interface Output {
     Class<?> value();
 }

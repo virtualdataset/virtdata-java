@@ -22,29 +22,29 @@ public abstract class BaseGeneratorLibrary implements GeneratorLibrary {
     public abstract String getLibraryName();
 
     @Override
-    public Optional<ResolvedFunction> resolveFunction(String spec) {
-        Optional<Class<?>> functionClass = resolveFunctionClass(SpecReader.first(spec));
-        String[] generatorArgs = SpecReader.split(spec);
+    public List<ResolvedFunction> resolveFunctions(String spec) {
 
-        if (functionClass.isPresent()) {
-            generatorArgs[0] = functionClass.get().getCanonicalName();
+        List<Class<?>> classes = resolveFunctionClasses(SpecReader.first(spec));
+
+        List<ResolvedFunction> resolvedFunctions = new ArrayList<>();
+
+        for (Class<?> aclass : classes) {
+            aclass.getCanonicalName();
+            String[] generatorArgs = SpecReader.split(spec);
+            generatorArgs[0] = aclass.getCanonicalName();
             try {
-                Object genr = ConstructorResolver.resolveAndConstruct(generatorArgs);
-                return Optional.of(genr).map(g -> new ResolvedFunction(g, this));
+                Object mapper = ConstructorResolver.resolveAndConstruct(generatorArgs);
+                resolvedFunctions.add(new ResolvedFunction(mapper));
             } catch (Exception e) {
-                logger.error("Error instantiating generator:" + e.getMessage(), e);
-                return Optional.empty();
+                logger.error("Error while trying to instantiate:" + Arrays.toString(generatorArgs));
+                throw (e);
             }
-        } else {
-            logger.debug("Generator class not found: " + spec);
-            return Optional.empty();
         }
+        return resolvedFunctions;
     }
 
     @Override
     public List<String> getGeneratorNames() {
-        List<String> genNames = new ArrayList<>();
-
 
         List<ClassLoader> classLoadersList = new LinkedList<>();
         classLoadersList.add(ClasspathHelper.contextClassLoader());
@@ -73,15 +73,33 @@ public abstract class BaseGeneratorLibrary implements GeneratorLibrary {
 
     }
 
+    private List<Class<?>> resolveFunctionClasses(String name) {
+        if (name.contains(".")) {
+            throw new RuntimeException("Search packages must be designated by generator lib implementations "
+                    + " with getSearchPackages(), and may not be overridden.");
+        }
+        List<Class<?>> classes = new ArrayList<>();
+        for (Package aPackage : getSearchPackages()) {
+            String fqcn = aPackage.getName() + "." + name;
+            try {
+                Class<?> generatorClass = Class.forName(fqcn);
+                classes.add(generatorClass);
+            } catch (ClassNotFoundException ignored) {
+            }
+        }
+        return classes;
+    }
+
     @SuppressWarnings("unchecked")
-    private Optional<Class<?>> resolveFunctionClass(String className) {
+    private Optional<Class<?>> resolveFunctionClass(String name) {
         Class generatorClass = null;
-        if (className.contains(".")) {
-            throw new RuntimeException("Search packages must be designated by generator libimpl.");
+        if (name.contains(".")) {
+            throw new RuntimeException("Search packages must be designated by generator lib implementations "
+                    + " with getSearchPackages(), and may not be overridden.");
         }
 
         for (Package aPackage : getSearchPackages()) {
-            String fqcn = aPackage.getName() + "." + className;
+            String fqcn = aPackage.getName() + "." + name;
             try {
                 generatorClass = Class.forName(fqcn);
                 logger.debug("Initialized mapping function '" + fqcn + "'");
@@ -90,7 +108,7 @@ public abstract class BaseGeneratorLibrary implements GeneratorLibrary {
                 logger.trace("candidate mapping function '" + fqcn + "' not found.");
             }
         }
-        logger.debug("Unable to map generator class " + className);
+        logger.debug("Unable to map generator class " + name);
         return Optional.empty();
 
     }

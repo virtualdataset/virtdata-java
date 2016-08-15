@@ -13,18 +13,40 @@ package io.virtdata.api.types;/*
 *   limitations under the License.
 */
 
-public enum ValueTypes {
-    BOOLEAN(boolean.class),
-    BYTE(byte.class),
-    INT(int.class),
-    LONG(long.class),
-    FLOAT(float.class),
-    DOUBLE(double.class),
-    STRING(String.class);
+import java.util.Comparator;
+
+/**
+ * Capture preference for types, favoring more efficient types for generation over others.
+ */
+public enum ValueType implements Comparator<ValueType> {
+    LONG(long.class, 1),
+    INT(int.class, 2),
+    FLOAT(float.class, 3),
+    DOUBLE(double.class, 4),
+    BOOLEAN(boolean.class, 5),
+    BYTE(byte.class, 6),
+    STRING(String.class, 7),
+    OBJECT(Object.class, 8);
 
     private final Class<?> clazz;
+    private int precedence;
 
-    ValueTypes(Class<?> clazz) {
+    ValueType(Class<?> clazz, int precedence) {
         this.clazz = clazz;
+        this.precedence = precedence;
+    }
+
+    public static ValueType valueOf(Class<?> clazz) {
+        for (ValueType valueType : ValueType.values()) {
+            if (valueType.clazz.isAssignableFrom(clazz)) {
+                return valueType;
+            }
+        }
+        throw new RuntimeException("Unable to find a matching value type for " + clazz);
+    }
+
+    @Override
+    public int compare(ValueType o1, ValueType o2) {
+        return Integer.compare(o1.precedence, o2.precedence);
     }
 }

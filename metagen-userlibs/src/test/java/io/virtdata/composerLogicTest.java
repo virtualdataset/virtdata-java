@@ -32,4 +32,20 @@ public class composerLogicTest {
 //        }
     }
 
+    @Test
+    public void testLongAdder() {
+        ComposerLibrary cl = new ComposerLibrary();
+        Optional<Generator<Object>> generator = cl.getGenerator("add:5");
+        assertThat(generator).isNotNull();
+        assertThat(generator).isPresent();
+        assertThat(generator.get().get(1)).isEqualTo(2L);
+    }
+
+    @Test
+    public void testTypeMatching() {
+        ComposerLibrary cl = new ComposerLibrary();
+        Optional<Generator<Object>> g = cl.getGenerator("add:5");
+
+    }
+
 }

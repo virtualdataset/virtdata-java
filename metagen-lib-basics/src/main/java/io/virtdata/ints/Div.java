@@ -14,5 +14,20 @@
 */
 package io.virtdata.ints;
 
-public class Div {
+import io.virtdata.api.types.FDoc;
+
+import java.util.function.IntUnaryOperator;
+
+@FDoc("divides the operand by an integer and returns the whole part")
+public class Div implements IntUnaryOperator {
+    private int divisor;
+
+    public Div(int divisor) {
+        this.divisor = divisor;
+    }
+
+    @Override
+    public int applyAsInt(int operand) {
+        return operand / divisor;
+    }
 }

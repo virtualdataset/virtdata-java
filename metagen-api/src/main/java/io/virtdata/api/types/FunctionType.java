@@ -1,4 +1,4 @@
-package io.virtdata.api;
+package io.virtdata.api.types;
 
 import java.util.function.*;
 

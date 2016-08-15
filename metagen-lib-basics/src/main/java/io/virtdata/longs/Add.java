@@ -2,11 +2,11 @@ package io.virtdata.longs;
 
 import java.util.function.LongUnaryOperator;
 
-public class AddLong implements LongUnaryOperator {
+public class Add implements LongUnaryOperator {
 
     private final long addend;
 
-    public AddLong(long addend) {
+    public Add(long addend) {
         this.addend = addend;
     }
 

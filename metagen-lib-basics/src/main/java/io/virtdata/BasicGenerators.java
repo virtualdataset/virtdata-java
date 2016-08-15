@@ -4,7 +4,7 @@ import com.google.auto.service.AutoService;
 import io.virtdata.api.GeneratorLibrary;
 import io.virtdata.core.BaseGeneratorLibrary;
 import io.virtdata.functional.StaticStringGenerator;
-import io.virtdata.longs.AddLong;
+import io.virtdata.longs.Add;
 import io.virtdata.strings.Suffix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +25,7 @@ public class BasicGenerators extends BaseGeneratorLibrary {
     private List<Package> packages = new LinkedList<Package>() {
         {
             add(StaticStringGenerator.class.getPackage());
-            add(AddLong.class.getPackage());
+            add(Add.class.getPackage());
             add(Suffix.class.getPackage());
         }
     };

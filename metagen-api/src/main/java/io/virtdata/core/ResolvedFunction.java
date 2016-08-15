@@ -1,7 +1,12 @@
 package io.virtdata.core;
 
-import io.virtdata.api.FunctionType;
+import io.virtdata.api.types.FunctionType;
 import io.virtdata.api.GeneratorLibrary;
+
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Optional;
 
 /**
  * A function that has been resolved by a library for use in data mapping.
@@ -19,6 +24,7 @@ public class ResolvedFunction {
         functionObject = g;
         functionType = FunctionType.valueOf(g); // sanity check the type of g
     }
+
     public ResolvedFunction(Object g) {
         this.functionObject = g;
         functionType = FunctionType.valueOf(g);  // sanity check the type of g
@@ -53,4 +59,33 @@ public class ResolvedFunction {
                 + ", lib:" + library.getLibraryName()
                 + ", fn:" + functionObject;
     }
+
+    public Class<?> getReturnType() {
+        Method applyMethod = getMethod();
+        return applyMethod.getReturnType();
+    }
+
+    public Class<?> getArgType() {
+        Method applyMethod = getMethod();
+        if (applyMethod.getParameterCount() != 1) {
+            throw new RuntimeException(
+                    "The parameter cound is supposed to be 1, but it was" + applyMethod.getParameterCount()
+            );
+        }
+        return applyMethod.getParameterTypes()[0];
+    }
+
+    private Method getMethod() {
+        Optional<Method> applyMethod = Arrays.stream(functionObject.getClass().getMethods())
+                .filter(m -> m.getName().startsWith("apply"))
+                .findFirst();
+
+        return applyMethod.orElseThrow(
+                () -> new RuntimeException(
+                        "Unable to find the function method on " + functionObject.getClass().getCanonicalName()
+                )
+        );
+
+    }
+
 }

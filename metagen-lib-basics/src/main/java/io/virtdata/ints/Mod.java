@@ -14,5 +14,17 @@
 */
 package io.virtdata.ints;
 
-public class Mod {
+import java.util.function.IntUnaryOperator;
+
+public class Mod implements IntUnaryOperator {
+    private int modulo;
+
+    public Mod(int modulo) {
+        this.modulo = modulo;
+    }
+
+    @Override
+    public int applyAsInt(int operand) {
+        return operand % modulo;
+    }
 }
