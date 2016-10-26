@@ -17,8 +17,9 @@ package io.virtdata.api;
  * Both types of use are found in this API. An example of the former type would be
  * {@link io.virtdata.core.ContextualBindingsTemplate},
  * while and example of the latter would
- * be {@link io.virtdata.templates.StringCompositor}.</p>
- * be {@link io.virtdata.templates.StringCompositor}.</p>
+ * be {@link io.virtdata.templates.StringCompositor}.
+ * be {@link io.virtdata.templates.StringCompositor}.
+ * </p>
  *
  * @param <T> The template type
  * @param <R> The result type

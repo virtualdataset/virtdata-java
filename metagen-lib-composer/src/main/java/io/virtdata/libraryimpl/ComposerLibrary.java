@@ -22,18 +22,18 @@ import java.util.stream.Collectors;
  * This means that while you are able to compose a LongUnaryOperator with a LongUnaryOperator for maximum
  * efficiency, you can also compose LongUnaryOperator with an IntFunction, and a best effort attempt will be made to
  * do a reasonable conversion in between.</p>
- * <p>
+
  * <H2>Limitations</H2>
  * <P>Due to type erasure, it is not possible to know the generic type parameters for non-primitive functional types.
  * These include IntFunction&lt;?&gt;, LongFunction&lt;?&gt;, and in the worst case, Function&lt;?,?&gt;.
  * For these types, annotations are provided to better inform the runtime lambda compositor.</P>
- * <p>
+
  * <H2>Multiple Paths</H2>
  * <P>The library allows for there to be multiple functions which match the spec, possibly because multiple
  * functions have the same name, but exist in different libraries or in different packages within the same library.
  * This means that the composer library must find a connecting path between the functions that can match at each stage,
  * disregarding all but one.</P>
- * <p>
+
  * <H2>Path Finding</H2>
  * <P>The rule for finding the best path among the available functions is as follows, at each pairing between
  * adjacent stages of functions:</P>
@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
  * at the front of the list.</li>
  * <li>When no functions can be removed due to lack of co-compatible types, each stage is selected according to
  * type preferences as represented in {@link ValueType}</li>
- * <p>
+
  * <LI>If the next (outer) function does not have a compatible input type, move it down on the list.
  * If, after this step, there are functions which do have matching signatures, all others are removed.</LI>
  * </OL>

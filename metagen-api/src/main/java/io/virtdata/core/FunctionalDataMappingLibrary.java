@@ -1,6 +1,7 @@
 package io.virtdata.core;
 
 import io.virtdata.api.GeneratorLibrary;
+import io.virtdata.api.ValueType;
 import io.virtdata.api.specs.SpecData;
 import io.virtdata.reflection.ConstructorResolver;
 import org.reflections.Reflections;
@@ -15,8 +16,8 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class SimpleGeneratorLibrary implements GeneratorLibrary {
-    private static final Logger logger = LoggerFactory.getLogger(SimpleGeneratorLibrary.class);
+public abstract class FunctionalDataMappingLibrary implements GeneratorLibrary {
+    private static final Logger logger = LoggerFactory.getLogger(FunctionalDataMappingLibrary.class);
 
     public abstract String getLibraryName();
     public abstract List<Package> getSearchPackages();
@@ -121,4 +122,38 @@ public abstract class SimpleGeneratorLibrary implements GeneratorLibrary {
     public boolean canParseSpec(String spec) {
         return SpecData.forOptionalSpec(spec).isPresent();
     }
+
+    @Override
+    public Optional<ResolvedFunction> resolveFunction(String spec) {
+        SpecData specData = SpecData.forSpec(spec);
+        List<ResolvedFunction> resolvedFunctions = resolveFunctions(spec);
+        Optional<ValueType> resultType = specData.getResultType();
+        if (resultType.isPresent() && resolvedFunctions.size() > 1) {
+            int prefilter = resolvedFunctions.size();
+
+            List<ResolvedFunction> previousFunctions = new ArrayList<>(resolvedFunctions);
+            resolvedFunctions = resolvedFunctions.stream()
+                    .filter(rf -> rf.getFunctionType().getReturnValueType() == resultType.get())
+                    .collect(Collectors.toList());
+
+            int postfilter = resolvedFunctions.size();
+            if (prefilter > 0 && postfilter == 0) {
+                String warning = "Before filtering for result type '" + resultType.get() + "', there"
+                        + " were " + prefilter + " matching functions:" + previousFunctions.stream()
+                        .map(Object::toString).collect(Collectors.joining(","));
+                // TODO: Move this to a proper impl, remove default methods
+                resolvedFunctions = previousFunctions;
+            }
+
+        }
+        if (resolvedFunctions.size() == 0) {
+            return Optional.empty();
+        }
+        if (resolvedFunctions.size() > 1) {
+            Collections.sort(resolvedFunctions, ResolvedFunction.PREFERRED_TYPE_COMPARATOR);
+            return Optional.of(resolvedFunctions.get(0));
+        }
+        return Optional.of(resolvedFunctions.get(0));
+    }
+
 }

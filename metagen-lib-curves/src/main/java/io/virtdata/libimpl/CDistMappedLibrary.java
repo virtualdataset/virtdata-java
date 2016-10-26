@@ -111,4 +111,13 @@ public class CDistMappedLibrary implements GeneratorLibrary {
         return SpecData.forOptionalSpec(spec).isPresent();
     }
 
+    @Override
+    public Optional<ResolvedFunction> resolveFunction(String spec) {
+        List<ResolvedFunction> resolvedFunctions = resolveFunctions(spec);
+        if (resolvedFunctions.size()==1) {
+            return Optional.of(resolvedFunctions.get(0));
+        }
+        return Optional.empty();
+    }
+
 }

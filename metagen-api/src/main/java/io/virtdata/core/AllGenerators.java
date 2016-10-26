@@ -61,7 +61,7 @@ public class AllGenerators implements GeneratorLibrary {
     /**
      * If any composed libraries can parse the spec, we just return that one.
      * @param spec a generator spec string
-     * @return
+     * @return true, if this spec is at least parsable by this library
      */
     @Override
     public boolean canParseSpec(String spec) {
