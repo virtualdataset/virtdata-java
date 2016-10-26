@@ -2,9 +2,9 @@ package io.virtdata.ints;
 
 import java.util.function.IntUnaryOperator;
 
-public class MultiplyInt implements IntUnaryOperator {
+public class Mul implements IntUnaryOperator {
 
-    public MultiplyInt(int addend) {
+    public Mul(int addend) {
         this.addend = addend;
     }
 

@@ -20,7 +20,7 @@ package io.virtdata.core;
 
 //
 
-import io.virtdata.api.Generator;
+import io.virtdata.api.DataMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,34 +28,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Maps a template of generator bind points and generator specs onto a set of generator
- * instances. Allows for streamlined calling of generator functions.
+ * Maps a template with named bind points and specifiers onto a set of data
+ * mapping function instances. Allows for streamlined calling of mapper functions
+ * as a set.
  */
 public class Bindings {
     private final static Logger logger = LoggerFactory.getLogger(Bindings.class);
 
     private BindingsTemplate template;
-    private List<Generator<?>> generators = new ArrayList<Generator<?>>();
+    private List<DataMapper<?>> dataMappers = new ArrayList<DataMapper<?>>();
 
-    public Bindings(BindingsTemplate template, List<Generator<?>> generators) {
+    public Bindings(BindingsTemplate template, List<DataMapper<?>> dataMappers) {
         this.template = template;
-        this.generators = generators;
+        this.dataMappers = dataMappers;
     }
 
     public String toString() {
-        return template.toString() + generators;
+        return template.toString() + dataMappers;
     }
 
     /**
-     * Get a value from each generator in the bindings list
-     * @param input The long value which the bound generators will use as in input
-     * @return An array of objects, the values generated from each generator in the list
+     * Get a value from each data mapper in the bindings list
+     * @param input The long value which the bound data mappers will use as in input
+     * @return An array of objects, the values yielded from each data mapper in the list
      */
     public Object[] getAll(long input) {
-        Object[] values = new Object[generators.size()];
+        Object[] values = new Object[dataMappers.size()];
         int offset=0;
-        for (Generator generator: generators) {
-            values[offset++]=generator.get(input);
+        for (DataMapper dataMapper : dataMappers) {
+            values[offset++]= dataMapper.get(input);
         }
         return values;
     }

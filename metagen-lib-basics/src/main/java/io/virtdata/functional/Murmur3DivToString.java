@@ -25,15 +25,15 @@ import java.util.function.LongFunction;
 public class Murmur3DivToString implements LongFunction<String> {
 
     private Murmur3F murmur3f = new Murmur3F();
-    private DivideToLong longDivSequenceGenerator;
+    private DivideToLong divideToLongMapper;
 
     public Murmur3DivToString(long divisor) {
-        this.longDivSequenceGenerator = new DivideToLong(divisor);
+        this.divideToLongMapper = new DivideToLong(divisor);
     }
 
     @Override
     public String apply(long input) {
-        long divided= longDivSequenceGenerator.applyAsLong(input);
+        long divided= divideToLongMapper.applyAsLong(input);
         murmur3f.update((int) (divided % Integer.MAX_VALUE));
         return String.valueOf(murmur3f.getValue());
     }

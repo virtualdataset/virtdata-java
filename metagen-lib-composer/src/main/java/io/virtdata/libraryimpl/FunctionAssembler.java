@@ -1,7 +1,7 @@
 package io.virtdata.libraryimpl;
 
-import io.virtdata.api.Generator;
-import io.virtdata.core.GeneratorFunctionMapper;
+import io.virtdata.api.DataMapper;
+import io.virtdata.core.DataMapperFunctionMapper;
 
 import java.util.function.Function;
 import java.util.function.LongFunction;
@@ -118,8 +118,8 @@ public class FunctionAssembler {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> Generator<T> getGenerator() {
-        return (Generator<T>) GeneratorFunctionMapper.map(getFunction());
+    public <T> DataMapper<T> getDataMapper() {
+        return (DataMapper<T>) DataMapperFunctionMapper.map(getFunction());
     }
 
 

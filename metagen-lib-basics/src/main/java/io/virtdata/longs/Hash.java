@@ -12,7 +12,7 @@ import java.util.function.LongUnaryOperator;
  * 64 bits of output. It does, however, return the absolute value.
  * This is to make it play nice with users and other libraries.
  */
-public class Murmur3Hash implements LongUnaryOperator {
+public class Hash implements LongUnaryOperator {
 
     private ThreadLocal<ByteBuffer> tlbb = new ThreadLocal<ByteBuffer>() {
         @Override

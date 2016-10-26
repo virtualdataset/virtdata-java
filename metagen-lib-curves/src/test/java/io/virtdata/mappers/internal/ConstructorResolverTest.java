@@ -4,6 +4,8 @@ import io.virtdata.reflection.ConstructorResolver;
 import io.virtdata.reflection.DeferredConstructor;
 import org.testng.annotations.Test;
 
+import java.util.function.LongUnaryOperator;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Test
@@ -40,15 +42,14 @@ public class ConstructorResolverTest {
     public void testThreeTypes() {
             DeferredConstructor<Object> dc =
                     ConstructorResolver.resolve(
-                            new String[]{ATestClass.class.getTypeName(),"2.0","3.0","3"}
-                            );
+                            new String[]{ATestClass.class.getTypeName(),"2.0","3.0","3"});
             Object aTestClassInstance = dc.construct();
             assertThat(aTestClassInstance).isNotNull();
             assertThat(aTestClassInstance).isInstanceOf(ATestClass.class);
 
     }
 
-    public static class ATestClass {
+    public static class ATestClass implements LongUnaryOperator {
         public ATestClass() {}
 
         public ATestClass(String one) {
@@ -64,6 +65,11 @@ public class ConstructorResolverTest {
 
         public ATestClass(double one, float two, int three) {
 
+        }
+
+        @Override
+        public long applyAsLong(long operand) {
+            return operand;
         }
     }
 

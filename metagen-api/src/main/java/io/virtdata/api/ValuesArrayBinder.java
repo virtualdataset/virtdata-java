@@ -2,14 +2,24 @@ package io.virtdata.api;
 
 /**
  * <p>ValuesArrayBinder provides a way to apply an array of object values to a template
- * object of type S to yield a new object instance of type R. The object array is
+ * object of type T to yield a new object instance of type R. The object array is
  * a positional argument list. There is no named-argument facility.</p>
  *
  * <p>Parameter Examples:</p>
  * <ul>
- *     <LI>S: prepared Statement, R: bound statement</LI>
- *     <LI>S: string template, R: interpolated string value</LI>
+ *     <LI>T: prepared Statement, R: bound statement</LI>
+ *     <LI>T: string template, R: interpolated string value</LI>
  * </ul>
+ *
+ * <p>ValuesArrayBinders can either be created as helper types, to be passed in as
+ * mapping functions to other calls, or they can be directly implemented in higher-order
+ * types which include the ability to produce objects of type R from values provided.
+ * Both types of use are found in this API. An example of the former type would be
+ * {@link io.virtdata.core.ContextualBindingsTemplate},
+ * while and example of the latter would
+ * be {@link io.virtdata.templates.StringCompositor}.
+ * be {@link io.virtdata.templates.StringCompositor}.
+ * </p>
  *
  * @param <T> The template type
  * @param <R> The result type
@@ -17,7 +27,7 @@ package io.virtdata.api;
 public interface ValuesArrayBinder<T, R> {
 
     /**
-     * Using context instance of type S, AKA the template, create and bind values to
+     * Using context instance of type T, AKA the template, create and bind values to
      * target object of type R
      * @param context A context object that knows how to provide an instance of type R
      * @param values An array of values which should be bound to the new R instance

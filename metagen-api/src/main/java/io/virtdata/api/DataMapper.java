@@ -1,5 +1,5 @@
 package io.virtdata.api;
 
-public interface Generator<R> {
+public interface DataMapper<R> {
     R get(long input);
 }

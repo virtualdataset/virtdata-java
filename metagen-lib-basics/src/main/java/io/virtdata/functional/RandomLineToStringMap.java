@@ -29,13 +29,13 @@ import java.util.function.LongFunction;
 
 public class RandomLineToStringMap implements LongFunction<Map<String,String>> {
 
-    private RandomLineToString paramGenerator;
+    private RandomLineToString lineDataMapper;
     private IntegerDistribution sizeDistribution;
     private MersenneTwister rng = new MersenneTwister(System.nanoTime());
 
     public RandomLineToStringMap(String paramFile, int sizeDistribution) {
         this.sizeDistribution = new UniformIntegerDistribution(0,sizeDistribution-1);
-        this.paramGenerator = new RandomLineToString(paramFile);
+        this.lineDataMapper = new RandomLineToString(paramFile);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class RandomLineToStringMap implements LongFunction<Map<String,String>> {
         int mapSize = sizeDistribution.sample();
         Map<String,String> map = new HashMap<>();
         for (int idx=0;idx<mapSize;idx++) {
-            map.put(paramGenerator.apply(input),paramGenerator.apply(input));
+            map.put(lineDataMapper.apply(input), lineDataMapper.apply(input));
         }
         return map;
     }

@@ -20,11 +20,11 @@ package io.virtdata.functional;
 
 import java.util.function.LongFunction;
 
-public class StaticStringGenerator implements LongFunction<String> {
+public class StaticStringMapper implements LongFunction<String> {
 
     private final String string;
 
-    public StaticStringGenerator(String string) {
+    public StaticStringMapper(String string) {
         this.string = string.intern();
     }
 

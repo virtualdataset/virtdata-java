@@ -25,15 +25,15 @@ import java.util.function.LongUnaryOperator;
 public class Murmur3DivToLong implements LongUnaryOperator {
 
     private Murmur3F murmur3f = new Murmur3F();
-    private DivideToLong longDivSequenceGenerator;
+    private DivideToLong divideToLongMapper;
 
     public Murmur3DivToLong(long divisor) {
-        this.longDivSequenceGenerator = new DivideToLong(divisor);
+        this.divideToLongMapper = new DivideToLong(divisor);
     }
 
     @Override
     public long applyAsLong(long input) {
-        long divided= longDivSequenceGenerator.applyAsLong(input);
+        long divided= divideToLongMapper.applyAsLong(input);
         murmur3f.update((int) (divided % Integer.MAX_VALUE));
         return murmur3f.getValue();
     }

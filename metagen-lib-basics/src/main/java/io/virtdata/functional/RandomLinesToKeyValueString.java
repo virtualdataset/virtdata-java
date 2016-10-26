@@ -27,18 +27,18 @@ import java.util.stream.Collectors;
 
 public class RandomLinesToKeyValueString implements LongFunction<String> {
 
-    private final RandomLineToStringMap coreGenerator;
-    private RandomLineToString paramGenerator;
+    private final RandomLineToStringMap lineDataMapper;
+    private RandomLineToString paramNameMapper;
     private IntegerDistribution sizeDistribution;
     private MersenneTwister rng = new MersenneTwister(System.nanoTime());
 
     public RandomLinesToKeyValueString(String paramFile, int sizeDistribution) {
-        coreGenerator = new RandomLineToStringMap(paramFile, sizeDistribution);
+        lineDataMapper = new RandomLineToStringMap(paramFile, sizeDistribution);
     }
 
     @Override
     public String apply(long input) {
-        Map<String, String> stringStringMap = coreGenerator.apply(input);
+        Map<String, String> stringStringMap = lineDataMapper.apply(input);
         String mapstring = stringStringMap.entrySet().stream().
                 map(es -> es.getKey() + ":" + es.getValue() + ";")
                 .collect(Collectors.joining());

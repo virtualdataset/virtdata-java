@@ -1,10 +1,9 @@
 package io.virtdata.libimpl;
 
 import com.google.auto.service.AutoService;
-import io.virtdata.api.Generator;
-import io.virtdata.api.GeneratorLibrary;
+import io.virtdata.api.DataMapperLibrary;
+import io.virtdata.api.specs.SpecData;
 import io.virtdata.core.ResolvedFunction;
-import io.virtdata.core.SpecReader;
 import io.virtdata.mappers.mapped_continuous.CDistMapper;
 import org.apache.commons.math3.distribution.*;
 import org.apache.commons.math3.random.EmpiricalDistribution;
@@ -18,8 +17,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("Duplicates")
-@AutoService(GeneratorLibrary.class)
-public class CDistHashedLibrary implements GeneratorLibrary {
+@AutoService(DataMapperLibrary.class)
+public class CDistHashedLibrary implements DataMapperLibrary {
 
     private static final Logger logger = LoggerFactory.getLogger(CDistHashedLibrary.class);
 
@@ -29,45 +28,42 @@ public class CDistHashedLibrary implements GeneratorLibrary {
     }
 
     @Override
-    public Optional<ResolvedFunction> resolveFunction(String spec) {
+    public List<ResolvedFunction> resolveFunctions(String spec) {
+        List<ResolvedFunction> resolved = new ArrayList<>();
+        SpecData specData = SpecData.forSpec(spec);
+
         Optional<Class<? extends RealDistribution>> functionClass = resolveFunctionClass(spec);
-        String[] generatorArgs = SpecReader.split(spec);
-        if (!functionClass.isPresent()) {
-            return Optional.empty();
-        }
-        generatorArgs[0] = functionClass.get().getCanonicalName();
 
         if (functionClass.isPresent()) {
+            String[] dataMapperArgs = specData.getFuncAndArgs();
+            dataMapperArgs[0] = functionClass.get().getCanonicalName();
             try {
-                CDistMapper tcd = new CDistMapper(generatorArgs);
+                CDistMapper tcd = new CDistMapper(dataMapperArgs);
                 ResolvedFunction resolvedFunction = new ResolvedFunction(tcd, this);
-                return Optional.of(resolvedFunction);
+                resolved.add(resolvedFunction);
             } catch (Exception e) {
-                logger.error("Error instantiating generator:" + e.getMessage(), e);
-                return Optional.empty();
+                logger.error("Error instantiating data mapping function:" + e.getMessage(), e);
             }
         } else {
-            logger.debug("Generator class not found: " + spec);
-            return Optional.empty();
+            logger.debug("Continuous Distribution class not found: " + spec);
         }
+        return resolved;
     }
 
     @Override
-    public List<String> getGeneratorNames() {
-        List<String> genNames = new ArrayList<>();
+    public List<String> getDataMapperNames() {
         return Arrays.stream(ContinuousDistributions.values()).map(Enum::toString).collect(Collectors.toList());
     }
 
     @SuppressWarnings("unchecked")
-    private Optional<Class<? extends RealDistribution>> resolveFunctionClass(String generatorSpec) {
-        Class<Generator> generatorClass = null;
-        String className = SpecReader.first(generatorSpec);
+    private Optional<Class<? extends RealDistribution>> resolveFunctionClass(String specifier) {
+        String className = SpecData.forSpec(specifier).getFuncName();
         try {
             ContinuousDistributions cdist = ContinuousDistributions.valueOf(className);
-            logger.debug("Located continuous distribution:" + cdist.toString() + " for generator type: " + generatorSpec);
+            logger.debug("Located continuous distribution:" + cdist.toString() + " for data mapper type: " + specifier);
             return Optional.ofNullable(cdist.getDistClass());
         } catch (Exception e) {
-            logger.debug("Unable to map continuous distribution class " + generatorSpec);
+            logger.debug("Unable to map continuous distribution class " + specifier);
             return Optional.empty();
         }
     }
@@ -106,6 +102,20 @@ public class CDistHashedLibrary implements GeneratorLibrary {
             return distClass;
         }
 
+    }
+
+    @Override
+    public boolean canParseSpec(String spec) {
+        return SpecData.forOptionalSpec(spec).isPresent();
+    }
+
+    @Override
+    public Optional<ResolvedFunction> resolveFunction(String spec) {
+        List<ResolvedFunction> resolvedFunctions = resolveFunctions(spec);
+        if (resolvedFunctions.size()==1) {
+            return Optional.of(resolvedFunctions.get(0));
+        }
+        return Optional.empty();
     }
 
 }

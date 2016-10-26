@@ -2,9 +2,9 @@ package io.virtdata.longs;
 
 import java.util.function.LongUnaryOperator;
 
-public class MultiplyLong implements LongUnaryOperator {
+public class Mul implements LongUnaryOperator {
 
-    public MultiplyLong(long multiplicand) {
+    public Mul(long multiplicand) {
         this.multiplicand = multiplicand;
     }
 

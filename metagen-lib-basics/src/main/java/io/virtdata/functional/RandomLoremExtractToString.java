@@ -22,14 +22,14 @@ import java.util.function.LongFunction;
 
 public class RandomLoremExtractToString implements LongFunction<String> {
 
-    private final RandomFileExtractToString coreGenerator;
+    private final RandomFileExtractToString randomFileExtractMapper;
 
     public RandomLoremExtractToString(int minsize, int maxsize) {
-        coreGenerator = new RandomFileExtractToString("lorem-ipsum.txt", minsize, maxsize);
+        randomFileExtractMapper = new RandomFileExtractToString("lorem-ipsum.txt", minsize, maxsize);
     }
 
     @Override
     public String apply(long input) {
-        return coreGenerator.apply(input);
+        return randomFileExtractMapper.apply(input);
     }
 }

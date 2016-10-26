@@ -2,11 +2,11 @@ package io.virtdata.ints;
 
 import java.util.function.IntUnaryOperator;
 
-public class AddInt implements IntUnaryOperator {
+public class Add implements IntUnaryOperator {
 
     private int addend;
 
-    public AddInt(int addend) {
+    public Add(int addend) {
         this.addend = addend;
     }
 
