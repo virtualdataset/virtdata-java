@@ -1,7 +1,6 @@
 package io.virtdata.libimpl;
 
 import com.google.auto.service.AutoService;
-import io.virtdata.api.DataMapper;
 import io.virtdata.api.DataMapperLibrary;
 import io.virtdata.api.specs.SpecData;
 import io.virtdata.core.ResolvedFunction;
@@ -52,13 +51,11 @@ public class IDistMappedLibrary implements DataMapperLibrary {
 
     @Override
     public List<String> getDataMapperNames() {
-        List<String> genNames = new ArrayList<>();
         return Arrays.stream(DiscreteDistributions.values()).map(Enum::toString).collect(Collectors.toList());
     }
 
     @SuppressWarnings("unchecked")
     private Optional<Class<? extends IntegerDistribution>> resolveFunctionClass(String specifier) {
-        Class<DataMapper> dataMapperClass = null;
         String className = SpecData.forSpec(specifier).getFuncName();
         try {
             DiscreteDistributions ddist = DiscreteDistributions.valueOf(className);

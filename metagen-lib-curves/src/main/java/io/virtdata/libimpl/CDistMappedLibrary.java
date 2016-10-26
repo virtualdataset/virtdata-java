@@ -1,7 +1,6 @@
 package io.virtdata.libimpl;
 
 import com.google.auto.service.AutoService;
-import io.virtdata.api.DataMapper;
 import io.virtdata.api.DataMapperLibrary;
 import io.virtdata.api.specs.SpecData;
 import io.virtdata.core.ResolvedFunction;
@@ -53,13 +52,11 @@ public class CDistMappedLibrary implements DataMapperLibrary {
 
     @Override
     public List<String> getDataMapperNames() {
-        List<String> genNames = new ArrayList<>();
         return Arrays.stream(ContinuousDistributions.values()).map(Enum::toString).collect(Collectors.toList());
     }
 
     @SuppressWarnings("unchecked")
     private Optional<Class<? extends RealDistribution>> resolveFunctionClass(String funcName) {
-        Class<DataMapper> generatorClass = null;
         try {
             ContinuousDistributions cdist = ContinuousDistributions.valueOf(funcName);
             logger.debug("Located continuous distribution:" + cdist.toString() + " for data mapper type: " + funcName);

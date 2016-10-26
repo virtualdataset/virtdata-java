@@ -23,8 +23,8 @@ public abstract class FunctionalDataMappingLibrary implements DataMapperLibrary 
     public abstract List<Package> getSearchPackages();
 
     @Override
-    public List<ResolvedFunction> resolveFunctions(String spec) {
-        SpecData specData = SpecData.forSpec(spec);
+    public List<ResolvedFunction> resolveFunctions(String specifier) {
+        SpecData specData = SpecData.forSpec(specifier);
 
         List<ResolvedFunction> resolvedFunctions = new ArrayList<>();
         List<Class<?>> classes = Collections.emptyList();
@@ -33,13 +33,13 @@ public abstract class FunctionalDataMappingLibrary implements DataMapperLibrary 
 
         for (Class<?> aclass : classes) {
             aclass.getCanonicalName();
-            String[] generatorArgs = (specData.getFuncAndArgs());
-            generatorArgs[0] = aclass.getCanonicalName();
+            String[] dataMapperArgs = (specData.getFuncAndArgs());
+            dataMapperArgs[0] = aclass.getCanonicalName();
             try {
-                Object mapper = ConstructorResolver.resolveAndConstruct(generatorArgs);
+                Object mapper = ConstructorResolver.resolveAndConstruct(dataMapperArgs);
                 resolvedFunctions.add(new ResolvedFunction(mapper));
             } catch (Exception e) {
-                logger.error("Error while trying to instantiate:" + Arrays.toString(generatorArgs));
+                logger.error("Error while trying to instantiate:" + Arrays.toString(dataMapperArgs));
                 throw (e);
             }
         }
@@ -85,10 +85,10 @@ public abstract class FunctionalDataMappingLibrary implements DataMapperLibrary 
         for (Package aPackage : getSearchPackages()) {
             String fqcn = aPackage.getName() + "." + name;
             try {
-                Class<?> generatorClass = Class.forName(fqcn);
+                Class<?> dataMapperClass = Class.forName(fqcn);
 
                 // TODO: HERE: filter by output type
-                classes.add(generatorClass);
+                classes.add(dataMapperClass);
             } catch (ClassNotFoundException ignored) {
             }
         }
@@ -97,7 +97,7 @@ public abstract class FunctionalDataMappingLibrary implements DataMapperLibrary 
 
     @SuppressWarnings("unchecked")
     private Optional<Class<?>> resolveFunctionClass(String name) {
-        Class generatorClass = null;
+        Class dataMapperClass = null;
         if (name.contains(".")) {
             throw new RuntimeException("Search packages must be designated by data mapping library implementations "
                     + " with getSearchPackages(), and may not be overridden.");
@@ -106,14 +106,14 @@ public abstract class FunctionalDataMappingLibrary implements DataMapperLibrary 
         for (Package aPackage : getSearchPackages()) {
             String fqcn = aPackage.getName() + "." + name;
             try {
-                generatorClass = Class.forName(fqcn);
+                dataMapperClass = Class.forName(fqcn);
                 logger.debug("Initialized mapping function '" + fqcn + "'");
-                return Optional.of(generatorClass);
+                return Optional.of(dataMapperClass);
             } catch (ClassNotFoundException e) {
                 logger.trace("candidate mapping function '" + fqcn + "' not found.");
             }
         }
-        logger.debug("Unable to map generator class " + name);
+        logger.debug("Unable to find data mapping class " + name);
         return Optional.empty();
 
     }

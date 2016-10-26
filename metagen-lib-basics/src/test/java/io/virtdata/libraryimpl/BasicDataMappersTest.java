@@ -22,9 +22,9 @@ public class BasicDataMappersTest {
 
     @Test
     public void testGetDataMapper() throws Exception {
-        Optional<DataMapper<Object>> generator = new BasicDataMappers().getDataMapper("StaticStringMapper(foo)");
-        assertThat(generator.isPresent()).isTrue();
-        assertThat(generator.get().get(5)).isEqualTo("foo");
+        Optional<DataMapper<Object>> dataMapper = new BasicDataMappers().getDataMapper("StaticStringMapper(foo)");
+        assertThat(dataMapper.isPresent()).isTrue();
+        assertThat(dataMapper.get().get(5)).isEqualTo("foo");
     }
 
     @Test
@@ -57,49 +57,49 @@ public class BasicDataMappersTest {
     @Test
     public void testToDateSpaceInstantiator() throws Exception {
         BasicDataMappers basics = new BasicDataMappers();
-        Optional<DataMapper<Date>> generator = basics.getDataMapper("ToDate(1000)");
-        assertThat(generator).isNotNull();
-        assertThat(generator.get()).isNotNull();
-        Date d1 = generator.get().get(1);
-        Date d2 = generator.get().get(2);
+        Optional<DataMapper<Date>> dataMapper = basics.getDataMapper("ToDate(1000)");
+        assertThat(dataMapper).isNotNull();
+        assertThat(dataMapper.get()).isNotNull();
+        Date d1 = dataMapper.get().get(1);
+        Date d2 = dataMapper.get().get(2);
         assertThat(d2).isAfter(d1);
     }
     @Test
     public void testToDateSpaceAndCountInstantiator() throws Exception {
         BasicDataMappers basics = new BasicDataMappers();
-        Optional<DataMapper<Date>> generator = basics.getDataMapper("ToDate(1000,10)");
-        assertThat(generator).isNotNull();
-        assertThat(generator.get()).isNotNull();
-        Date d1 = generator.get().get(1);
-        Date d2 = generator.get().get(2);
+        Optional<DataMapper<Date>> dataMapper = basics.getDataMapper("ToDate(1000,10)");
+        assertThat(dataMapper).isNotNull();
+        assertThat(dataMapper.get()).isNotNull();
+        Date d1 = dataMapper.get().get(1);
+        Date d2 = dataMapper.get().get(2);
         assertThat(d2).isAfter(d1);
     }
     @Test
     public void testToDateInstantiator() throws Exception {
         BasicDataMappers basics = new BasicDataMappers();
-        Optional<DataMapper<Date>> generator = basics.getDataMapper("ToDate");
-        assertThat(generator).isNotNull();
-        assertThat(generator.get()).isNotNull();
-        Date d1 = generator.get().get(1);
-        Date d2 = generator.get().get(2);
+        Optional<DataMapper<Date>> dataMapper = basics.getDataMapper("ToDate");
+        assertThat(dataMapper).isNotNull();
+        assertThat(dataMapper.get()).isNotNull();
+        Date d1 = dataMapper.get().get(1);
+        Date d2 = dataMapper.get().get(2);
     }
 
     @Test
     public void testToDateBucketInstantiator() throws Exception {
         BasicDataMappers basics = new BasicDataMappers();
-        Optional<DataMapper<Date>> generator = basics.getDataMapper("ToDate(1000,10000)");
-        assertThat(generator).isNotNull();
-        assertThat(generator.get()).isNotNull();
-        assertThat(generator.get().get(1).after(new Date(1)));
+        Optional<DataMapper<Date>> dataMapper = basics.getDataMapper("ToDate(1000,10000)");
+        assertThat(dataMapper).isNotNull();
+        assertThat(dataMapper.get()).isNotNull();
+        assertThat(dataMapper.get().get(1).after(new Date(1)));
     }
 
     @Test
     public void testRandomLineToIntInstantiator() throws Exception {
         BasicDataMappers basics = new BasicDataMappers();
-        Optional<DataMapper<Integer>> generator = basics.getDataMapper("RandomLineToInt(data/numbers.txt)");
-        assertThat(generator).isNotNull();
-        assertThat(generator.get()).isNotNull();
-        assertThat(generator.get().get(1)).isNotNull();
+        Optional<DataMapper<Integer>> dataMapper = basics.getDataMapper("RandomLineToInt(data/numbers.txt)");
+        assertThat(dataMapper).isNotNull();
+        assertThat(dataMapper.get()).isNotNull();
+        assertThat(dataMapper.get().get(1)).isNotNull();
     }
 
 }

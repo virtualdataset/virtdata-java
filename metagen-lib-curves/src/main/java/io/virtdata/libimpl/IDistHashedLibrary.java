@@ -1,7 +1,6 @@
 package io.virtdata.libimpl;
 
 import com.google.auto.service.AutoService;
-import io.virtdata.api.DataMapper;
 import io.virtdata.api.DataMapperLibrary;
 import io.virtdata.api.specs.SpecData;
 import io.virtdata.core.ResolvedFunction;
@@ -52,22 +51,20 @@ public class IDistHashedLibrary implements DataMapperLibrary {
 
     @Override
     public List<String> getDataMapperNames() {
-        List<String> genNames = new ArrayList<>();
         return Arrays.stream(DiscreteDistributions.values()).map(Enum::toString).collect(Collectors.toList());
     }
 
     @SuppressWarnings("unchecked")
-    private Optional<Class<? extends IntegerDistribution>> resolveFunctionClass(String generatorSpec) {
-        Class<DataMapper> generatorClass = null;
-        SpecData specData = SpecData.forSpec(generatorSpec);
+    private Optional<Class<? extends IntegerDistribution>> resolveFunctionClass(String specifier) {
+        SpecData specData = SpecData.forSpec(specifier);
         String className = specData.getFuncName();
 
         try {
             DiscreteDistributions ddist = DiscreteDistributions.valueOf(className);
-            logger.debug("Located continuous distribution:" + ddist.toString() + " for data mapper type: " + generatorSpec);
+            logger.debug("Located continuous distribution:" + ddist.toString() + " for data mapper type: " + specifier);
             return Optional.ofNullable(ddist.getDistClass());
         } catch (Exception e) {
-            logger.debug("Unable to map continuous distribution class " + generatorSpec);
+            logger.debug("Unable to map continuous distribution class " + specifier);
             return Optional.empty();
         }
     }

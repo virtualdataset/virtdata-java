@@ -78,7 +78,7 @@ public class BindingsTemplate {
     }
 
     private void logAvailableDataMappers() {
-        genlib.getDataMapperNames().forEach(gn -> logger.info("GENERATOR " + gn));
+        genlib.getDataMapperNames().forEach(gn -> logger.info("DATAMAPPER " + gn));
     }
 
     public List<String> getBindPointNames() {

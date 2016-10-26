@@ -1,7 +1,6 @@
 package io.virtdata.libimpl;
 
 import com.google.auto.service.AutoService;
-import io.virtdata.api.DataMapper;
 import io.virtdata.api.DataMapperLibrary;
 import io.virtdata.api.specs.SpecData;
 import io.virtdata.core.ResolvedFunction;
@@ -36,14 +35,14 @@ public class CDistHashedLibrary implements DataMapperLibrary {
         Optional<Class<? extends RealDistribution>> functionClass = resolveFunctionClass(spec);
 
         if (functionClass.isPresent()) {
-            String[] generatorArgs = specData.getFuncAndArgs();
-            generatorArgs[0] = functionClass.get().getCanonicalName();
+            String[] dataMapperArgs = specData.getFuncAndArgs();
+            dataMapperArgs[0] = functionClass.get().getCanonicalName();
             try {
-                CDistMapper tcd = new CDistMapper(generatorArgs);
+                CDistMapper tcd = new CDistMapper(dataMapperArgs);
                 ResolvedFunction resolvedFunction = new ResolvedFunction(tcd, this);
                 resolved.add(resolvedFunction);
             } catch (Exception e) {
-                logger.error("Error instantiating generator:" + e.getMessage(), e);
+                logger.error("Error instantiating data mapping function:" + e.getMessage(), e);
             }
         } else {
             logger.debug("Continuous Distribution class not found: " + spec);
@@ -53,13 +52,11 @@ public class CDistHashedLibrary implements DataMapperLibrary {
 
     @Override
     public List<String> getDataMapperNames() {
-        List<String> genNames = new ArrayList<>();
         return Arrays.stream(ContinuousDistributions.values()).map(Enum::toString).collect(Collectors.toList());
     }
 
     @SuppressWarnings("unchecked")
     private Optional<Class<? extends RealDistribution>> resolveFunctionClass(String specifier) {
-        Class<DataMapper> generatorClass = null;
         String className = SpecData.forSpec(specifier).getFuncName();
         try {
             ContinuousDistributions cdist = ContinuousDistributions.valueOf(className);
