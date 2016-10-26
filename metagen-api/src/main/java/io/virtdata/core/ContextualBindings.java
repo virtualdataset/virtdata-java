@@ -1,6 +1,7 @@
 package io.virtdata.core;
 
 import io.virtdata.api.ValuesArrayBinder;
+import io.virtdata.api.Binder;
 
 /**
  * <p>A thread-local template that maps a set of generators, a context object, and a method for applying
@@ -12,7 +13,7 @@ import io.virtdata.api.ValuesArrayBinder;
  * @param <C> The type of the contextual template object.
  * @param <R> The resulting type from binding generated values with the contextual template C
  */
-public class ContextualBindings<C, R> {
+public class ContextualBindings<C, R> implements Binder<R> {
 
     private final C context;
     private Bindings bindings;
@@ -32,6 +33,7 @@ public class ContextualBindings<C, R> {
         return context;
     }
 
+    @Override
     public R bind(long value) {
         Object[] allGeneratedValues = bindings.getAll(value);
         try { // Provide bindings context data where it may be useful

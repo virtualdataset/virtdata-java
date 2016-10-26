@@ -78,8 +78,7 @@ public class BindingsTemplate {
     }
 
     private void logAvailableGenerators() {
-        genlib.getGeneratorNames().stream()
-                .forEach(gn -> logger.info("GENERATOR " + gn));
+        genlib.getGeneratorNames().forEach(gn -> logger.info("GENERATOR " + gn));
     }
 
     public List<String> getBindPointNames() {

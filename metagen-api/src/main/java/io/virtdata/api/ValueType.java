@@ -1,4 +1,4 @@
-package io.virtdata.api.types;/*
+package io.virtdata.api;/*
 *   Copyright 2016 jshook
 *   Licensed under the Apache License, Version 2.0 (the "License");
 *   you may not use this file except in compliance with the License.
@@ -36,7 +36,21 @@ public enum ValueType implements Comparator<ValueType> {
         this.precedence = precedence;
     }
 
-    public static ValueType valueOf(Class<?> clazz) {
+    public String getSimpleName() {
+        return this.clazz.getSimpleName();
+    }
+
+    public static ValueType valueOfClassName(String typeName) {
+        for (ValueType valueType : ValueType.values()) {
+            if (valueType.clazz.getSimpleName().equals(typeName)) {
+                return valueType;
+            }
+        }
+        return ValueType.OBJECT;
+//        throw new RuntimeException("Unable to find a matching value type for " + typeName);
+    }
+
+    public static ValueType valueOfClass(Class<?> clazz) {
         for (ValueType valueType : ValueType.values()) {
             if (valueType.clazz.isAssignableFrom(clazz)) {
                 return valueType;
@@ -48,5 +62,9 @@ public enum ValueType implements Comparator<ValueType> {
     @Override
     public int compare(ValueType o1, ValueType o2) {
         return Integer.compare(o1.precedence, o2.precedence);
+    }
+
+    public Class<?> getValueClass() {
+        return this.clazz;
     }
 }

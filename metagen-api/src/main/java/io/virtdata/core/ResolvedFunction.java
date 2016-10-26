@@ -1,7 +1,8 @@
 package io.virtdata.core;
 
-import io.virtdata.api.types.FunctionType;
+import io.virtdata.api.FunctionType;
 import io.virtdata.api.GeneratorLibrary;
+import io.virtdata.api.ValueType;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -55,12 +56,12 @@ public class ResolvedFunction {
     }
 
     public String toString() {
-        return "FunctionType:" + functionType
-                + ", lib:" + library.getLibraryName()
-                + ", fn:" + functionObject;
+        return "fn:" + functionObject.getClass().getCanonicalName() + ", type:" + functionType
+                + ((library==null) ? "" : ", lib:" + library.getLibraryName());
+
     }
 
-    public Class<?> getReturnType() {
+    public Class<?> getResultClass() {
         Method applyMethod = getMethod();
         return applyMethod.getReturnType();
     }
@@ -86,6 +87,27 @@ public class ResolvedFunction {
                 )
         );
 
+    }
+
+    public static Comparator<ResolvedFunction> PREFERRED_TYPE_COMPARATOR = new PreferredTypeComparator();
+
+    /**
+     * Compare two ResolvedFunctions by preferred input type and then by preferred output type.
+     */
+    private static class PreferredTypeComparator implements Comparator<ResolvedFunction> {
+
+        @Override
+        public int compare(ResolvedFunction o1, ResolvedFunction o2) {
+            ValueType iv1 = ValueType.valueOfClass(o1.getArgType());
+            ValueType iv2 = ValueType.valueOfClass(o2.getArgType());
+            int inputComparison = iv1.compareTo(iv2);
+            if (inputComparison != 0) {
+                return inputComparison;
+            }
+            iv1 = ValueType.valueOfClass(o1.getResultClass());
+            iv2 = ValueType.valueOfClass(o2.getResultClass());
+            return iv1.compareTo(iv2);
+        }
     }
 
 }

@@ -2,19 +2,20 @@ package io.virtdata;
 
 import com.google.auto.service.AutoService;
 import io.virtdata.api.GeneratorLibrary;
-import io.virtdata.core.BaseGeneratorLibrary;
-import io.virtdata.functional.StaticStringGenerator;
-import io.virtdata.longs.Add;
-import io.virtdata.strings.Suffix;
+import io.virtdata.core.SimpleGeneratorLibrary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings({"unchecked", "Duplicates"})
+/**
+ * <p>This is a basic generator library that contains a variety of functions to build from.</p>
+ *
+ * <p>This library simply relies on {@link SimpleGeneratorLibrary}.</p>
+ */
 @AutoService(GeneratorLibrary.class)
-public class BasicGenerators extends BaseGeneratorLibrary {
+public class BasicGenerators extends SimpleGeneratorLibrary {
     private static final Logger logger = LoggerFactory.getLogger(BasicGenerators.class);
 
     @Override
@@ -22,18 +23,16 @@ public class BasicGenerators extends BaseGeneratorLibrary {
         return "basics";
     }
 
-    private List<Package> packages = new LinkedList<Package>() {
-        {
-            add(StaticStringGenerator.class.getPackage());
-            add(Add.class.getPackage());
-            add(Suffix.class.getPackage());
-        }
-    };
-
     @Override
     public List<Package> getSearchPackages() {
-        return packages;
+        return new ArrayList<Package>() {
+            {
+                add(io.virtdata.strings.Suffix.class.getPackage());
+                add(io.virtdata.longs.Add.class.getPackage());
+                add(io.virtdata.ints.Add.class.getPackage());
+                add(io.virtdata.functional.DivideToLong.class.getPackage());
+            }
+        };
+
     }
-
-
 }

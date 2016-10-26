@@ -3,8 +3,8 @@ package io.virtdata.libimpl;
 import com.google.auto.service.AutoService;
 import io.virtdata.api.Generator;
 import io.virtdata.api.GeneratorLibrary;
+import io.virtdata.api.specs.SpecData;
 import io.virtdata.core.ResolvedFunction;
-import io.virtdata.core.SpecReader;
 import io.virtdata.mappers.mapped_continuous.CDistMapper;
 import org.apache.commons.math3.distribution.*;
 import org.apache.commons.math3.random.EmpiricalDistribution;
@@ -29,27 +29,26 @@ public class CDistHashedLibrary implements GeneratorLibrary {
     }
 
     @Override
-    public Optional<ResolvedFunction> resolveFunction(String spec) {
+    public List<ResolvedFunction> resolveFunctions(String spec) {
+        List<ResolvedFunction> resolved = new ArrayList<>();
+        SpecData specData = SpecData.forSpec(spec);
+
         Optional<Class<? extends RealDistribution>> functionClass = resolveFunctionClass(spec);
-        String[] generatorArgs = SpecReader.split(spec);
-        if (!functionClass.isPresent()) {
-            return Optional.empty();
-        }
-        generatorArgs[0] = functionClass.get().getCanonicalName();
 
         if (functionClass.isPresent()) {
+            String[] generatorArgs = specData.getFuncAndArgs();
+            generatorArgs[0] = functionClass.get().getCanonicalName();
             try {
                 CDistMapper tcd = new CDistMapper(generatorArgs);
                 ResolvedFunction resolvedFunction = new ResolvedFunction(tcd, this);
-                return Optional.of(resolvedFunction);
+                resolved.add(resolvedFunction);
             } catch (Exception e) {
                 logger.error("Error instantiating generator:" + e.getMessage(), e);
-                return Optional.empty();
             }
         } else {
             logger.debug("Generator class not found: " + spec);
-            return Optional.empty();
         }
+        return resolved;
     }
 
     @Override
@@ -61,7 +60,7 @@ public class CDistHashedLibrary implements GeneratorLibrary {
     @SuppressWarnings("unchecked")
     private Optional<Class<? extends RealDistribution>> resolveFunctionClass(String generatorSpec) {
         Class<Generator> generatorClass = null;
-        String className = SpecReader.first(generatorSpec);
+        String className = SpecData.forSpec(generatorSpec).getFuncName();
         try {
             ContinuousDistributions cdist = ContinuousDistributions.valueOf(className);
             logger.debug("Located continuous distribution:" + cdist.toString() + " for generator type: " + generatorSpec);
@@ -106,6 +105,11 @@ public class CDistHashedLibrary implements GeneratorLibrary {
             return distClass;
         }
 
+    }
+
+    @Override
+    public boolean canParseSpec(String spec) {
+        return SpecData.forOptionalSpec(spec).isPresent();
     }
 
 }

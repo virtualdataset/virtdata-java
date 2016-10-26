@@ -14,7 +14,7 @@ public class composerLogicTest {
     @Test
     public void  testIntegratedComposer() {
         ComposerLibrary cl = new ComposerLibrary();
-        Optional<Generator<Object>> generator = cl.getGenerator("compose binomial:8,0.5 ToDate");
+        Optional<Generator<Object>> generator = cl.getGenerator("compose binomial(8,0.5); ToDate -> Date");
         assertThat(generator).isNotNull();
         assertThat(generator.isPresent()).isTrue();
         assertThat(generator.get().get(1)).isNotNull();
@@ -23,7 +23,7 @@ public class composerLogicTest {
     @Test
     public void testComplexComposition() {
         ComposerLibrary cl = new ComposerLibrary();
-        Optional<Generator<Object>> generator = cl.getGenerator("compose Murmur3Hash mapto_normal:50,10.0 AddLong:50 ToString Suffix:avgdays");
+        Optional<Generator<Object>> generator = cl.getGenerator("compose Hash; mapto_normal(50,10.0); Add(50); ToString; Suffix(avgdays) -> String");
         assertThat(generator).isNotNull();
         assertThat(generator.isPresent()).isTrue();
         assertThat(generator.get().get(1)).isNotNull();
@@ -33,19 +33,10 @@ public class composerLogicTest {
     }
 
     @Test
-    public void testLongAdder() {
+    public void testComposerOnly() {
         ComposerLibrary cl = new ComposerLibrary();
-        Optional<Generator<Object>> generator = cl.getGenerator("add:5");
-        assertThat(generator).isNotNull();
-        assertThat(generator).isPresent();
-        assertThat(generator.get().get(1)).isEqualTo(2L);
-    }
-
-    @Test
-    public void testTypeMatching() {
-        ComposerLibrary cl = new ComposerLibrary();
-        Optional<Generator<Object>> g = cl.getGenerator("add:5");
-
+        Optional<Generator<Object>> generator = cl.getGenerator("Add(5)");
+        assertThat(generator.isPresent()).isFalse();
     }
 
 }

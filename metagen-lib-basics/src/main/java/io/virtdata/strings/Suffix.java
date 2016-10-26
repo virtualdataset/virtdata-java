@@ -1,8 +1,8 @@
 package io.virtdata.strings;
 
-import io.virtdata.api.types.FDoc;
-import io.virtdata.api.types.Input;
-import io.virtdata.api.types.Output;
+import io.virtdata.api.FDoc;
+import io.virtdata.api.Input;
+import io.virtdata.api.Output;
 
 import java.util.function.Function;
 

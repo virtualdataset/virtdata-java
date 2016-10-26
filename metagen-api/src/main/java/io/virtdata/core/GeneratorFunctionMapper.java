@@ -1,6 +1,6 @@
 package io.virtdata.core;
 
-import io.virtdata.api.types.FunctionType;
+import io.virtdata.api.FunctionType;
 import io.virtdata.api.Generator;
 
 import java.util.function.*;

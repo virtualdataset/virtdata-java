@@ -1,9 +1,3 @@
-package io.virtdata.libraryimpl;
-
-import org.testng.annotations.Test;
-
-import static org.testng.Assert.*;
-
 /*
 *   Copyright 2016 jshook
 *   Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +12,22 @@ import static org.testng.Assert.*;
 *   See the License for the specific language governing permissions and
 *   limitations under the License.
 */
+
+package io.virtdata;
+
 public class ComposerLibraryTest {
 
+//    @Test
+//    public void testTypeCoercionWhenNeeded() {
+//        BindingsTemplate bt = new BindingsTemplate(AllGenerators.get());
+//        bt.addFieldBinding("mod_to_string", "compose Mod(3) ; Suffix('0000000000') -> String");
+//        Bindings bindings = bt.resolveBindings();
+//        Object[] all = bindings.getAll(5);
+//        assertThat(all).isNotNull();
+//        assertThat(all.length).isEqualTo(1);
+//        Object o = all[0];
+//        assertThat(o.getClass()).isEqualTo(String.class);
+//        assertThat((String) o).isEqualTo("20000000000");
+//    }
 
 }

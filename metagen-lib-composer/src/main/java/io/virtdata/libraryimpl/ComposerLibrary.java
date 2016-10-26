@@ -1,12 +1,13 @@
 package io.virtdata.libraryimpl;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import io.virtdata.api.GeneratorLibrary;
-import io.virtdata.api.types.ValueType;
+import io.virtdata.api.ValueType;
+import io.virtdata.api.specs.SpecData;
 import io.virtdata.core.AllGenerators;
 import io.virtdata.core.ResolvedFunction;
+import io.virtdata.libraryimpl.composers.MultiSpecData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,8 +16,7 @@ import java.util.stream.Collectors;
 
 /**
  * <H2>Synopsis</H2>
- * <p>
- * This library implements the ability to compose a lambda function from a sequence of other functions.
+ * <p>This library implements the ability to compose a lambda function from a sequence of other functions.
  * The resulting lambda will use the specialized primitive function interfaces, such as LongUnaryOperator, LongFunction, etc.
  * Where there are two functions which do not have matching input and output types, the most obvious conversion is made.
  * This means that while you are able to compose a LongUnaryOperator with a LongUnaryOperator for maximum
@@ -35,21 +35,34 @@ import java.util.stream.Collectors;
  * disregarding all but one.</P>
  * <p>
  * <H2>Path Finding</H2>
- * <P>The rule for finding the best path among the available functions is as follows, at each step:</P>
+ * <P>The rule for finding the best path among the available functions is as follows, at each pairing between
+ * adjacent stages of functions:</P>
  * <OL>
+ * <li>The co-compatible output and input types between the functions are mapped. Functions sharing the co-compatible
+ * types are kept in the list. Functions not sharing them are removed.</li>
+ * <li>As long as functions can be removed in this way, the process iterates through the chain, starting again
+ * at the front of the list.</li>
+ * <li>When no functions can be removed due to lack of co-compatible types, each stage is selected according to
+ * type preferences as represented in {@link ValueType}</li>
+ * <p>
  * <LI>If the next (outer) function does not have a compatible input type, move it down on the list.
  * If, after this step, there are functions which do have matching signatures, all others are removed.</LI>
- * <LI></LI>
  * </OL>
  */
 @AutoService(GeneratorLibrary.class)
 public class ComposerLibrary implements GeneratorLibrary {
 
+    private final static String PREAMBLE = "compose ";
     private final static Logger logger = LoggerFactory.getLogger(GeneratorLibrary.class);
 
     @Override
     public String getLibraryName() {
         return "composer";
+    }
+
+    @Override
+    public boolean canParseSpec(String spec) {
+        return MultiSpecData.forOptionalSpec(PREAMBLE, spec).isPresent();
     }
 
     @Override
@@ -64,26 +77,62 @@ public class ComposerLibrary implements GeneratorLibrary {
 
     @SuppressWarnings("unchecked")
     public Optional<ResolvedFunction> resolveFunction(String specline) {
-        if (!specline.startsWith("compose ")) {
-            return Optional.empty();
+        MultiSpecData multiSpecData = MultiSpecData.forSpec(PREAMBLE, specline);
+
+        multiSpecData.getResultType().orElseThrow(() -> new RuntimeException("composed mappers must have a -> type annotation at the end."));
+
+        LinkedList<List<ResolvedFunction>> funcs = new LinkedList<>();
+        LinkedList<Set<ValueType>> inputTypes = new LinkedList<>();
+        inputTypes.add(new HashSet<ValueType>() {{
+            add(multiSpecData.getResultType().get());
+        }});
+
+        for (int i = multiSpecData.getSpecs().size() - 1; i >= 0; i--) {
+            SpecData specData = multiSpecData.getSpecs().get(i);
+            List<ResolvedFunction> nodeFunctions = new ArrayList<>();
+            for (ValueType valueType : inputTypes.peekFirst()) {
+                String vectoredSpec = specData.forResultType(valueType).getCanonicalSpec();
+                List<ResolvedFunction> vectoredFunctions = AllGenerators.get().resolveFunctions(vectoredSpec);
+                logger.trace("Found " + vectoredFunctions.size() + " vectored functions for " + vectoredSpec);
+                if (vectoredFunctions.size() == 0) {
+                    logger.warn("Falling back to sloppy conversion matching for " +
+                            specData.getCanonicalSpec() + " in " + multiSpecData.getCanonicalSpec() +
+                    " since no co-compatible type signatures were found.");
+                    vectoredFunctions = AllGenerators.get().resolveFunctions(specData.getCanonicalSpec());
+                }
+                nodeFunctions.addAll(vectoredFunctions);
+            }
+            funcs.addFirst(nodeFunctions);
+
+            inputTypes.addFirst(new HashSet<>());
+            for (ResolvedFunction nodeFunction : nodeFunctions) {
+                inputTypes.peekFirst().add(nodeFunction.getFunctionType().getInputValueType());
+            }
         }
 
-        String[] specs = specline.substring("compose ".length()).split(" ");
-
-        List<List<ResolvedFunction>> funcs = new ArrayList<>();
-        for (String spec : specs) {
-            List<ResolvedFunction> nodeFunctions = AllGenerators.get().resolveFunctions(spec);
-            funcs.add(nodeFunctions);
+        if (!inputTypes.peekFirst().contains(ValueType.LONG)) {
+            throw new RuntimeException("There is no initial function which accepts a long input.");
         }
 
-        List<ResolvedFunction> flattendFuncs = optimizePath(funcs);
+//        for (SpecData specData : specs.getSpecs()) {
+//            String canonicalSpec = specData.getCanonicalSpec();
+//            List<ResolvedFunction> nodeFunctions = AllGenerators.get().resolveFunctions(canonicalSpec);
+//
+//            if (nodeFunctions.size() == 0) {
+//                throw new RuntimeException("Unable to resolve function for '" + canonicalSpec + "'");
+//            }
+//            funcs.add(nodeFunctions);
+//        }
 
-        FunctionAssembly fassy = new FunctionAssembly();
-        for (ResolvedFunction resolvedFunction : flattendFuncs) {
-            fassy.andThen(resolvedFunction.getFunctionObject());
+        ValueType resultType = multiSpecData.getResultType().orElseThrow(() -> new RuntimeException("missing result type specifier"));
+        List<ResolvedFunction> flattenedFuncs = optimizePath(funcs, resultType);
+
+        FunctionAssembly assembly = new FunctionAssembly();
+        for (ResolvedFunction resolvedFunction : flattenedFuncs) {
+            assembly.andThen(resolvedFunction.getFunctionObject());
         }
 
-        ResolvedFunction composedFunction = fassy.getResolvedFunction();
+        ResolvedFunction composedFunction = assembly.getResolvedFunction();
         return Optional.of(composedFunction);
     }
 
@@ -96,7 +145,7 @@ public class ComposerLibrary implements GeneratorLibrary {
      * iteratively as long as it makes progress and then the lower precedence
      * strategies are allowed to have their turn.
      * </p>
-     *
+     * <p>
      * <p>It is considered an error if the strategies are unable to reduce each
      * phase down to a single preferred function. Therefore, the lowest precedence
      * strategy is the most aggressive, simply sorting the functions by basic
@@ -105,61 +154,63 @@ public class ComposerLibrary implements GeneratorLibrary {
      * @param funcs the list of candidate functions offered at each phase, in List&lt;List&gt; form.
      * @return a List of resolved functions that has been fully optimized
      */
-    private List<ResolvedFunction> optimizePath(List<List<ResolvedFunction>> funcs) {
+    private List<ResolvedFunction> optimizePath(List<List<ResolvedFunction>> funcs, ValueType resultType) {
         List<ResolvedFunction> prevFuncs = null;
         List<ResolvedFunction> nextFuncs = null;
         int progress = -1;
 
         while (progress != 0) {
             progress = 0;
+            progress += reduceByResultType(funcs.get(funcs.size() - 1), resultType);
             for (List<ResolvedFunction> funcList : funcs) {
                 nextFuncs = funcList;
                 if (prevFuncs != null) {
                     progress += reduceByDirectTypes(prevFuncs, nextFuncs);
-                }
-                // attempt secondary strategy IFF higher precedence strategy failed
-                if (progress == 0) {
-                    progress += reduceByPreferredTypes(prevFuncs, nextFuncs);
-                }
+                    // attempt secondary strategy IFF higher precedence strategy failed
+                    if (progress == 0) {
+                        progress += reduceByPreferredTypes(prevFuncs, nextFuncs);
+                    }
+                } // else first pass, prime pointers
                 prevFuncs = nextFuncs;
             }
         }
         return funcs.stream().map(l -> l.get(0)).collect(Collectors.toList());
     }
 
-    /**
-     * Compare two ResolvedFunctions by preferred input type and then by preferred output type.
-     */
-    private static class PreferredTypeComparator implements Comparator<ResolvedFunction> {
-
-        @Override
-        public int compare(ResolvedFunction o1, ResolvedFunction o2) {
-            ValueType iv1 = ValueType.valueOf(o1.getArgType());
-            ValueType iv2 = ValueType.valueOf(o2.getArgType());
-            int inputComparison = iv1.compareTo(iv2);
-            if (inputComparison != 0) {
-                return inputComparison;
+    private int reduceByResultType(List<ResolvedFunction> endFuncs, ValueType resultType) {
+        int progressed = 0;
+        ArrayList<ResolvedFunction> tmpList = new ArrayList<>(endFuncs);
+        for (ResolvedFunction endFunc : tmpList) {
+            if (!resultType.getValueClass().isAssignableFrom(endFunc.getResultClass())) {
+                endFuncs.remove(endFunc);
+                logger.trace("removed function '" + endFunc + "' because it does not yield type " + resultType);
+                progressed++;
+            } else {
+                logger.trace("binding matched");
             }
-            iv1 = ValueType.valueOf(o1.getReturnType());
-            iv2 = ValueType.valueOf(o2.getReturnType());
-            return iv1.compareTo(iv2);
         }
+        if (endFuncs.size() == 0) {
+            throw new RuntimeException("No end funcs were found which yield result type " + resultType);
+        }
+        return progressed;
     }
-
-    private static Comparator<ResolvedFunction> preferredTypeComparator = new PreferredTypeComparator();
 
     private int reduceByPreferredTypes(List<ResolvedFunction> prevFuncs, List<ResolvedFunction> nextFuncs) {
         int progressed = 0;
         if (prevFuncs.size() > 1) {
             progressed += prevFuncs.size() - 1;
-            Collections.sort(prevFuncs, preferredTypeComparator);
+            Collections.sort(prevFuncs, ResolvedFunction.PREFERRED_TYPE_COMPARATOR);
             while (prevFuncs.size() > 1) {
+                logger.trace("removing func " + prevFuncs.get(prevFuncs.size() - 1)
+                        + " because " + prevFuncs.get(0) + " has more preferred types.");
                 prevFuncs.remove(prevFuncs.size() - 1);
             }
         } else if (nextFuncs.size() > 1) {
             progressed += nextFuncs.size() - 1;
-            Collections.sort(nextFuncs, preferredTypeComparator);
+            Collections.sort(nextFuncs, ResolvedFunction.PREFERRED_TYPE_COMPARATOR);
             while (nextFuncs.size() > 1) {
+                logger.trace("removing func " + nextFuncs.get(nextFuncs.size() - 1)
+                        + " because " + nextFuncs.get(0) + " has more preferred types.");
                 nextFuncs.remove(nextFuncs.size() - 1);
             }
         }
@@ -185,7 +236,7 @@ public class ComposerLibrary implements GeneratorLibrary {
         if (directMatches.size() > 0) {
             for (ResolvedFunction nextFunc : nextFuncs) {
                 if (!directMatches.contains(nextFunc.getArgType())) {
-                    logger.debug("removing next func: " + nextFunc);
+                    logger.debug("removing next func: " + nextFunc + " because its input types are not satisfied by an previous func");
                     nextFuncs.remove(nextFunc);
                     progressed++;
                 }
@@ -197,7 +248,7 @@ public class ComposerLibrary implements GeneratorLibrary {
     private Set<Class<?>> getOutputs(List<ResolvedFunction> prevFuncs) {
         Set<Class<?>> outputs = new HashSet<>();
         for (ResolvedFunction func : prevFuncs) {
-            outputs.add(func.getReturnType());
+            outputs.add(func.getResultClass());
         }
         return outputs;
     }
@@ -210,7 +261,6 @@ public class ComposerLibrary implements GeneratorLibrary {
         return inputs;
     }
 
-
     @Override
     public List<String> getGeneratorNames() {
         List<String> genNames = new ArrayList<>();
@@ -218,4 +268,5 @@ public class ComposerLibrary implements GeneratorLibrary {
             add("compose");
         }};
     }
+
 }

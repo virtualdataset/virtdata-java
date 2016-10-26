@@ -12,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class BasicGeneratorsTest {
 
+
     @Test
     public void testGetLibraryName() throws Exception {
         String libraryName = new BasicGenerators().getLibraryName();
@@ -21,7 +22,7 @@ public class BasicGeneratorsTest {
 
     @Test
     public void testGetGenerator() throws Exception {
-        Optional<Generator<Object>> generator = new BasicGenerators().getGenerator("StaticStringGenerator:foo");
+        Optional<Generator<Object>> generator = new BasicGenerators().getGenerator("StaticStringGenerator(foo)");
         assertThat(generator.isPresent()).isTrue();
         assertThat(generator.get().get(5)).isEqualTo("foo");
     }
@@ -36,9 +37,27 @@ public class BasicGeneratorsTest {
     }
 
     @Test
+    public void testMultipleChoiceLong() {
+        BasicGenerators basics = new BasicGenerators();
+        Optional<Generator<Object>> add5 = basics.getGenerator("Add(5) -> long");
+        assertThat(add5).isPresent();
+        Object o = add5.get().get(5);
+        assertThat(o.getClass()).isEqualTo(Long.class);
+    }
+
+    @Test
+    public void testMultipleChoiceInt() {
+        BasicGenerators basics = new BasicGenerators();
+        Optional<Generator<Object>> add5 = basics.getGenerator("Add(5) -> int");
+        assertThat(add5).isPresent();
+        Object o = add5.get().get(5);
+        assertThat(o.getClass()).isEqualTo(Integer.class);
+    }
+
+    @Test
     public void testToDateSpaceInstantiator() throws Exception {
         BasicGenerators basics = new BasicGenerators();
-        Optional<Generator<Date>> generator = basics.getGenerator("ToDate:1000");
+        Optional<Generator<Date>> generator = basics.getGenerator("ToDate(1000)");
         assertThat(generator).isNotNull();
         assertThat(generator.get()).isNotNull();
         Date d1 = generator.get().get(1);
@@ -48,7 +67,7 @@ public class BasicGeneratorsTest {
     @Test
     public void testToDateSpaceAndCountInstantiator() throws Exception {
         BasicGenerators basics = new BasicGenerators();
-        Optional<Generator<Date>> generator = basics.getGenerator("ToDate:1000:10");
+        Optional<Generator<Date>> generator = basics.getGenerator("ToDate(1000,10)");
         assertThat(generator).isNotNull();
         assertThat(generator.get()).isNotNull();
         Date d1 = generator.get().get(1);
@@ -68,7 +87,7 @@ public class BasicGeneratorsTest {
     @Test
     public void testToDateBucketInstantiator() throws Exception {
         BasicGenerators basics = new BasicGenerators();
-        Optional<Generator<Date>> generator = basics.getGenerator("ToDate:1000:10000");
+        Optional<Generator<Date>> generator = basics.getGenerator("ToDate(1000,10000)");
         assertThat(generator).isNotNull();
         assertThat(generator.get()).isNotNull();
         assertThat(generator.get().get(1).after(new Date(1)));
@@ -77,7 +96,7 @@ public class BasicGeneratorsTest {
     @Test
     public void testRandomLineToIntInstantiator() throws Exception {
         BasicGenerators basics = new BasicGenerators();
-        Optional<Generator<Integer>> generator = basics.getGenerator("RandomLineToInt:data/numbers.txt");
+        Optional<Generator<Integer>> generator = basics.getGenerator("RandomLineToInt(data/numbers.txt)");
         assertThat(generator).isNotNull();
         assertThat(generator.get()).isNotNull();
         assertThat(generator.get().get(1)).isNotNull();

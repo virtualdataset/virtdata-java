@@ -1,4 +1,4 @@
-package io.virtdata.api.types;/*
+package io.virtdata.api;/*
 *   Copyright 2016 jshook
 *   Licensed under the Apache License, Version 2.0 (the "License");
 *   you may not use this file except in compliance with the License.
@@ -19,12 +19,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation is used to mark the output type for a functional interface which
+ * This annotation is used to mark the input type for a functional interface which
  * uses generics, like LongFunction, IntFunction, or Function.
  * It is only used when then input type of a function can't be found via reflection.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface Output {
+public @interface Input {
     Class<?> value();
 }

@@ -1,6 +1,7 @@
 package io.virtdata.core;
 
 import io.virtdata.api.GeneratorLibrary;
+import io.virtdata.api.specs.SpecData;
 import io.virtdata.reflection.ConstructorResolver;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
@@ -14,23 +15,24 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class BaseGeneratorLibrary implements GeneratorLibrary {
-    private static final Logger logger = LoggerFactory.getLogger(BaseGeneratorLibrary.class);
-
-    public abstract List<Package> getSearchPackages();
+public abstract class SimpleGeneratorLibrary implements GeneratorLibrary {
+    private static final Logger logger = LoggerFactory.getLogger(SimpleGeneratorLibrary.class);
 
     public abstract String getLibraryName();
+    public abstract List<Package> getSearchPackages();
 
     @Override
     public List<ResolvedFunction> resolveFunctions(String spec) {
-
-        List<Class<?>> classes = resolveFunctionClasses(SpecReader.first(spec));
+        SpecData specData = SpecData.forSpec(spec);
 
         List<ResolvedFunction> resolvedFunctions = new ArrayList<>();
+        List<Class<?>> classes = Collections.emptyList();
+
+        classes = resolveFunctionClasses(specData.getFuncName());
 
         for (Class<?> aclass : classes) {
             aclass.getCanonicalName();
-            String[] generatorArgs = SpecReader.split(spec);
+            String[] generatorArgs = (specData.getFuncAndArgs());
             generatorArgs[0] = aclass.getCanonicalName();
             try {
                 Object mapper = ConstructorResolver.resolveAndConstruct(generatorArgs);
@@ -83,6 +85,8 @@ public abstract class BaseGeneratorLibrary implements GeneratorLibrary {
             String fqcn = aPackage.getName() + "." + name;
             try {
                 Class<?> generatorClass = Class.forName(fqcn);
+
+                // TODO: HERE: filter by output type
                 classes.add(generatorClass);
             } catch (ClassNotFoundException ignored) {
             }
@@ -113,5 +117,8 @@ public abstract class BaseGeneratorLibrary implements GeneratorLibrary {
 
     }
 
-
+    @Override
+    public boolean canParseSpec(String spec) {
+        return SpecData.forOptionalSpec(spec).isPresent();
+    }
 }
