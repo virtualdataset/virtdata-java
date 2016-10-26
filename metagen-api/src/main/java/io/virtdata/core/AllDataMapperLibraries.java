@@ -1,7 +1,7 @@
 package io.virtdata.core;
 
-import io.virtdata.api.Generator;
-import io.virtdata.api.GeneratorLibrary;
+import io.virtdata.api.DataMapper;
+import io.virtdata.api.DataMapperLibrary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,17 +11,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class AllGenerators implements GeneratorLibrary {
+public class AllDataMapperLibraries implements DataMapperLibrary {
 
-    private static AllGenerators instance = new AllGenerators();
-    private List<GeneratorLibrary> libraries = GeneratorLibraryFinder.getAll();
+    private static AllDataMapperLibraries instance = new AllDataMapperLibraries();
+    private List<DataMapperLibrary> libraries = DataMapperLibraryFinder.getAll();
 
-    private final static Logger logger = LoggerFactory.getLogger(AllGenerators.class);
+    private final static Logger logger = LoggerFactory.getLogger(AllDataMapperLibraries.class);
 
-    private AllGenerators() {
+    private AllDataMapperLibraries() {
     }
 
-    public static AllGenerators get() {
+    public static AllDataMapperLibraries get() {
         return instance;
     }
 
@@ -39,7 +39,7 @@ public class AllGenerators implements GeneratorLibrary {
      * @return an optional generator
      */
     @Override
-    public <T> Optional<Generator<T>> getGenerator(String spec) {
+    public <T> Optional<DataMapper<T>> getDataMapper(String spec) {
         if (!canParseSpec(spec)) {
             throw new RuntimeException("No libraries could parse: " + spec);
         }
@@ -51,10 +51,10 @@ public class AllGenerators implements GeneratorLibrary {
                     "expects there to be exactly 1");
         }
         Optional<ResolvedFunction> resolvedFunction = Optional.ofNullable(resolvedFunctions.get(0));
-        Optional<Generator<T>> tGenerator = resolvedFunction
+        Optional<DataMapper<T>> dataMapper = resolvedFunction
                 .map(ResolvedFunction::getFunctionObject)
-                .map(GeneratorFunctionMapper::map);
-        return tGenerator;
+                .map(DataMapperFunctionMapper::map);
+        return dataMapper;
 
     }
 
@@ -79,7 +79,7 @@ public class AllGenerators implements GeneratorLibrary {
         List<ResolvedFunction> resolvedFunctions = new ArrayList<>();
 
         int parsingLibs=0;
-        for (GeneratorLibrary library : libraries) {
+        for (DataMapperLibrary library : libraries) {
             if (library.canParseSpec(spec)) {
                 parsingLibs++;
                 Optional<ResolvedFunction> resolvedFunction = library.resolveFunction(spec);
@@ -110,10 +110,10 @@ public class AllGenerators implements GeneratorLibrary {
     }
 
     @Override
-    public List<String> getGeneratorNames() {
+    public List<String> getDataMapperNames() {
         List<String> genNames = new ArrayList<>();
-        for (GeneratorLibrary library : libraries) {
-            List<String> libGenNames = library.getGeneratorNames().stream()
+        for (DataMapperLibrary library : libraries) {
+            List<String> libGenNames = library.getDataMapperNames().stream()
                     .map(genName -> library.getLibraryName() + "::" + genName)
                     .collect(Collectors.toList());
             genNames.addAll(libGenNames);
@@ -123,8 +123,8 @@ public class AllGenerators implements GeneratorLibrary {
     }
 
     public String toString() {
-        return AllGenerators.class.getSimpleName() + ":"
-                + libraries.stream().map(GeneratorLibrary::getLibraryName).collect(Collectors.joining(",", "[", "]"));
+        return AllDataMapperLibraries.class.getSimpleName() + ":"
+                + libraries.stream().map(DataMapperLibrary::getLibraryName).collect(Collectors.joining(",", "[", "]"));
     }
 
 }

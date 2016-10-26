@@ -1,7 +1,7 @@
 package io.virtdata;
 
 import com.google.auto.service.AutoService;
-import io.virtdata.api.GeneratorLibrary;
+import io.virtdata.api.DataMapperLibrary;
 import io.virtdata.core.FunctionalDataMappingLibrary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +14,7 @@ import java.util.List;
  *
  * <p>This library simply relies on {@link FunctionalDataMappingLibrary}.</p>
  */
-@AutoService(GeneratorLibrary.class)
+@AutoService(DataMapperLibrary.class)
 public class BasicGenerators extends FunctionalDataMappingLibrary {
     private static final Logger logger = LoggerFactory.getLogger(BasicGenerators.class);
 

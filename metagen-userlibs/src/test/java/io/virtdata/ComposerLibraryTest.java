@@ -19,7 +19,7 @@ public class ComposerLibraryTest {
 
 //    @Test
 //    public void testTypeCoercionWhenNeeded() {
-//        BindingsTemplate bt = new BindingsTemplate(AllGenerators.get());
+//        BindingsTemplate bt = new BindingsTemplate(AllDataMapperLibraries.get());
 //        bt.addFieldBinding("mod_to_string", "compose Mod(3) ; Suffix('0000000000') -> String");
 //        Bindings bindings = bt.resolveBindings();
 //        Object[] all = bindings.getAll(5);

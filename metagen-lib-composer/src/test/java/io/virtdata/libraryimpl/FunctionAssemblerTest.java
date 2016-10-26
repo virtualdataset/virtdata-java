@@ -1,6 +1,6 @@
 package io.virtdata.libraryimpl;
 
-import io.virtdata.api.Generator;
+import io.virtdata.api.DataMapper;
 import org.testng.annotations.Test;
 
 import java.util.function.Function;
@@ -16,8 +16,8 @@ public class FunctionAssemblerTest {
     public void testLongUnary() {
         FunctionComposer fass = new FunctionAssembly();
         fass.andThen(new IdentityOperator());
-        Generator<Long> generator = fass.getGenerator();
-        Long aLong = generator.get(5);
+        DataMapper<Long> dataMapper = fass.getDataMapper();
+        Long aLong = dataMapper.get(5);
         assertThat(aLong).isEqualTo(5);
     }
 
@@ -26,8 +26,8 @@ public class FunctionAssemblerTest {
         FunctionComposer fass = new FunctionAssembly();
         fass.andThen(new IdentityOperator());
         fass.andThen(new IdentityOperator());
-        Generator<Long> generator = fass.getGenerator();
-        Long aLong = generator.get(5);
+        DataMapper<Long> dataMapper = fass.getDataMapper();
+        Long aLong = dataMapper.get(5);
         assertThat(aLong).isEqualTo(5);
     }
 
@@ -36,8 +36,8 @@ public class FunctionAssemblerTest {
     public void testLongFunction() throws Exception {
         FunctionComposer fass = new FunctionAssembly();
         fass.andThen(new LongAddFiveFunction());
-        Generator<Long> generator = fass.getGenerator();
-        Long aLong = generator.get(5);
+        DataMapper<Long> dataMapper = fass.getDataMapper();
+        Long aLong = dataMapper.get(5);
         assertThat(aLong).isEqualTo(10);
 
     }
@@ -47,8 +47,8 @@ public class FunctionAssemblerTest {
         FunctionComposer fass = new FunctionAssembly();
         fass.andThen(new LongAddFiveFunction());
         fass.andThen(new LongAddFiveFunction());
-        Generator<Long> generator = fass.getGenerator();
-        Long aLong = generator.get(5);
+        DataMapper<Long> dataMapper = fass.getDataMapper();
+        Long aLong = dataMapper.get(5);
         assertThat(aLong).isEqualTo(15);
     }
 
@@ -57,16 +57,16 @@ public class FunctionAssemblerTest {
         FunctionComposer fass = new FunctionAssembly();
         fass.andThen(new LongAddFiveFunction());
         fass.andThen(new GenericStringCat());
-        Generator<String> generator = fass.getGenerator();
-        generator.get(5);
+        DataMapper<String> dataMapper = fass.getDataMapper();
+        dataMapper.get(5);
     }
 
     @Test
     public void testAndThenFunction() {
         FunctionComposer fass = new FunctionAssembly();
         fass.andThen(new GenericLongToString());
-        Generator<String> generator = fass.getGenerator();
-        String s = generator.get(5);
+        DataMapper<String> dataMapper = fass.getDataMapper();
+        String s = dataMapper.get(5);
         assertThat(s).isEqualTo("5");
     }
 
@@ -75,8 +75,8 @@ public class FunctionAssemblerTest {
         FunctionComposer fass = new FunctionAssembly();
         fass.andThen(new GenericLongToString());
         fass.andThen(new GenericStringCat());
-        Generator<String> generator = fass.getGenerator();
-        String s = generator.get(5);
+        DataMapper<String> dataMapper = fass.getDataMapper();
+        String s = dataMapper.get(5);
         assertThat(s).isEqualTo("Cat5");
     }
 
@@ -84,8 +84,8 @@ public class FunctionAssemblerTest {
     public void testFunctionFunctionMistyped() {
         FunctionComposer fass = new FunctionAssembly();
         fass.andThen(new GenericStringCat());
-        Generator<String> generator = fass.getGenerator();
-        String s = generator.get(5);
+        DataMapper<String> dataMapper = fass.getDataMapper();
+        String s = dataMapper.get(5);
     }
 
     @Test
@@ -94,8 +94,8 @@ public class FunctionAssemblerTest {
         fass.andThen(new IdentityOperator());
         fass.andThen(new LongAddFiveFunction());
         fass.andThen(new GenericLongToString());
-        Generator<String> generator = fass.getGenerator();
-        String s = generator.get(5);
+        DataMapper<String> dataMapper = fass.getDataMapper();
+        String s = dataMapper.get(5);
         assertThat(s).isEqualTo("10");
 
     }

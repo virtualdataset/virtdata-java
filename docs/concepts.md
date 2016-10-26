@@ -15,9 +15,9 @@ Sequences of values produced by RNGs (more properly called PRNGs) are not actual
 
 Just as RNGs can appear random when the are not truly, statistical distributions which rely on them can also appear random. Uniform random number generators over the unit interval [0,1.0) are a common input to virtual sampling methods. This means that if you can configure the RNG stream that you feed into your virtual sampling methods, you can simulate a repeatable sequence from a known distribution.
 
-### Generator Function
+### Data Mapping Functions
 
-The generator function is the core building block of metagen. Generator functions are the functional logic that powers all procedural generation. The core data sequences that come from the RNG and statistical layers may not be purely functional, but it makes sense for the higher-level generator functions to be. This simply means that a generator function will always provide the same result given the same input. Generator functions all take a long value as their input, and produce a result based on their parameterized type.
+The data mapping functions are the core building block of metagen. They are the functional logic that powers all procedural generation. Data mapping functions are generally pure functions. This simply means that a generator function will always provide the same result given the same input. All top-level mapping functions all take a long value as their input, and produce a result based on their parameterized type.
 
 ### Generator Library
 

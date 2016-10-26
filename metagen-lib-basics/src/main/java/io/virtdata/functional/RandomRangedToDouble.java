@@ -1,9 +1,9 @@
 package io.virtdata.functional;
 
-import io.virtdata.api.Generator;
+import io.virtdata.api.DataMapper;
 import org.apache.commons.math3.random.MersenneTwister;
 
-public class RandomRangedToDouble implements Generator<Double> {
+public class RandomRangedToDouble implements DataMapper<Double> {
 
     private MersenneTwister theTwister = new MersenneTwister(System.nanoTime());
     private long min;

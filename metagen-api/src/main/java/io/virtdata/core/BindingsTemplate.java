@@ -20,8 +20,8 @@ package io.virtdata.core;
 
 //
 
-import io.virtdata.api.Generator;
-import io.virtdata.api.GeneratorLibrary;
+import io.virtdata.api.DataMapper;
+import io.virtdata.api.DataMapperLibrary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,9 +42,9 @@ public class BindingsTemplate {
     private List<String> bindPointNames = new ArrayList<String>();
     private List<String> generatorSpecs = new ArrayList<String>();
 
-    private GeneratorLibrary genlib = AllGenerators.get(); // by default
+    private DataMapperLibrary genlib = AllDataMapperLibraries.get(); // by default
 
-    public BindingsTemplate(GeneratorLibrary genlib) {
+    public BindingsTemplate(DataMapperLibrary genlib) {
         this.genlib = genlib;
     }
 
@@ -60,11 +60,11 @@ public class BindingsTemplate {
      * @return A set of bindings that can be used to generate object values later
      */
     public Bindings resolveBindings() {
-        List<Generator<?>> generators = new ArrayList<Generator<?>>();
+        List<DataMapper<?>> dataMappers = new ArrayList<DataMapper<?>>();
         for (String generatorSpec : generatorSpecs) {
-            Optional<Generator<Object>> optGenerator = genlib.getGenerator(generatorSpec);
+            Optional<DataMapper<Object>> optGenerator = genlib.getDataMapper(generatorSpec);
             if (optGenerator.isPresent()) {
-                generators.add(optGenerator.get());
+                dataMappers.add(optGenerator.get());
             } else {
                 logAvailableGenerators();
                 throw new RuntimeException(
@@ -74,11 +74,11 @@ public class BindingsTemplate {
                                 + ", see log for known generator names.");
             }
         }
-        return new Bindings(this, generators);
+        return new Bindings(this, dataMappers);
     }
 
     private void logAvailableGenerators() {
-        genlib.getGeneratorNames().forEach(gn -> logger.info("GENERATOR " + gn));
+        genlib.getDataMapperNames().forEach(gn -> logger.info("GENERATOR " + gn));
     }
 
     public List<String> getBindPointNames() {

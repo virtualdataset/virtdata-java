@@ -1,7 +1,7 @@
 package io.virtdata.core;
 
 import io.virtdata.api.FunctionType;
-import io.virtdata.api.GeneratorLibrary;
+import io.virtdata.api.DataMapperLibrary;
 import io.virtdata.api.ValueType;
 
 import java.lang.reflect.Method;
@@ -18,9 +18,9 @@ public class ResolvedFunction {
 
     private FunctionType functionType;
     private Object functionObject;
-    private GeneratorLibrary library;
+    private DataMapperLibrary library;
 
-    public ResolvedFunction(Object g, GeneratorLibrary library) {
+    public ResolvedFunction(Object g, DataMapperLibrary library) {
         this.library = library;
         functionObject = g;
         functionType = FunctionType.valueOf(g); // sanity check the type of g
@@ -47,11 +47,11 @@ public class ResolvedFunction {
         this.functionObject = functionObject;
     }
 
-    public GeneratorLibrary getLibrary() {
+    public DataMapperLibrary getLibrary() {
         return library;
     }
 
-    public void setLibrary(GeneratorLibrary library) {
+    public void setLibrary(DataMapperLibrary library) {
         this.library = library;
     }
 

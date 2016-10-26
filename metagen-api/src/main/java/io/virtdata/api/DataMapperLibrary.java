@@ -1,6 +1,6 @@
 package io.virtdata.api;
 
-import io.virtdata.core.GeneratorFunctionMapper;
+import io.virtdata.core.DataMapperFunctionMapper;
 import io.virtdata.core.ResolvedFunction;
 
 import java.util.List;
@@ -8,10 +8,10 @@ import java.util.Optional;
 
 /**
  * <p>
- * A GeneratorLibrary is an independently loadable library of generator functions.
+ * A DataMapperLibrary is an independently loadable library of generator functions.
  * </p>
  */
-public interface GeneratorLibrary {
+public interface DataMapperLibrary {
 
     /**
      * <p>Return the libimpl name for this generator libimpl, as it can be used in spec strings, etc.</p>
@@ -27,18 +27,18 @@ public interface GeneratorLibrary {
      * @param <T>  The result type produced by the generator.
      * @return An optional generator instances.
      */
-    default <T> Optional<Generator<T>> getGenerator(String spec) {
+    default <T> Optional<DataMapper<T>> getDataMapper(String spec) {
         if (canParseSpec(spec)) {
             Optional<ResolvedFunction> resolvedFunction = resolveFunction(spec);
             return resolvedFunction
                     .map(ResolvedFunction::getFunctionObject)
-                    .map(GeneratorFunctionMapper::map);
+                    .map(DataMapperFunctionMapper::map);
         }
         return Optional.empty();
     }
 
     /**
-     * Generator Libraries are required to test specifier strings in order to determine
+     * DataMapper Libraries are required to test specifier strings in order to determine
      * whether or not the library could possibly find matching functions.
      * This allows varying types of specifiers to be used that are library specific,
      * allowing an ad-hoc form of syntax layering.
@@ -62,6 +62,6 @@ public interface GeneratorLibrary {
      *
      * @return list of generator names that can be used in generator specs
      */
-    List<String> getGeneratorNames();
+    List<String> getDataMapperNames();
 
 }

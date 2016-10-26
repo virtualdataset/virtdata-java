@@ -1,8 +1,8 @@
 package io.virtdata.libimpl;
 
 import com.google.auto.service.AutoService;
-import io.virtdata.api.Generator;
-import io.virtdata.api.GeneratorLibrary;
+import io.virtdata.api.DataMapper;
+import io.virtdata.api.DataMapperLibrary;
 import io.virtdata.api.specs.SpecData;
 import io.virtdata.core.ResolvedFunction;
 import io.virtdata.mappers.mapped_continuous.CDistMapper;
@@ -18,8 +18,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("Duplicates")
-@AutoService(GeneratorLibrary.class)
-public class CDistMappedLibrary implements GeneratorLibrary {
+@AutoService(DataMapperLibrary.class)
+public class CDistMappedLibrary implements DataMapperLibrary {
 
     private static final Logger logger = LoggerFactory.getLogger(CDistMappedLibrary.class);
 
@@ -46,20 +46,20 @@ public class CDistMappedLibrary implements GeneratorLibrary {
                 logger.error("Error instantiating generator:" + e.getMessage(), e);
             }
         } else {
-            logger.debug("Generator class not found: " + spec);
+            logger.debug("Continuous Distribution class not found: " + spec);
         }
         return resolved;
     }
 
     @Override
-    public List<String> getGeneratorNames() {
+    public List<String> getDataMapperNames() {
         List<String> genNames = new ArrayList<>();
         return Arrays.stream(ContinuousDistributions.values()).map(Enum::toString).collect(Collectors.toList());
     }
 
     @SuppressWarnings("unchecked")
     private Optional<Class<? extends RealDistribution>> resolveFunctionClass(String funcName) {
-        Class<Generator> generatorClass = null;
+        Class<DataMapper> generatorClass = null;
         try {
             ContinuousDistributions cdist = ContinuousDistributions.valueOf(funcName);
             logger.debug("Located continuous distribution:" + cdist.toString() + " for generator type: " + funcName);

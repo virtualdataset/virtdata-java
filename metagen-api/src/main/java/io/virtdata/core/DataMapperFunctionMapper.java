@@ -1,7 +1,7 @@
 package io.virtdata.core;
 
 import io.virtdata.api.FunctionType;
-import io.virtdata.api.Generator;
+import io.virtdata.api.DataMapper;
 
 import java.util.function.*;
 
@@ -19,30 +19,30 @@ import java.util.function.*;
  * functions as the last resort.</p>
  */
 @SuppressWarnings("unchecked")
-public class GeneratorFunctionMapper {
+public class DataMapperFunctionMapper {
 
-    public static <T> Generator<T> map(Object function) {
+    public static <T> DataMapper<T> map(Object function) {
         FunctionType functionType = FunctionType.valueOf(function);
 
         switch (functionType) {
             case long_double:
-                return (Generator<T>) map((LongToDoubleFunction) function);
+                return (DataMapper<T>) map((LongToDoubleFunction) function);
             case long_int:
-                return (Generator<T>) map((LongToIntFunction) function);
+                return (DataMapper<T>) map((LongToIntFunction) function);
             case long_long:
-                return (Generator<T>) map((LongUnaryOperator) function);
+                return (DataMapper<T>) map((LongUnaryOperator) function);
             case long_T:
-                return (Generator<T>) map((LongFunction) function);
+                return (DataMapper<T>) map((LongFunction) function);
             case R_T:
-                return (Generator<T>) map((Function) function);
+                return (DataMapper<T>) map((Function) function);
             case int_int:
-                return (Generator<T>) map((IntUnaryOperator) function);
+                return (DataMapper<T>) map((IntUnaryOperator) function);
             case int_long:
-                return (Generator<T>) map((IntToLongFunction) function);
+                return (DataMapper<T>) map((IntToLongFunction) function);
             case int_double:
-                return (Generator<T>) map((IntToDoubleFunction) function);
+                return (DataMapper<T>) map((IntToDoubleFunction) function);
             case int_T:
-                return (Generator<T>) map((IntFunction) function);
+                return (DataMapper<T>) map((IntFunction) function);
         }
 
         throw new RuntimeException(
@@ -53,47 +53,47 @@ public class GeneratorFunctionMapper {
     }
 
     @org.jetbrains.annotations.Contract(pure = true)
-    public static <R> Generator<R> map(IntFunction<R> f) {
+    public static <R> DataMapper<R> map(IntFunction<R> f) {
         return (long l) -> f.apply((int) l);
     }
 
     @org.jetbrains.annotations.Contract(pure = true)
-    public static Generator<Long> map(IntToDoubleFunction f) {
+    public static DataMapper<Long> map(IntToDoubleFunction f) {
         return (long l) -> (long) f.applyAsDouble((int) l);
     }
 
     @org.jetbrains.annotations.Contract(pure = true)
-    public static Generator<Long> map(IntToLongFunction f) {
+    public static DataMapper<Long> map(IntToLongFunction f) {
         return (long l) -> f.applyAsLong((int) l);
     }
 
     @org.jetbrains.annotations.Contract(pure = true)
-    public static Generator<Integer> map(IntUnaryOperator f) {
+    public static DataMapper<Integer> map(IntUnaryOperator f) {
         return (long l) -> f.applyAsInt((int) l);
     }
 
     @org.jetbrains.annotations.Contract(pure = true)
-    public static Generator<Double> map(LongToDoubleFunction f) {
+    public static DataMapper<Double> map(LongToDoubleFunction f) {
         return f::applyAsDouble;
     }
 
     @org.jetbrains.annotations.Contract(pure = true)
-    public static Generator<Integer> map(LongToIntFunction f) {
+    public static DataMapper<Integer> map(LongToIntFunction f) {
         return f::applyAsInt;
     }
 
     @org.jetbrains.annotations.Contract(pure = true)
-    public static Generator<Long> map(LongUnaryOperator f) {
+    public static DataMapper<Long> map(LongUnaryOperator f) {
         return f::applyAsLong;
     }
 
     @org.jetbrains.annotations.Contract(pure = true)
-    public static <R> Generator<R> map(LongFunction<R> f) {
+    public static <R> DataMapper<R> map(LongFunction<R> f) {
         return f::apply;
     }
 
     @org.jetbrains.annotations.Contract(pure = true)
-    public static <R> Generator<R> map(Function<Long, R> f) {
+    public static <R> DataMapper<R> map(Function<Long, R> f) {
         return f::apply;
     }
 

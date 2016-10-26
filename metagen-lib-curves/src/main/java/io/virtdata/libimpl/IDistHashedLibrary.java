@@ -1,8 +1,8 @@
 package io.virtdata.libimpl;
 
 import com.google.auto.service.AutoService;
-import io.virtdata.api.Generator;
-import io.virtdata.api.GeneratorLibrary;
+import io.virtdata.api.DataMapper;
+import io.virtdata.api.DataMapperLibrary;
 import io.virtdata.api.specs.SpecData;
 import io.virtdata.core.ResolvedFunction;
 import io.virtdata.mappers.mapped_discrete.IDistMapper;
@@ -17,8 +17,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("Duplicates")
-@AutoService(GeneratorLibrary.class)
-public class IDistHashedLibrary implements GeneratorLibrary {
+@AutoService(DataMapperLibrary.class)
+public class IDistHashedLibrary implements DataMapperLibrary {
 
     private static final Logger logger = LoggerFactory.getLogger(IDistHashedLibrary.class);
 
@@ -45,20 +45,20 @@ public class IDistHashedLibrary implements GeneratorLibrary {
                 logger.error("Error instantiating generator:" + e.getMessage(), e);
             }
         } else {
-            logger.debug("Generator class not found: " + spec);
+            logger.debug("Integer Distribution class not found: " + spec);
         }
         return resolved;
     }
 
     @Override
-    public List<String> getGeneratorNames() {
+    public List<String> getDataMapperNames() {
         List<String> genNames = new ArrayList<>();
         return Arrays.stream(DiscreteDistributions.values()).map(Enum::toString).collect(Collectors.toList());
     }
 
     @SuppressWarnings("unchecked")
     private Optional<Class<? extends IntegerDistribution>> resolveFunctionClass(String generatorSpec) {
-        Class<Generator> generatorClass = null;
+        Class<DataMapper> generatorClass = null;
         SpecData specData = SpecData.forSpec(generatorSpec);
         String className = specData.getFuncName();
 

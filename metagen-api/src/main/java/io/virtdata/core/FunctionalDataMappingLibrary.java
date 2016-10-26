@@ -1,6 +1,6 @@
 package io.virtdata.core;
 
-import io.virtdata.api.GeneratorLibrary;
+import io.virtdata.api.DataMapperLibrary;
 import io.virtdata.api.ValueType;
 import io.virtdata.api.specs.SpecData;
 import io.virtdata.reflection.ConstructorResolver;
@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class FunctionalDataMappingLibrary implements GeneratorLibrary {
+public abstract class FunctionalDataMappingLibrary implements DataMapperLibrary {
     private static final Logger logger = LoggerFactory.getLogger(FunctionalDataMappingLibrary.class);
 
     public abstract String getLibraryName();
@@ -47,7 +47,7 @@ public abstract class FunctionalDataMappingLibrary implements GeneratorLibrary {
     }
 
     @Override
-    public List<String> getGeneratorNames() {
+    public List<String> getDataMapperNames() {
 
         List<ClassLoader> classLoadersList = new LinkedList<>();
         classLoadersList.add(ClasspathHelper.contextClassLoader());

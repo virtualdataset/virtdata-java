@@ -2,10 +2,10 @@ package io.virtdata.libraryimpl;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.Sets;
-import io.virtdata.api.GeneratorLibrary;
+import io.virtdata.api.DataMapperLibrary;
 import io.virtdata.api.ValueType;
 import io.virtdata.api.specs.SpecData;
-import io.virtdata.core.AllGenerators;
+import io.virtdata.core.AllDataMapperLibraries;
 import io.virtdata.core.ResolvedFunction;
 import io.virtdata.libraryimpl.composers.MultiSpecData;
 import org.slf4j.Logger;
@@ -49,11 +49,11 @@ import java.util.stream.Collectors;
  * If, after this step, there are functions which do have matching signatures, all others are removed.</LI>
  * </OL>
  */
-@AutoService(GeneratorLibrary.class)
-public class ComposerLibrary implements GeneratorLibrary {
+@AutoService(DataMapperLibrary.class)
+public class ComposerLibrary implements DataMapperLibrary {
 
     private final static String PREAMBLE = "compose ";
-    private final static Logger logger = LoggerFactory.getLogger(GeneratorLibrary.class);
+    private final static Logger logger = LoggerFactory.getLogger(DataMapperLibrary.class);
 
     @Override
     public String getLibraryName() {
@@ -92,13 +92,13 @@ public class ComposerLibrary implements GeneratorLibrary {
             List<ResolvedFunction> nodeFunctions = new ArrayList<>();
             for (ValueType valueType : inputTypes.peekFirst()) {
                 String vectoredSpec = specData.forResultType(valueType).getCanonicalSpec();
-                List<ResolvedFunction> vectoredFunctions = AllGenerators.get().resolveFunctions(vectoredSpec);
+                List<ResolvedFunction> vectoredFunctions = AllDataMapperLibraries.get().resolveFunctions(vectoredSpec);
                 logger.trace("Found " + vectoredFunctions.size() + " vectored functions for " + vectoredSpec);
                 if (vectoredFunctions.size() == 0) {
                     logger.warn("Falling back to sloppy conversion matching for " +
                             specData.getCanonicalSpec() + " in " + multiSpecData.getCanonicalSpec() +
                     " since no co-compatible type signatures were found.");
-                    vectoredFunctions = AllGenerators.get().resolveFunctions(specData.getCanonicalSpec());
+                    vectoredFunctions = AllDataMapperLibraries.get().resolveFunctions(specData.getCanonicalSpec());
                 }
                 nodeFunctions.addAll(vectoredFunctions);
             }
@@ -113,16 +113,6 @@ public class ComposerLibrary implements GeneratorLibrary {
         if (!inputTypes.peekFirst().contains(ValueType.LONG)) {
             throw new RuntimeException("There is no initial function which accepts a long input.");
         }
-
-//        for (SpecData specData : specs.getSpecs()) {
-//            String canonicalSpec = specData.getCanonicalSpec();
-//            List<ResolvedFunction> nodeFunctions = AllGenerators.get().resolveFunctions(canonicalSpec);
-//
-//            if (nodeFunctions.size() == 0) {
-//                throw new RuntimeException("Unable to resolve function for '" + canonicalSpec + "'");
-//            }
-//            funcs.add(nodeFunctions);
-//        }
 
         ValueType resultType = multiSpecData.getResultType().orElseThrow(() -> new RuntimeException("missing result type specifier"));
         List<ResolvedFunction> flattenedFuncs = optimizePath(funcs, resultType);
@@ -262,7 +252,7 @@ public class ComposerLibrary implements GeneratorLibrary {
     }
 
     @Override
-    public List<String> getGeneratorNames() {
+    public List<String> getDataMapperNames() {
         List<String> genNames = new ArrayList<>();
         return new ArrayList<String>() {{
             add("compose");

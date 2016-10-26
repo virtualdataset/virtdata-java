@@ -1,8 +1,8 @@
 package io.virtdata.libraryimpl;
 
 import io.virtdata.api.FunctionType;
-import io.virtdata.api.Generator;
-import io.virtdata.core.GeneratorFunctionMapper;
+import io.virtdata.api.DataMapper;
+import io.virtdata.core.DataMapperFunctionMapper;
 import org.testng.annotations.Test;
 
 import java.util.function.*;
@@ -30,7 +30,7 @@ public class FunctionAssemblerMatrixTest {
                 assy = assy.andThen(f1);
                 assy = assy.andThen(f2);
 
-                Generator g = GeneratorFunctionMapper.map(assy.getResolvedFunction().getFunctionObject());
+                DataMapper g = DataMapperFunctionMapper.map(assy.getResolvedFunction().getFunctionObject());
                 Object o = g.get(1L);
                 System.out.println(" out:" + o);
 

@@ -20,7 +20,7 @@ package io.virtdata.core;
 
 //
 
-import io.virtdata.api.Generator;
+import io.virtdata.api.DataMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,15 +35,15 @@ public class Bindings {
     private final static Logger logger = LoggerFactory.getLogger(Bindings.class);
 
     private BindingsTemplate template;
-    private List<Generator<?>> generators = new ArrayList<Generator<?>>();
+    private List<DataMapper<?>> dataMappers = new ArrayList<DataMapper<?>>();
 
-    public Bindings(BindingsTemplate template, List<Generator<?>> generators) {
+    public Bindings(BindingsTemplate template, List<DataMapper<?>> dataMappers) {
         this.template = template;
-        this.generators = generators;
+        this.dataMappers = dataMappers;
     }
 
     public String toString() {
-        return template.toString() + generators;
+        return template.toString() + dataMappers;
     }
 
     /**
@@ -52,10 +52,10 @@ public class Bindings {
      * @return An array of objects, the values generated from each generator in the list
      */
     public Object[] getAll(long input) {
-        Object[] values = new Object[generators.size()];
+        Object[] values = new Object[dataMappers.size()];
         int offset=0;
-        for (Generator generator: generators) {
-            values[offset++]=generator.get(input);
+        for (DataMapper dataMapper : dataMappers) {
+            values[offset++]= dataMapper.get(input);
         }
         return values;
     }
