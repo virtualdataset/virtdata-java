@@ -31,12 +31,12 @@ public class AllDataMapperLibraries implements DataMapperLibrary {
     }
 
     /**
-     * This method modifies the usual logic of finding generators. This is to allow only libraries which
+     * This method modifies the usual logic of finding data mapping functions. This is to allow only libraries which
      * can parse the spec to have a chance to map the function objects internally.
      *
-     * @param spec A specifier that describes the type and or parameterization of a new generator.
-     * @param <T> generator type
-     * @return an optional generator
+     * @param spec A specifier that describes the type and or parameterization of a new data mapper instance.
+     * @param <T> result type of a data mapper
+     * @return an optional data mapper instance
      */
     @Override
     public <T> Optional<DataMapper<T>> getDataMapper(String spec) {
@@ -60,7 +60,7 @@ public class AllDataMapperLibraries implements DataMapperLibrary {
 
     /**
      * If any composed libraries can parse the spec, we just return that one.
-     * @param spec a generator spec string
+     * @param spec a data mapping function specifier
      * @return true, if this spec is at least parsable by this library
      */
     @Override
@@ -69,9 +69,9 @@ public class AllDataMapperLibraries implements DataMapperLibrary {
     }
 
     /**
-     * This method modifies the usual logic of finding generators. This is to allow only libraries which
+     * This method modifies the usual logic of finding data mappers. This is to allow only libraries which
      * can parse the spec to have a chance to map the function objects internally.
-     * @param spec A specifier that describes the type and or parameterization of a new generator.
+     * @param spec A specifier that describes the type and or parameterization of a new data mapper.
      * @return a list of resolved functions
      */
     @Override
@@ -97,14 +97,14 @@ public class AllDataMapperLibraries implements DataMapperLibrary {
     public Optional<ResolvedFunction> resolveFunction(String spec) {
         List<ResolvedFunction> resolvedFunctionList = resolveFunctions(spec);
         if (resolvedFunctionList.size() == 0) {
-            logger.warn("Unable to find generator for spec '" + spec + "' in any libimpl, searched in " + toString());
+            logger.warn("Unable to find data mapper for spec '" + spec + "' in any libimpl, searched in " + toString());
             return Optional.empty();
         }
         if (resolvedFunctionList.size() > 1) {
             String resolvedNames = resolvedFunctionList.stream()
                     .map(r -> r.getClass().getCanonicalName())
                     .collect(Collectors.joining());
-            logger.warn("Found more than one matching generator for spec '" + spec + "' : " + resolvedNames);
+            logger.warn("Found more than one matching data mapper for spec '" + spec + "' : " + resolvedNames);
         }
         return Optional.of(resolvedFunctionList.get(0));
     }

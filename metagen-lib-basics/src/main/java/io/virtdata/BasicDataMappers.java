@@ -10,13 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p>This is a basic generator library that contains a variety of functions to build from.</p>
+ * <p>This is a basic data mapping library that contains a variety of functions to build from.</p>
  *
  * <p>This library simply relies on {@link FunctionalDataMappingLibrary}.</p>
  */
 @AutoService(DataMapperLibrary.class)
-public class BasicGenerators extends FunctionalDataMappingLibrary {
-    private static final Logger logger = LoggerFactory.getLogger(BasicGenerators.class);
+public class BasicDataMappers extends FunctionalDataMappingLibrary {
+    private static final Logger logger = LoggerFactory.getLogger(BasicDataMappers.class);
 
     @Override
     public String getLibraryName() {

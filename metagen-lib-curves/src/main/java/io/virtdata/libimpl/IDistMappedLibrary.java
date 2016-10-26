@@ -35,14 +35,14 @@ public class IDistMappedLibrary implements DataMapperLibrary {
         Optional<Class<? extends IntegerDistribution>> functionClass = resolveFunctionClass(spec);
 
         if (functionClass.isPresent()) {
-            String[] generatorArgs = specData.getFuncAndArgs();
-            generatorArgs[0] = functionClass.get().getCanonicalName();
+            String[] dataMapperArgs = specData.getFuncAndArgs();
+            dataMapperArgs[0] = functionClass.get().getCanonicalName();
             try {
-                IDistMapper tcd = new IDistMapper(generatorArgs);
+                IDistMapper tcd = new IDistMapper(dataMapperArgs);
                 ResolvedFunction resolvedFunction = new ResolvedFunction(tcd, this);
                 resolved.add(resolvedFunction);
             } catch (Exception e) {
-                logger.error("Error instantiating generator:" + e.getMessage(), e);
+                logger.error("Error instantiating data mapper:" + e.getMessage(), e);
             }
         } else {
             logger.debug("Integer Distribution class not found: " + spec);
@@ -57,15 +57,15 @@ public class IDistMappedLibrary implements DataMapperLibrary {
     }
 
     @SuppressWarnings("unchecked")
-    private Optional<Class<? extends IntegerDistribution>> resolveFunctionClass(String generatorSpec) {
-        Class<DataMapper> generatorClass = null;
-        String className = SpecData.forSpec(generatorSpec).getFuncName();
+    private Optional<Class<? extends IntegerDistribution>> resolveFunctionClass(String specifier) {
+        Class<DataMapper> dataMapperClass = null;
+        String className = SpecData.forSpec(specifier).getFuncName();
         try {
             DiscreteDistributions ddist = DiscreteDistributions.valueOf(className);
-            logger.debug("Located continuous distribution:" + ddist.toString() + " for generator type: " + generatorSpec);
+            logger.debug("Located continuous distribution:" + ddist.toString() + " for data mapper type: " + specifier);
             return Optional.ofNullable(ddist.getDistClass());
         } catch (Exception e) {
-            logger.debug("Unable to map continuous distribution class " + generatorSpec);
+            logger.debug("Unable to map continuous distribution class " + specifier);
             return Optional.empty();
         }
     }

@@ -28,8 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Maps a template of generator bind points and generator specs onto a set of generator
- * instances. Allows for streamlined calling of generator functions.
+ * Maps a template with named bind points and specifiers onto a set of data
+ * mapping function instances. Allows for streamlined calling of mapper functions
+ * as a set.
  */
 public class Bindings {
     private final static Logger logger = LoggerFactory.getLogger(Bindings.class);
@@ -47,9 +48,9 @@ public class Bindings {
     }
 
     /**
-     * Get a value from each generator in the bindings list
-     * @param input The long value which the bound generators will use as in input
-     * @return An array of objects, the values generated from each generator in the list
+     * Get a value from each data mapper in the bindings list
+     * @param input The long value which the bound data mappers will use as in input
+     * @return An array of objects, the values yielded from each data mapper in the list
      */
     public Object[] getAll(long input) {
         Object[] values = new Object[dataMappers.size()];

@@ -46,7 +46,7 @@ public class DataMapperFunctionMapper {
         }
 
         throw new RuntimeException(
-                "Function object was not a recognized type for mapping to a generator lambda, object"
+                "Function object was not a recognized type for mapping to a data mapping lambda: "
                         + function.toString());
 
 

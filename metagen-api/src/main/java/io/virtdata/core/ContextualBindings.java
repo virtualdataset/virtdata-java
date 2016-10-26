@@ -4,14 +4,14 @@ import io.virtdata.api.ValuesArrayBinder;
 import io.virtdata.api.Binder;
 
 /**
- * <p>A thread-local template that maps a set of generators, a context object, and a method for applying
- * generated values to the context object. This type is used in thread-local scope to map thread-specific
- * generator instances to a contextual template object and a method for applying generated values to it.</p>
+ * <p>A thread-local template that describes a set of data mappers, a context object, and a method for applying
+ * mapped values to the context object. This type is used in thread-local scope to map thread-specific
+ * data mapper instances to a contextual template object and a method for applying mapped values to it.</p>
  *
  * <p>This type is generally constructed by a ContextualBindingsTemplate.</p>
  *
  * @param <C> The type of the contextual template object.
- * @param <R> The resulting type from binding generated values with the contextual template C
+ * @param <R> The resulting type from binding mapped values with the contextual template C
  */
 public class ContextualBindings<C, R> implements Binder<R> {
 

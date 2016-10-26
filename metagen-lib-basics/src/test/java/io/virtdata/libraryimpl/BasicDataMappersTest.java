@@ -1,6 +1,6 @@
 package io.virtdata.libraryimpl;
 
-import io.virtdata.BasicGenerators;
+import io.virtdata.BasicDataMappers;
 import io.virtdata.api.DataMapper;
 import org.testng.annotations.Test;
 
@@ -10,35 +10,35 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BasicGeneratorsTest {
+public class BasicDataMappersTest {
 
 
     @Test
     public void testGetLibraryName() throws Exception {
-        String libraryName = new BasicGenerators().getLibraryName();
+        String libraryName = new BasicDataMappers().getLibraryName();
         assertThat(libraryName).isEqualTo("basics");
 
     }
 
     @Test
-    public void testGetGenerator() throws Exception {
-        Optional<DataMapper<Object>> generator = new BasicGenerators().getDataMapper("StaticStringGenerator(foo)");
+    public void testGetDataMapper() throws Exception {
+        Optional<DataMapper<Object>> generator = new BasicDataMappers().getDataMapper("StaticStringMapper(foo)");
         assertThat(generator.isPresent()).isTrue();
         assertThat(generator.get().get(5)).isEqualTo("foo");
     }
 
     @Test
-    public void testGetGeneratorNames() throws Exception {
-        BasicGenerators basics = new BasicGenerators();
+    public void testGetDataMapperNames() throws Exception {
+        BasicDataMappers basics = new BasicDataMappers();
         List<String> gnames = basics.getDataMapperNames();
         assertThat(gnames.size()>5);
-        assertThat(gnames.contains("StaticStringGenerator")).isTrue();
+        assertThat(gnames.contains("StaticStringMapper")).isTrue();
 
     }
 
     @Test
     public void testMultipleChoiceLong() {
-        BasicGenerators basics = new BasicGenerators();
+        BasicDataMappers basics = new BasicDataMappers();
         Optional<DataMapper<Object>> add5 = basics.getDataMapper("Add(5) -> long");
         assertThat(add5).isPresent();
         Object o = add5.get().get(5);
@@ -47,7 +47,7 @@ public class BasicGeneratorsTest {
 
     @Test
     public void testMultipleChoiceInt() {
-        BasicGenerators basics = new BasicGenerators();
+        BasicDataMappers basics = new BasicDataMappers();
         Optional<DataMapper<Object>> add5 = basics.getDataMapper("Add(5) -> int");
         assertThat(add5).isPresent();
         Object o = add5.get().get(5);
@@ -56,7 +56,7 @@ public class BasicGeneratorsTest {
 
     @Test
     public void testToDateSpaceInstantiator() throws Exception {
-        BasicGenerators basics = new BasicGenerators();
+        BasicDataMappers basics = new BasicDataMappers();
         Optional<DataMapper<Date>> generator = basics.getDataMapper("ToDate(1000)");
         assertThat(generator).isNotNull();
         assertThat(generator.get()).isNotNull();
@@ -66,7 +66,7 @@ public class BasicGeneratorsTest {
     }
     @Test
     public void testToDateSpaceAndCountInstantiator() throws Exception {
-        BasicGenerators basics = new BasicGenerators();
+        BasicDataMappers basics = new BasicDataMappers();
         Optional<DataMapper<Date>> generator = basics.getDataMapper("ToDate(1000,10)");
         assertThat(generator).isNotNull();
         assertThat(generator.get()).isNotNull();
@@ -76,7 +76,7 @@ public class BasicGeneratorsTest {
     }
     @Test
     public void testToDateInstantiator() throws Exception {
-        BasicGenerators basics = new BasicGenerators();
+        BasicDataMappers basics = new BasicDataMappers();
         Optional<DataMapper<Date>> generator = basics.getDataMapper("ToDate");
         assertThat(generator).isNotNull();
         assertThat(generator.get()).isNotNull();
@@ -86,7 +86,7 @@ public class BasicGeneratorsTest {
 
     @Test
     public void testToDateBucketInstantiator() throws Exception {
-        BasicGenerators basics = new BasicGenerators();
+        BasicDataMappers basics = new BasicDataMappers();
         Optional<DataMapper<Date>> generator = basics.getDataMapper("ToDate(1000,10000)");
         assertThat(generator).isNotNull();
         assertThat(generator.get()).isNotNull();
@@ -95,7 +95,7 @@ public class BasicGeneratorsTest {
 
     @Test
     public void testRandomLineToIntInstantiator() throws Exception {
-        BasicGenerators basics = new BasicGenerators();
+        BasicDataMappers basics = new BasicDataMappers();
         Optional<DataMapper<Integer>> generator = basics.getDataMapper("RandomLineToInt(data/numbers.txt)");
         assertThat(generator).isNotNull();
         assertThat(generator.get()).isNotNull();

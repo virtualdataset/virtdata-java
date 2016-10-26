@@ -35,14 +35,14 @@ public class IDistHashedLibrary implements DataMapperLibrary {
         Optional<Class<? extends IntegerDistribution>> functionClass = resolveFunctionClass(spec);
 
         if (functionClass.isPresent()) {
-            String[] generatorArgs = specData.getFuncAndArgs();
-            generatorArgs[0] = functionClass.get().getCanonicalName();
+            String[] dataMapperArgs = specData.getFuncAndArgs();
+            dataMapperArgs[0] = functionClass.get().getCanonicalName();
             try {
-                IDistMapper tcd = new IDistMapper(generatorArgs);
+                IDistMapper tcd = new IDistMapper(dataMapperArgs);
                 ResolvedFunction resolvedFunction = new ResolvedFunction(tcd, this);
                 resolved.add(resolvedFunction);
             } catch (Exception e) {
-                logger.error("Error instantiating generator:" + e.getMessage(), e);
+                logger.error("Error instantiating data mapper:" + e.getMessage(), e);
             }
         } else {
             logger.debug("Integer Distribution class not found: " + spec);
@@ -64,7 +64,7 @@ public class IDistHashedLibrary implements DataMapperLibrary {
 
         try {
             DiscreteDistributions ddist = DiscreteDistributions.valueOf(className);
-            logger.debug("Located continuous distribution:" + ddist.toString() + " for generator type: " + generatorSpec);
+            logger.debug("Located continuous distribution:" + ddist.toString() + " for data mapper type: " + generatorSpec);
             return Optional.ofNullable(ddist.getDistClass());
         } catch (Exception e) {
             logger.debug("Unable to map continuous distribution class " + generatorSpec);

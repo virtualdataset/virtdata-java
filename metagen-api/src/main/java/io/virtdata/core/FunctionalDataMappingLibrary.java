@@ -78,7 +78,7 @@ public abstract class FunctionalDataMappingLibrary implements DataMapperLibrary 
 
     private List<Class<?>> resolveFunctionClasses(String name) {
         if (name.contains(".")) {
-            throw new RuntimeException("Search packages must be designated by generator lib implementations "
+            throw new RuntimeException("Search packages must be designated by data mapping library implementations "
                     + " with getSearchPackages(), and may not be overridden.");
         }
         List<Class<?>> classes = new ArrayList<>();
@@ -99,7 +99,7 @@ public abstract class FunctionalDataMappingLibrary implements DataMapperLibrary 
     private Optional<Class<?>> resolveFunctionClass(String name) {
         Class generatorClass = null;
         if (name.contains(".")) {
-            throw new RuntimeException("Search packages must be designated by generator lib implementations "
+            throw new RuntimeException("Search packages must be designated by data mapping library implementations "
                     + " with getSearchPackages(), and may not be overridden.");
         }
 

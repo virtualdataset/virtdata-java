@@ -30,8 +30,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Maps a set of parameters on an associated object of type T to generators specs.
- * Allows for easy construction of GeneratorBindings when in the proper thread scope.
+ * Maps a set of parameters on an associated object of type T to specifiers for data mappers.
+ * Allows for easy construction of DataMapperBindings when in the proper thread scope.
  * <p>
  * The user is required to call @{link resolveBindings} when in the scope that the resulting
  * bindings will be used.
@@ -40,7 +40,7 @@ public class BindingsTemplate {
     private final static Logger logger = LoggerFactory.getLogger(BindingsTemplate.class);
 
     private List<String> bindPointNames = new ArrayList<String>();
-    private List<String> generatorSpecs = new ArrayList<String>();
+    private List<String> specifiers = new ArrayList<String>();
 
     private DataMapperLibrary genlib = AllDataMapperLibraries.get(); // by default
 
@@ -50,34 +50,34 @@ public class BindingsTemplate {
 
     public void addFieldBinding(String bindPointName, String genSpec) {
         this.bindPointNames.add(bindPointName);
-        this.generatorSpecs.add(genSpec);
+        this.specifiers.add(genSpec);
     }
 
     /**
-     * Use the generator libimpl and the generator specs to create instances of the generators.
-     * If you need thread-aware generation, be sure to call this in the proper thread. Each time this method
+     * Use the data mapping library and the specifier to create instances of data mapping functions.
+     * If you need thread-aware mapping, be sure to call this in the proper thread. Each time this method
      * is called, it creates a new instance.
-     * @return A set of bindings that can be used to generate object values later
+     * @return A set of bindings that can be used to yield mapped data values later.
      */
     public Bindings resolveBindings() {
         List<DataMapper<?>> dataMappers = new ArrayList<DataMapper<?>>();
-        for (String generatorSpec : generatorSpecs) {
-            Optional<DataMapper<Object>> optGenerator = genlib.getDataMapper(generatorSpec);
-            if (optGenerator.isPresent()) {
-                dataMappers.add(optGenerator.get());
+        for (String specifier : specifiers) {
+            Optional<DataMapper<Object>> optionalDataMapper = genlib.getDataMapper(specifier);
+            if (optionalDataMapper.isPresent()) {
+                dataMappers.add(optionalDataMapper.get());
             } else {
-                logAvailableGenerators();
+                logAvailableDataMappers();
                 throw new RuntimeException(
-                        "generator binding was unsuccessful for "
+                        "data mapper binding was unsuccessful for "
                                 + "lib:" + genlib.getLibraryName()
-                                + ", spec:" + generatorSpec
-                                + ", see log for known generator names.");
+                                + ", spec:" + specifier
+                                + ", see log for known data mapper names.");
             }
         }
         return new Bindings(this, dataMappers);
     }
 
-    private void logAvailableGenerators() {
+    private void logAvailableDataMappers() {
         genlib.getDataMapperNames().forEach(gn -> logger.info("GENERATOR " + gn));
     }
 
@@ -85,8 +85,8 @@ public class BindingsTemplate {
         return this.bindPointNames;
     }
 
-    public List<String> getGeneratorSpecs() {
-        return this.generatorSpecs;
+    public List<String> getDataMapperSpecs() {
+        return this.specifiers;
     }
 
     public String toString() {
@@ -96,7 +96,7 @@ public class BindingsTemplate {
             sb.append(delim);
             sb.append("'").append(bindPointNames.get(i)).append("'");
             sb.append("=>");
-            sb.append("\"").append(generatorSpecs.get(i)).append("\"");
+            sb.append("\"").append(specifiers.get(i)).append("\"");
             delim = ", ";
         }
         return sb.toString();
@@ -109,7 +109,7 @@ public class BindingsTemplate {
             sb.append(delim);
             sb.append("'").append(bindPointNames.get(i)).append("'");
             sb.append("=>");
-            sb.append("\"").append(generatorSpecs.get(i)).append("\"");
+            sb.append("\"").append(specifiers.get(i)).append("\"");
             sb.append("=>[");
             sb.append(values[i]);
             sb.append("](");

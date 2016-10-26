@@ -58,15 +58,15 @@ public class CDistHashedLibrary implements DataMapperLibrary {
     }
 
     @SuppressWarnings("unchecked")
-    private Optional<Class<? extends RealDistribution>> resolveFunctionClass(String generatorSpec) {
+    private Optional<Class<? extends RealDistribution>> resolveFunctionClass(String specifier) {
         Class<DataMapper> generatorClass = null;
-        String className = SpecData.forSpec(generatorSpec).getFuncName();
+        String className = SpecData.forSpec(specifier).getFuncName();
         try {
             ContinuousDistributions cdist = ContinuousDistributions.valueOf(className);
-            logger.debug("Located continuous distribution:" + cdist.toString() + " for generator type: " + generatorSpec);
+            logger.debug("Located continuous distribution:" + cdist.toString() + " for data mapper type: " + specifier);
             return Optional.ofNullable(cdist.getDistClass());
         } catch (Exception e) {
-            logger.debug("Unable to map continuous distribution class " + generatorSpec);
+            logger.debug("Unable to map continuous distribution class " + specifier);
             return Optional.empty();
         }
     }

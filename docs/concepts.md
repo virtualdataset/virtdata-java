@@ -19,9 +19,16 @@ Just as RNGs can appear random when the are not truly, statistical distributions
 
 The data mapping functions are the core building block of metagen. They are the functional logic that powers all procedural generation. Data mapping functions are generally pure functions. This simply means that a generator function will always provide the same result given the same input. All top-level mapping functions all take a long value as their input, and produce a result based on their parameterized type.
 
-### Generator Library
+##### Combining RNGs and Data Mapping Functions
 
-Generator functions are packaged into libraries which can be loaded by the metagen-user component of the project. Each library has a name, a function resolver, and a set of functions that can be instantiated via the function resolver.
+Because pure functions play such a key part in procedural generation
+techniques, the terms "data mapping function", "data mapper" and "data mapping library" will be more common in the library than "generator". Conceptually, mapping functions to not generate anything. It makes more sense to think of mapping data from one domain to another. Even so, the data that is yielded by mapping functions can appear quite realistic.
+
+Because good RNGs do generally contain internal state, they aren't purely functional. This means that in some cases -- those in which you need to have random access to a virtual data set, hash functions make more sense. This toolkit allows you to choose between the two in some cases. However, it generally favors using hashing and pure-function approaches where possible. Even the statistical curve simulations do this.  
+
+### Data Mapper Library
+
+Data Mapping functions are packaged into libraries which can be loaded by the metagen-user component of the project. Each library has a name, a function resolver, and a set of functions that can be instantiated via the function resolver.
 
 ### Function Resolver
 
@@ -30,3 +37,4 @@ Each library must implement its own function resolver. This is because each libr
 #### Bindings Template
 
 It is often useful to have a template that describes a set of generator functions that can be reused across many threads or other application scopes. A bindings template is a way to capture the requested generator functions for re-use, with actual scope instantiation of the generator functions controlled by the usage point. For example, in a JEE app, you may have a bindings template in the application scope, and a set of actual bindings within each request (thread scope).
+

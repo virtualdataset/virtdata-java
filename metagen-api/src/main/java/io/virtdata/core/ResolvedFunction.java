@@ -12,7 +12,7 @@ import java.util.Optional;
 /**
  * A function that has been resolved by a library for use in data mapping.
  * Some API calls require this type, as it can only be constructed successfully
- * if the object type is valid for mapping to a generator.
+ * if the object type is valid for mapping to a data mapper function.
  */
 public class ResolvedFunction {
 

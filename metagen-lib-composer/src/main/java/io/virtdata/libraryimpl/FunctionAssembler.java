@@ -118,7 +118,7 @@ public class FunctionAssembler {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> DataMapper<T> getGenerator() {
+    public <T> DataMapper<T> getDataMapper() {
         return (DataMapper<T>) DataMapperFunctionMapper.map(getFunction());
     }
 

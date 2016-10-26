@@ -1,4 +1,4 @@
-package io.virtdata.mappers.generators;
+package io.virtdata.mappers;
 
 import io.virtdata.mappers.mapped_discrete.IDistMappedCoupler;
 import io.virtdata.mappers.mapped_discrete.IDistMappedResolver;

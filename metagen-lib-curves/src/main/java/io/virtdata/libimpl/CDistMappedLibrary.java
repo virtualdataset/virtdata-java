@@ -36,14 +36,14 @@ public class CDistMappedLibrary implements DataMapperLibrary {
         Optional<Class<? extends RealDistribution>> functionClass = resolveFunctionClass(specData.getFuncName());
 
         if (functionClass.isPresent()) {
-            String[] generatorArgs = specData.getFuncAndArgs();
-            generatorArgs[0] = functionClass.get().getCanonicalName();
+            String[] dataMapperArgs = specData.getFuncAndArgs();
+            dataMapperArgs[0] = functionClass.get().getCanonicalName();
             try {
-                CDistMapper tcd = new CDistMapper(generatorArgs);
+                CDistMapper tcd = new CDistMapper(dataMapperArgs);
                 ResolvedFunction resolvedFunction = new ResolvedFunction(tcd, this);
                 resolved.add(resolvedFunction);
             } catch (Exception e) {
-                logger.error("Error instantiating generator:" + e.getMessage(), e);
+                logger.error("Error instantiating data mapper:" + e.getMessage(), e);
             }
         } else {
             logger.debug("Continuous Distribution class not found: " + spec);
@@ -62,7 +62,7 @@ public class CDistMappedLibrary implements DataMapperLibrary {
         Class<DataMapper> generatorClass = null;
         try {
             ContinuousDistributions cdist = ContinuousDistributions.valueOf(funcName);
-            logger.debug("Located continuous distribution:" + cdist.toString() + " for generator type: " + funcName);
+            logger.debug("Located continuous distribution:" + cdist.toString() + " for data mapper type: " + funcName);
             return Optional.ofNullable(cdist.getDistClass());
         } catch (Exception e) {
             logger.debug("Unable to map continuous distribution class " + funcName);

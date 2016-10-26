@@ -4,8 +4,8 @@ import java.util.function.*;
 
 /**
  * <p>Captures the list of function object types which may be used
- * to implement generators. Library implementations may rely on this
- * for type metadata.</p>
+ * to implement data mapping functions. Library implementations
+ * may rely on this for type metadata.</p>
  */
 public enum FunctionType {
 
