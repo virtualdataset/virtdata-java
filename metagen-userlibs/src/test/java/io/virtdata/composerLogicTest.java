@@ -14,7 +14,9 @@ public class composerLogicTest {
     @Test
     public void  testIntegratedComposer() {
         ComposerLibrary cl = new ComposerLibrary();
-        Optional<DataMapper<Object>> dataMapper = cl.getDataMapper("compose binomial(8,0.5); ToDate -> Date");
+        Optional<DataMapper<Object>> dataMapper = cl.getDataMapper(
+                "compose binomial(8,0.5); ToDate -> Date"
+        );
         assertThat(dataMapper).isNotNull();
         assertThat(dataMapper.isPresent()).isTrue();
         assertThat(dataMapper.get().get(1)).isNotNull();
@@ -23,7 +25,9 @@ public class composerLogicTest {
     @Test
     public void testComplexComposition() {
         ComposerLibrary cl = new ComposerLibrary();
-        Optional<DataMapper<Object>> dataMapper = cl.getDataMapper("compose Hash; mapto_normal(50,10.0); Add(50); ToString; Suffix(avgdays) -> String");
+        Optional<DataMapper<Object>> dataMapper = cl.getDataMapper(
+                "compose Hash; mapto_normal(50,10.0); Add(50); ToString; Suffix(avgdays) -> String"
+        );
         assertThat(dataMapper).isNotNull();
         assertThat(dataMapper.isPresent()).isTrue();
         assertThat(dataMapper.get().get(1)).isNotNull();
