@@ -1,0 +1,92 @@
+{
+  "name": "virtualdataset/metagen-java",
+  "version": "0.1.4",
+  "libraries": {
+    "xv": "^1.1.21"
+  },
+  "title": "metagen-java",
+  "branch": "master",
+  "style": {
+    "name": "Future",
+    "componentSet": {
+      "nav": "nav/BasicNav",
+      "header": "header/BannerHeader",
+      "article": "article/BasicArticle",
+      "footer": "footer/BasicFooter"
+    },
+    "fontFamily": "\"Avenir Next\", Helvetica, sans-serif",
+    "heading": {
+      "fontWeight": 500,
+      "textTransform": "uppercase",
+      "letterSpacing": "0.2em"
+    },
+    "alternativeText": {
+      "textTransform": "uppercase",
+      "fontWeight": 400,
+      "letterSpacing": "0.2em",
+      "opacity": 0.75
+    },
+    "colors": {
+      "text": "#333",
+      "background": "#fff",
+      "primary": "#666",
+      "secondary": "#888",
+      "highlight": "#1f80ff",
+      "muted": "#f6f6f6",
+      "border": "#eee"
+    },
+    "layout": {
+      "centered": true,
+      "maxWidth": 1024,
+      "bannerHeight": "80vh"
+    }
+  },
+  "content": [
+    {
+      "component": "nav",
+      "links": [
+        {
+          "href": "https://github.com/virtualdataset/metagen-java",
+          "text": "GitHub"
+        }
+      ]
+    },
+    {
+      "component": "header",
+      "heading": "metagen-java",
+      "subhead": "Metagen Java Libraries",
+      "children": [
+        {
+          "component": "ui/TweetButton",
+          "text": "metagen-java: Metagen Java Libraries",
+          "url": null
+        },
+        {
+          "component": "ui/GithubButton",
+          "user": "virtualdataset",
+          "repo": "metagen-java"
+        }
+      ]
+    },
+    {
+      "component": "article",
+      "metadata": {
+        "source": "github.readme"
+      },
+      "html": "<h1>Metagen for Java</h1>\n<p><a href=\"https://travis-ci.org/virtualdataset/metagen-java\"><img src=\"https://travis-ci.org/virtualdataset/metagen-java.svg?branch=master\"></a></p>\n"
+    },
+    {
+      "component": "footer",
+      "links": [
+        {
+          "href": "https://github.com/virtualdataset/metagen-java",
+          "text": "GitHub"
+        },
+        {
+          "href": "https://github.com/virtualdataset",
+          "text": "virtualdataset"
+        }
+      ]
+    }
+  ]
+}
