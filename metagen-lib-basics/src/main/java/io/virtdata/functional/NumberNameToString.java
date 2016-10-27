@@ -28,6 +28,9 @@ public class NumberNameToString implements LongFunction<String> {
 
     @Override
     public String apply(long input) {
+        if (input==0L) {
+            return "zero";
+        }
         String result = formatter.format((int) input % Integer.MAX_VALUE);
         return result;
     }
