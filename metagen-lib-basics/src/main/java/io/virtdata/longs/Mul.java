@@ -12,6 +12,6 @@ public class Mul implements LongUnaryOperator {
 
     @Override
     public long applyAsLong(long operand) {
-        return operand + multiplicand;
+        return operand * multiplicand;
     }
 }
