@@ -18,11 +18,14 @@
 
 package io.virtdata.functional;
 
+import io.virtdata.api.Desc;
+
 import java.util.function.LongUnaryOperator;
 
 /**
  * Integer devide the cycle, the other side of modulo.
  */
+@Desc("divide the long input by a long divisor, returning a long result")
 public class DivideToLong implements LongUnaryOperator {
 
     private final long divisor;
