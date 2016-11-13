@@ -1,4 +1,4 @@
 package io.virtdata.datamappers.industry;
 
-public class JobTitle {
+public class Profession {
 }

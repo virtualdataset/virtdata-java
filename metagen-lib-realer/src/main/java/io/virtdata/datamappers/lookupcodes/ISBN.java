@@ -1,4 +1,4 @@
-package io.virtdata.lookupcodes;
+package io.virtdata.datamappers.lookupcodes;
 
 public class ISBN {
 }

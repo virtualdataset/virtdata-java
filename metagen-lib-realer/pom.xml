@@ -13,7 +13,7 @@
     <name>metagen-lib-realer</name>
     <url>http://virtdata.io/</url>
 
-    <description>With inspiration from faker, but realer</description>
+    <description>With inspiration from other libraries</description>
 
     <dependencies>
         <dependency>

@@ -1,4 +1,4 @@
-package io.virtdata.datamappers.web;
+package io.virtdata.datamappers.webapps;
 
 public class ColorName {
 }

@@ -1,4 +1,4 @@
-package io.virtdata.datamappers.location;
+package io.virtdata.datamappers.userinfo;
 
 public class State {
 }

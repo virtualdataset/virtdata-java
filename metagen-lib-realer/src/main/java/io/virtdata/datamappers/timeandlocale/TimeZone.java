@@ -1,4 +1,4 @@
-package io.virtdata.datamappers;
+package io.virtdata.datamappers.timeandlocale;
 
 public class TimeZone {
 }

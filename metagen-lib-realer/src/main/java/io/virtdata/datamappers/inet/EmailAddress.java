@@ -1,4 +1,4 @@
 package io.virtdata.datamappers.inet;
 
-public class Email {
+public class EmailAddress {
 }

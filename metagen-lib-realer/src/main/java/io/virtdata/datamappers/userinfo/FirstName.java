@@ -1,4 +1,4 @@
-package io.virtdata.datamappers.names;
+package io.virtdata.datamappers.userinfo;
 
 public class FirstName {
 }
