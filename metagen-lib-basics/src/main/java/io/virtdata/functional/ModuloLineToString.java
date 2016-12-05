@@ -18,7 +18,7 @@
 
 package io.virtdata.functional;
 
-import io.virtdata.util.FileReaders;
+import io.virtdata.util.ResourceFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +35,7 @@ public class ModuloLineToString implements LongFunction<String> {
 
     public ModuloLineToString(String filename) {
         this.filename = filename;
-        this.lines = FileReaders.loadToStringList(filename);
+        this.lines = ResourceFinder.readDataFileLines(filename);
     }
 
     @Override

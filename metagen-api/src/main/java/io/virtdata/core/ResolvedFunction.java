@@ -1,7 +1,8 @@
 package io.virtdata.core;
 
-import io.virtdata.api.FunctionType;
+import com.strobel.reflection.Type;
 import io.virtdata.api.DataMapperLibrary;
+import io.virtdata.api.FunctionType;
 import io.virtdata.api.ValueType;
 
 import java.lang.reflect.Method;
@@ -19,6 +20,7 @@ public class ResolvedFunction {
     private FunctionType functionType;
     private Object functionObject;
     private DataMapperLibrary library;
+    // cache applyMethod, it's idempotent
 
     public ResolvedFunction(Object g, DataMapperLibrary library) {
         this.library = library;
@@ -58,12 +60,12 @@ public class ResolvedFunction {
     public String toString() {
         return "fn:" + functionObject.getClass().getCanonicalName() + ", type:" + functionType
                 + ((library==null) ? "" : ", lib:" + library.getLibraryName());
-
     }
 
     public Class<?> getResultClass() {
         Method applyMethod = getMethod();
-        return applyMethod.getReturnType();
+        Type<?> returnType = Type.of(functionObject.getClass()).getMethod(applyMethod.getName()).getReturnType();
+        return returnType.getErasedClass();
     }
 
     public Class<?> getArgType() {
@@ -77,16 +79,16 @@ public class ResolvedFunction {
     }
 
     private Method getMethod() {
-        Optional<Method> applyMethod = Arrays.stream(functionObject.getClass().getMethods())
+
+        Optional<Method> foundMethod = Arrays.stream(functionObject.getClass().getMethods())
                 .filter(m -> m.getName().startsWith("apply"))
                 .findFirst();
 
-        return applyMethod.orElseThrow(
+        return foundMethod.orElseThrow(
                 () -> new RuntimeException(
                         "Unable to find the function method on " + functionObject.getClass().getCanonicalName()
                 )
         );
-
     }
 
     public static Comparator<ResolvedFunction> PREFERRED_TYPE_COMPARATOR = new PreferredTypeComparator();

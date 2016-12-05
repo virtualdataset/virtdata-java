@@ -2,6 +2,7 @@ package io.virtdata;
 
 import io.virtdata.api.DataMapper;
 import io.virtdata.libraryimpl.ComposerLibrary;
+import io.virtdata.testing.functions.ARandomPOJO;
 import org.testng.annotations.Test;
 
 import java.util.Optional;
@@ -9,7 +10,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Test
-public class composerLogicTest {
+public class ComposerLogicTest {
 
     @Test
     public void  testIntegratedComposer() {
@@ -41,6 +42,25 @@ public class composerLogicTest {
         ComposerLibrary cl = new ComposerLibrary();
         Optional<DataMapper<Object>> dataMapper = cl.getDataMapper("Add(5)");
         assertThat(dataMapper.isPresent()).isFalse();
+    }
+
+    @Test
+    public void testResourceLoader() {
+        ComposerLibrary cl = new ComposerLibrary();
+        Optional<DataMapper<Object>> dataMapper = cl.getDataMapper("compose ModuloLineToString(data/variable_words.txt) -> String");
+        assertThat(dataMapper).isPresent();
+        assertThat(dataMapper.get().get(1)).isEqualToComparingFieldByField("completion_count");
+        dataMapper = cl.getDataMapper("compose ModuloLineToString(variable_words.txt) -> String");
+        assertThat(dataMapper).isPresent();
+        assertThat(dataMapper.get().get(1)).isEqualToComparingFieldByField("completion_count");
+    }
+
+    @Test
+    public void testPOJOTypeSpecializer() {
+        ComposerLibrary cl = new ComposerLibrary();
+        Optional<DataMapper<Object>> dataMapper = cl.getDataMapper("compose LongToLongPOJO -> ARandomPOJO");
+        assertThat(dataMapper).isPresent();
+        assertThat(dataMapper.get().get(1)).isOfAnyClassIn(ARandomPOJO.class);
     }
 
 }

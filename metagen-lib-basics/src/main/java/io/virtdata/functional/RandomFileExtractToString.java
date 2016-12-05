@@ -18,7 +18,7 @@
 
 package io.virtdata.functional;
 
-import io.virtdata.util.FileReaders;
+import io.virtdata.util.ResourceFinder;
 import org.apache.commons.math3.distribution.IntegerDistribution;
 import org.apache.commons.math3.distribution.UniformIntegerDistribution;
 import org.apache.commons.math3.random.MersenneTwister;
@@ -51,7 +51,7 @@ public class RandomFileExtractToString implements LongFunction<String> {
         if (fileDataImage == null) {
             synchronized (RandomFileExtractToString.class) {
                 if (fileDataImage == null) {
-                    CharBuffer image= FileReaders.loadFileToCharBuffer(fileName);
+                    CharBuffer image= ResourceFinder.readDataFileToCharBuffer(fileName);
                     fileDataImage = image;
 
                 }

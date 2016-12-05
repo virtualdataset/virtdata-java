@@ -18,6 +18,8 @@ import java.util.List;
 public class BasicDataMappers extends FunctionalDataMappingLibrary {
     private static final Logger logger = LoggerFactory.getLogger(BasicDataMappers.class);
 
+    public final static String dataDir = "data";
+
     @Override
     public String getLibraryName() {
         return "basics";

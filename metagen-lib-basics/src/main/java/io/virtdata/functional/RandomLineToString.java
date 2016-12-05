@@ -18,7 +18,7 @@
 
 package io.virtdata.functional;
 
-import io.virtdata.util.FileReaders;
+import io.virtdata.util.ResourceFinder;
 import org.apache.commons.math3.distribution.IntegerDistribution;
 import org.apache.commons.math3.distribution.UniformIntegerDistribution;
 import org.apache.commons.math3.random.MersenneTwister;
@@ -43,7 +43,7 @@ public class RandomLineToString implements LongFunction<String> {
 
     public RandomLineToString(String filename) {
         this.filename = filename;
-        this.lines = FileReaders.loadToStringList(filename);
+        this.lines = ResourceFinder.readDataFileLines(filename);
         itemDistribution= new UniformIntegerDistribution(rng, 0, lines.size()-2);
     }
 
