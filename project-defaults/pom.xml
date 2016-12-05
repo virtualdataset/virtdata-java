@@ -3,7 +3,7 @@
 
     <groupId>io.virtdata</groupId>
     <artifactId>project-defaults</artifactId>
-    <version>1.0.16</version>
+    <version>1.0.17-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
@@ -31,7 +31,7 @@
 
     <scm>
         <url>scm:git:https://github.com/virtualdataset/metagen-java.git</url>
-        <tag>metagen-1.0.16</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <build>
