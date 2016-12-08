@@ -8,8 +8,15 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/***
+/**
  * StringCompositor provides a way to build strings from a string template and provided values.
+ *
+ * <p>
+ * The template is simply an array of string values, where odd indices represent literals, and even indices represent token
+ * positions. If the token positions contains words, then these can be used as keys for looking up values in an associated
+ * map. If not, then values are simply positional, in which case simple numerals are used as indices for debugging purposes,
+ * although they are not referenced during string interpolation.
+ * </p>
  */
 public class StringCompositor implements ValuesArrayBinder<StringCompositor, String> {
 
@@ -27,10 +34,7 @@ public class StringCompositor implements ValuesArrayBinder<StringCompositor, Str
     }
 
     /**
-     * The template is simply an array of string values, where odd indices represent literals, and even indices represent token
-     * positions. If the token positions contains words, then these can be used as keys for looking up values in an associated
-     * map. If not, then values are simply positional, in which case simple numerals are used as indices for debugging purposes,
-     * although they are not referenced during string interpolation.
+     * Parse the template according to the description for {@link StringCompositor}.
      *
      * @param template A string template.
      * @return A template array.

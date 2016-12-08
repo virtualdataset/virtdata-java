@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -51,6 +52,13 @@ public class BindingsTemplate {
     public void addFieldBinding(String bindPointName, String genSpec) {
         this.bindPointNames.add(bindPointName);
         this.specifiers.add(genSpec);
+    }
+
+    public void addFieldBindings(Map<String,String> bindPairs) {
+        for (Map.Entry<String, String> e : bindPairs.entrySet()) {
+            this.bindPointNames.add(e.getKey());
+            this.specifiers.add(e.getValue());
+        }
     }
 
     /**

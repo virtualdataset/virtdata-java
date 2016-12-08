@@ -3,6 +3,9 @@ package io.virtdata.templates;
 import io.virtdata.core.Bindings;
 import io.virtdata.core.BindingsTemplate;
 
+/**
+ * Uses a string template and a bindings template to create instances of {@link StringBindings}.
+ */
 public class StringBindingsTemplate {
 
     private String stringTemplate;
@@ -13,6 +16,10 @@ public class StringBindingsTemplate {
         this.bindingsTemplate = bindingsTemplate;
     }
 
+    /**
+     * Create a new instance of {@link StringBindings}, preferably in the thread context that will use it.
+     * @return a new StringBindings
+     */
     public StringBindings resolve() {
         Bindings bindings = bindingsTemplate.resolveBindings();
         StringCompositor compositor = new StringCompositor(stringTemplate);
