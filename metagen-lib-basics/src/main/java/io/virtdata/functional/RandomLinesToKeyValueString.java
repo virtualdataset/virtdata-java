@@ -18,7 +18,6 @@
 
 package io.virtdata.functional;
 
-import org.apache.commons.math3.distribution.IntegerDistribution;
 import org.apache.commons.math3.random.MersenneTwister;
 
 import java.util.Map;
@@ -28,12 +27,15 @@ import java.util.stream.Collectors;
 public class RandomLinesToKeyValueString implements LongFunction<String> {
 
     private final RandomLineToStringMap lineDataMapper;
-    private RandomLineToString paramNameMapper;
-    private IntegerDistribution sizeDistribution;
-    private MersenneTwister rng = new MersenneTwister(System.nanoTime());
+    private final MersenneTwister rng;
 
-    public RandomLinesToKeyValueString(String paramFile, int sizeDistribution) {
-        lineDataMapper = new RandomLineToStringMap(paramFile, sizeDistribution);
+    public RandomLinesToKeyValueString(String paramFile, int maxSize) {
+        this(paramFile,maxSize,System.nanoTime());
+    }
+
+    public RandomLinesToKeyValueString(String paramFile, int maxsize, long seed) {
+        rng = new MersenneTwister(seed);
+        lineDataMapper = new RandomLineToStringMap(paramFile, maxsize);
     }
 
     @Override

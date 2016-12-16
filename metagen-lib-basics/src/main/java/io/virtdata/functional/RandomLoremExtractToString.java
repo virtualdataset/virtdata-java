@@ -24,8 +24,12 @@ public class RandomLoremExtractToString implements LongFunction<String> {
 
     private final RandomFileExtractToString randomFileExtractMapper;
 
+    public RandomLoremExtractToString(int minsize, int maxsize, long seed) {
+        randomFileExtractMapper = new RandomFileExtractToString("lorem-ipsum.txt", minsize, maxsize, seed);
+    }
+
     public RandomLoremExtractToString(int minsize, int maxsize) {
-        randomFileExtractMapper = new RandomFileExtractToString("lorem-ipsum.txt", minsize, maxsize);
+        this(minsize,maxsize,System.nanoTime());
     }
 
     @Override

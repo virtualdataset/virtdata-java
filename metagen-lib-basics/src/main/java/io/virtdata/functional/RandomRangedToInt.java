@@ -23,18 +23,23 @@ import org.apache.commons.math3.random.MersenneTwister;
 import java.util.function.LongFunction;
 
 public class RandomRangedToInt implements LongFunction<Integer> {
-    private MersenneTwister theTwister = new MersenneTwister(System.nanoTime());
-    private long min;
-    private long max;
-    private long _length;
+    private final MersenneTwister theTwister;
+    private final long min;
+    private final long max;
+    private final long length;
 
-    public RandomRangedToInt(int min, int max) {
+    public RandomRangedToInt(long min, long max) {
+        this(min,max,System.nanoTime());
+    }
+
+    public RandomRangedToInt(long min, long max, long seed) {
+        this.theTwister = new MersenneTwister(seed);
         if (max<=min) {
             throw new RuntimeException("max must be >= min");
         }
         this.min = min;
         this.max = max;
-        this._length = max - min;
+        this.length = max - min;
     }
 
     public String toString() {
@@ -44,7 +49,7 @@ public class RandomRangedToInt implements LongFunction<Integer> {
     @Override
     public Integer apply(long operand) {
         long value = Math.abs(theTwister.nextLong());
-        value %= _length;
+        value %= length;
         value += min;
         return (int) value;
     }

@@ -23,7 +23,15 @@ import org.apache.commons.math3.random.MersenneTwister;
 import java.util.function.LongFunction;
 
 public class RandomLongToString implements LongFunction<String> {
-    private MersenneTwister theTwister = new MersenneTwister(System.nanoTime());
+    private final MersenneTwister theTwister;
+
+    public RandomLongToString() {
+        this(System.nanoTime());
+    }
+
+    public RandomLongToString(long seed) {
+        theTwister = new MersenneTwister(seed);
+    }
 
     @Override
     public String apply(long input) {

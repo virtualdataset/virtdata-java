@@ -29,12 +29,19 @@ import java.util.function.LongFunction;
 
 public class RandomLineToStringMap implements LongFunction<Map<String,String>> {
 
-    private RandomLineToString lineDataMapper;
-    private IntegerDistribution sizeDistribution;
-    private MersenneTwister rng = new MersenneTwister(System.nanoTime());
+    private final RandomLineToString lineDataMapper;
+    private final IntegerDistribution sizeDistribution;
+    private final MersenneTwister rng;
 
-    public RandomLineToStringMap(String paramFile, int sizeDistribution) {
-        this.sizeDistribution = new UniformIntegerDistribution(0,sizeDistribution-1);
+    public RandomLineToStringMap(String paramFile, int maxSize) {
+        rng = new MersenneTwister(System.nanoTime());
+        this.sizeDistribution = new UniformIntegerDistribution(rng, 0,maxSize-1);
+        this.lineDataMapper = new RandomLineToString(paramFile);
+    }
+
+    public RandomLineToStringMap(String paramFile, int maxSize, long seed) {
+        this.rng = new MersenneTwister(seed);
+        this.sizeDistribution = new UniformIntegerDistribution(rng, 0,maxSize-1);
         this.lineDataMapper = new RandomLineToString(paramFile);
     }
 

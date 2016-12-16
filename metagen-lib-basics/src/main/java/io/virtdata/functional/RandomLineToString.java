@@ -37,11 +37,27 @@ public class RandomLineToString implements LongFunction<String> {
 
     private List<String> lines = new ArrayList<>();
 
-    MersenneTwister rng = new MersenneTwister(System.nanoTime());
-    private IntegerDistribution itemDistribution;
-    private String filename;
+    private final MersenneTwister rng;
+    private final IntegerDistribution itemDistribution;
+    private final String filename;
 
     public RandomLineToString(String filename) {
+        this.rng = new MersenneTwister(System.nanoTime());
+        this.filename = filename;
+        this.lines = ResourceFinder.readDataFileLines(filename);
+        itemDistribution= new UniformIntegerDistribution(rng, 0, lines.size()-2);
+    }
+
+    public RandomLineToString(String filename, MersenneTwister rng) {
+        this.rng = rng;
+        this.filename = filename;
+        this.lines = ResourceFinder.readDataFileLines(filename);
+        this.lines = ResourceFinder.readDataFileLines(filename);
+        itemDistribution= new UniformIntegerDistribution(rng, 0, lines.size()-2);
+    }
+
+    public RandomLineToString(String filename, long seed) {
+        this.rng = new MersenneTwister(seed);
         this.filename = filename;
         this.lines = ResourceFinder.readDataFileLines(filename);
         itemDistribution= new UniformIntegerDistribution(rng, 0, lines.size()-2);

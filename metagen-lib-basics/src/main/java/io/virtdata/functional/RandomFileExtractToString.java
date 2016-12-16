@@ -34,35 +34,37 @@ public class RandomFileExtractToString implements LongFunction<String> {
     private static CharBuffer fileDataImage =null;
 
     private int minsize, maxsize;
-    private MersenneTwister rng = new MersenneTwister(System.nanoTime());
-    private IntegerDistribution sizeDistribution;
-    private IntegerDistribution positionDistribution;
-    private String fileName;
+    private final MersenneTwister rng;
+    private final IntegerDistribution sizeDistribution;
+    private final IntegerDistribution positionDistribution;
+    private final String fileName;
 
-    public RandomFileExtractToString(String fileName, int minsize, int maxsize) {
+    public RandomFileExtractToString(String fileName, int minsize, int maxsize, long seed) {
         this.fileName = fileName;
         this.minsize = minsize;
         this.maxsize = maxsize;
+        loadData();
+        this.rng = new MersenneTwister(seed);
+        this.sizeDistribution = new UniformIntegerDistribution(rng, minsize, maxsize);
+        this.positionDistribution = new UniformIntegerDistribution(rng, 1, fileDataImage.limit() - maxsize);
+
+
     }
 
-    @Override
-    public String apply(long input) {
-
+    private void loadData() {
         if (fileDataImage == null) {
             synchronized (RandomFileExtractToString.class) {
                 if (fileDataImage == null) {
                     CharBuffer image= ResourceFinder.readDataFileToCharBuffer(fileName);
                     fileDataImage = image;
-
                 }
             }
         }
+    }
 
-        if (sizeDistribution==null)
-        {
-            sizeDistribution = new UniformIntegerDistribution(rng, minsize, maxsize);
-            positionDistribution = new UniformIntegerDistribution(rng, 1, fileDataImage.limit() - maxsize);
-        }
+    @Override
+    public String apply(long input) {
+
 
         int offset = positionDistribution.sample();
         int length = sizeDistribution.sample();
@@ -75,7 +77,6 @@ public class RandomFileExtractToString implements LongFunction<String> {
         return sub;
 
     }
-
 
     public String toString() {
         return getClass().getSimpleName() + ":" + minsize + ":" + maxsize;

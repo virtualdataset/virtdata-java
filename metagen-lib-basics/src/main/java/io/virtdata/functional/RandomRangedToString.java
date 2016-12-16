@@ -23,12 +23,17 @@ import org.apache.commons.math3.random.MersenneTwister;
 import java.util.function.LongFunction;
 
 public class RandomRangedToString implements LongFunction<String> {
-    private MersenneTwister theTwister = new MersenneTwister(System.nanoTime());
+    private final MersenneTwister theTwister;
     private long min;
     private long max;
     private long _length;
 
     public RandomRangedToString(long min, long max) {
+        this(min,max,System.nanoTime());
+    }
+
+    public RandomRangedToString(long min, long max, long seed) {
+        this.theTwister = new MersenneTwister(seed);
         if (max<=min) {
             throw new RuntimeException("max must be >= min");
         }

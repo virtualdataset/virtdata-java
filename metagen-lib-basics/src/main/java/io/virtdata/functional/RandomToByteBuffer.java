@@ -25,17 +25,23 @@ import java.util.function.LongFunction;
 
 public class RandomToByteBuffer implements LongFunction<ByteBuffer> {
 
-    private MersenneTwister twister = new MersenneTwister();
+    private final MersenneTwister rng;
     private int length;
 
     public RandomToByteBuffer(int length) {
         this.length = length;
+        rng = new MersenneTwister(System.nanoTime());
+    }
+
+    public RandomToByteBuffer(int length, long seed) {
+        this.length = length;
+        rng = new MersenneTwister(seed);
     }
 
     @Override
     public ByteBuffer apply(long input) {
         byte[] buffer = new byte[length];
-        twister.nextBytes(buffer);
+        rng.nextBytes(buffer);
         return ByteBuffer.wrap(buffer);
     }
 

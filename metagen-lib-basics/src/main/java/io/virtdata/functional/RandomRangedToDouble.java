@@ -5,24 +5,29 @@ import org.apache.commons.math3.random.MersenneTwister;
 
 public class RandomRangedToDouble implements DataMapper<Double> {
 
-    private MersenneTwister theTwister = new MersenneTwister(System.nanoTime());
-    private long min;
-    private long max;
-    private long _length;
+    private final MersenneTwister theTwister;
+    private final long min;
+    private final long max;
+    private final long length;
 
     public RandomRangedToDouble(long min, long max) {
+        this(min,max,System.nanoTime());
+    }
+
+    public RandomRangedToDouble(long min, long max, long seed) {
+        this.theTwister = new MersenneTwister(seed);
         if (max<=min) {
             throw new RuntimeException("max must be >= min");
         }
         this.min = min;
         this.max = max;
-        this._length = max - min;
+        this.length = max - min;
     }
 
     @Override
     public Double get(long input) {
         Double value = Math.abs(theTwister.nextDouble());
-        value %= _length;
+        value %= length;
         value += min;
         return value;
     }
