@@ -39,6 +39,10 @@ public class RandomFileExtractToString implements LongFunction<String> {
     private final IntegerDistribution positionDistribution;
     private final String fileName;
 
+    public RandomFileExtractToString(String fileName, int minsize, int maxsize) {
+        this(fileName, minsize,maxsize,System.nanoTime());
+    }
+
     public RandomFileExtractToString(String fileName, int minsize, int maxsize, long seed) {
         this.fileName = fileName;
         this.minsize = minsize;
@@ -47,8 +51,6 @@ public class RandomFileExtractToString implements LongFunction<String> {
         this.rng = new MersenneTwister(seed);
         this.sizeDistribution = new UniformIntegerDistribution(rng, minsize, maxsize);
         this.positionDistribution = new UniformIntegerDistribution(rng, 1, fileDataImage.limit() - maxsize);
-
-
     }
 
     private void loadData() {
