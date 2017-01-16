@@ -15,19 +15,26 @@
 
 package io.virtdata;
 
+import io.virtdata.core.AllDataMapperLibraries;
+import io.virtdata.core.Bindings;
+import io.virtdata.core.BindingsTemplate;
+import org.testng.annotations.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class ComposerLibraryTest {
 
-//    @Test
-//    public void testTypeCoercionWhenNeeded() {
-//        BindingsTemplate bt = new BindingsTemplate(AllDataMapperLibraries.get());
-//        bt.addFieldBinding("mod_to_string", "compose Mod(3) ; Suffix('0000000000') -> String");
-//        Bindings bindings = bt.resolveBindings();
-//        Object[] all = bindings.getAll(5);
-//        assertThat(all).isNotNull();
-//        assertThat(all.length).isEqualTo(1);
-//        Object o = all[0];
-//        assertThat(o.getClass()).isEqualTo(String.class);
-//        assertThat((String) o).isEqualTo("20000000000");
-//    }
+    @Test(enabled=false)
+    public void testTypeCoercionWhenNeeded() {
+        BindingsTemplate bt = new BindingsTemplate(AllDataMapperLibraries.get());
+        bt.addFieldBinding("mod_to_string", "compose Mod(3) ; Suffix('0000000000') -> String");
+        Bindings bindings = bt.resolveBindings();
+        Object[] all = bindings.getAll(5);
+        assertThat(all).isNotNull();
+        assertThat(all.length).isEqualTo(1);
+        Object o = all[0];
+        assertThat(o.getClass()).isEqualTo(String.class);
+        assertThat((String) o).isEqualTo("20000000000");
+    }
 
 }
