@@ -25,7 +25,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Maps a template with named bind points and specifiers onto a set of data
@@ -49,19 +51,34 @@ public class Bindings {
 
     /**
      * Get a value from each data mapper in the bindings list
+     *
      * @param input The long value which the bound data mappers will use as in input
-     * @return An array of objects, the values yielded from each data mapper in the list
+     * @return An array of objects, the values yielded from each data mapper in the bindings list
      */
     public Object[] getAll(long input) {
         Object[] values = new Object[dataMappers.size()];
-        int offset=0;
+        int offset = 0;
         for (DataMapper dataMapper : dataMappers) {
-            values[offset++]= dataMapper.get(input);
+            values[offset++] = dataMapper.get(input);
         }
         return values;
     }
 
     public BindingsTemplate getTemplate() {
         return this.template;
+    }
+
+    /**
+     * Get a value for the data mapper in slot i
+     * @param i the data mapper slot, 0-indexed
+     * @param input the long input value which the bound data mapper will use as input
+     * @return a single object, the value yielded from the indexed data mapper in the bindings list
+     */
+    public Object get(int i, long input) {
+        return dataMappers.get(i).get(input);
+    }
+
+    public LazyValuesMap getLazyMap(long input) {
+        return new LazyValuesMap(this, input);
     }
 }
