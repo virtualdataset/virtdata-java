@@ -7,7 +7,7 @@
     <parent>
         <artifactId>project-defaults</artifactId>
         <groupId>io.virtdata</groupId>
-        <version>1.0.20</version>
+        <version>1.0.21-SNAPSHOT</version>
         <relativePath>../project-defaults</relativePath>
     </parent>
 
