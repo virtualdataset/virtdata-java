@@ -49,6 +49,11 @@ public class BindingsTemplate {
         this.genlib = genlib;
     }
 
+    public BindingsTemplate(DataMapperLibrary genlib, Map<String,String> specs) {
+        this(genlib);
+        specs.forEach(this::addFieldBinding);
+    }
+
     public void addFieldBinding(String bindPointName, String genSpec) {
         this.bindPointNames.add(bindPointName);
         this.specifiers.add(genSpec);
