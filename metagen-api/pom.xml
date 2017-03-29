@@ -7,7 +7,7 @@
     <parent>
         <artifactId>project-defaults</artifactId>
         <groupId>io.virtdata</groupId>
-        <version>jshook</version>
+        <version>1.0.25-SNAPSHOT</version>
         <relativePath>../project-defaults</relativePath>
     </parent>
 
