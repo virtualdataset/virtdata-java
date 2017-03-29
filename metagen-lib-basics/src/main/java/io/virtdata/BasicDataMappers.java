@@ -30,8 +30,9 @@ public class BasicDataMappers extends FunctionalDataMappingLibrary {
         return new ArrayList<Package>() {
             {
                 add(io.virtdata.strings.Suffix.class.getPackage());
-                add(io.virtdata.longs.Add.class.getPackage());
-                add(io.virtdata.ints.Add.class.getPackage());
+                add(io.virtdata.long_long.Add.class.getPackage());
+                add(io.virtdata.long_int.Add.class.getPackage());
+                add(io.virtdata.int_int.Add.class.getPackage());
                 add(io.virtdata.functional.DivideToLong.class.getPackage());
             }
         };

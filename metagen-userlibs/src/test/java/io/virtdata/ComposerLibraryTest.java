@@ -37,4 +37,17 @@ public class ComposerLibraryTest {
         assertThat((String) o).isEqualTo("20000000000");
     }
 
+    @Test(enabled=true)
+    public void testChainedTypeResolutionForLong() {
+        BindingsTemplate bt = new BindingsTemplate(AllDataMapperLibraries.get());
+        bt.addFieldBinding("longchain", "compose CycleRange(123456789) ; Div(3); Mod(7) -> long");
+        Bindings bindings = bt.resolveBindings();
+    }
+
+    @Test(enabled=true)
+    public void testChainedTypeResolutionForInt() {
+        BindingsTemplate bt = new BindingsTemplate(AllDataMapperLibraries.get());
+        bt.addFieldBinding("intchain", "compose ToInt() ; CycleRange(123456789) ; Div(3) ; Mod(7) -> int");
+        Bindings bindings = bt.resolveBindings();
+    }
 }
