@@ -3,7 +3,7 @@
 
     <groupId>io.virtdata</groupId>
     <artifactId>project-defaults</artifactId>
-    <version>1.0.24-SNAPSHOT</version>
+    <version>jshook</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
@@ -31,7 +31,7 @@
 
     <scm>
         <url>scm:git:https://github.com/virtualdataset/metagen-java.git</url>
-        <tag>HEAD</tag>
+        <tag>1.0.24</tag>
     </scm>
 
     <build>
