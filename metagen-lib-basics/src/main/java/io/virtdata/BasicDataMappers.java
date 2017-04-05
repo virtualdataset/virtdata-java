@@ -34,6 +34,7 @@ public class BasicDataMappers extends FunctionalDataMappingLibrary {
                 add(io.virtdata.long_int.Add.class.getPackage());
                 add(io.virtdata.int_int.Add.class.getPackage());
                 add(io.virtdata.functional.DivideToLong.class.getPackage());
+                add(io.virtdata.long_timeuuid.ToEpochTimeUUID.class.getPackage());
             }
         };
 
