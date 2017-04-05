@@ -2,6 +2,7 @@ package io.virtdata.long_timeuuid;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.testng.annotations.Test;
 
@@ -16,15 +17,31 @@ public class TimeUUIDTests {
             0,0,0,
             DateTimeZone.UTC
     );
+    private final DateTime aYearLater = new DateTime(
+            1583, 10, 15,
+            0, 0, 0,
+            DateTimeZone.UTC
+    );
+
     private final DateTime refTime = new DateTime(
             2015, 5, 11,
             23, 23, 23,
             DateTimeZone.UTC
     );
 
-    private final String may5late= "2015-05-11 23:23:23";
-    private final String gregsCalendarStart = "1582-10-15 00:00:00";
-    private final String aLittleAfterGregsTime = "1583-10-15 00:00:00";
+    private final DateTime may5 = new DateTime(
+            2015,5,11,23,23,23,
+            DateTimeZone.UTC
+    );
+    private final DateTime may5aYearLater = new DateTime(
+            2016, 5, 11, 23, 23, 23,
+            DateTimeZone.UTC
+    );
+    private final String calStartSpec = "1582-10-15 00:00:00";
+    private final String aYearLaterSpec = "1583-10-15 00:00:00";
+    private final String may5Spec = "2015-05-11 23:23:23";
+    private final String may5aYearLaterSpec = "2016-05-11 23:23:23";
+
 
     @Test
     public void testFinestTimeUUID() {
@@ -56,22 +73,35 @@ public class TimeUUIDTests {
         assertThat(uuid.timestamp()).isEqualTo(expected);
     }
 
+    /**
+     * This test measures the timeuuid timestamp interval
+     * between two known points in time, based on epoch millis.
+     * It verifies that the rate of change between the millis
+     * and the timeuuid interval of 100ns is correct.
+s     */
     @Test
     public void testEpochBaseTimeUUID() {
-        ToEpochTimeUUID atStartOftime = new ToEpochTimeUUID(aLittleAfterGregsTime);
-        UUID uuid = atStartOftime.apply(0);
-        assertThat(uuid.timestamp()).isEqualTo(0);
+
+        ToEpochTimeUUID basedIn2015 = new ToEpochTimeUUID(may5Spec);
+        Duration ayear = new Duration(may5,may5aYearLater);
+        long ayearMillis = ayear.getMillis();
+        UUID refYear = basedIn2015.apply(0);
+        long refTicks = refYear.timestamp();
+        UUID nextYear = basedIn2015.apply(ayearMillis);
+        long nextTicks = nextYear.timestamp();
+        long expectedTicks = ayearMillis*10000;
+        long actualTicks = nextTicks - refTicks;
+        assertThat(actualTicks).isEqualTo(expectedTicks);
     }
 
     @Test
     public void testFinestBaseTimeUUID() {
-        ToFinestTimeUUID tetu = new ToFinestTimeUUID(gregsCalendarStart);
+        ToFinestTimeUUID tetu = new ToFinestTimeUUID(calStartSpec);
         UUID uuid = tetu.apply(0);
         assertThat(uuid.timestamp()).isEqualTo(0L);
         uuid = tetu.apply(2);
         assertThat(uuid.timestamp()).isEqualTo(2L);
     }
-
 
     @Test
     public void sanityCheckHostGen() {
