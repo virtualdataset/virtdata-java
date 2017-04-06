@@ -1,7 +1,6 @@
 package io.virtdata.long_timeuuid;
 
 import io.virtdata.api.Example;
-import io.virtdata.long_long.HostHash;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
@@ -83,7 +82,7 @@ public class ToEpochTimeUUID implements LongFunction<UUID> {
      * the clock data is not seeded uniquely.
      */
     public ToEpochTimeUUID() {
-        this.node = new HostHash().applyAsLong(1);
+        this.node = 0L;
         this.clock = 0L;
         this.baseEpochMillis = 0L;
     }
@@ -125,7 +124,7 @@ public class ToEpochTimeUUID implements LongFunction<UUID> {
      * @param baseSpec - a string specification for the base time value
      */
     public ToEpochTimeUUID(String baseSpec) {
-        this.node = new HostHash().applyAsLong(1);
+        this.node = 0L;
         this.clock = 0L;
         this.baseEpochMillis = parseEpochTimeToMillis(baseSpec);
     }
