@@ -45,6 +45,15 @@ public class ComposerLibraryTest {
     }
 
     @Test(enabled=true)
+    public void testChainedTypeResolutionForWithInternalLong() {
+        BindingsTemplate bt = new BindingsTemplate(AllDataMapperLibraries.get());
+        bt.addFieldBinding("longchain", "compose HashRange(1234,6789) -> long; Mod(3) -> int;");
+        Bindings bindings = bt.resolveBindings();
+        Object n1 = bindings.getAll(123)[0];
+        assertThat(n1).isOfAnyClassIn(Integer.class);
+    }
+
+    @Test(enabled=true)
     public void testChainedTypeResolutionForInt() {
         BindingsTemplate bt = new BindingsTemplate(AllDataMapperLibraries.get());
         bt.addFieldBinding("intchain", "compose ToInt() ; CycleRange(123456789) ; Div(3) ; Mod(7) -> int");
