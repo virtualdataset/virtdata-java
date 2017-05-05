@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -78,7 +77,27 @@ public class Bindings {
         return dataMappers.get(i).get(input);
     }
 
+    public void setMap(Map<String,Object> donorMap, long cycle) {
+        Object[] all = getAll(cycle);
+        for (int i = 0; i < all.length; i++) {
+            donorMap.put(template.getBindPointNames().get(i),all[i]);
+        }
+    }
+
+    public void setFields(FieldSetter fieldSetter, long cycle) {
+        Object[] all = getAll(cycle);
+        for (int i = 0; i < all.length; i++) {
+            fieldSetter.setField(template.getBindPointNames().get(i),all[i]);
+        }
+    }
+
     public LazyValuesMap getLazyMap(long input) {
         return new LazyValuesMap(this, input);
     }
+
+    public static interface FieldSetter {
+        void setField(String name, Object value);
+    }
+
+
 }

@@ -131,8 +131,6 @@ public class BindingsTemplate {
             delim = ", ";
         }
         return sb.toString();
-
     }
-
 
 }
