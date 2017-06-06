@@ -22,7 +22,7 @@ public class RandomDataMappers extends FunctionalDataMappingLibrary {
 
     @Override
     public String getLibraryName() {
-        return "basics";
+        return "random";
     }
 
     @Override

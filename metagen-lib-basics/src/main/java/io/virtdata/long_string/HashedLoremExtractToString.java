@@ -18,11 +18,8 @@
 
 package io.virtdata.long_string;
 
-import io.virtdata.api.DeprecatedFunction;
-
 import java.util.function.LongFunction;
 
-@DeprecatedFunction("random mappers are not deterministic. They will be replaced with hash-based functions.")
 public class HashedLoremExtractToString implements LongFunction<String> {
 
     private final HashedFileExtractToString randomFileExtractMapper;

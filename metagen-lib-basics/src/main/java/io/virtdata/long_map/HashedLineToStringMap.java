@@ -19,7 +19,6 @@
 package io.virtdata.long_map;
 
 
-import io.virtdata.api.DeprecatedFunction;
 import io.virtdata.long_int.HashRange;
 import io.virtdata.long_string.HashedLineToString;
 
@@ -27,7 +26,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.LongFunction;
 
-@DeprecatedFunction("random mappers are not deterministic. They will be replaced with hash-based functions.")
 public class HashedLineToStringMap implements LongFunction<Map<String,String>> {
 
     private final HashedLineToString lineDataMapper;

@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.function.LongToIntFunction;
 
-public class LineToInt implements LongToIntFunction {
-    private final static Logger logger = LoggerFactory.getLogger(LineToInt.class);
+public class HashedLineToInt implements LongToIntFunction {
+    private final static Logger logger = LoggerFactory.getLogger(HashedLineToInt.class);
 
     private final List<String> lines;
 
@@ -19,11 +19,11 @@ public class LineToInt implements LongToIntFunction {
     private final IntegerDistribution itemDistribution;
     private final String filename;
 
-    public LineToInt(String filename) {
+    public HashedLineToInt(String filename) {
         this(filename, System.nanoTime());
     }
 
-    public LineToInt(String filename, long seed) {
+    public HashedLineToInt(String filename, long seed) {
         this.filename = filename;
         this.lines = ResourceFinder.readDataFileLines(filename);
         this.rng = new MersenneTwister(seed);
