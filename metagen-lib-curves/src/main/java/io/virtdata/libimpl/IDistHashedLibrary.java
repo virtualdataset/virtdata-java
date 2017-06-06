@@ -44,7 +44,7 @@ public class IDistHashedLibrary implements DataMapperLibrary {
                 logger.error("Error instantiating data mapper:" + e.getMessage(), e);
             }
         } else {
-            logger.debug("Integer Distribution class not found: " + spec);
+            logger.trace("Integer Distribution class not found: " + spec);
         }
         return resolved;
     }
@@ -64,7 +64,7 @@ public class IDistHashedLibrary implements DataMapperLibrary {
             logger.debug("Located continuous distribution:" + ddist.toString() + " for data mapper type: " + specifier);
             return Optional.ofNullable(ddist.getDistClass());
         } catch (Exception e) {
-            logger.debug("Unable to map continuous distribution class " + specifier);
+            logger.trace("Unable to map continuous distribution class " + specifier);
             return Optional.empty();
         }
     }
