@@ -16,26 +16,35 @@
  *
  */
 
-package io.virtdata.functional;
+package io.virtdata.random;
 
+import io.virtdata.api.DeprecatedFunction;
 import org.apache.commons.math3.random.MersenneTwister;
 
+import java.nio.ByteBuffer;
 import java.util.function.LongFunction;
 
-public class RandomLongToString implements LongFunction<String> {
-    private final MersenneTwister theTwister;
+@DeprecatedFunction("random mappers are not deterministic. They will be replaced with hash-based functions.")
+public class RandomToByteBuffer implements LongFunction<ByteBuffer> {
 
-    public RandomLongToString() {
-        this(System.nanoTime());
+    private final MersenneTwister rng;
+    private int length;
+
+    public RandomToByteBuffer(int length) {
+        this.length = length;
+        rng = new MersenneTwister(System.nanoTime());
     }
 
-    public RandomLongToString(long seed) {
-        theTwister = new MersenneTwister(seed);
+    public RandomToByteBuffer(int length, long seed) {
+        this.length = length;
+        rng = new MersenneTwister(seed);
     }
 
     @Override
-    public String apply(long input) {
-        return String.valueOf(Math.abs(theTwister.nextLong()));
+    public ByteBuffer apply(long input) {
+        byte[] buffer = new byte[length];
+        rng.nextBytes(buffer);
+        return ByteBuffer.wrap(buffer);
     }
 
 }

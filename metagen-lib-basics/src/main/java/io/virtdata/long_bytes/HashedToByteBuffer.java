@@ -16,33 +16,40 @@
  *
  */
 
-package io.virtdata.functional;
+package io.virtdata.long_bytes;
 
-import org.apache.commons.math3.random.MersenneTwister;
+import io.virtdata.long_long.Hash;
 
 import java.nio.ByteBuffer;
 import java.util.function.LongFunction;
 
-public class RandomToByteBuffer implements LongFunction<ByteBuffer> {
+/**
+ * Hash a long input value into a byte buffer, at least length bytes long, but aligned on 8-byte
 
-    private final MersenneTwister rng;
-    private int length;
+ */
+public class HashedToByteBuffer implements LongFunction<ByteBuffer> {
 
-    public RandomToByteBuffer(int length) {
+    private final Hash hash;
+    private final int length;
+    private final int bytes;
+    private final int longs;
+
+    public HashedToByteBuffer(int length) {
         this.length = length;
-        rng = new MersenneTwister(System.nanoTime());
-    }
-
-    public RandomToByteBuffer(int length, long seed) {
-        this.length = length;
-        rng = new MersenneTwister(seed);
+        this.hash = new Hash();
+        this.longs = (length / Long.BYTES) +1;
+        this.bytes = longs * Long.BYTES;
     }
 
     @Override
     public ByteBuffer apply(long input) {
-        byte[] buffer = new byte[length];
-        rng.nextBytes(buffer);
-        return ByteBuffer.wrap(buffer);
+        ByteBuffer buffer = ByteBuffer.allocate(bytes);
+        for (int i = 0; i < longs; i++) {
+            long l = hash.applyAsLong(input + i);
+            buffer.putLong(l);
+        }
+        buffer.flip();
+        return buffer;
     }
 
 }

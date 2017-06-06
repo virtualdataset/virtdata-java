@@ -96,7 +96,7 @@ public class BasicDataMappersTest {
     @Test
     public void testRandomLineToIntInstantiator() throws Exception {
         BasicDataMappers basics = new BasicDataMappers();
-        Optional<DataMapper<Integer>> dataMapper = basics.getDataMapper("RandomLineToInt(data/numbers.txt)");
+        Optional<DataMapper<Integer>> dataMapper = basics.getDataMapper("HashedLineToInt(data/numbers.txt)");
         assertThat(dataMapper).isNotNull();
         assertThat(dataMapper.get()).isNotNull();
         assertThat(dataMapper.get().get(1)).isNotNull();

@@ -1,4 +1,4 @@
-package io.virtdata.functional;
+package io.virtdata.long_int;
 
 import io.virtdata.util.ResourceFinder;
 import org.apache.commons.math3.distribution.IntegerDistribution;
@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.function.LongToIntFunction;
 
-public class RandomLineToInt implements LongToIntFunction {
-    private final static Logger logger = LoggerFactory.getLogger(RandomLineToInt.class);
+public class HashedLineToInt implements LongToIntFunction {
+    private final static Logger logger = LoggerFactory.getLogger(HashedLineToInt.class);
 
     private final List<String> lines;
 
@@ -19,11 +19,11 @@ public class RandomLineToInt implements LongToIntFunction {
     private final IntegerDistribution itemDistribution;
     private final String filename;
 
-    public RandomLineToInt(String filename) {
+    public HashedLineToInt(String filename) {
         this(filename, System.nanoTime());
     }
 
-    public RandomLineToInt(String filename, long seed) {
+    public HashedLineToInt(String filename, long seed) {
         this.filename = filename;
         this.lines = ResourceFinder.readDataFileLines(filename);
         this.rng = new MersenneTwister(seed);
