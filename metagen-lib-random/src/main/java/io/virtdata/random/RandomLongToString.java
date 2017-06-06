@@ -16,42 +16,28 @@
  *
  */
 
-package io.virtdata.functional;
+package io.virtdata.random;
 
+import io.virtdata.api.DeprecatedFunction;
 import org.apache.commons.math3.random.MersenneTwister;
 
 import java.util.function.LongFunction;
 
-public class RandomRangedToString implements LongFunction<String> {
+@DeprecatedFunction("random mappers are not deterministic. They will be replaced with hash-based functions.")
+public class RandomLongToString implements LongFunction<String> {
     private final MersenneTwister theTwister;
-    private long min;
-    private long max;
-    private long _length;
 
-    public RandomRangedToString(long min, long max) {
-        this(min,max,System.nanoTime());
+    public RandomLongToString() {
+        this(System.nanoTime());
     }
 
-    public RandomRangedToString(long min, long max, long seed) {
-        this.theTwister = new MersenneTwister(seed);
-        if (max<=min) {
-            throw new RuntimeException("max must be >= min");
-        }
-        this.min = min;
-        this.max = max;
-        this._length = max - min;
+    public RandomLongToString(long seed) {
+        theTwister = new MersenneTwister(seed);
     }
 
     @Override
     public String apply(long input) {
-        long value = Math.abs(theTwister.nextLong());
-        value %= _length;
-        value += min;
-        return String.valueOf(value);
-    }
-
-    public String toString() {
-        return getClass().getSimpleName() + ":" + min + ":" + max;
+        return String.valueOf(Math.abs(theTwister.nextLong()));
     }
 
 }

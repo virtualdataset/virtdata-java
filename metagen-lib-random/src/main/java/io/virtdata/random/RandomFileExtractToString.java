@@ -16,8 +16,9 @@
  *
  */
 
-package io.virtdata.functional;
+package io.virtdata.random;
 
+import io.virtdata.api.DeprecatedFunction;
 import io.virtdata.util.ResourceFinder;
 import org.apache.commons.math3.distribution.IntegerDistribution;
 import org.apache.commons.math3.distribution.UniformIntegerDistribution;
@@ -28,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import java.nio.CharBuffer;
 import java.util.function.LongFunction;
 
+@DeprecatedFunction("random mappers are not deterministic. They will be replaced with hash-based functions.")
 public class RandomFileExtractToString implements LongFunction<String> {
 
     private final static Logger logger = LoggerFactory.getLogger(RandomFileExtractToString.class);

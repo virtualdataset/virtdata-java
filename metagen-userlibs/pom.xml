@@ -20,6 +20,11 @@
             <version>1.0.30-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <artifactId>metagen-lib-random</artifactId>
+            <groupId>io.virtdata</groupId>
+            <version>1.0.30-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <artifactId>metagen-lib-basics</artifactId>
             <groupId>io.virtdata</groupId>
             <version>1.0.30-SNAPSHOT</version>

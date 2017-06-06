@@ -1,5 +1,6 @@
-package io.virtdata.functional;
+package io.virtdata.random;
 
+import io.virtdata.api.DeprecatedFunction;
 import io.virtdata.util.ResourceFinder;
 import org.apache.commons.math3.distribution.IntegerDistribution;
 import org.apache.commons.math3.distribution.UniformIntegerDistribution;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.function.LongToIntFunction;
 
+@DeprecatedFunction("random mappers are not deterministic. They will be replaced with hash-based functions.")
 public class RandomLineToInt implements LongToIntFunction {
     private final static Logger logger = LoggerFactory.getLogger(RandomLineToInt.class);
 

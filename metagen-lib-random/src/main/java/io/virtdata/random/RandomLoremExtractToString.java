@@ -16,10 +16,13 @@
  *
  */
 
-package io.virtdata.functional;
+package io.virtdata.random;
+
+import io.virtdata.api.DeprecatedFunction;
 
 import java.util.function.LongFunction;
 
+@DeprecatedFunction("random mappers are not deterministic. They will be replaced with hash-based functions.")
 public class RandomLoremExtractToString implements LongFunction<String> {
 
     private final RandomFileExtractToString randomFileExtractMapper;
