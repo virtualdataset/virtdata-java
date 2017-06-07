@@ -41,8 +41,8 @@ public class HashedFileExtractToString implements LongFunction<String> {
         this.minsize = minsize;
         this.maxsize = maxsize;
         loadData();
-        this.sizeRange = new HashRange(minsize, (fileDataImage.limit()-1)-maxsize);
-        this.positionRange = new HashRange(1, fileDataImage.limit()-1);
+        this.sizeRange = new HashRange(minsize, maxsize);
+        this.positionRange = new HashRange(1, (fileDataImage.limit()-maxsize)-1);
     }
 
     private void loadData() {
