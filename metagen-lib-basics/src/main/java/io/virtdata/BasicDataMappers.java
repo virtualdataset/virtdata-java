@@ -3,6 +3,7 @@ package io.virtdata;
 import com.google.auto.service.AutoService;
 import io.virtdata.api.DataMapperLibrary;
 import io.virtdata.core.FunctionalDataMappingLibrary;
+import io.virtdata.long_bytes.HashedToByteBuffer;
 import io.virtdata.long_map.HashedLineToStringMap;
 import io.virtdata.long_string.HashedFileExtractToString;
 import org.slf4j.Logger;
@@ -39,6 +40,7 @@ public class BasicDataMappers extends FunctionalDataMappingLibrary {
                 add(io.virtdata.long_timeuuid.ToEpochTimeUUID.class.getPackage());
                 add(HashedFileExtractToString.class.getPackage());
                 add(HashedLineToStringMap.class.getPackage());
+                add(HashedToByteBuffer.class.getPackage());
             }
         };
 

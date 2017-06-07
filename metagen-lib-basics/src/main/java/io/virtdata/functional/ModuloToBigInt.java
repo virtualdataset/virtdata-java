@@ -29,6 +29,10 @@ public class ModuloToBigInt implements LongFunction<BigInteger> {
 
     private final long modulo;
 
+    public ModuloToBigInt() {
+        this.modulo = Long.MAX_VALUE;
+    }
+
     public ModuloToBigInt(long modulo) {
         this.modulo=modulo;
     }
