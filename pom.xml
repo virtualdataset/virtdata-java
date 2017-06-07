@@ -7,7 +7,7 @@
     <parent>
         <artifactId>project-defaults</artifactId>
         <groupId>io.virtdata</groupId>
-        <version>1.0.32-SNAPSHOT</version>
+        <version>1.0.32</version>
         <relativePath>project-defaults</relativePath>
     </parent>
 
@@ -30,7 +30,7 @@
         <developerConnection>scm:git:https://github.com/virtualdataset/metagen-java.git</developerConnection>
         <!--<developerConnection>scm:git:git@github.com:engineblock/engineblock.git</developerConnection> broken? -->
         <url>scm:git:git@github.com:virtualdataset/metagen-java.git</url>
-        <tag>HEAD</tag>
+        <tag>metagen-1.0.32</tag>
     </scm>
 
     <distributionManagement>
