@@ -115,6 +115,7 @@ public class ToFinestTimeUUID implements LongFunction<UUID> {
      * Create version 1 timeuuids with a per-host node and empty clock data.
      * The node and clock components are seeded from network interface data. In this case,
      * the clock data is not seeded uniquely.
+     *
      * @param baseTimeSpec - a string specification for the base time value
      */
     public ToFinestTimeUUID(String baseTimeSpec) {
@@ -130,7 +131,7 @@ public class ToFinestTimeUUID implements LongFunction<UUID> {
      * more practical dispersion of values over reboots, etc.
      *
      * @param baseTimeSpec - a string specification for the base time value
-     * @param node a fixture value for testing that replaces node and clock bits
+     * @param node         a fixture value for testing that replaces node and clock bits
      */
     public ToFinestTimeUUID(String baseTimeSpec, long node) {
         this.node = node;
@@ -144,8 +145,8 @@ public class ToFinestTimeUUID implements LongFunction<UUID> {
      * in non-testing practice, you would rely on some form of entropy per-system to provide
      * more practical dispersion of values over reboots, etc.
      *
-     * @param node  a fixture value for testing that replaces node bits
-     * @param clock a fixture value for testing that replaces clock bits
+     * @param node         a fixture value for testing that replaces node bits
+     * @param clock        a fixture value for testing that replaces clock bits
      * @param baseTimeSpec - a string specification for the base time value
      */
     public ToFinestTimeUUID(String baseTimeSpec, long node, long clock) {
@@ -172,23 +173,23 @@ public class ToFinestTimeUUID implements LongFunction<UUID> {
 
 
     private long parseBaseTimeTicks(String timeString) {
-        DateTime gregsCalendar = new DateTime(1582,10,15,0,0, DateTimeZone.UTC);
+        DateTime gregsCalendar = new DateTime(1582, 10, 15, 0, 0, DateTimeZone.UTC);
 
         List<Exception> exceptions = new ArrayList<>();
         for (DateTimeFormatter dtf : formatters) {
             try {
                 DateTime dateTime = dtf.withZoneUTC().parseDateTime(timeString);
-                long ticks = new Duration(gregsCalendar,dateTime).getMillis() * 10000;
+                long ticks = new Duration(gregsCalendar, dateTime).getMillis() * 10000;
                 return ticks;
             } catch (Exception e) {
-                exceptions.add(e);
+                exceptions.add(new RuntimeException("as '" + dtf.print(DateTime.now()) + "': " + e.getMessage()));
             }
         }
         String message = "";
         for (Exception e : exceptions) {
             message += e.getMessage() + "\n";
         }
-        throw new RuntimeException("Unable to parse [" + timeString + "] with any of the parsers. exceptions:" + message);
+        throw new RuntimeException("Unable to parse [" + timeString + "] with any of the parsers. exceptions:" + message + ", examples of valid formats are included above");
+        
     }
-
 }

@@ -50,24 +50,42 @@ import java.util.function.LongFunction;
 @Example("ToEpochTimeUUID('20171231T1015.243',123,456) // ms basetime, specified node and clock data")
 public class ToEpochTimeUUID implements LongFunction<UUID> {
 
-    private final static DateTimeFormatter[] formatters = new DateTimeFormatter[]{
+    public final static DateTimeFormatter[] formatters = new DateTimeFormatter[]{
+
+
+            //2017-06-07 21:39:24.710-0500
             DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSSZ")
                     .withChronology(GregorianChronology.getInstance()),
+
+            //2017-06-07 21:39:24
             DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")
                     .withChronology(GregorianChronology.getInstance()),
+
+            //20170607T213924.711-0500
             ISODateTimeFormat.basicDateTime()
                     .withChronology(GregorianChronology.getInstance()), // yyyyMMdd'T'HHmmss.SSSZ
+
+            //20170608T023924Z
             ISODateTimeFormat.basicDateTimeNoMillis().withZoneUTC()
                     .withChronology(GregorianChronology.getInstance()), // yyyyMMdd'T'HHmmssZ
+
+            //2017-06-08
             ISODateTimeFormat.date().withZoneUTC()
                     .withChronology(GregorianChronology.getInstance()), // yyyy-MM-dd
+
+            //20170608
             DateTimeFormat.forPattern("yyyyMMdd").withZoneUTC()
                     .withChronology(GregorianChronology.getInstance()),
+
+            //201706
             DateTimeFormat.forPattern("yyyyMM").withZoneUTC()
                     .withChronology(GregorianChronology.getInstance()),
+
+            //2017
             DateTimeFormat.forPattern("yyyy").withZoneUTC()
                     .withChronology(GregorianChronology.getInstance())
     };
+
     private static DateTime calendarStart =
             new DateTime(1582, 10, 15, 0, 0,
                     DateTimeZone.UTC);
@@ -192,14 +210,14 @@ public class ToEpochTimeUUID implements LongFunction<UUID> {
                 long millis = new Duration(gregsCalendar,dateTime).getMillis();
                 return millis;
             } catch (Exception e) {
-                exceptions.add(e);
+                exceptions.add(new RuntimeException("as '" + dtf.print(DateTime.now()) + "': " + e.getMessage()));
             }
         }
         String message = "";
         for (Exception e : exceptions) {
             message += e.getMessage() + "\n";
         }
-        throw new RuntimeException("Unable to parse [" + timeString + "] with any of the parsers. exceptions:" + message);
+        throw new RuntimeException("Unable to parse [" + timeString + "] with any of the parsers. exceptions:" + message +", examples of valid formats are included above");
     }
 
 
