@@ -4,7 +4,7 @@
     <parent>
         <artifactId>project-defaults</artifactId>
         <groupId>io.virtdata</groupId>
-        <version>1.0.42-SNAPSHOT</version>
+        <version>1.0.42</version>
         <relativePath>../project-defaults</relativePath>
     </parent>
 
@@ -17,27 +17,27 @@
         <dependency>
             <groupId>io.virtdata</groupId>
             <artifactId>metagen-api</artifactId>
-            <version>1.0.42-SNAPSHOT</version>
+            <version>1.0.42</version>
         </dependency>
         <dependency>
             <artifactId>metagen-lib-random</artifactId>
             <groupId>io.virtdata</groupId>
-            <version>1.0.42-SNAPSHOT</version>
+            <version>1.0.42</version>
         </dependency>
         <dependency>
             <artifactId>metagen-lib-basics</artifactId>
             <groupId>io.virtdata</groupId>
-            <version>1.0.42-SNAPSHOT</version>
+            <version>1.0.42</version>
         </dependency>
         <dependency>
             <artifactId>metagen-lib-composer</artifactId>
             <groupId>io.virtdata</groupId>
-            <version>1.0.42-SNAPSHOT</version>
+            <version>1.0.42</version>
         </dependency>
         <dependency>
             <artifactId>metagen-lib-curves</artifactId>
             <groupId>io.virtdata</groupId>
-            <version>1.0.42-SNAPSHOT</version>
+            <version>1.0.42</version>
         </dependency>
 
         <dependency>
