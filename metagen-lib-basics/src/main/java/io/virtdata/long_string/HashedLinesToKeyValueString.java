@@ -18,7 +18,7 @@
 
 package io.virtdata.long_string;
 
-import io.virtdata.long_collections.HashedLineToStringMap;
+import io.virtdata.long_collections.HashedLineToStringStringMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,10 +29,10 @@ import java.util.stream.Collectors;
 public class HashedLinesToKeyValueString implements LongFunction<String> {
     private static final Logger logger = LoggerFactory.getLogger(HashedLinesToKeyValueString.class);
 
-    private final HashedLineToStringMap lineDataMapper;
+    private final HashedLineToStringStringMap lineDataMapper;
 
     public HashedLinesToKeyValueString(String paramFile, int maxsize) {
-        lineDataMapper = new HashedLineToStringMap(paramFile, maxsize);
+        lineDataMapper = new HashedLineToStringStringMap(paramFile, maxsize);
     }
 
     @Override

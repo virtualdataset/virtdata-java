@@ -26,12 +26,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.LongFunction;
 
-public class HashedLineToStringMap implements LongFunction<Map<String,String>> {
+public class HashedLineToStringStringMap implements LongFunction<Map<String,String>> {
 
     private final HashedLineToString lineDataMapper;
     private final HashRange sizeRange;
 
-    public HashedLineToStringMap(String paramFile, int maxSize) {
+    public HashedLineToStringStringMap(String paramFile, int maxSize) {
 
         this.sizeRange = new HashRange(0, maxSize-1);
         this.lineDataMapper = new HashedLineToString(paramFile);
