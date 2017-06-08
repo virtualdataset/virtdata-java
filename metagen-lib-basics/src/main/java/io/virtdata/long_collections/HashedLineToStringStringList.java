@@ -7,12 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.LongFunction;
 
-public class HashedLineToList implements LongFunction<List> {
+public class HashedLineToStringStringList implements LongFunction<List> {
 
     private final HashedLineToString hashedLineToString;
     private final HashRange hashRange;
 
-    public HashedLineToList(String filename, int minSize, int maxSize) {
+    public HashedLineToStringStringList(String filename, int minSize, int maxSize) {
         this.hashedLineToString = new HashedLineToString(filename);
         this.hashRange = new HashRange(minSize,maxSize);
     }

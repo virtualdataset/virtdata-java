@@ -8,10 +8,15 @@ public class HashRange implements IntUnaryOperator {
     private final int  width;
     private final Hash hash = new Hash();
 
+    public HashRange(int fixedValue) {
+        this.minValue = fixedValue;
+        this.width=1;
+    }
+    
     public HashRange(int minValue, int maxValue) {
         this.minValue = minValue;
 
-        if (maxValue<minValue) {
+        if (maxValue<=minValue) {
             throw new RuntimeException("CycleRange must have min and max value in that order.");
         }
         this.width = maxValue - minValue;
