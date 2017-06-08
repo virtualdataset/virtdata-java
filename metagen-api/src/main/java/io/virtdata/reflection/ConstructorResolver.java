@@ -1,14 +1,15 @@
 package io.virtdata.reflection;
 
+import io.virtdata.util.StringObjectPromoter;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
  * in Object[] form.
  */
 public class ConstructorResolver {
+    private final static Logger logger = LoggerFactory.getLogger(ConstructorResolver.class);
 
     private Exception lastException;
 
@@ -43,7 +45,7 @@ public class ConstructorResolver {
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-        DeferredConstructor<T> deferredConstructor = createDeferredConstructor(clazz,args);
+        DeferredConstructor<T> deferredConstructor = createDeferredConstructor(clazz, args);
         return deferredConstructor;
     }
 
@@ -61,17 +63,40 @@ public class ConstructorResolver {
             throw new RuntimeException(e);
         }
 
-        return createDeferredConstructor(clazz, Arrays.copyOfRange(signature,1,signature.length));
+        return createDeferredConstructor(clazz, Arrays.copyOfRange(signature, 1, signature.length));
+    }
+
+    private static Predicate<Constructor> canAssignToConstructor(String[] args) {
+        return new Predicate<Constructor>() {
+            @Override
+            public boolean test(Constructor ctor) {
+                Class<?>[] ptypes = ctor.getParameterTypes();
+                for (int paramidx = 0; paramidx < ptypes.length; paramidx++) {
+                    Class<?> ptype = ptypes[paramidx];
+                    Object promotedArg = StringObjectPromoter.promote(args[paramidx],ptype);
+                    if (!StringObjectPromoter.isAssignableForConstructor(promotedArg.getClass(),ptype)) {
+                        logger.trace("removing " + ctor + " from candidate list, because arg " + paramidx
+                                + " is not assignable from promoted type");
+                        return false;
+                    }
+                }
+                return true;
+            }
+        };
     }
 
     private static <T> DeferredConstructor<T> createDeferredConstructor(Class<T> clazz, String... args) {
 
         List<Constructor> matchingConstructors = new ArrayList<>();
+
         for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
             if (constructor.getParameterCount() == args.length) {
                 matchingConstructors.add(constructor);
             }
         }
+
+        matchingConstructors = matchingConstructors.stream()
+                .filter(canAssignToConstructor(args)).collect(Collectors.toList());
 
         if (matchingConstructors.size() == 0) {
             throw new RuntimeException("no constructor found for " + clazz.getSimpleName() + " with " +
@@ -85,10 +110,10 @@ public class ConstructorResolver {
                 signatures.add(
                         Arrays.stream(pt)
                                 .map(Class::getSimpleName)
-                                .collect(Collectors.joining(",","(",")"))
+                                .collect(Collectors.joining(",", "(", ")"))
                 );
             }
-            String diagnosticList = signatures.stream().collect(Collectors.joining(",","[","]"));
+            String diagnosticList = signatures.stream().collect(Collectors.joining(",", "[", "]"));
 
             throw new RuntimeException("Multiple constructors found for " + clazz.getSimpleName() + " with " +
                     (args.length) + " parameters:" + diagnosticList
@@ -114,7 +139,6 @@ public class ConstructorResolver {
         DeferredConstructor<T> dc = new DeferredConstructor<>(clazz, argsArray);
         return dc;
     }
-
 
     private static enum StringMapper {
 
@@ -175,4 +199,7 @@ public class ConstructorResolver {
 
 
     }
+
+
+
 }

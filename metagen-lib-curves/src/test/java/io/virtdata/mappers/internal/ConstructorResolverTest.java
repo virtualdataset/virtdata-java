@@ -25,32 +25,54 @@ public class ConstructorResolverTest {
     @Test
     public void testStringArg() {
         DeferredConstructor<Object> dc =
-                ConstructorResolver.resolve(new String[]{ATestClass.class.getTypeName(),"oneString"});
+                ConstructorResolver.resolve(new String[]{ATestClass.class.getTypeName(), "oneString"});
         Object aTestClassInstance = dc.construct();
         assertThat(aTestClassInstance).isNotNull();
         assertThat(aTestClassInstance).isInstanceOf(ATestClass.class);
     }
 
-    @Test(expectedExceptions = {RuntimeException.class})
-    public void testAmbiguous() {
+    @Test
+    public void testAssignableParameterSignatures() {
         DeferredConstructor<Object> dc =
-                ConstructorResolver.resolve(new String[]{ATestClass.class.getTypeName(),"oneString","twoString"});
+                ConstructorResolver.resolve(
+                        new String[]{
+                                ATestClass.class.getTypeName(),
+                                "oneString",
+                                "twoString"}
+                );
         Object aTestClassInstance = dc.construct();
     }
 
     @Test
     public void testThreeTypes() {
-            DeferredConstructor<Object> dc =
-                    ConstructorResolver.resolve(
-                            new String[]{ATestClass.class.getTypeName(),"2.0","3.0","3"});
-            Object aTestClassInstance = dc.construct();
-            assertThat(aTestClassInstance).isNotNull();
-            assertThat(aTestClassInstance).isInstanceOf(ATestClass.class);
+        DeferredConstructor<Object> dc =
+                ConstructorResolver.resolve(
+                        new String[]{
+                                ATestClass.class.getTypeName(),
+                                "2.0", "3.0", "3"
+                        }
+                );
+        Object aTestClassInstance = dc.construct();
+        assertThat(aTestClassInstance).isNotNull();
+        assertThat(aTestClassInstance).isInstanceOf(ATestClass.class);
 
     }
 
+    @Test(expectedExceptions = RuntimeException.class)
+    public void testUnassignableParameterSignature() {
+        DeferredConstructor<Object> dc =
+                ConstructorResolver.resolve(
+                        new String[]{
+                                ATestClass.class.getTypeName(),
+                                "foo", "bar", "baz"
+                        }
+                );
+        Object nonExtantInstance = dc.construct();
+    }
+
     public static class ATestClass implements LongUnaryOperator {
-        public ATestClass() {}
+        public ATestClass() {
+        }
 
         public ATestClass(String one) {
 
