@@ -190,6 +190,6 @@ public class ToFinestTimeUUID implements LongFunction<UUID> {
             message += e.getMessage() + "\n";
         }
         throw new RuntimeException("Unable to parse [" + timeString + "] with any of the parsers. exceptions:" + message + ", examples of valid formats are included above");
-        
+
     }
 }
