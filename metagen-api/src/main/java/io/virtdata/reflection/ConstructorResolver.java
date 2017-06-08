@@ -66,21 +66,24 @@ public class ConstructorResolver {
         return createDeferredConstructor(clazz, Arrays.copyOfRange(signature, 1, signature.length));
     }
 
+    private static Object[] specializeArgs(String[] raw, Class<?>[] targetTypes) {
+        Object[] made = new Object[raw.length];
+        for (int paramidx = 0; paramidx < targetTypes.length; paramidx++) {
+            Class<?> ptype = targetTypes[paramidx];
+            made[paramidx] = StringObjectPromoter.promote(raw[paramidx],ptype);
+            if (!StringObjectPromoter.isAssignableForConstructor(made[paramidx].getClass(),ptype)) {
+                return null;
+            }
+        }
+        return made;
+    }
+
     private static Predicate<Constructor> canAssignToConstructor(String[] args) {
         return new Predicate<Constructor>() {
             @Override
             public boolean test(Constructor ctor) {
-                Class<?>[] ptypes = ctor.getParameterTypes();
-                for (int paramidx = 0; paramidx < ptypes.length; paramidx++) {
-                    Class<?> ptype = ptypes[paramidx];
-                    Object promotedArg = StringObjectPromoter.promote(args[paramidx],ptype);
-                    if (!StringObjectPromoter.isAssignableForConstructor(promotedArg.getClass(),ptype)) {
-                        logger.trace("removing " + ctor + " from candidate list, because arg " + paramidx
-                                + " is not assignable from promoted type");
-                        return false;
-                    }
-                }
-                return true;
+                Object[] objects = specializeArgs(args, ctor.getParameterTypes());
+                return objects!=null;
             }
         };
     }
@@ -121,22 +124,17 @@ public class ConstructorResolver {
         }
 
         Constructor matchingConstructor = matchingConstructors.get(0);
-        Object[] argsArray = new Object[matchingConstructor.getParameterCount()];
-        for (int i = 0; i < argsArray.length; i++) {
-            String argString = args[i];
-            Object mapped = StringMapper.mapValue(argString, matchingConstructor.getParameterTypes()[i]);
-            argsArray[i] = mapped;
-        }
+        Object[] ctorArgs = specializeArgs(args,matchingConstructor.getParameterTypes());
 
         // sanity check
         try {
-            ConstructorUtils.invokeConstructor(clazz, argsArray);
+            ConstructorUtils.invokeConstructor(clazz, ctorArgs);
         } catch (Exception e) {
             throw new RuntimeException("Unable to invoke constructor as sanity check for args:" +
-                    Arrays.toString(argsArray), e);
+                    Arrays.toString(ctorArgs), e);
         }
 
-        DeferredConstructor<T> dc = new DeferredConstructor<>(clazz, argsArray);
+        DeferredConstructor<T> dc = new DeferredConstructor<>(clazz, ctorArgs);
         return dc;
     }
 
