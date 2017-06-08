@@ -5,7 +5,7 @@ import io.virtdata.api.DataMapperLibrary;
 import io.virtdata.core.FunctionalDataMappingLibrary;
 import io.virtdata.long_byte.ModuloToByte;
 import io.virtdata.long_bytes.HashedToByteBuffer;
-import io.virtdata.long_map.HashedLineToStringMap;
+import io.virtdata.long_collections.HashedLineToStringMap;
 import io.virtdata.long_short.ModuloToShort;
 import io.virtdata.long_string.HashedFileExtractToString;
 import org.slf4j.Logger;

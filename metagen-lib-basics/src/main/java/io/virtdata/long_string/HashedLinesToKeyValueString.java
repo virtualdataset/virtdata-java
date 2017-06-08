@@ -18,7 +18,7 @@
 
 package io.virtdata.long_string;
 
-import io.virtdata.long_map.HashedLineToStringMap;
+import io.virtdata.long_collections.HashedLineToStringMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

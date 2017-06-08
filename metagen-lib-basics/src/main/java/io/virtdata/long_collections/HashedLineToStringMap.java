@@ -16,7 +16,7 @@
  *
  */
 
-package io.virtdata.long_map;
+package io.virtdata.long_collections;
 
 
 import io.virtdata.long_int.HashRange;
