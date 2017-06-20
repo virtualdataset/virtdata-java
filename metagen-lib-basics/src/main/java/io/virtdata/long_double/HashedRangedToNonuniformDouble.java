@@ -3,18 +3,26 @@ package io.virtdata.long_double;
 import io.virtdata.api.DataMapper;
 import io.virtdata.long_long.Hash;
 
-public class HashedRangedToDouble implements DataMapper<Double> {
+/**
+ * This provides a random sample of a double in a range, without
+ * accounting for the non-uniform distribution of IEEE double representation.
+ * This means that values closer to high-precision areas of the IEEE spec
+ * will be weighted higher in the output. However, NaN and positive and
+ * negative infinity are filtered out via oversampling. Results are still
+ * stable for a given input value.
+ */
+public class HashedRangedToNonuniformDouble implements DataMapper<Double> {
 
     private final long min;
     private final long max;
     private final double length;
     private final Hash hash;
 
-    public HashedRangedToDouble(long min, long max) {
+    public HashedRangedToNonuniformDouble(long min, long max) {
         this(min,max,System.nanoTime());
     }
 
-    public HashedRangedToDouble(long min, long max, long seed) {
+    public HashedRangedToNonuniformDouble(long min, long max, long seed) {
         this.hash = new Hash();
         if (max<=min) {
             throw new RuntimeException("max must be >= min");
@@ -28,6 +36,11 @@ public class HashedRangedToDouble implements DataMapper<Double> {
     public Double get(long input) {
         long bitImage = hash.applyAsLong(input);
         double value = Math.abs(Double.longBitsToDouble(bitImage));
+        while (!Double.isFinite(value)) {
+            input++;
+            bitImage = hash.applyAsLong(input);
+            value = Math.abs(Double.longBitsToDouble(bitImage));
+        }
         value %= length;
         value += min;
         return value;
