@@ -52,19 +52,6 @@ public class ComposerLibraryTest {
         assertThat(o.getClass()).isEqualTo(String.class);
     }
 
-    @Test(enabled=false)
-    public void testTypeCoercionWhenNeeded() {
-        BindingsTemplate bt = new BindingsTemplate(AllDataMapperLibraries.get());
-        bt.addFieldBinding("mod_to_string", "compose Mod(3) ; Suffix('0000000000') -> String");
-        Bindings bindings = bt.resolveBindings();
-        Object[] all = bindings.getAll(5);
-        assertThat(all).isNotNull();
-        assertThat(all.length).isEqualTo(1);
-        Object o = all[0];
-        assertThat(o.getClass()).isEqualTo(String.class);
-        assertThat((String) o).isEqualTo("20000000000");
-    }
-
     @Test(enabled=true)
     public void testChainedTypeResolutionForLong() {
         BindingsTemplate bt = new BindingsTemplate(AllDataMapperLibraries.get());
@@ -85,6 +72,35 @@ public class ComposerLibraryTest {
     public void testChainedTypeResolutionForInt() {
         BindingsTemplate bt = new BindingsTemplate(AllDataMapperLibraries.get());
         bt.addFieldBinding("intchain", "compose ToInt() ; CycleRange(123456789) ; Div(3) ; Mod(7) -> int");
+        Bindings bindings = bt.resolveBindings();
+    }
+
+    @Test
+    public void testStringConversion() {
+        BindingsTemplate bt = new BindingsTemplate(AllDataMapperLibraries.get());
+        bt.addFieldBinding("phone","compose HashRange(1000000000,9999999999); ToString() -> String");
+        Bindings bindings = bt.resolveBindings();
+    }
+
+    // TODO: Fix this test
+    @Test(enabled=false)
+    public void testTypeCoercionWhenNeeded() {
+        BindingsTemplate bt = new BindingsTemplate(AllDataMapperLibraries.get());
+        bt.addFieldBinding("mod_to_string", "compose Mod(3) ; Suffix('0000000000') -> String");
+        Bindings bindings = bt.resolveBindings();
+        Object[] all = bindings.getAll(5);
+        assertThat(all).isNotNull();
+        assertThat(all.length).isEqualTo(1);
+        Object o = all[0];
+        assertThat(o.getClass()).isEqualTo(String.class);
+        assertThat((String) o).isEqualTo("20000000000");
+    }
+
+    // TODO: Fix this test
+    @Test(enabled=false)
+    public void testBasicRange() {
+        BindingsTemplate bt = new BindingsTemplate(AllDataMapperLibraries.get());
+        bt.addFieldBinding("phone","HashRange(1000000000, 9999999999)");
         Bindings bindings = bt.resolveBindings();
     }
 }
