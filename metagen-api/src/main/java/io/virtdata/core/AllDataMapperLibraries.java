@@ -46,10 +46,15 @@ public class AllDataMapperLibraries implements DataMapperLibrary {
 
         List<ResolvedFunction> resolvedFunctions = resolveFunctions(spec);
 
-        if (resolvedFunctions.size()!=1) {
-            throw new RuntimeException("Found " + resolvedFunctions.size() + " resolved functions for '" + spec +"'. This library " +
+        if (resolvedFunctions.size()==0) {
+            throw new RuntimeException("Unable to resolve a mapping function for " + spec);
+        }
+
+        if (resolvedFunctions.size()>1) {
+            logger.warn("Found " + resolvedFunctions.size() + " resolved functions for '" + spec +"'. This library " +
                     "expects there to be exactly 1");
         }
+
         Optional<ResolvedFunction> resolvedFunction = Optional.ofNullable(resolvedFunctions.get(0));
         Optional<DataMapper<T>> dataMapper = resolvedFunction
                 .map(ResolvedFunction::getFunctionObject)
