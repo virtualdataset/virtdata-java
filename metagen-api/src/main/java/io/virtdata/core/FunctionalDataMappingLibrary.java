@@ -36,8 +36,8 @@ public abstract class FunctionalDataMappingLibrary implements DataMapperLibrary 
             String[] dataMapperArgs = (specData.getFuncAndArgs());
             dataMapperArgs[0] = aclass.getCanonicalName();
             try {
-                Object mapper = ConstructorResolver.resolveAndConstruct(dataMapperArgs);
-                resolvedFunctions.add(new ResolvedFunction(mapper));
+                Optional<Object> mapper = ConstructorResolver.resolveAndConstructOptional(dataMapperArgs);
+                mapper.ifPresent(m -> resolvedFunctions.add(new ResolvedFunction(m)));
             } catch (Exception e) {
                 logger.error("Error while trying to instantiate:" + Arrays.toString(dataMapperArgs));
                 throw (e);

@@ -21,20 +21,32 @@ public class ConstructorResolver {
 
     private Exception lastException;
 
+    public static <T> Optional<T> resolveAndConstructOptional(String[] classAndArgs) {
+        Optional<? extends DeferredConstructor<T>> optionalDeferredConstructor =
+                createOptionalDeferredConstructor(classAndArgs);
+        return optionalDeferredConstructor.map(DeferredConstructor::construct);
+    }
+
+
     public static <T> T resolveAndConstruct(String[] classAndArgs) {
-        DeferredConstructor<T> deferredConstructor = createDeferredConstructor(classAndArgs);
+        DeferredConstructor<T> deferredConstructor = createDeferredConstructorRequired(classAndArgs);
         T constructed = deferredConstructor.construct();
         return constructed;
     }
 
     public static <T> DeferredConstructor<T> resolve(String[] classAndArgs) {
-        DeferredConstructor<T> deferredConstructor = createDeferredConstructor(classAndArgs);
+        DeferredConstructor<T> deferredConstructor = createDeferredConstructorRequired(classAndArgs);
         return deferredConstructor;
     }
 
     public static <T> DeferredConstructor<T> resolve(Class<T> clazz, String... args) {
-        DeferredConstructor<T> deferredConstructor = createDeferredConstructor(clazz, args);
+        DeferredConstructor<T> deferredConstructor = createDeferredConstructorRequired(clazz, args);
         return deferredConstructor;
+    }
+
+    public static <T> Optional<DeferredConstructor<T>> resolveOptional(Class<T> clazz, String... args) {
+        Optional<DeferredConstructor<T>> optionalResolved = createOptionalDeferredConstructor(clazz, args);
+        return optionalResolved;
     }
 
     @SuppressWarnings("unchecked")
@@ -45,12 +57,12 @@ public class ConstructorResolver {
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-        DeferredConstructor<T> deferredConstructor = createDeferredConstructor(clazz, args);
+        DeferredConstructor<T> deferredConstructor = createDeferredConstructorRequired(clazz, args);
         return deferredConstructor;
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> DeferredConstructor<T> createDeferredConstructor(String[] signature) {
+    private static <T> DeferredConstructor<T> createDeferredConstructorRequired(String[] signature) {
         String className = signature[0];
 
         if (!className.contains(".")) {
@@ -63,15 +75,15 @@ public class ConstructorResolver {
             throw new RuntimeException(e);
         }
 
-        return createDeferredConstructor(clazz, Arrays.copyOfRange(signature, 1, signature.length));
+        return createDeferredConstructorRequired(clazz, Arrays.copyOfRange(signature, 1, signature.length));
     }
 
     private static Object[] specializeArgs(String[] raw, Class<?>[] targetTypes) {
         Object[] made = new Object[raw.length];
         for (int paramidx = 0; paramidx < targetTypes.length; paramidx++) {
             Class<?> ptype = targetTypes[paramidx];
-            made[paramidx] = StringObjectPromoter.promote(raw[paramidx],ptype);
-            if (!StringObjectPromoter.isAssignableForConstructor(made[paramidx].getClass(),ptype)) {
+            made[paramidx] = StringObjectPromoter.promote(raw[paramidx], ptype);
+            if (!StringObjectPromoter.isAssignableForConstructor(made[paramidx].getClass(), ptype)) {
                 return null;
             }
         }
@@ -83,12 +95,32 @@ public class ConstructorResolver {
             @Override
             public boolean test(Constructor ctor) {
                 Object[] objects = specializeArgs(args, ctor.getParameterTypes());
-                return objects!=null;
+                return objects != null;
             }
         };
     }
 
-    private static <T> DeferredConstructor<T> createDeferredConstructor(Class<T> clazz, String... args) {
+    private static <T> Optional<? extends DeferredConstructor<T>>
+    createOptionalDeferredConstructor(String... classAndArgs) {
+        Class<T> ctorClass = null;
+        try {
+            ctorClass = (Class<T>) Class.forName(classAndArgs[0]);
+        } catch (ClassNotFoundException ignored) {
+        }
+        if (ctorClass != null) {
+            Optional<? extends DeferredConstructor<T>> odc =
+                    createOptionalDeferredConstructor(
+                            ctorClass,
+                            Arrays.copyOfRange(classAndArgs, 1, classAndArgs.length)
+                    );
+            return odc;
+        }
+        return Optional.empty();
+
+    }
+
+    private static <T> Optional<DeferredConstructor<T>> createOptionalDeferredConstructor(
+            Class<T> clazz, String... args) {
 
         List<Constructor> matchingConstructors = new ArrayList<>();
 
@@ -102,8 +134,9 @@ public class ConstructorResolver {
                 .filter(canAssignToConstructor(args)).collect(Collectors.toList());
 
         if (matchingConstructors.size() == 0) {
-            throw new RuntimeException("no constructor found for " + clazz.getSimpleName() + " with " +
+            logger.debug("no constructor found for " + clazz.getSimpleName() + " with " +
                     (args.length) + " parameters");
+            return Optional.empty();
         }
 
         if (matchingConstructors.size() > 1) {
@@ -118,24 +151,37 @@ public class ConstructorResolver {
             }
             String diagnosticList = signatures.stream().collect(Collectors.joining(",", "[", "]"));
 
-            throw new RuntimeException("Multiple constructors found for " + clazz.getSimpleName() + " with " +
+            logger.error("Multiple constructors found for " + clazz.getSimpleName() + " with " +
                     (args.length) + " parameters:" + diagnosticList
             );
+            return Optional.empty();
         }
 
         Constructor matchingConstructor = matchingConstructors.get(0);
-        Object[] ctorArgs = specializeArgs(args,matchingConstructor.getParameterTypes());
+        Object[] ctorArgs = specializeArgs(args, matchingConstructor.getParameterTypes());
 
         // sanity check
         try {
             ConstructorUtils.invokeConstructor(clazz, ctorArgs);
         } catch (Exception e) {
-            throw new RuntimeException("Unable to invoke constructor as sanity check for args:" +
-                    Arrays.toString(ctorArgs), e);
+            logger.error("Unable to invoke constructor as sanity check for args:" + Arrays.toString(ctorArgs), e);
+            return Optional.empty();
         }
 
         DeferredConstructor<T> dc = new DeferredConstructor<>(clazz, ctorArgs);
-        return dc;
+        return Optional.of(dc);
+
+    }
+
+    private static <T> DeferredConstructor<T> createDeferredConstructorRequired(Class<T> clazz, String... args) {
+        Optional<DeferredConstructor<T>> optional =
+                createOptionalDeferredConstructor(clazz, args);
+        return optional.orElseThrow(
+                () -> new RuntimeException(
+                        "Unable to create deferred constructor for class:"
+                                + clazz.getCanonicalName() + " and args: "
+                                + Arrays.toString(args))
+        );
     }
 
     private static enum StringMapper {
@@ -197,7 +243,6 @@ public class ConstructorResolver {
 
 
     }
-
 
 
 }

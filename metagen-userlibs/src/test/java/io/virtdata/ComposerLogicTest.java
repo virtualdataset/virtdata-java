@@ -13,13 +13,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ComposerLogicTest {
 
     @Test
+    public void testSignatureMapping() {
+        ComposerLibrary cl = new ComposerLibrary();
+        Optional<DataMapper<Object>> dataMapper = cl.getDataMapper(
+                "compose HashRange(1000000000,9999999999); ToString() -> String"
+        );
+        assertThat(dataMapper).isNotNull();
+        assertThat(dataMapper).isPresent();
+        Object v = dataMapper.get().get(5L);
+        assertThat(v).isNotNull();
+    }
+
+    @Test
     public void  testIntegratedComposer() {
         ComposerLibrary cl = new ComposerLibrary();
         Optional<DataMapper<Object>> dataMapper = cl.getDataMapper(
                 "compose binomial(8,0.5); ToDate -> Date"
         );
         assertThat(dataMapper).isNotNull();
-        assertThat(dataMapper.isPresent()).isTrue();
+        assertThat(dataMapper).isPresent();
         assertThat(dataMapper.get().get(1)).isNotNull();
     }
 
