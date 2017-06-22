@@ -12,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Test
 public class ComposerLogicTest {
 
+
     @Test
     public void testSignatureMapping() {
         ComposerLibrary cl = new ComposerLibrary();

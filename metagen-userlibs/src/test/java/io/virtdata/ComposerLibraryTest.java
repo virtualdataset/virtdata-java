@@ -38,6 +38,20 @@ public class ComposerLibraryTest {
 //        // RandomToByteBuffer(1048576) ; ToString()
 //    }
 //
+
+
+    @Test(enabled=true)
+    public void testArgumentMatchingViaMainLib() {
+        BindingsTemplate bt = new BindingsTemplate(AllDataMapperLibraries.get());
+        bt.addFieldBinding("param","RandomLineToString(data/variable_words.txt)");
+        Bindings bindings = bt.resolveBindings();
+        Object[] all = bindings.getAll(5);
+        assertThat(all).isNotNull();
+        assertThat(all.length).isEqualTo(1);
+        Object o = all[0];
+        assertThat(o.getClass()).isEqualTo(String.class);
+    }
+
     @Test(enabled=false)
     public void testTypeCoercionWhenNeeded() {
         BindingsTemplate bt = new BindingsTemplate(AllDataMapperLibraries.get());
