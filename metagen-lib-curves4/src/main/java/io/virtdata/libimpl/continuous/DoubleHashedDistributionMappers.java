@@ -39,27 +39,27 @@ public class DoubleHashedDistributionMappers implements DataMapperLibrary {
         pareto(ParetoDistribution.class),
         gamma(GammaDistribution.class),
         uniform_real(UniformRealDistribution.class),
-        mapped_levy(LevyDistribution.class),
-        mapped_nakagami(NakagamiDistribution.class),
-        mapped_triangular(TriangularDistribution.class),
-        mapped_exponential(ExponentialDistribution.class),
-        mapped_logistic(LogisticDistribution.class),
-        mapped_enumerated_real(EnumeratedRealDistribution.class),
-        mapped_laplace(LaplaceDistribution.class),
-        mapped_log_normal(LogNormalDistribution.class),
-        mapped_cauchy(CauchyDistribution.class),
-        mapped_f(FDistribution.class),
-        mapped_t(TDistribution.class),
-        mapped_empirical(EmpiricalDistribution.class),
-        mapped_normal(NormalDistribution.class),
-        mapped_weibull(WeibullDistribution.class),
-        mapped_chi_squared(ChiSquaredDistribution.class),
-        mapped_gumbel(GumbelDistribution.class),
-        mapped_constant_real(ConstantRealDistribution.class),
-        mapped_beta(BetaDistribution.class),
-        mapped_pareto(ParetoDistribution.class),
-        mapped_gamma(GammaDistribution.class),
-        mapped_uniform_real(UniformRealDistribution.class);
+        mapto_levy(LevyDistribution.class),
+        mapto_nakagami(NakagamiDistribution.class),
+        mapto_triangular(TriangularDistribution.class),
+        mapto_exponential(ExponentialDistribution.class),
+        mapto_logistic(LogisticDistribution.class),
+        mapto_enumerated_real(EnumeratedRealDistribution.class),
+        mapto_laplace(LaplaceDistribution.class),
+        mapto_log_normal(LogNormalDistribution.class),
+        mapto_cauchy(CauchyDistribution.class),
+        mapto_f(FDistribution.class),
+        mapto_t(TDistribution.class),
+        mapto_empirical(EmpiricalDistribution.class),
+        mapto_normal(NormalDistribution.class),
+        mapto_weibull(WeibullDistribution.class),
+        mapto_chi_squared(ChiSquaredDistribution.class),
+        mapto_gumbel(GumbelDistribution.class),
+        mapto_constant_real(ConstantRealDistribution.class),
+        mapto_beta(BetaDistribution.class),
+        mapto_pareto(ParetoDistribution.class),
+        mapto_gamma(GammaDistribution.class),
+        mapto_uniform_real(UniformRealDistribution.class);
 
         private final Class<? extends AbstractRealDistribution> distribution;
 
@@ -102,7 +102,7 @@ public class DoubleHashedDistributionMappers implements DataMapperLibrary {
         Class<? extends AbstractRealDistribution> distributionClass = libName.getDistributionClass();
         DeferredConstructor<? extends AbstractRealDistribution> deferred = ConstructorResolver.resolve(distributionClass, specData.getArgs());
         AbstractRealDistribution distribution = deferred.construct();
-        if (specData.getFuncName().startsWith("mapped_")) {
+        if (specData.getFuncName().startsWith("mapto_")) {
             return Optional.of(new ResolvedFunction(new CMappedDistFunction(distribution)));
         } else {
             return Optional.of(new ResolvedFunction(new CHashedDistFunction(distribution)));

@@ -26,14 +26,14 @@ public class IntegerHashedDistributionMappers implements DataMapperLibrary {
         zipf(ZipfDistribution.class),
         binomial(BinomialDistribution.class),
         pascal(PascalDistribution.class),
-        mapped_enumerated(EnumeratedIntegerDistribution.class),
-        mapped_hypergeometric(HypergeometricDistribution.class),
-        mapped_uniform(UniformIntegerDistribution.class),
-        mapped_geometric(GeometricDistribution.class),
-        mapped_poisson(PoissonDistribution.class),
-        mapped_zipf(ZipfDistribution.class),
-        mapped_binomial(BinomialDistribution.class),
-        mapped_pascal(PascalDistribution.class);
+        mapto_enumerated(EnumeratedIntegerDistribution.class),
+        mapto_hypergeometric(HypergeometricDistribution.class),
+        mapto_uniform(UniformIntegerDistribution.class),
+        mapto_geometric(GeometricDistribution.class),
+        mapto_poisson(PoissonDistribution.class),
+        mapto_zipf(ZipfDistribution.class),
+        mapto_binomial(BinomialDistribution.class),
+        mapto_pascal(PascalDistribution.class);
 
         private final Class<? extends AbstractIntegerDistribution> distribution;
 
@@ -76,7 +76,7 @@ public class IntegerHashedDistributionMappers implements DataMapperLibrary {
         Class<? extends AbstractIntegerDistribution> distributionClass = libName.getDistributionClass();
         DeferredConstructor<? extends AbstractIntegerDistribution> deferred = ConstructorResolver.resolve(distributionClass, specData.getArgs());
         AbstractIntegerDistribution distribution = deferred.construct();
-        if (specData.getFuncName().startsWith("mapped_")) {
+        if (specData.getFuncName().startsWith("mapto_")) {
             return Optional.of(new ResolvedFunction(new IMappedDistFunction(distribution)));
         } else {
             return Optional.of(new ResolvedFunction(new IHashedDistFunction(distribution)));
