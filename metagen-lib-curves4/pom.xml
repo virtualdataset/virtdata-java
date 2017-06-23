@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -8,18 +9,19 @@
         <relativePath>../project-defaults</relativePath>
     </parent>
 
-    <artifactId>metagen-lib-curves</artifactId>
+    <artifactId>metagen-lib-curves4</artifactId>
     <packaging>jar</packaging>
     <name>metagen-lib-curves</name>
     <url>http://virtdata.io/</url>
+    <description>
+        Statistical sampling library for use in virtualdataset libraries, based on apache commons math 4
+    </description>
 
     <dependencies>
         <dependency>
             <groupId>com.google.auto.service</groupId>
             <artifactId>auto-service</artifactId>
             <version>1.0-rc3</version>
-            <!--<optional>true</optional>-->
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.virtdata</groupId>
@@ -32,29 +34,14 @@
             <version>1.7.25</version>
         </dependency>
         <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>0.9.11</version>
-        </dependency>
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>2.9.9</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
-            <artifactId>commons-math3</artifactId>
-            <version>3.6.1</version>
+            <artifactId>commons-math4</artifactId>
+            <version>4.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>de.greenrobot</groupId>
             <artifactId>java-common</artifactId>
             <version>2.3.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.elega9t</groupId>
-            <artifactId>number-to-words</artifactId>
-            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
@@ -72,15 +59,6 @@
 
     <build>
         <plugins>
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-surefire-plugin</artifactId>-->
-                <!--<version>2.19.1</version>-->
-                <!--<configuration>-->
-                    <!--<useSystemClassLoader>false</useSystemClassLoader> &lt;!&ndash; fixes reflection tests &ndash;&gt;-->
-                <!--</configuration>-->
-            <!--</plugin>-->
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -108,7 +86,8 @@
                         </goals>
                         <configuration>
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                                 <!--<transformer implementation="org.apache.maven.plugins.shade.resources.IncludeResourceTransformer">-->
                                 <!--</transformer>-->
                             </transformers>
@@ -122,5 +101,13 @@
 
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>apache-snapshots</id>
+            <url>http://repository.apache.org/snapshots/</url>
+            <snapshots><updatePolicy>interval:1m</updatePolicy></snapshots>
+        </repository>
+    </repositories>
 
 </project>
