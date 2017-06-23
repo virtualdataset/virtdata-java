@@ -12,38 +12,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.LongUnaryOperator;
 import java.util.stream.Collectors;
 
 @AutoService(DataMapperLibrary.class)
-public class IntegerHashedDistributionMappers implements DataMapperLibrary {
+public class IntegerDistributions implements DataMapperLibrary {
 
-    private static enum LibName {
-        enumerated_integer(EnumeratedIntegerDistribution.class),
-        hypergeometric(HypergeometricDistribution.class),
-        uniform(UniformIntegerDistribution.class),
-        geometric(GeometricDistribution.class),
-        poisson(PoissonDistribution.class),
-        zipf(ZipfDistribution.class),
-        binomial(BinomialDistribution.class),
-        pascal(PascalDistribution.class),
-        mapto_enumerated(EnumeratedIntegerDistribution.class),
-        mapto_hypergeometric(HypergeometricDistribution.class),
-        mapto_uniform(UniformIntegerDistribution.class),
-        mapto_geometric(GeometricDistribution.class),
-        mapto_poisson(PoissonDistribution.class),
-        mapto_zipf(ZipfDistribution.class),
-        mapto_binomial(BinomialDistribution.class),
-        mapto_pascal(PascalDistribution.class);
-
-        private final Class<? extends AbstractIntegerDistribution> distribution;
-
-        LibName(Class<? extends AbstractIntegerDistribution> distribution) {
-            this.distribution = distribution;
-        }
-
-        public Class<? extends AbstractIntegerDistribution> getDistributionClass() {
-            return distribution;
-        }
+    public static LongUnaryOperator forSpec(String spec) {
+        Optional<ResolvedFunction> resolvedFunction = new IntegerDistributions().resolveFunction(spec);
+        return resolvedFunction
+                .map(ResolvedFunction::getFunctionObject)
+                .map(f -> ((LongUnaryOperator) f)).orElseThrow(
+                        () -> new RuntimeException("Invalid spec: " + spec)
+                );
     }
 
     @Override
@@ -94,5 +75,34 @@ public class IntegerHashedDistributionMappers implements DataMapperLibrary {
     @Override
     public List<String> getDataMapperNames() {
         return Arrays.stream(LibName.values()).map(String::valueOf).collect(Collectors.toList());
+    }
+
+    private static enum LibName {
+        enumerated_integer(EnumeratedIntegerDistribution.class),
+        hypergeometric(HypergeometricDistribution.class),
+        uniform(UniformIntegerDistribution.class),
+        geometric(GeometricDistribution.class),
+        poisson(PoissonDistribution.class),
+        zipf(ZipfDistribution.class),
+        binomial(BinomialDistribution.class),
+        pascal(PascalDistribution.class),
+        mapto_enumerated(EnumeratedIntegerDistribution.class),
+        mapto_hypergeometric(HypergeometricDistribution.class),
+        mapto_uniform(UniformIntegerDistribution.class),
+        mapto_geometric(GeometricDistribution.class),
+        mapto_poisson(PoissonDistribution.class),
+        mapto_zipf(ZipfDistribution.class),
+        mapto_binomial(BinomialDistribution.class),
+        mapto_pascal(PascalDistribution.class);
+
+        private final Class<? extends AbstractIntegerDistribution> distribution;
+
+        LibName(Class<? extends AbstractIntegerDistribution> distribution) {
+            this.distribution = distribution;
+        }
+
+        public Class<? extends AbstractIntegerDistribution> getDistributionClass() {
+            return distribution;
+        }
     }
 }

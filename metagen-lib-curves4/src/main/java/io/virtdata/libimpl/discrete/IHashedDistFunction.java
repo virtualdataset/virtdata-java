@@ -4,9 +4,9 @@ import de.greenrobot.common.hash.Murmur3F;
 import org.apache.commons.math4.distribution.IntegerDistribution;
 
 import java.nio.ByteBuffer;
-import java.util.function.LongToIntFunction;
+import java.util.function.LongUnaryOperator;
 
-public class IHashedDistFunction implements LongToIntFunction {
+public class IHashedDistFunction implements LongUnaryOperator {
 
     private final IntegerDistribution idist;
     private final Murmur3F murmur3F = new Murmur3F();
@@ -18,9 +18,9 @@ public class IHashedDistFunction implements LongToIntFunction {
     }
 
     @Override
-    public int applyAsInt(long value) {
+    public long applyAsLong(long operand) {
         murmur3F.reset();
-        bb.putLong(0,value);
+        bb.putLong(0,operand);
         bb.position(0);
         murmur3F.update(bb.array());
         long result= Math.abs(murmur3F.getValue());

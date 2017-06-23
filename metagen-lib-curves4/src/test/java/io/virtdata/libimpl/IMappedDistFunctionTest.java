@@ -16,8 +16,8 @@ public class IMappedDistFunctionTest {
     @Test
     public void testBinomialMappedDist() {
         IMappedDistFunction b85 = new IMappedDistFunction(new BinomialDistribution(8, 0.5D));
-        assertThat(b85.applyAsInt(0L)).isEqualTo(0);
-        assertThat(b85.applyAsInt(Long.MAX_VALUE)).isEqualTo(8);
+        assertThat(b85.applyAsLong(0L)).isEqualTo(0);
+        assertThat(b85.applyAsLong(Long.MAX_VALUE)).isEqualTo(8);
         double c[] = new double[binomial85steps.length];
         c[0]=binomial85steps[0];
         for (int i = 1; i < c.length; i++) {
@@ -32,7 +32,7 @@ public class IMappedDistFunctionTest {
 
             long beforeBoundary = (long)(Math.max(0.0D,(c[b])-phi)*maxv);
             double beforeDouble = (double)beforeBoundary / (double)Long.MAX_VALUE;
-            int vb = b85.applyAsInt(beforeBoundary);
+            long vb = b85.applyAsLong(beforeBoundary);
 
             System.out.println("vb:" + vb + ", before:" + b + " bb:" + beforeBoundary + ", reconverted: " + beforeDouble);
             System.out.flush();
@@ -40,7 +40,7 @@ public class IMappedDistFunctionTest {
 
             long afterBoundary= (long)(Math.min(1.0D,(c[b])+phi)*maxv);
             double afterDouble = (double)afterBoundary / (double)Long.MAX_VALUE;
-            int va = b85.applyAsInt(afterBoundary);
+            long va = b85.applyAsLong(afterBoundary);
             System.out.println("va:" + va + " after:" + b + " ab:" + afterBoundary + ", reconverted: " + afterDouble);
             System.out.flush();
             assertThat(va).isEqualTo(b+1);
@@ -56,7 +56,7 @@ public class IMappedDistFunctionTest {
         IMappedDistFunction b85 = new IMappedDistFunction(new BinomialDistribution(8, 0.5D));
         for (int i = 0; i < 1000; i++) {
             double factor=((double) i / 1000D);
-            int v = b85.applyAsInt((long) (factor * (double) Long.MAX_VALUE));
+            long v = b85.applyAsLong((long) (factor * (double) Long.MAX_VALUE));
             System.out.println("i:" + i + ",f: " + factor + ", v:" + v);
         }
 

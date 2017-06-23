@@ -12,10 +12,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.LongToDoubleFunction;
 import java.util.stream.Collectors;
 
 @AutoService(DataMapperLibrary.class)
-public class DoubleHashedDistributionMappers implements DataMapperLibrary {
+public class RealDistributions implements DataMapperLibrary {
+
+    public static LongToDoubleFunction forSpec(String spec) {
+        Optional<ResolvedFunction> resolvedFunction = new RealDistributions().resolveFunction(spec);
+        return resolvedFunction
+                .map(ResolvedFunction::getFunctionObject)
+                .map(f -> ((LongToDoubleFunction) f))
+                .orElseThrow(() -> new RuntimeException("Invalid spec: " + spec));
+    }
+
 
     private static enum LibName {
         levy(LevyDistribution.class),

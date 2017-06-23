@@ -2,9 +2,9 @@ package io.virtdata.libimpl.discrete;
 
 import org.apache.commons.math4.distribution.IntegerDistribution;
 
-import java.util.function.LongToIntFunction;
+import java.util.function.LongUnaryOperator;
 
-public class IMappedDistFunction implements LongToIntFunction {
+public class IMappedDistFunction implements LongUnaryOperator {
 
     private final IntegerDistribution idist;
     private static double MAX_LONG_DOUBLE = (double) Long.MAX_VALUE;
@@ -14,8 +14,8 @@ public class IMappedDistFunction implements LongToIntFunction {
     }
 
     @Override
-    public int applyAsInt(long value) {
-        double unitSample = ((double) value)/MAX_LONG_DOUBLE;
+    public long applyAsLong(long operand) {
+        double unitSample = ((double) operand)/MAX_LONG_DOUBLE;
 
         int sample = idist.inverseCumulativeProbability(unitSample);
         return sample;
