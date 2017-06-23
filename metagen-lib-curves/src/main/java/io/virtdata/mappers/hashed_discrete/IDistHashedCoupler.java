@@ -47,7 +47,7 @@ public class IDistHashedCoupler<T extends IntegerDistribution> implements LongUn
         murmur3F.update(bb.array());
         long result= Math.abs(murmur3F.getValue());
 
-        randomBypassAdapter.setSeed(value);
+        randomBypassAdapter.setSeed(result);
         long sample = distribution.sample();
         return sample;
     }

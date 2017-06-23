@@ -46,8 +46,7 @@ public class CDistHashedCoupler<T extends RealDistribution> implements LongToDou
         bb.position(0);
         murmur3F.update(bb.array());
         long result= Math.abs(murmur3F.getValue());
-
-        randomBypassAdapter.setSeed(value);
+        randomBypassAdapter.setSeed(result);
         double sample = distribution.sample();
         return sample;
     }
