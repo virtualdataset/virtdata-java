@@ -15,7 +15,7 @@ import java.util.function.LongUnaryOperator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TestDistWithConcurrency {
+public class TestIntegerDistConcurrency {
 
     @Test
     public void testBinomialICDR() {
@@ -52,7 +52,7 @@ public class TestDistWithConcurrency {
     @Test
     public void testConcurrentBinomialHashValues() {
         testConcurrentIntegerHashDistValues(
-                "binomial_8_5.t100.i1000",
+                "binomial(8,0.5)/100 threads/1000 iterations",
                 100,
                 1000,
                 "binomial(8,0.5)");
@@ -124,8 +124,8 @@ public class TestDistWithConcurrency {
         public long[] call() throws Exception {
             long[] output = new long[size];
             LongUnaryOperator mapper = IntegerDistributions.forSpec(mapperSpec);
-            System.out.println("resolved:" + mapper);
-            System.out.flush();
+//            System.out.println("resolved:" + mapper);
+//            System.out.flush();
 
             synchronized (signal) {
                 signal.wait(10000);
@@ -133,9 +133,9 @@ public class TestDistWithConcurrency {
 
             for (int i = 0; i < output.length; i++) {
                 output[i] = mapper.applyAsLong(i);
-                if ((i % 100) == 0) {
-                    System.out.println("wrote t:" + slot + ", iter:" + i + ", val:" + output[i]);
-                }
+//                if ((i % 100) == 0) {
+//                    System.out.println("wrote t:" + slot + ", iter:" + i + ", val:" + output[i]);
+//                }
             }
             return output;
         }

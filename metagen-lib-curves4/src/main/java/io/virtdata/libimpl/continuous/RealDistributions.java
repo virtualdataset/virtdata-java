@@ -28,6 +28,8 @@ public class RealDistributions implements DataMapperLibrary {
 
 
     private static enum LibName {
+        // https://en.wikipedia.org/wiki/L%C3%A9vy_distribution
+        // double location, double scale (u, c)
         levy(LevyDistribution.class),
         nakagami(NakagamiDistribution.class),
         triangular(TriangularDistribution.class),
