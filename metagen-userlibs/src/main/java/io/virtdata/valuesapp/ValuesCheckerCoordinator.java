@@ -148,7 +148,6 @@ public class ValuesCheckerCoordinator implements Runnable {
     }
 
     private void coordinateFor(String forWhat) {
-        // Kick off all threads together for data generation
         try {
             long delay = 10;
             while (readyQueue.size() < threads) {
@@ -157,36 +156,15 @@ public class ValuesCheckerCoordinator implements Runnable {
                 delay = Math.min(1024, delay * 2);
                 throwInjectedExceptions();
             }
-            logger.debug("threads ready: " + readyQueue.size() + ":, proceeding");
             readyQueue.clear();
-
-            logger.debug("signaling threads for " + forWhat);
-            logger.debug("acquiring lock");
             lock.lock();
-            logger.debug("DONE acquiring lock");
-//            logger.debug("got lock");
-//            logger.debug("got monitor");
-            logger.debug("signaling threads on " + goTime.toString() + " for " + forWhat);
             goTime.signalAll();
-            logger.debug("DONE signaling threads for " + forWhat);
-
-//            logger.debug("awaiting ready threads reset");
-//            delay = 10;
-//            while (readyQueue.size() < threads) {
-//                logger.debug("threads ready for finishing " + forWhat + ": " + readyQueue.size() + ", delaying " + delay + "ms");
-//                Thread.sleep(delay);
-//                delay = Math.min(1024, delay * 2);
-//                throwInjectedExceptions();
-//            }
-//            logger.debug("threads reset: " + readyQueue.size() + ":, proceeding");
-//            readyQueue.clear();
         } catch (Exception e) {
             logger.error("Error while signaling threads: " + e.getMessage(), e);
             throw new RuntimeException(e);
         } finally {
             lock.unlock();
         }
-//            logger.debug("unlocked");
 
 
     }
