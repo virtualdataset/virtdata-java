@@ -67,17 +67,17 @@ public class ValuesCheckerRunnable implements Runnable {
             String rangeInfo = "t:" + threadNum + " [" + rangeStart + ".." + (rangeStart+bufsize) + ")";
 
             synchronizeFor("generation " + rangeInfo);
-            logger.debug("generating for " + "range: " + rangeStart + ".." + (rangeStart + bufsize));
+//            logger.debug("generating for " + "range: " + rangeStart + ".." + (rangeStart + bufsize));
             for (int i = 0; i < output.length; i++) {
                 output[i] = mapper.get(i + rangeStart);
-                if (i==0) {
-                    logger.debug("gen i:" + i + ", cycle: " + (i + rangeStart) + ": " + output[i]);
-                }
+//                if (i==0) {
+//                    logger.debug("gen i:" + i + ", cycle: " + (i + rangeStart) + ": " + output[i]);
+//                }
 
             }
 
             synchronizeFor("verification " + rangeInfo);
-            logger.debug("checker " + this.threadNum + " verifying range [" + start + ".." + (start + end) + ")");
+//            logger.debug("checker " + this.threadNum + " verifying range [" + start + ".." + (start + end) + ")");
             for (int bufidx = 0; bufidx < expected.size(); bufidx++) {
                 if (!expected.get(bufidx).equals(output[bufidx])) {
                     String errmsg = "Value differs: " +
@@ -93,9 +93,9 @@ public class ValuesCheckerRunnable implements Runnable {
             }
             synchronizeFor("completion");
 
-            logger.info("verified values for thread " + Thread.currentThread().getName() + " in range " +
-                    rangeStart + ".." + (rangeStart + bufsize)
-            );
+//            logger.info("verified values for thread " + Thread.currentThread().getName() + " in range " +
+//                    rangeStart + ".." + (rangeStart + bufsize)
+//            );
         }
 
     }

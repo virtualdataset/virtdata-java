@@ -106,9 +106,9 @@ public class ValuesCheckerCoordinator implements Runnable {
             List<Object> genRef = new ArrayList<>(bufsize);
             for (int refidx = 0; refidx < bufsize; refidx++) {
                 genRef.add(mapper.get(refidx + intervalStart));
-                if (refidx == 0) {
-                    logger.debug("ref i:" + refidx + ", " + "ref cycle: " + (refidx + intervalStart) + ": " + genRef.get(genRef.size() - 1));
-                }
+//                if (refidx == 0) {
+//                    logger.debug("ref i:" + refidx + ", " + "ref cycle: " + (refidx + intervalStart) + ": " + genRef.get(genRef.size() - 1));
+//                }
 
             }
             reference.clear();
@@ -148,10 +148,11 @@ public class ValuesCheckerCoordinator implements Runnable {
     }
 
     private void coordinateFor(String forWhat) {
+        logger.debug("coordinating " + threads + " threads for " + forWhat);
         try {
-            long delay = 10;
+            long delay = 1;
             while (readyQueue.size() < threads) {
-                logger.debug("threads ready for " + forWhat + ": " + readyQueue.size() + ", delaying " + delay + "ms");
+//                logger.debug("threads ready for " + forWhat + ": " + readyQueue.size() + ", delaying " + delay + "ms");
                 Thread.sleep(delay);
                 delay = Math.min(1024, delay * 2);
                 throwInjectedExceptions();
