@@ -141,11 +141,11 @@ public class RealDistributions implements DataMapperLibrary {
         if (interpolate) {
             if (hashto) {
                 return Optional.of(new ResolvedFunction(
-                        new InterpolatedRealFunction(1000,new CHashedDistFunction(distribution)),true
+                        new InterpolatedLongToDoubleFunction(1000,new CHashedDistFunction(distribution)),true
                 ));
             } else {
                 return Optional.of(new ResolvedFunction(
-                        new InterpolatedRealFunction(1000, new CMappedDistFunction(distribution)), true
+                        new InterpolatedLongToDoubleFunction(1000, new CMappedDistFunction(distribution)), true
                 ));
             }
         } else {
