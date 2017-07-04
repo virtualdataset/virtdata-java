@@ -5,16 +5,14 @@ import io.virtdata.api.DataMapperLibrary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class AllDataMapperLibraries implements DataMapperLibrary {
 
     private static AllDataMapperLibraries instance = new AllDataMapperLibraries();
     private List<DataMapperLibrary> libraries = DataMapperLibraryFinder.getAll();
+    private final Map<String,DataMapper<?>> threadSafeCache = new HashMap<>();
 
     private final static Logger logger = LoggerFactory.getLogger(AllDataMapperLibraries.class);
 
@@ -28,6 +26,30 @@ public class AllDataMapperLibraries implements DataMapperLibrary {
     @Override
     public String getLibraryName() {
         return "ALL";
+    }
+
+    private <T> Optional<DataMapper<T>> getDataMapperUnsynced(String spec) {
+
+        List<ResolvedFunction> resolvedFunctions = resolveFunctions(spec);
+
+        if (resolvedFunctions.size()==0) {
+            throw new RuntimeException("Unable to resolve a mapping function for " + spec);
+        }
+
+        if (resolvedFunctions.size()>1) {
+            logger.warn("Found " + resolvedFunctions.size() + " resolved functions for '" + spec +"'. This library " +
+                    "expects there to be exactly 1");
+        }
+
+        Optional<ResolvedFunction> optionallyResolvedFunction = Optional.ofNullable(resolvedFunctions.get(0));
+        if (optionallyResolvedFunction.isPresent()) {
+            ResolvedFunction resolvedFunction = optionallyResolvedFunction.get();
+        }
+        Optional<DataMapper<T>> dataMapper = optionallyResolvedFunction
+                .map(ResolvedFunction::getFunctionObject)
+                .map(DataMapperFunctionMapper::map);
+
+        return dataMapper;
     }
 
     /**
@@ -44,23 +66,54 @@ public class AllDataMapperLibraries implements DataMapperLibrary {
             throw new RuntimeException("No libraries could parse: " + spec);
         }
 
-        List<ResolvedFunction> resolvedFunctions = resolveFunctions(spec);
-
-        if (resolvedFunctions.size()==0) {
-            throw new RuntimeException("Unable to resolve a mapping function for " + spec);
+        synchronized (this) {
+            if (threadSafeCache.containsKey(spec)) {
+                DataMapper<T> dataMapper = (DataMapper<T>) threadSafeCache.get(spec);
+                if (dataMapper != null) {
+                    return Optional.ofNullable(dataMapper);
+                } // else known to be not marked as threadsafe
+            } else { // dont' know if it is threadsafe or not, so must compute in critical section
+                Optional<ResolvedFunction> optionallyResolvedFunction = resolveFunction(spec);
+                if (optionallyResolvedFunction.isPresent()) {
+                    ResolvedFunction resolvedFunction = optionallyResolvedFunction.get();
+                    DataMapper<T> mapper = DataMapperFunctionMapper.map(resolvedFunction.getFunctionObject());
+                    if (resolvedFunction.isThreadSafe()) {
+                        logger.trace("Function " + spec + " is marked as thread safe. Caching and sharing.");
+                        threadSafeCache.put(spec,mapper);
+                    } else {
+                        logger.trace("Function " + spec + " is not thread safe.");
+                        threadSafeCache.put(spec,null);
+                    }
+                } else {
+                    return Optional.empty();
+                }
+                Optional<DataMapper<Object>> newlyResolved = getDataMapperUnsynced(spec);
+            }
         }
 
-        if (resolvedFunctions.size()>1) {
-            logger.warn("Found " + resolvedFunctions.size() + " resolved functions for '" + spec +"'. This library " +
-                    "expects there to be exactly 1");
-        }
+        return getDataMapperUnsynced(spec);
 
-        Optional<ResolvedFunction> resolvedFunction = Optional.ofNullable(resolvedFunctions.get(0));
-        Optional<DataMapper<T>> dataMapper = resolvedFunction
-                .map(ResolvedFunction::getFunctionObject)
-                .map(DataMapperFunctionMapper::map);
-        return dataMapper;
-
+//        List<ResolvedFunction> resolvedFunctions = resolveFunctions(spec);
+//
+//        if (resolvedFunctions.size()==0) {
+//            throw new RuntimeException("Unable to resolve a mapping function for " + spec);
+//        }
+//
+//        if (resolvedFunctions.size()>1) {
+//            logger.warn("Found " + resolvedFunctions.size() + " resolved functions for '" + spec +"'. This library " +
+//                    "expects there to be exactly 1");
+//        }
+//
+//        Optional<ResolvedFunction> optionallyResolvedFunction = Optional.ofNullable(resolvedFunctions.get(0));
+//        if (optionallyResolvedFunction.isPresent()) {
+//            ResolvedFunction resolvedFunction = optionallyResolvedFunction.get();
+//        }
+//        Optional<DataMapper<T>> dataMapper = optionallyResolvedFunction
+//                .map(ResolvedFunction::getFunctionObject)
+//                .map(DataMapperFunctionMapper::map);
+//
+//        return dataMapper;
+//
     }
 
     /**

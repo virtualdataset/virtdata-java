@@ -64,4 +64,16 @@ public interface DataMapperLibrary {
      */
     List<String> getDataMapperNames();
 
+    //         default <T> Optional<DataMapper<T>> getDataMapper(String spec) {
+
+    default Optional<DataMapper<Double>> getDoubleDataMapper(String spec) {
+        if (!canParseSpec(spec)) {
+            return Optional.empty();
+        }
+        Optional<ResolvedFunction> resolvedFunction = resolveFunction(spec);
+        Optional<DataMapper<Double>> mapper = resolvedFunction
+                .map(ResolvedFunction::getFunctionObject)
+                .map(DataMapperFunctionMapper::map);
+        return mapper;
+    }
 }

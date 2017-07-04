@@ -1,9 +1,11 @@
 package io.virtdata.libimpl.discrete;
 
+import io.virtdata.api.ThreadSafeMapper;
 import org.apache.commons.math4.distribution.IntegerDistribution;
 
 import java.util.function.LongUnaryOperator;
 
+@ThreadSafeMapper
 public class IMappedDistFunction implements LongUnaryOperator {
 
     private final IntegerDistribution idist;

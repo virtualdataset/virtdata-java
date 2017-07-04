@@ -20,16 +20,19 @@ public class ResolvedFunction {
     private FunctionType functionType;
     private Object functionObject;
     private DataMapperLibrary library;
+    private boolean isThreadSafe;
     // cache applyMethod, it's idempotent
 
-    public ResolvedFunction(Object g, DataMapperLibrary library) {
+    public ResolvedFunction(Object g, boolean isThreadSafe, DataMapperLibrary library) {
         this.library = library;
         functionObject = g;
+        this.isThreadSafe = isThreadSafe;
         functionType = FunctionType.valueOf(g); // sanity check the type of g
     }
 
-    public ResolvedFunction(Object g) {
+    public ResolvedFunction(Object g, boolean isThreadSafe) {
         this.functionObject = g;
+        this.isThreadSafe = isThreadSafe;
         functionType = FunctionType.valueOf(g);  // sanity check the type of g
     }
 
@@ -92,6 +95,10 @@ public class ResolvedFunction {
     }
 
     public static Comparator<ResolvedFunction> PREFERRED_TYPE_COMPARATOR = new PreferredTypeComparator();
+
+    public boolean isThreadSafe() {
+        return isThreadSafe;
+    }
 
     /**
      * Compare two ResolvedFunctions by preferred input type and then by preferred output type.

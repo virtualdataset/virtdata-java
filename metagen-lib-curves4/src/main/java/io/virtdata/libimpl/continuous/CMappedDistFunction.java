@@ -1,9 +1,11 @@
 package io.virtdata.libimpl.continuous;
 
+import io.virtdata.api.ThreadSafeMapper;
 import org.apache.commons.math4.distribution.RealDistribution;
 
 import java.util.function.LongToDoubleFunction;
 
+@ThreadSafeMapper
 public class CMappedDistFunction implements LongToDoubleFunction {
 
     private final RealDistribution idist;

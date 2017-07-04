@@ -69,9 +69,7 @@ public class ComposerLibrary implements DataMapperLibrary {
     public List<ResolvedFunction> resolveFunctions(String spec) {
         Optional<ResolvedFunction> resolvedFunction = resolveFunction(spec);
         ArrayList<ResolvedFunction> resolvedFunctions = new ArrayList<>();
-        if (resolvedFunction.isPresent()) {
-            resolvedFunctions.add(resolvedFunction.get());
-        }
+        resolvedFunction.ifPresent(resolvedFunctions::add);
         return resolvedFunctions;
     }
 

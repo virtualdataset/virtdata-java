@@ -2,6 +2,7 @@ package io.virtdata.libimpl.discrete;
 
 import com.google.auto.service.AutoService;
 import io.virtdata.api.DataMapperLibrary;
+import io.virtdata.api.ThreadSafeMapper;
 import io.virtdata.api.specs.SpecData;
 import io.virtdata.core.ResolvedFunction;
 import io.virtdata.reflection.ConstructorResolver;
@@ -58,9 +59,15 @@ public class IntegerDistributions implements DataMapperLibrary {
         DeferredConstructor<? extends AbstractIntegerDistribution> deferred = ConstructorResolver.resolve(distributionClass, specData.getArgs());
         AbstractIntegerDistribution distribution = deferred.construct();
         if (specData.getFuncName().startsWith("mapto_")) {
-            return Optional.of(new ResolvedFunction(new IMappedDistFunction(distribution)));
+            return Optional.of(new ResolvedFunction(
+                    new IMappedDistFunction(distribution),
+                    IMappedDistFunction.class.getAnnotation(ThreadSafeMapper.class)!=null)
+            );
         } else {
-            return Optional.of(new ResolvedFunction(new IHashedDistFunction(distribution)));
+            return Optional.of(new ResolvedFunction(
+                    new IHashedDistFunction(distribution),
+                    IHashedDistFunction.class.getAnnotation(ThreadSafeMapper.class)!=null)
+            );
         }
     }
 
