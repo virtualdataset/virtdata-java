@@ -29,11 +29,6 @@ public class ComposerForFunction implements FunctionComposer<Function<?,?>> {
                         (Object o) ->
                                 ((LongUnaryOperator) outer).applyAsLong(((Function<Object, Long>) inner).apply(o));
                 return new ComposerForFunction(f1);
-            case long_T:
-                final Function<Object,Object> f2 =
-                        (Object o) ->
-                                ((LongFunction<?>)outer).apply(((Function<Object,Long>)inner).apply(o));
-                return new ComposerForFunction(f2);
             case long_int:
                 final Function<Object,Integer> f3 =
                         (Object o) ->
@@ -44,6 +39,11 @@ public class ComposerForFunction implements FunctionComposer<Function<?,?>> {
                         (Object o) ->
                                 ((LongToDoubleFunction)outer).applyAsDouble(((Function<Object,Long>)inner).apply(o));
                 return new ComposerForFunction(f4);
+            case long_T:
+                final Function<Object,Object> f2 =
+                        (Object o) ->
+                                ((LongFunction<?>)outer).apply(((Function<Object,Long>)inner).apply(o));
+                return new ComposerForFunction(f2);
             case R_T:
                 final Function<Object,Object> f5=
                         (Object o) ->
@@ -54,7 +54,37 @@ public class ComposerForFunction implements FunctionComposer<Function<?,?>> {
                         (Object o) ->
                                 ((IntUnaryOperator)outer).applyAsInt(((Function<Object,Integer>)inner).apply(o));
                 return new ComposerForFunction(f6);
-
+            case int_long:
+                final Function<Object,Long> f7 =
+                        (Object o) ->
+                                ((IntToLongFunction)outer).applyAsLong(((Function<Object,Integer>)inner).apply(o));
+                return new ComposerForFunction(f7);
+            case int_double:
+                final Function<Object,Double> f8 =
+                        (Object o) ->
+                                ((IntToDoubleFunction)outer).applyAsDouble(((Function<Object,Integer>)inner).apply(o));
+                return new ComposerForFunction(f8);
+            case int_T:
+                final Function<Object,?> f9 =
+                        (Object o) ->
+                                ((IntFunction<?>)outer).apply(((Function<Object,Integer>)inner).apply(o));
+                return new ComposerForFunction(f9);
+            case double_double:
+                final Function<Object,Double> f10 =
+                        (Object o) -> ((DoubleUnaryOperator)outer).applyAsDouble(((Function<Object,Double>)inner).apply(o));
+                return new ComposerForFunction(f10);
+            case double_int:
+                final Function<Object,Integer> f11 =
+                        (Object o) -> ((DoubleToIntFunction)outer).applyAsInt(((Function<Object,Double>)inner).apply(o));
+                return new ComposerForFunction(f11);
+            case double_long:
+                final Function<Object,Long> f12 =
+                        (Object o) -> ((DoubleToLongFunction)outer).applyAsLong(((Function<Object,Double>)inner).apply(o));
+                return new ComposerForFunction(f12);
+            case double_T:
+                final Function<Object,?> f13 =
+                        (Object o) -> ((DoubleFunction<?>)outer).apply(((Function<Object,Double>)inner).apply(o));
+                return new ComposerForFunction(f13);
             default:
                 throw new RuntimeException(functionType + " is not recognized");
 

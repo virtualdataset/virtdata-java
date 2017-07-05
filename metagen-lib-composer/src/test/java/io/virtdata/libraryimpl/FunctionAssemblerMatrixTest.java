@@ -15,11 +15,17 @@ public class FunctionAssemblerMatrixTest {
 
         // TODO: Enable full functional introspection and remove the generic skips below
         for (FunctionType ft1 : FunctionType.values()) {
-            if (ft1 == FunctionType.R_T || ft1 == FunctionType.long_T || ft1 == FunctionType.int_T) {
+            if (ft1 == FunctionType.R_T
+                    || ft1 == FunctionType.long_T
+                    || ft1 == FunctionType.int_T
+                    || ft1 == FunctionType.double_T) {
                 continue;
             }
             for (FunctionType ft2 : FunctionType.values()) {
-                if (ft2 == FunctionType.R_T || ft2 == FunctionType.long_T || ft2 == FunctionType.int_T) {
+                if (ft2 == FunctionType.R_T
+                        || ft2 == FunctionType.long_T
+                        || ft2 == FunctionType.int_T
+                        || ft2 == FunctionType.double_T) {
                     continue;
                 }
                 Object f1 = genFunction(ft1);
@@ -58,12 +64,39 @@ public class FunctionAssemblerMatrixTest {
                 return new F_int_double();
             case int_T:
                 return new F_int_T();
+            case double_double:
+                return new F_double_double();
+            case double_int:
+                return new F_double_int();
+            case double_long:
+                return new F_double_long();
+            case double_T:
+                return new F_double_T();
             default:
                 throw new RuntimeException("unrecognized function type: " + ftype);
         }
 
     }
 
+    private static class F_double_T implements DoubleFunction<Long> {
+        @Override
+        public Long apply(double value) {
+            return (long) value;
+        }
+    }
+    private static class F_double_int implements DoubleToIntFunction {
+        @Override
+        public int applyAsInt(double value) {
+            return (int) value;
+        }
+    }
+
+    private static class F_double_long implements DoubleToLongFunction {
+        @Override
+        public long applyAsLong(double value) {
+            return (long) value;
+        }
+    }
     private static class F_long_double implements LongToDoubleFunction {
         @Override
         public double applyAsDouble(long value) {
@@ -81,6 +114,13 @@ public class FunctionAssemblerMatrixTest {
     private static class F_long_long implements LongUnaryOperator {
         @Override
         public long applyAsLong(long operand) {
+            return operand;
+        }
+    }
+
+    private static class F_double_double implements DoubleUnaryOperator {
+        @Override
+        public double applyAsDouble(double operand) {
             return operand;
         }
     }

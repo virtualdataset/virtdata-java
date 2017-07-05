@@ -33,14 +33,12 @@ public class FunctionAssembly implements FunctionComposer {
         switch (functionType) {
             case long_long:
                 return new ComposerForLongUnaryOperator((LongUnaryOperator) o);
-            case long_T:
-                return new ComposerForLongFunction((LongFunction<?>) o);
             case long_int:
                 return new ComposerForLongToIntFunction((LongToIntFunction) o);
             case long_double:
-                return new ComposerForLongToDouble((LongToDoubleFunction) o);
-            case R_T:
-                return new ComposerForFunction((Function<?, ?>) o);
+                return new ComposerForLongToDoubleFunction((LongToDoubleFunction) o);
+            case long_T:
+                return new ComposerForLongFunction((LongFunction<?>) o);
             case int_int:
                 return new ComposerForIntUnaryOperator((IntUnaryOperator) o);
             case int_long:
@@ -49,6 +47,16 @@ public class FunctionAssembly implements FunctionComposer {
                 return new ComposerForIntToDoubleFunction((IntToDoubleFunction) o);
             case int_T:
                 return new ComposerForIntFunction((IntFunction<?>) o);
+            case double_double:
+                return new ComposerForDoubleUnaryOperator((DoubleUnaryOperator) o);
+            case double_long:
+                return new ComposerForDoubleToLongFunction((DoubleToLongFunction) o);
+            case double_int:
+                return new ComposerForDoubleToIntFunction((DoubleToIntFunction) o);
+            case double_T:
+                return new ComposerForDoubleFunction((DoubleFunction<?>) o);
+            case R_T:
+                return new ComposerForFunction((Function<?, ?>) o);
             default:
                 throw new RuntimeException("Unrecognized function type:" + functionType);
         }

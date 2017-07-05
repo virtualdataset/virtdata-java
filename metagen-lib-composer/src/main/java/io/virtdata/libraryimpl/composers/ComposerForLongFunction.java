@@ -38,16 +38,43 @@ public class ComposerForLongFunction implements FunctionComposer<LongFunction<?>
             case long_double:
                 final LongToDoubleFunction f4 =
                         (long l) -> ((LongToDoubleFunction) outer).applyAsDouble(((LongFunction<Long>) inner).apply(l));
-                return new ComposerForLongToDouble(f4);
+                return new ComposerForLongToDoubleFunction(f4);
             case R_T:
                 final LongFunction<?> f5 =
-                        (long l) -> ((Function<Long,?>)outer).apply(((LongFunction<Long>)inner).apply(l));
+                        (long l) -> ((Function<Long, ?>) outer).apply(((LongFunction<Long>) inner).apply(l));
                 return new ComposerForLongFunction(f5);
             case int_int:
                 final LongToIntFunction f6 =
-                        (long l) -> ((IntUnaryOperator)outer).applyAsInt(((LongFunction<Integer>)inner).apply(l));
+                        (long l) -> ((IntUnaryOperator) outer).applyAsInt(((LongFunction<Integer>) inner).apply(l));
                 return new ComposerForLongToIntFunction(f6);
-
+            case int_long:
+                final LongUnaryOperator f7 =
+                        (long l) -> ((IntToLongFunction)outer).applyAsLong(((LongFunction<Integer>)inner).apply(l));
+                return new ComposerForLongUnaryOperator(f7);
+            case int_double:
+                final LongToDoubleFunction f8 =
+                        (long l) -> ((IntToDoubleFunction)outer).applyAsDouble(((LongFunction<Integer>)inner).apply(l));
+                return new ComposerForLongToDoubleFunction(f8);
+            case int_T:
+                final LongFunction<?> f9 =
+                        (long l) -> ((IntFunction<?>)outer).apply(((LongFunction<Integer>)inner).apply(l));
+                return new ComposerForLongFunction(f9);
+            case double_double:
+                final LongToDoubleFunction f10 =
+                        (long l) -> ((DoubleUnaryOperator)outer).applyAsDouble(((LongFunction<Double>)inner).apply(l));
+                return new ComposerForLongToDoubleFunction(f10);
+            case double_long:
+                final LongUnaryOperator f11 =
+                        (long l) -> ((DoubleToLongFunction)outer).applyAsLong(((LongFunction<Double>)inner).apply(l));
+                return new ComposerForLongUnaryOperator(f11);
+            case double_int:
+                final LongToIntFunction f12 =
+                        (long l) -> ((DoubleToIntFunction)outer).applyAsInt(((LongFunction<Double>)inner).apply(l));
+                return new ComposerForLongToIntFunction(f12);
+            case double_T:
+                final LongFunction<?> f13 =
+                        (long l) -> ((DoubleFunction<?>)outer).apply(((LongFunction<Double>)inner).apply(l));
+                return new ComposerForLongFunction(f13);
             default:
                 throw new RuntimeException(functionType + " is not recognized");
 

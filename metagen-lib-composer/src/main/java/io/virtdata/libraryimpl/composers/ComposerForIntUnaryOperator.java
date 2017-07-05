@@ -69,6 +69,23 @@ public class ComposerForIntUnaryOperator implements FunctionComposer<IntUnaryOpe
                                 ((IntFunction<?>)outer).apply(inner.applyAsInt(i));
                 return new ComposerForIntFunction(f9);
 
+            case double_double:
+                final IntToDoubleFunction f10 =
+                        (int i) -> ((DoubleUnaryOperator)outer).applyAsDouble(inner.applyAsInt(i));
+                return new ComposerForIntToDoubleFunction(f10);
+            case double_long:
+                final IntToLongFunction f11 =
+                        (int i) -> ((DoubleToLongFunction)outer).applyAsLong(inner.applyAsInt(i));
+                return new ComposerForIntToLongFunction(f11);
+            case double_int:
+                final IntUnaryOperator f12 =
+                        (int i) -> ((DoubleToIntFunction)outer).applyAsInt(inner.applyAsInt(i));
+                return new ComposerForIntUnaryOperator(f12);
+            case double_T:
+                final IntFunction<?> f13 =
+                        (int i) -> ((DoubleFunction<?>)outer).apply(inner.applyAsInt(i));
+                return new ComposerForIntFunction(f13);
+
             default:
                 throw new RuntimeException(functionType + " is not recognized");
 

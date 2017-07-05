@@ -43,13 +43,35 @@ public class DataMapperFunctionMapper {
                 return (DataMapper<T>) map((IntToDoubleFunction) function);
             case int_T:
                 return (DataMapper<T>) map((IntFunction) function);
+            case double_double:
+                return (DataMapper<T>) map((DoubleUnaryOperator) function);
+            case double_long:
+                return (DataMapper<T>) map((DoubleToLongFunction) function);
+            case double_int:
+                return (DataMapper<T>) map((DoubleToIntFunction) function);
+            case double_T:
+                return (DataMapper<T>) map((DoubleFunction) function);
+            default:
+                throw new RuntimeException(
+                        "Function object was not a recognized type for mapping to a data mapping lambda: "
+                                + function.toString());
         }
 
-        throw new RuntimeException(
-                "Function object was not a recognized type for mapping to a data mapping lambda: "
-                        + function.toString());
 
 
+    }
+
+    public static <R> DataMapper<R> map(DoubleFunction<R> f) {
+        return (long l) -> f.apply((double) l);
+    }
+    public static DataMapper<Integer> map(DoubleToIntFunction f) {
+        return f::applyAsInt;
+    }
+    public static DataMapper<Long> map(DoubleToLongFunction f) {
+        return f::applyAsLong;
+    }
+    public static DataMapper<Double> map(DoubleUnaryOperator f) {
+        return f::applyAsDouble;
     }
 
     @org.jetbrains.annotations.Contract(pure = true)

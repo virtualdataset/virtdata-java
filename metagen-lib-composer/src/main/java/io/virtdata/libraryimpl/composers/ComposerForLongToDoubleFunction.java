@@ -5,10 +5,10 @@ import io.virtdata.libraryimpl.FunctionComposer;
 
 import java.util.function.*;
 
-public class ComposerForLongToDouble implements FunctionComposer<LongToDoubleFunction> {
+public class ComposerForLongToDoubleFunction implements FunctionComposer<LongToDoubleFunction> {
     private final LongToDoubleFunction inner;
 
-    public ComposerForLongToDouble(LongToDoubleFunction inner) {
+    public ComposerForLongToDoubleFunction(LongToDoubleFunction inner) {
         this.inner = inner;
     }
 
@@ -36,7 +36,7 @@ public class ComposerForLongToDouble implements FunctionComposer<LongToDoubleFun
             case long_double:
                 final LongToDoubleFunction f4 =
                         (long l) -> ((LongToDoubleFunction) outer).applyAsDouble((long) inner.applyAsDouble(l));
-                return new ComposerForLongToDouble(f4);
+                return new ComposerForLongToDoubleFunction(f4);
             case R_T:
                 final LongFunction<?> f5 =
                         (long l) -> ((LongFunction<?>) outer).apply((long) inner.applyAsDouble(l));
@@ -55,12 +55,28 @@ public class ComposerForLongToDouble implements FunctionComposer<LongToDoubleFun
                 final LongToDoubleFunction f8 =
                         (long l) ->
                                 ((IntToDoubleFunction) outer).applyAsDouble((int) inner.applyAsDouble(l));
-                return new ComposerForLongToDouble(f8);
+                return new ComposerForLongToDoubleFunction(f8);
             case int_T:
                 final LongFunction<?> f9 =
                         (long l) ->
                                 ((IntFunction<?>) outer).apply((int) inner.applyAsDouble(l));
                 return new ComposerForLongFunction(f9);
+            case double_double:
+                final LongToDoubleFunction f10 =
+                        (long l) -> ((DoubleUnaryOperator)outer).applyAsDouble(inner.applyAsDouble(l));
+                return new ComposerForLongToDoubleFunction(f10);
+            case double_long:
+                final LongUnaryOperator f11 =
+                        (long l) -> ((DoubleToLongFunction)outer).applyAsLong(inner.applyAsDouble(l));
+                return new ComposerForLongUnaryOperator(f11);
+            case double_int:
+                final LongToIntFunction f12 =
+                        (long l) -> ((DoubleToIntFunction)outer).applyAsInt(inner.applyAsDouble(l));
+                return new ComposerForLongToIntFunction(f12);
+            case double_T:
+                final LongFunction<?> f13 =
+                        (long l) -> ((DoubleFunction<?>)outer).apply(inner.applyAsDouble(l));
+                return new ComposerForLongFunction(f13);
 
             default:
                 throw new RuntimeException(functionType + " is not recognized");

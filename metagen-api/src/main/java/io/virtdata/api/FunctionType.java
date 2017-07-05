@@ -17,6 +17,10 @@ public enum FunctionType {
     int_long(IntToLongFunction.class, int.class, long.class),
     int_double(IntToDoubleFunction.class, int.class, double.class),
     int_T(IntFunction.class, int.class, Object.class),
+    double_T(DoubleFunction.class, double.class, Object.class),
+    double_double(DoubleUnaryOperator.class, double.class, double.class),
+    double_int(DoubleToIntFunction.class, double.class, int.class),
+    double_long(DoubleToLongFunction.class, double.class, long.class),
     R_T(Function.class, Object.class, Object.class);
 
     private final Class<?> functionClass;

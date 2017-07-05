@@ -66,7 +66,22 @@ public class ComposerForIntToLongFunction implements FunctionComposer<IntToLongF
                         (int i) ->
                                 ((IntFunction<?>)outer).apply((int) inner.applyAsLong(i));
                 return new ComposerForIntFunction(f9);
-
+            case double_double:
+                final IntToDoubleFunction f10 =
+                        (int i) -> ((DoubleUnaryOperator)outer).applyAsDouble(inner.applyAsLong(i));
+                return new ComposerForIntToDoubleFunction(f10);
+            case double_long:
+                final IntToLongFunction f11 =
+                        (int i) -> ((DoubleToLongFunction)outer).applyAsLong(inner.applyAsLong(i));
+                return new ComposerForIntToLongFunction(f11);
+            case double_int:
+                final IntUnaryOperator f12 =
+                        (int i) -> ((DoubleToIntFunction)outer).applyAsInt(inner.applyAsLong(i));
+                return new ComposerForIntUnaryOperator(f12);
+            case double_T:
+                final IntFunction<?> f13 =
+                        (int i) -> ((DoubleFunction<?>)outer).apply(inner.applyAsLong(i));
+                return new ComposerForIntFunction(f13);
             default:
                 throw new RuntimeException(functionType + " is not recognized");
 
