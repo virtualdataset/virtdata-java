@@ -1,5 +1,6 @@
 package io.virtdata.long_double;
 
+import io.virtdata.api.ThreadSafeMapper;
 import io.virtdata.long_long.Hash;
 
 import java.util.function.LongToDoubleFunction;
@@ -21,6 +22,7 @@ import java.util.function.LongToDoubleFunction;
  * function for most uses, when the exponent is not needed for
  * readability.</p>
  */
+@ThreadSafeMapper
 public class HashedDoubleRange implements LongToDoubleFunction {
 
     private final double min;

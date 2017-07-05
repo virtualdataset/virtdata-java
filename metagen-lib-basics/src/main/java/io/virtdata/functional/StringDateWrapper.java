@@ -18,12 +18,13 @@
 
 package io.virtdata.functional;
 
+import io.virtdata.api.ThreadSafeMapper;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.function.LongFunction;
 
-
+@ThreadSafeMapper
 public class StringDateWrapper implements LongFunction<String> {
 
     private DateTimeFormatter formatter;

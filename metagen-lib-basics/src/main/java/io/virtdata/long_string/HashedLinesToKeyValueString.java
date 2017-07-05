@@ -18,6 +18,7 @@
 
 package io.virtdata.long_string;
 
+import io.virtdata.api.ThreadSafeMapper;
 import io.virtdata.long_collections.HashedLineToStringStringMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,7 @@ import java.util.Map;
 import java.util.function.LongFunction;
 import java.util.stream.Collectors;
 
+@ThreadSafeMapper
 public class HashedLinesToKeyValueString implements LongFunction<String> {
     private static final Logger logger = LoggerFactory.getLogger(HashedLinesToKeyValueString.class);
 

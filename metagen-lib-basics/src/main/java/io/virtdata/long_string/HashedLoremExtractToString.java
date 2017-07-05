@@ -18,8 +18,11 @@
 
 package io.virtdata.long_string;
 
+import io.virtdata.api.ThreadSafeMapper;
+
 import java.util.function.LongFunction;
 
+@ThreadSafeMapper
 public class HashedLoremExtractToString implements LongFunction<String> {
 
     private final HashedFileExtractToString randomFileExtractMapper;

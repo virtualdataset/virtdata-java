@@ -1,7 +1,10 @@
 package io.virtdata.int_int;
 
+import io.virtdata.api.ThreadSafeMapper;
+
 import java.util.function.IntUnaryOperator;
 
+@ThreadSafeMapper
 public class Mul implements IntUnaryOperator {
 
     public Mul(int addend) {

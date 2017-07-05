@@ -1,6 +1,7 @@
 package io.virtdata.long_int;
 
 import de.greenrobot.common.hash.Murmur3F;
+import io.virtdata.api.ThreadSafeMapper;
 
 import java.nio.ByteBuffer;
 import java.util.function.LongToIntFunction;
@@ -12,13 +13,16 @@ import java.util.function.LongToIntFunction;
  * 64 bits of output. It does, however, return the absolute value.
  * This is to make it play nice with users and other libraries.
  */
+@ThreadSafeMapper
 public class Hash implements LongToIntFunction {
 
-    private ByteBuffer bb = ByteBuffer.allocate(Long.BYTES);
-    private Murmur3F murmur3F= new Murmur3F();
+    ThreadLocal<ByteBuffer> bb_TL = ThreadLocal.withInitial(() -> ByteBuffer.allocate(Long.BYTES));
+    ThreadLocal<Murmur3F> murmur3f_TL = ThreadLocal.withInitial(Murmur3F::new);
 
     @Override
     public int applyAsInt(long value) {
+        Murmur3F murmur3F = murmur3f_TL.get();
+        ByteBuffer bb = bb_TL.get();
         murmur3F.reset();
         bb.putLong(0,value);
         murmur3F.update(bb.array(),0,Long.BYTES);

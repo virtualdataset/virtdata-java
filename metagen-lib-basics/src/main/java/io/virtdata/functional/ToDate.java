@@ -36,9 +36,12 @@
 
 package io.virtdata.functional;
 
+import io.virtdata.api.ThreadSafeMapper;
+
 import java.util.Date;
 import java.util.function.LongFunction;
 
+@ThreadSafeMapper
 public class ToDate implements LongFunction<Date> {
 
     private long spacing;
@@ -51,6 +54,7 @@ public class ToDate implements LongFunction<Date> {
     public ToDate(String spacing){
         this(Integer.valueOf(spacing), 1);
     }
+
     public ToDate(){
         this.spacing=1;
         this.repeat_count=1;

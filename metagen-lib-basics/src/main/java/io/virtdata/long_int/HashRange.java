@@ -1,9 +1,11 @@
 package io.virtdata.long_int;
 
+import io.virtdata.api.ThreadSafeMapper;
 import io.virtdata.long_long.Hash;
 
 import java.util.function.LongToIntFunction;
 
+@ThreadSafeMapper
 public class HashRange implements LongToIntFunction {
 
     private final long minValue;

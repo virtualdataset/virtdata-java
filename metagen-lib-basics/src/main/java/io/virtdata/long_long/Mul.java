@@ -1,7 +1,10 @@
 package io.virtdata.long_long;
 
+import io.virtdata.api.ThreadSafeMapper;
+
 import java.util.function.LongUnaryOperator;
 
+@ThreadSafeMapper
 public class Mul implements LongUnaryOperator {
 
     public Mul(long multiplicand) {
