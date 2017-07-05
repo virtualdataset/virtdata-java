@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>metagen</artifactId>
@@ -8,7 +7,7 @@
     <parent>
         <artifactId>project-defaults</artifactId>
         <groupId>io.virtdata</groupId>
-        <version>1.0.54-SNAPSHOT</version>
+        <version>1.0.54</version>
         <relativePath>project-defaults</relativePath>
     </parent>
 
@@ -32,7 +31,7 @@
         <developerConnection>scm:git:https://github.com/virtualdataset/metagen-java.git</developerConnection>
         <!--<developerConnection>scm:git:git@github.com:engineblock/engineblock.git</developerConnection> broken? -->
         <url>scm:git:git@github.com:virtualdataset/metagen-java.git</url>
-        <tag>HEAD</tag>
+        <tag>metagen-1.0.54</tag>
     </scm>
 
     <distributionManagement>
