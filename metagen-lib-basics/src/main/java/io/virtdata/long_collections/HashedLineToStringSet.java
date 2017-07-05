@@ -1,5 +1,6 @@
 package io.virtdata.long_collections;
 
+import io.virtdata.api.ThreadSafeMapper;
 import io.virtdata.long_long.HashRange;
 import io.virtdata.long_string.HashedLineToString;
 
@@ -7,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.LongFunction;
 
+@ThreadSafeMapper
 public class HashedLineToStringSet implements LongFunction<Set<String>> {
 
     private final HashedLineToString hashedLineToString;

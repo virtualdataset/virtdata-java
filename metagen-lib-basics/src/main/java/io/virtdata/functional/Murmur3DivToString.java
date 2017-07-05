@@ -19,12 +19,14 @@
 package io.virtdata.functional;
 
 import de.greenrobot.common.hash.Murmur3F;
+import io.virtdata.api.ThreadSafeMapper;
 
 import java.util.function.LongFunction;
 
+@ThreadSafeMapper
 public class Murmur3DivToString implements LongFunction<String> {
 
-    private Murmur3F murmur3f = new Murmur3F();
+    private ThreadLocal<Murmur3F> murmur3F_TL = ThreadLocal.withInitial(Murmur3F::new);
     private DivideToLong divideToLongMapper;
 
     public Murmur3DivToString(long divisor) {
@@ -34,8 +36,10 @@ public class Murmur3DivToString implements LongFunction<String> {
     @Override
     public String apply(long input) {
         long divided= divideToLongMapper.applyAsLong(input);
+        Murmur3F murmur3f = murmur3F_TL.get();
         murmur3f.update((int) (divided % Integer.MAX_VALUE));
         return String.valueOf(murmur3f.getValue());
     }
+
 
 }

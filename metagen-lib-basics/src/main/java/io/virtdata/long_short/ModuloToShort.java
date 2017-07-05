@@ -1,7 +1,10 @@
 package io.virtdata.long_short;
 
+import io.virtdata.api.ThreadSafeMapper;
+
 import java.util.function.LongFunction;
 
+@ThreadSafeMapper
 public class ModuloToShort implements LongFunction<Short> {
 
     private final long modulo;

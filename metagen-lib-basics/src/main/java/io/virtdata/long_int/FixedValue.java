@@ -1,7 +1,10 @@
 package io.virtdata.long_int;
 
+import io.virtdata.api.ThreadSafeMapper;
+
 import java.util.function.LongToIntFunction;
 
+@ThreadSafeMapper
 public class FixedValue implements LongToIntFunction {
 
     private final int fixedValue;

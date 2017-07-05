@@ -18,12 +18,15 @@
 
 package io.virtdata.functional;
 
+import io.virtdata.api.ThreadSafeMapper;
+
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.function.LongFunction;
 
+@ThreadSafeMapper
 public class ToInetAddress implements LongFunction<InetAddress> {
 
     @Override

@@ -19,6 +19,7 @@
 package io.virtdata.long_collections;
 
 
+import io.virtdata.api.ThreadSafeMapper;
 import io.virtdata.long_int.HashRange;
 import io.virtdata.long_string.HashedLineToString;
 
@@ -26,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.LongFunction;
 
+@ThreadSafeMapper
 public class HashedLineToStringStringMap implements LongFunction<Map<String,String>> {
 
     private final HashedLineToString lineDataMapper;

@@ -128,6 +128,9 @@ public class ValuesCheckerCoordinator implements Callable<RunData> {
             genTimeAccumulator += genTime;
             throwInjectedExceptions();
 
+            System.out.print(".");
+            System.out.flush();
+
             long cmpStart = System.nanoTime();
             coordinateFor("verification start " + rangeInfo);
             throwInjectedExceptions();
@@ -138,8 +141,11 @@ public class ValuesCheckerCoordinator implements Callable<RunData> {
             cmpTimeAccumulator += cmpTime;
             throwInjectedExceptions();
 
+            System.out.print(".");
+            System.out.flush();
 
         }
+        System.out.println("\n");
         pool.shutdown();
         try {
             pool.awaitTermination(60000, TimeUnit.MILLISECONDS);
@@ -169,7 +175,7 @@ public class ValuesCheckerCoordinator implements Callable<RunData> {
     }
 
     private void coordinateFor(String forWhat) {
-        logger.debug("coordinating " + threads + " threads for " + forWhat);
+        logger.trace("coordinating " + threads + " threads for " + forWhat);
         try {
             long delay = 1;
             while (readyQueue.size() < threads) {

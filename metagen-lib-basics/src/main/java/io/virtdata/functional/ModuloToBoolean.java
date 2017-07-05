@@ -18,8 +18,11 @@
 
 package io.virtdata.functional;
 
+import io.virtdata.api.ThreadSafeMapper;
+
 import java.util.function.LongFunction;
 
+@ThreadSafeMapper
 public class ModuloToBoolean implements LongFunction<Boolean> {
 
     @Override

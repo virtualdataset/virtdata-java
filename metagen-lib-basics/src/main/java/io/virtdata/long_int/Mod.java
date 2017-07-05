@@ -14,8 +14,11 @@
 */
 package io.virtdata.long_int;
 
+import io.virtdata.api.ThreadSafeMapper;
+
 import java.util.function.LongToIntFunction;
 
+@ThreadSafeMapper
 public class Mod implements LongToIntFunction {
 
     private Long modulo;

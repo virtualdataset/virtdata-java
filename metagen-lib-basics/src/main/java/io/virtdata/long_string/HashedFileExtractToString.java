@@ -18,6 +18,7 @@
 
 package io.virtdata.long_string;
 
+import io.virtdata.api.ThreadSafeMapper;
 import io.virtdata.long_int.HashRange;
 import io.virtdata.util.ResourceFinder;
 import org.slf4j.Logger;
@@ -26,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import java.nio.CharBuffer;
 import java.util.function.LongFunction;
 
+@ThreadSafeMapper
 public class HashedFileExtractToString implements LongFunction<String> {
 
     private final static Logger logger = LoggerFactory.getLogger(HashedFileExtractToString.class);

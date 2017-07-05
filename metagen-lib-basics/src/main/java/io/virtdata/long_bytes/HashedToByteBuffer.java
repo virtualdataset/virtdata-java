@@ -18,6 +18,7 @@
 
 package io.virtdata.long_bytes;
 
+import io.virtdata.api.ThreadSafeMapper;
 import io.virtdata.long_long.Hash;
 
 import java.nio.ByteBuffer;
@@ -25,8 +26,8 @@ import java.util.function.LongFunction;
 
 /**
  * Hash a long input value into a byte buffer, at least length bytes long, but aligned on 8-byte
-
  */
+@ThreadSafeMapper
 public class HashedToByteBuffer implements LongFunction<ByteBuffer> {
 
     private final Hash hash;

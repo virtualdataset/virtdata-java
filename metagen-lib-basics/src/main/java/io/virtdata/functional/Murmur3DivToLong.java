@@ -19,12 +19,14 @@
 package io.virtdata.functional;
 
 import de.greenrobot.common.hash.Murmur3F;
+import io.virtdata.api.ThreadSafeMapper;
 
 import java.util.function.LongUnaryOperator;
 
+@ThreadSafeMapper
 public class Murmur3DivToLong implements LongUnaryOperator {
 
-    private Murmur3F murmur3f = new Murmur3F();
+    private ThreadLocal<Murmur3F> murmur3f_TL = ThreadLocal.withInitial(Murmur3F::new);
     private DivideToLong divideToLongMapper;
 
     public Murmur3DivToLong(long divisor) {
@@ -34,6 +36,7 @@ public class Murmur3DivToLong implements LongUnaryOperator {
     @Override
     public long applyAsLong(long input) {
         long divided= divideToLongMapper.applyAsLong(input);
+        Murmur3F murmur3f = murmur3f_TL.get();
         murmur3f.update((int) (divided % Integer.MAX_VALUE));
         return murmur3f.getValue();
     }

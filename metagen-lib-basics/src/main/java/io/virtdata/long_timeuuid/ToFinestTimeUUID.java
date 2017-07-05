@@ -1,7 +1,7 @@
 package io.virtdata.long_timeuuid;
 
 import io.virtdata.api.Example;
-import io.virtdata.long_long.HostHash;
+import io.virtdata.api.ThreadSafeMapper;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
@@ -46,6 +46,7 @@ import java.util.function.LongFunction;
 @Example("ToFinestTimeUUID('2017-01-01T23:59:59') // specified basetime, computed node data, empty clock data")
 @Example("ToFinestTimeUUID('2012',12345) // basetime at start if 2012, with node data 12345, empty clock data")
 @Example("ToFinestTimeUUID('20171231T1015.243',123,456) // ms basetime, specified node and clock data")
+@ThreadSafeMapper
 public class ToFinestTimeUUID implements LongFunction<UUID> {
 
     private final static DateTimeFormatter[] formatters = new DateTimeFormatter[]{
@@ -77,7 +78,7 @@ public class ToFinestTimeUUID implements LongFunction<UUID> {
      * the clock data is not seeded uniquely.
      */
     public ToFinestTimeUUID() {
-        this.node = new HostHash().applyAsLong(1);
+        this.node = 0L;
         this.clock = 0L;
         this.baseTicks = 0L;
     }
@@ -119,7 +120,7 @@ public class ToFinestTimeUUID implements LongFunction<UUID> {
      * @param baseTimeSpec - a string specification for the base time value
      */
     public ToFinestTimeUUID(String baseTimeSpec) {
-        this.node = new HostHash().applyAsLong(1);
+        this.node = 0L;
         this.clock = 0L;
         this.baseTicks = parseBaseTimeTicks(baseTimeSpec);
     }

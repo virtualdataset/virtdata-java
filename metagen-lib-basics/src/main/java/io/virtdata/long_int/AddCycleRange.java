@@ -1,9 +1,11 @@
 package io.virtdata.long_int;
 
+import io.virtdata.api.ThreadSafeMapper;
 import io.virtdata.long_long.CycleRange;
 
 import java.util.function.LongToIntFunction;
 
+@ThreadSafeMapper
 public class AddCycleRange implements LongToIntFunction {
 
     private final io.virtdata.long_long.CycleRange cycleRange;
