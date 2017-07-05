@@ -15,7 +15,7 @@ public class SpecData implements Specifier {
     protected final static Pattern funcNamePattern =
             Pattern.compile("(?<func>[a-zA-Z][a-zA-Z0-9-_.]*)");
     protected final static Pattern argPattern =
-            Pattern.compile("((?<arg>[^,)]+)?\\s*(\\)|,)*)");
+            Pattern.compile("(\\s*(?<arg>[^,)]+)?\\s*(\\)|,)*)");
     protected final static Pattern argsPattern =
             Pattern.compile("(?<args>(\\(.*?)\\))?");
     protected final static Pattern resultTypePattern =

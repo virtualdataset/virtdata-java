@@ -16,6 +16,15 @@ public class MultiSpecDataTest {
     }
 
     @Test
+    public void testAllowedSpaceBetweenArgs() {
+        MultiSpecData msd = MultiSpecData.forSpec("foobarbaz ", "foobarbaz func1(arg1, arg2) ; func2(arg1, arg2)");
+        assertThat(msd.getResultType()).isEmpty();
+        assertThat(msd.getSpecs().size()).isEqualTo(2);
+        assertThat(msd.getSpecs().get(0).getArgs()[0]).isEqualTo("arg1");
+        assertThat(msd.getSpecs().get(0).getArgs()[1]).isEqualTo("arg2");
+    }
+
+    @Test
     public void testInlineConstraintMultiSpec() {
         MultiSpecData msd = MultiSpecData.forSpec("woot:", "woot:func1(arg1,arg2) -> long ; func2(arg1,arg2)");
         assertThat(msd.getResultType()).isEmpty();
