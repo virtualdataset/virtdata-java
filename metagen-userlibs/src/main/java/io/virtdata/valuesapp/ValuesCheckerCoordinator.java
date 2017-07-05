@@ -5,13 +5,12 @@ import io.virtdata.core.AllDataMapperLibraries;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class ValuesCheckerCoordinator implements Runnable {
+public class ValuesCheckerCoordinator implements Callable<RunData> {
     private static final Logger logger = LoggerFactory.getLogger(ValuesCheckerCoordinator.class);
 
     private final String specifier;
@@ -25,6 +24,11 @@ public class ValuesCheckerCoordinator implements Runnable {
     private final Condition goTime;
     private final ConcurrentLinkedDeque<Throwable> errors = new ConcurrentLinkedDeque<>();
     private final ConcurrentLinkedQueue<Integer> readyQueue = new ConcurrentLinkedQueue<>();
+
+    ExecutorService pool;
+
+    private long genTimeAccumulator = 0L;
+    private long cmpTimeAccumulator = 0L;
 
     public ValuesCheckerCoordinator(
             String specifier,
@@ -45,7 +49,6 @@ public class ValuesCheckerCoordinator implements Runnable {
     }
 
 
-    @Override
     public void run() {
         testConcurrentValues(threads, start, end, specifier);
         if (this.errors.size() > 0) {
@@ -72,17 +75,28 @@ public class ValuesCheckerCoordinator implements Runnable {
         final List<Object> reference = new CopyOnWriteArrayList<>();
 
         // Setup concurrent generator pool
-        ValuesCheckerExceptionHandler valuesCheckerExceptionHandler = new ValuesCheckerExceptionHandler(this);
-        IndexedThreadFactory tf = new IndexedThreadFactory("values-checker", valuesCheckerExceptionHandler);
-        ExecutorService pool = Executors.newFixedThreadPool(threads, tf);
+        ValuesCheckerExceptionHandler valuesCheckerExceptionHandler =
+                new ValuesCheckerExceptionHandler(this);
+        IndexedThreadFactory tf =
+                new IndexedThreadFactory("values-checker", valuesCheckerExceptionHandler);
+        pool =
+                Executors.newFixedThreadPool(threads, tf);
 
         logger.info("Checking [{}..{}) in chunks of {}", start, end, bufsize);
 
+        if (!isolated) {
+            logger.debug(
+                    "Sharing data mapper, only expect success for " +
+                            "explicitly thread-safe generators.");
+        }
+
         for (int t = 0; t < threads; t++) {
             ValuesCheckerRunnable runnable;
+
             if (isolated) {
                 runnable = new ValuesCheckerRunnable(
-                        start, end, bufsize, t, mapperSpec, null, readyQueue, goTime, lock, reference
+                        start, end, bufsize, t, mapperSpec, null,
+                        readyQueue, goTime, lock, reference
                 );
             } else {
                 DataMapper<?> threadMapper = AllDataMapperLibraries.get()
@@ -91,7 +105,8 @@ public class ValuesCheckerCoordinator implements Runnable {
                                 () -> new RuntimeException("Unable to map function for specifier: " + specifier)
                         );
                 runnable = new ValuesCheckerRunnable(
-                        start, end, bufsize, t, null, threadMapper, readyQueue, goTime, lock, reference
+                        start, end, bufsize, t,null, threadMapper,
+                        readyQueue, goTime, lock, reference
                 );
             }
             pool.execute(runnable);
@@ -101,27 +116,29 @@ public class ValuesCheckerCoordinator implements Runnable {
 
         for (long intervalStart = 0; intervalStart < (end - start); intervalStart += bufsize) {
 
-            logger.debug("generating reference data for [" + intervalStart + ".." + (intervalStart + bufsize) + ")");
-
-            List<Object> genRef = new ArrayList<>(bufsize);
-            for (int refidx = 0; refidx < bufsize; refidx++) {
-                genRef.add(mapper.get(refidx + intervalStart));
-//                if (refidx == 0) {
-//                    logger.debug("ref i:" + refidx + ", " + "ref cycle: " + (refidx + intervalStart) + ": " + genRef.get(genRef.size() - 1));
-//                }
-
-            }
-            reference.clear();
-            reference.addAll(genRef);
-
-
             String rangeInfo = "[" + intervalStart + ".." + (intervalStart + bufsize) + ")";
-            coordinateFor("generation " + rangeInfo);
+
+            long genStart = System.nanoTime();
+            coordinateFor("generation start " + rangeInfo);
             throwInjectedExceptions();
-            coordinateFor("verification " + rangeInfo);
+
+            coordinateFor("generation complete " + rangeInfo);
+            long genStop = System.nanoTime();
+            long genTime = genStop - genStart;
+            genTimeAccumulator += genTime;
             throwInjectedExceptions();
-            coordinateFor("completion " + rangeInfo);
+
+            long cmpStart = System.nanoTime();
+            coordinateFor("verification start " + rangeInfo);
             throwInjectedExceptions();
+
+            coordinateFor("verification complete " + rangeInfo);
+            long cmpEnd = System.nanoTime();
+            long cmpTime = cmpEnd - cmpStart;
+            cmpTimeAccumulator += cmpTime;
+            throwInjectedExceptions();
+
+
         }
         pool.shutdown();
         try {
@@ -145,6 +162,10 @@ public class ValuesCheckerCoordinator implements Runnable {
 
     synchronized void handleException(Thread t, Throwable e) {
         this.errors.add(e);
+        if (pool!=null) {
+            pool.shutdownNow();
+        }
+
     }
 
     private void coordinateFor(String forWhat) {
@@ -168,5 +189,20 @@ public class ValuesCheckerCoordinator implements Runnable {
         }
 
 
+    }
+
+    @Override
+    public RunData call() throws Exception {
+        run();
+        return new RunData(
+                this.specifier,
+                this.threads,
+                this.start,
+                this.end,
+                this.bufsize,
+                this.isolated,
+                ((double) genTimeAccumulator / 1000000.0D),
+                ((double) cmpTimeAccumulator / 1000000.0D)
+        );
     }
 }

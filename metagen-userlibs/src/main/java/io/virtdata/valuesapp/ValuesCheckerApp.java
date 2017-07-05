@@ -21,7 +21,7 @@ public class ValuesCheckerApp {
 
         boolean isolated = true;
         if (args.length==6) {
-            isolated=args[5].toLowerCase().equals("isolated");
+            isolated=args[5].toLowerCase().equals("isolated") || args[5].toLowerCase().equals("true");
         }
 
         ValuesCheckerCoordinator checker = new ValuesCheckerCoordinator(spec, threads, bufsize, start, end, isolated);
@@ -32,12 +32,16 @@ public class ValuesCheckerApp {
             logger.warn("Results may vary.");
         }
 
+        RunData runData;
         try {
-            checker.run();
+            runData = checker.call();
+            System.out.println(runData.toString());
+            System.exit(0);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(2);
         }
+
     }
 
 }

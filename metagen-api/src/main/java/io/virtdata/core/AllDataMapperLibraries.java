@@ -78,10 +78,10 @@ public class AllDataMapperLibraries implements DataMapperLibrary {
                     ResolvedFunction resolvedFunction = optionallyResolvedFunction.get();
                     DataMapper<T> mapper = DataMapperFunctionMapper.map(resolvedFunction.getFunctionObject());
                     if (resolvedFunction.isThreadSafe()) {
-                        logger.trace("Function " + spec + " is marked as thread safe. Caching and sharing.");
+                        logger.debug("Function " + spec + " is marked as thread safe. Caching and sharing.");
                         threadSafeCache.put(spec,mapper);
                     } else {
-                        logger.trace("Function " + spec + " is not thread safe.");
+                        logger.debug("Function " + spec + " is not thread safe.");
                         threadSafeCache.put(spec,null);
                     }
                 } else {

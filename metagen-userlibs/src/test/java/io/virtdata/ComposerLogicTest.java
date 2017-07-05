@@ -46,7 +46,7 @@ public class ComposerLogicTest {
         assertThat(dataMapper.isPresent()).isTrue();
         assertThat(dataMapper.get().get(1)).isNotNull();
 //        for (int i = 0; i < 1000; i++) {
-//            System.out.println(dataMapper.get().get(i));
+//            System.out.println(dataMapper.getInverseCumulativeDensity().getInverseCumulativeDensity(i));
 //        }
     }
 

@@ -1,11 +1,11 @@
-package io.virtdata.libimpl;
+package io.virtdata.libimpl.discrete;
 
-import io.virtdata.libimpl.discrete.IntegerDistributions;
 import org.apache.commons.math4.distribution.BinomialDistribution;
 import org.assertj.core.data.Offset;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -15,7 +15,7 @@ import java.util.function.LongUnaryOperator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TestIntegerDistConcurrency {
+public class IntegerDistributionsConcurrencyTest {
 
     @Test
     public void testBinomialICDR() {
@@ -99,6 +99,21 @@ public class TestIntegerDistConcurrency {
         pool.shutdown();
 
         for (int vthread = 0; vthread < threads; vthread++) {
+            long[] threadResults = results[vthread];
+            for (int i = 0; i <values.length ; i++) {
+                if (threadResults[i] != values[i]) {
+                    System.out.println("not equal in thread="+ vthread + ", i=" + i
+                            +", " + threadResults[i] + "!=" + values[i]);
+                    for (int ithread = 0; ithread < threads; ithread++) {
+                        System.out.print(results[ithread][i] + ",");
+                    }
+                    System.out.println();
+                }
+            }
+            boolean equal = Arrays.equals(results[vthread],values);
+            if (!equal) {
+                System.out.println("not equal!");
+            }
             assertThat(results[vthread]).isEqualTo(values);
             System.out.println(description + ": verified values for thread " + vthread);
         }

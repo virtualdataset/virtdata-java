@@ -1,6 +1,5 @@
-package io.virtdata.libimpl;
+package io.virtdata.libimpl.discrete;
 
-import io.virtdata.libimpl.discrete.IMappedDistFunction;
 import org.apache.commons.math4.distribution.BinomialDistribution;
 import org.testng.annotations.Test;
 
@@ -8,14 +7,16 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class IMappedDistFunctionTest {
+public class IntegerDistributionsBinomialSanity {
     private static double[] binomial85steps = new double[]{
             0.00390d, 0.03125d, 0.10937d, 0.21875d, 0.27343d, 0.21875d, 0.10937d, 0.03125d, 0.00390d,
     };
 
     @Test
     public void testBinomialMappedDist() {
-        IMappedDistFunction b85 = new IMappedDistFunction(new BinomialDistribution(8, 0.5D));
+        IntegerSampler b85 = new IntegerSampler(new IntegerDistributionICDSource(
+                new BinomialDistribution(8, 0.5D)
+        ),false);
         assertThat(b85.applyAsLong(0L)).isEqualTo(0);
         assertThat(b85.applyAsLong(Long.MAX_VALUE)).isEqualTo(8);
         double c[] = new double[binomial85steps.length];
@@ -51,9 +52,10 @@ public class IMappedDistFunctionTest {
 
     }
 
-    @Test
+    @Test(enabled=false)
     public void showBinomialICDF() {
-        IMappedDistFunction b85 = new IMappedDistFunction(new BinomialDistribution(8, 0.5D));
+        IntegerSampler b85 = new IntegerSampler(new IntegerDistributionICDSource(
+                new BinomialDistribution(8,0.5D)),false);
         for (int i = 0; i < 1000; i++) {
             double factor=((double) i / 1000D);
             long v = b85.applyAsLong((long) (factor * (double) Long.MAX_VALUE));

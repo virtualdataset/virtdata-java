@@ -5,6 +5,7 @@ import io.virtdata.core.AllDataMapperLibraries;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.locks.Condition;
@@ -45,12 +46,6 @@ public class ValuesCheckerRunnable implements Runnable {
         this.goTime = goTime;
         this.lock = lock;
 
-        if (dataMapper != null) {
-            logger.debug(threadNum + ": Sharing data mapper, only expect success for explicitly thread-safe generators.");
-        } else {
-            logger.debug(threadNum + ": Using per-thread mapper instancing.");
-        }
-
         this.mapper = (dataMapper != null) ? dataMapper : AllDataMapperLibraries.get().getDataMapper(mapperSpec)
                 .orElseThrow(
                         () -> new RuntimeException("unable to resolve mapper for " + mapperSpec)
@@ -66,7 +61,7 @@ public class ValuesCheckerRunnable implements Runnable {
         for (long rangeStart = start; rangeStart < end; rangeStart += bufsize) {
             String rangeInfo = "t:" + threadNum + " [" + rangeStart + ".." + (rangeStart+bufsize) + ")";
 
-            synchronizeFor("generation " + rangeInfo);
+            synchronizeFor("generation start " + rangeInfo);
 //            logger.debug("generating for " + "range: " + rangeStart + ".." + (rangeStart + bufsize));
             for (int i = 0; i < output.length; i++) {
                 output[i] = mapper.get(i + rangeStart);
@@ -75,6 +70,12 @@ public class ValuesCheckerRunnable implements Runnable {
 //                }
 
             }
+            if (this.threadNum==0) {
+                logger.trace("Thread " + threadNum + " putting values into comparable array before acking");
+                expected.clear();
+                expected.addAll(Arrays.asList(output));
+            }
+            synchronizeFor("generation complete " + rangeInfo);
 
             synchronizeFor("verification " + rangeInfo);
 //            logger.debug("checker " + this.threadNum + " verifying range [" + start + ".." + (start + end) + ")");
@@ -91,7 +92,7 @@ public class ValuesCheckerRunnable implements Runnable {
 //                    System.out.println("Equal " + expected[bufidx] + " == " + output[bufidx]);
 //                }
             }
-            synchronizeFor("completion");
+            synchronizeFor("verification complete" + rangeInfo);
 
 //            logger.info("verified values for thread " + Thread.currentThread().getName() + " in range " +
 //                    rangeStart + ".." + (rangeStart + bufsize)

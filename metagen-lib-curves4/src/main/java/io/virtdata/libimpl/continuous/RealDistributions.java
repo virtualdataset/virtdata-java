@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.DoubleUnaryOperator;
 import java.util.function.LongToDoubleFunction;
-import java.util.stream.Collectors;
 
 /**
  * <p>This mapper provides inverse cumulative distribution sampling for real-valued
@@ -30,8 +30,7 @@ import java.util.stream.Collectors;
  * the same time as all other statistical curves.</p>
  * <p>There are various ways to configure these distributions. For each, there are
  * two choices to be made: mapping vs hashing, and computing vs interpolating.</p>
- * <p>
- * <H>Mapping vs Hashing</H>
+ * <p>Mapping vs Hashing</p>
  * <UL>
  * <LI><strong>mapto_</strong> - When a specifier
  * contains <em>mapto_</em>, direct ICDF mapping
@@ -44,8 +43,7 @@ import java.util.stream.Collectors;
  * consistent hash to it, then scales it to a double value in the unit interval
  * before drawing a sample from the curve.</LI>
  * </UL>
- * <p>
- * <H>Computing vs Interpolating</H>
+ * <p>Computing vs Interpolating</p>
  * <UL>
  * <LI><strong>interpolate_</strong> (default) - When a specifier contains <em>interpolate_</em>, then the
  * inverse cumulative density curve
@@ -57,23 +55,21 @@ import java.util.stream.Collectors;
  * calculated for a given point on the unit interval. This can be expensive, as well as
  * introduce variance in your generation times depending on the distribution.
  * </UL>
- * <p>
  * <p>It is valid to include mapto_ or hashto_ and interpolate_ or
  * compute_ in your specifiers any order, so long as there are no conflicts.
  * </p>
- * <p>
- * <h>Examples.</h>
+ * <p>Examples:</p>
  * <ul>
- * <li>zipf(10,5.0) - use interpolation and hashing to simulate sampling from
- * the zipf distribution, with 10 elements and exponent of 5.0. Because no
+ * <li>normal(10.0,1.0) - use interpolation and hashing to simulate sampling from
+ * the normal distribution, with a median value of 10.0 and a stddev of 1.0. Because no
  * qualifiers were included as explained above, hashto_ and interpolate_
  * were implied.</li>
- * <li>mapto_zipf(10,5.0) - Same distribution as above, but use ICDF mapping
+ * <li>mapto_normal(10,1.0) - Same distribution as above, but use ICDF mapping
  * instead of hashing. Continue to use interpolation as implied</li>
- * <li>compute_zipf(10,5.0) - Same distribution as above, but enforce
+ * <li>compute_normal(10,1.0) - Same distribution as above, but enforce
  * non-interpolated mode. Since mapto_ and hashto_ weren't provided,
  * hashto_ is implied.</li>
- * <li>mapto_compute_zipf(10,5.0) - This will be very slow. This forces
+ * <li>mapto_compute_normal(10,1.0) - This will be very slow. This forces
  * computation of a harmonic series over N elements for <em>every single
  * access.</em> Interpolation is usually the better way.</li>
  * </ul>
@@ -114,7 +110,8 @@ public class RealDistributions implements DataMapperLibrary {
         }
         SpecData specData = optionalData.get();
         try {
-            RealDistribution.valueOf(distributionNameFor(specData.getFuncName()));
+            String distName = distributionNameFor(specData.getFuncName());
+            RealDistribution.valueOf(distName);
             return true;
         } catch (Exception ignored) {
         }
@@ -135,26 +132,17 @@ public class RealDistributions implements DataMapperLibrary {
                 ConstructorResolver.resolve(distributionClass, specData.getArgs());
         AbstractRealDistribution distribution = deferred.construct();
 
-        boolean interpolate = funcName.contains(COMPUTE);
-        boolean hashto = funcName.contains(MAPTO);
+        boolean interpolate = !funcName.contains(COMPUTE) || funcName.contains(INTERPOLATE);
+        boolean hashto = !funcName.contains(MAPTO) || funcName.contains(HASHTO);
 
+        DoubleUnaryOperator icdSource = new RealDistributionICDSource(distribution);
+        LongToDoubleFunction samplingFunction = null;
         if (interpolate) {
-            if (hashto) {
-                return Optional.of(new ResolvedFunction(
-                        new InterpolatedLongToDoubleFunction(1000,new CHashedDistFunction(distribution)),true
-                ));
-            } else {
-                return Optional.of(new ResolvedFunction(
-                        new InterpolatedLongToDoubleFunction(1000, new CMappedDistFunction(distribution)), true
-                ));
-            }
+            samplingFunction = new InterpolatingRealSampler(icdSource, 1000, hashto);
         } else {
-            if (hashto) {
-                return Optional.of(new ResolvedFunction(new CHashedDistFunction(distribution), true));
-            } else {
-                return Optional.of(new ResolvedFunction(new CMappedDistFunction(distribution), true));
-            }
+            samplingFunction = new RealSampler(icdSource, hashto);
         }
+        return Optional.of(new ResolvedFunction(samplingFunction, true));
     }
 
     @Override
@@ -167,8 +155,18 @@ public class RealDistributions implements DataMapperLibrary {
 
     @Override
     public List<String> getDataMapperNames() {
-        return Arrays.stream(RealDistribution.values()).map(String::valueOf).collect(Collectors.toList());
+        List<String> names = new ArrayList<>();
+        Arrays.stream(RealDistribution.values()).map(String::valueOf).forEach(
+                n -> {
+                    names.add(n);
+                    names.add("mapto_" + n);
+                    names.add("mapto_compute_" + n);
+                    names.add("compute_" + n);
+                }
+        );
+        return names;
     }
+
 
     private static enum RealDistribution {
         // https://en.wikipedia.org/wiki/L%C3%A9vy_distribution
