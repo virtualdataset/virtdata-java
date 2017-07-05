@@ -18,11 +18,13 @@
 
 package io.virtdata.functional;
 
+import io.virtdata.api.ThreadSafeMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.function.LongUnaryOperator;
 
+@ThreadSafeMapper
 public class ModuloToLong implements LongUnaryOperator {
     private final static Logger logger = LoggerFactory.getLogger(ModuloToLong.class);
 

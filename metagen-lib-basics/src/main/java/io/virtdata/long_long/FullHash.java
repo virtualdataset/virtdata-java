@@ -1,6 +1,7 @@
 package io.virtdata.long_long;
 
 import de.greenrobot.common.hash.Murmur3F;
+import io.virtdata.api.ThreadSafeMapper;
 
 import java.nio.ByteBuffer;
 import java.util.function.LongUnaryOperator;
@@ -14,17 +15,22 @@ import java.util.function.LongUnaryOperator;
  * This version returns the value regardless of this sign bit.
  * It does not return the absolute value, as {@link Hash} does.
  */
+@ThreadSafeMapper
 public class FullHash implements LongUnaryOperator {
 
-    private ByteBuffer bb = ByteBuffer.allocate(Long.BYTES);
-    private Murmur3F murmur3F= new Murmur3F();
+    private ThreadLocal<State> state_TL = ThreadLocal.withInitial(State::new);
 
     @Override
     public long applyAsLong(long value) {
-        murmur3F.reset();
-        bb.putLong(0,value);
-//        bb.position(0);
-        murmur3F.update(bb.array(),0,Long.BYTES);
-        return murmur3F.getValue();
+        State state = state_TL.get();
+        state.murmur3F.reset();
+        state.bb.putLong(0,value);
+        state.murmur3F.update(state.bb.array(),0,Long.BYTES);
+        return state.murmur3F.getValue();
+    }
+
+    private static class State {
+        ByteBuffer bb = ByteBuffer.allocate(Long.BYTES);
+        Murmur3F murmur3F = new Murmur3F();
     }
 }

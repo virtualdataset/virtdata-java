@@ -18,12 +18,14 @@
 
 package io.virtdata.functional;
 
+import io.virtdata.api.ThreadSafeMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
 import java.util.function.LongFunction;
 
+@ThreadSafeMapper
 public class ModuloToBigInt implements LongFunction<BigInteger> {
     private final static Logger logger = LoggerFactory.getLogger(ModuloToBigInt.class);
 

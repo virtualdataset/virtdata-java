@@ -1,6 +1,7 @@
 package io.virtdata.long_timeuuid;
 
 import io.virtdata.api.Example;
+import io.virtdata.api.ThreadSafeMapper;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
@@ -48,6 +49,7 @@ import java.util.function.LongFunction;
 @Example("ToEpochTimeUUID('2017-01-01T23:59:59') // specified basetime, computed node data, empty clock data")
 @Example("ToEpochTimeUUID('2012',12345) // basetime at start if 2012, with node data 12345, empty clock data")
 @Example("ToEpochTimeUUID('20171231T1015.243',123,456) // ms basetime, specified node and clock data")
+@ThreadSafeMapper
 public class ToEpochTimeUUID implements LongFunction<UUID> {
 
     public final static DateTimeFormatter[] formatters = new DateTimeFormatter[]{

@@ -18,12 +18,15 @@
 
 package io.virtdata.functional;
 
+import io.virtdata.api.ThreadSafeMapper;
+
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.LongFunction;
 
 /**
  * Integer devide the cycle, the other side of modulo.
  */
+@ThreadSafeMapper
 public class DivideToLongToString implements LongFunction<String> {
 
     private final long divisor;

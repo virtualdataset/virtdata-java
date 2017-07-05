@@ -1,11 +1,13 @@
 package io.virtdata.long_string;
 
+import io.virtdata.api.ThreadSafeMapper;
 import io.virtdata.long_double.HashedDoubleRange;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.LongFunction;
 
+@ThreadSafeMapper
 public class WeightedStrings implements LongFunction<String> {
 
     private final String valuesAndWeights;
@@ -53,6 +55,8 @@ public class WeightedStrings implements LongFunction<String> {
                 return values[i];
             }
         }
-        throw new RuntimeException("sampled value '" + sampledUnit + "' was not below final cumulative weight: " + cumulativeWeights[cumulativeWeights.length - 1]);
+        throw new RuntimeException(
+                "sampled value '" + sampledUnit + "' was not below final cumulative weight: "
+                        + cumulativeWeights[cumulativeWeights.length - 1]);
     }
 }

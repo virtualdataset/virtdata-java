@@ -1,6 +1,7 @@
 package io.virtdata.long_double;
 
 import io.virtdata.api.DataMapper;
+import io.virtdata.api.ThreadSafeMapper;
 import io.virtdata.long_long.Hash;
 
 /**
@@ -11,6 +12,7 @@ import io.virtdata.long_long.Hash;
  * negative infinity are filtered out via oversampling. Results are still
  * stable for a given input value.
  */
+@ThreadSafeMapper
 public class HashedRangedToNonuniformDouble implements DataMapper<Double> {
 
     private final long min;

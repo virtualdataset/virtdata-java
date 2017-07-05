@@ -1,7 +1,10 @@
 package io.virtdata.strings;
 
+import io.virtdata.api.ThreadSafeMapper;
+
 import java.util.function.Function;
 
+@ThreadSafeMapper
 public class ToString implements Function<Object,String> {
 
     @Override

@@ -18,10 +18,12 @@
 
 package io.virtdata.functional;
 
+import io.virtdata.api.ThreadSafeMapper;
 import uk.ydubey.formatter.numtoword.NumberInWordsFormatter;
 
 import java.util.function.LongFunction;
 
+@ThreadSafeMapper
 public class NumberNameToString implements LongFunction<String> {
 
     private final NumberInWordsFormatter formatter = NumberInWordsFormatter.getInstance();

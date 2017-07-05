@@ -18,6 +18,8 @@
 
 package io.virtdata.functional;
 
+import io.virtdata.api.ThreadSafeMapper;
+
 import java.util.function.LongUnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,6 +30,7 @@ import java.util.regex.Pattern;
  * concurrency. Note that once the thread number is cached, it will not be refreshed. This means
  * you can't change the thread name and get an updated value.
  */
+@ThreadSafeMapper
 public class ThreadNumToLong implements LongUnaryOperator {
 
     private static final Pattern pattern = Pattern.compile("^.*?(\\d+).*$");

@@ -104,9 +104,9 @@ s     */
     }
 
     @Test
-    public void sanityCheckHostGen() {
+    public void sanityCheckNoHostGen() {
         ToFinestTimeUUID tjtu = new ToFinestTimeUUID();
         UUID withHostData = tjtu.apply(0);
-        assertThat(withHostData.node()).isNotEqualTo(0L);
+        assertThat(withHostData.node()).isEqualTo(0L);
     }
 }
