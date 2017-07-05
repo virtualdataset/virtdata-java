@@ -26,7 +26,7 @@ public class ComposerLibraryTest {
 
 //    @Test
 //    public void testTypeConversionChain() {
-//        BindingsTemplate bt = new BindingsTemplate(AllDataMapperLibraries.get());
+//        BindingsTemplate bt = new BindingsTemplate(AllDataMapperLibraries.getInverseCumulativeDensity());
 //        bt.addFieldBinding("mod_to_string", "compose Mod(3) ; Suffix('0000000000') -> String");
 //        Bindings bindings = bt.resolveBindings();
 //        Object[] all = bindings.getAll(5);

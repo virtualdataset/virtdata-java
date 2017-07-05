@@ -6,6 +6,7 @@ import io.virtdata.core.FunctionalDataMappingLibrary;
 import io.virtdata.long_byte.ModuloToByte;
 import io.virtdata.long_bytes.HashedToByteBuffer;
 import io.virtdata.long_collections.HashedLineToStringStringMap;
+import io.virtdata.long_double.LongRangeToDouble;
 import io.virtdata.long_short.ModuloToShort;
 import io.virtdata.long_string.HashedFileExtractToString;
 import org.slf4j.Logger;
@@ -45,6 +46,7 @@ public class BasicDataMappers extends FunctionalDataMappingLibrary {
                 add(HashedToByteBuffer.class.getPackage());
                 add(ModuloToShort.class.getPackage());
                 add(ModuloToByte.class.getPackage());
+                add(LongRangeToDouble.class.getPackage());
             }
         };
 

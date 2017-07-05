@@ -1,6 +1,7 @@
 package io.virtdata.core;
 
 import io.virtdata.api.DataMapperLibrary;
+import io.virtdata.api.ThreadSafeMapper;
 import io.virtdata.api.ValueType;
 import io.virtdata.api.specs.SpecData;
 import io.virtdata.reflection.ConstructorResolver;
@@ -33,11 +34,13 @@ public abstract class FunctionalDataMappingLibrary implements DataMapperLibrary 
 
         for (Class<?> aclass : classes) {
             aclass.getCanonicalName();
+            boolean isThreadSafe = aclass.getAnnotation(ThreadSafeMapper.class)!=null;
             String[] dataMapperArgs = (specData.getFuncAndArgs());
             dataMapperArgs[0] = aclass.getCanonicalName();
             try {
                 Optional<Object> mapper = ConstructorResolver.resolveAndConstructOptional(dataMapperArgs);
-                mapper.ifPresent(m -> resolvedFunctions.add(new ResolvedFunction(m)));
+                mapper.ifPresent(m -> resolvedFunctions.add(new ResolvedFunction(m,isThreadSafe)));
+
             } catch (Exception e) {
                 logger.error("Error while trying to instantiate:" + Arrays.toString(dataMapperArgs));
                 throw (e);

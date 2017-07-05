@@ -1,6 +1,7 @@
 package io.virtdata.libraryimpl;
 
 import io.virtdata.api.DataMapper;
+import io.virtdata.api.ThreadSafeMapper;
 import io.virtdata.core.DataMapperFunctionMapper;
 import io.virtdata.core.ResolvedFunction;
 
@@ -11,7 +12,9 @@ public interface FunctionComposer<T> {
     FunctionComposer andThen(Object outer);
 
     default ResolvedFunction getResolvedFunction() {
-        return new ResolvedFunction(getFunctionObject());
+        return new ResolvedFunction(getFunctionObject(),
+                getFunctionObject().getClass().getAnnotation(ThreadSafeMapper.class)!=null
+        );
     }
 
     default <R> DataMapper<R> getDataMapper() {

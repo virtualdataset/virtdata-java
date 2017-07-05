@@ -1,9 +1,8 @@
-package io.virtdata.libimpl;
+package io.virtdata.libimpl.discrete;
 
 import io.virtdata.api.DataMapper;
 import io.virtdata.core.DataMapperFunctionMapper;
 import io.virtdata.core.ResolvedFunction;
-import io.virtdata.libimpl.discrete.IntegerDistributions;
 import org.testng.annotations.Test;
 
 import java.util.List;

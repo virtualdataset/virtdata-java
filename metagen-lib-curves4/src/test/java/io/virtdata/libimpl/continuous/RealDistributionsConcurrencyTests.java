@@ -1,6 +1,5 @@
-package io.virtdata.libimpl;
+package io.virtdata.libimpl.continuous;
 
-import io.virtdata.libimpl.continuous.RealDistributions;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ import java.util.function.LongToDoubleFunction;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TestRealDistConcurrency {
+public class RealDistributionsConcurrencyTests {
 
     @Test
     public void testConcurrentBinomialHashValues() {
