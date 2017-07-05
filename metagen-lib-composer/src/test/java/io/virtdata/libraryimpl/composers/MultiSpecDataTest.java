@@ -25,6 +25,16 @@ public class MultiSpecDataTest {
     }
 
     @Test
+    public void testReportedError() {
+        MultiSpecData msd = MultiSpecData.forSpec("compose ", "compose RandomToByteBuffer(1048576) ; ToString()");
+        assertThat(msd.getResultType()).isEmpty();
+        assertThat(msd.getSpecs().get(0).getFuncName()).isEqualTo("RandomToByteBuffer");
+        assertThat(msd.getSpecs().get(0).getArgs()[0]).isEqualTo("1048576");
+        assertThat(msd.getSpecs().get(1).getFuncName()).isEqualTo("ToString");
+
+    }
+
+    @Test
     public void testInlineConstraintMultiSpec() {
         MultiSpecData msd = MultiSpecData.forSpec("woot:", "woot:func1(arg1,arg2) -> long ; func2(arg1,arg2)");
         assertThat(msd.getResultType()).isEmpty();
@@ -48,4 +58,6 @@ public class MultiSpecDataTest {
         assertThat(msd.getResultType()).isPresent();
         assertThat(msd.getResultType()).contains(ValueType.STRING);
     }
+
+
 }
