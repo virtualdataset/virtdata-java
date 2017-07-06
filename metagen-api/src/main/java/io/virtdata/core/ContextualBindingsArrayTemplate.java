@@ -1,6 +1,6 @@
 package io.virtdata.core;
 
-import io.virtdata.api.ValuesBinder;
+import io.virtdata.api.ValuesArrayBinder;
 
 /**
  * A template that maps a set of specifiers, a context object, and a method for applying
@@ -10,18 +10,18 @@ import io.virtdata.api.ValuesBinder;
  * @param <C> The type of the contextual template object.
  * @param <R> The type which will be produced when mapped values are applied to a type C
  */
-public class ContextualBindingsTemplate<C, R> {
+public class ContextualBindingsArrayTemplate<C, R> {
 
     private C context;
     private BindingsTemplate bindingsTemplate;
-    private ValuesBinder<C, R> valuesBinder;
+    private ValuesArrayBinder<C, R> valuesArrayBinder;
 
-    public ContextualBindingsTemplate(C context,
-                                      BindingsTemplate bindingsTemplate,
-                                      ValuesBinder<C, R> valuesMapBinder) {
+    public ContextualBindingsArrayTemplate(C context,
+                                           BindingsTemplate bindingsTemplate,
+                                           ValuesArrayBinder<C, R> valuesArrayBinder) {
         this.context = context;
         this.bindingsTemplate = bindingsTemplate;
-        this.valuesBinder = valuesMapBinder;
+        this.valuesArrayBinder = valuesArrayBinder;
     }
 
     public C getContext() {
@@ -32,13 +32,13 @@ public class ContextualBindingsTemplate<C, R> {
         return bindingsTemplate;
     }
 
-    public ValuesBinder<C, R> getValuesBinder() {
-        return valuesBinder;
+    public ValuesArrayBinder<C, R> getValuesArrayBinder() {
+        return valuesArrayBinder;
     }
 
-    public ContextualBindings<C, R> resolveBindings() {
+    public ContextualArrayBindings<C, R> resolveBindings() {
         Bindings bindings = bindingsTemplate.resolveBindings();
-        return new ContextualBindings<C, R>(bindings, context, valuesBinder);
+        return new ContextualArrayBindings<C, R>(bindings, context, valuesArrayBinder);
     }
 
 }

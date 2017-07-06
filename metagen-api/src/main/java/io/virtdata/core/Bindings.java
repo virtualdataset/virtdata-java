@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,11 +39,19 @@ public class Bindings {
 
     private BindingsTemplate template;
     private List<DataMapper<?>> dataMappers = new ArrayList<DataMapper<?>>();
+    private ThreadLocal<Map<String, DataMapper<?>>> nameCache;
 
     public Bindings(BindingsTemplate template, List<DataMapper<?>> dataMappers) {
         this.template = template;
         this.dataMappers = dataMappers;
+        nameCache = ThreadLocal.withInitial(() ->
+                new HashMap<String, DataMapper<?>>() {{
+                    for (int i = 0; i < template.getBindPointNames().size(); i++) {
+                        put(template.getBindPointNames().get(i), dataMappers.get(i));
+                    }
+                }});
     }
+
 
     public String toString() {
         return template.toString() + dataMappers;
@@ -69,7 +78,8 @@ public class Bindings {
 
     /**
      * Get a value for the data mapper in slot i
-     * @param i the data mapper slot, 0-indexed
+     *
+     * @param i     the data mapper slot, 0-indexed
      * @param input the long input value which the bound data mapper will use as input
      * @return a single object, the value yielded from the indexed data mapper in the bindings list
      */
@@ -77,17 +87,63 @@ public class Bindings {
         return dataMappers.get(i).get(input);
     }
 
-    public void setMap(Map<String,Object> donorMap, long cycle) {
+    public Object get(String s, long input) {
+        DataMapper<?> dataMapper = nameCache.get().get(s);
+        return dataMapper.get(input);
+    }
+
+    /**
+     * Generate all values in the bindings template, and set each of them in
+     * the map according to their bind point name.
+     *
+     * @param donorMap - a user-provided Map&lt;String,Object&gt;
+     * @param cycle    - the cycle for which to generate the values
+     */
+    public void setMap(Map<String, Object> donorMap, long cycle) {
         Object[] all = getAll(cycle);
         for (int i = 0; i < all.length; i++) {
-            donorMap.put(template.getBindPointNames().get(i),all[i]);
+            donorMap.put(template.getBindPointNames().get(i), all[i]);
         }
     }
 
+    /**
+     * Generate only the values which have matching keys in the provided
+     * map according to their bind point names, and assign them to the
+     * map under that name.
+     *
+     * @param donorMap - a user-provided Map&lt;String,Object&gt;
+     * @param cycle    - the cycle for which to generate the values
+     */
+    public void updateMap(Map<String, Object> donorMap, long cycle) {
+        for (String s : donorMap.keySet()) {
+            donorMap.put(s, get(s, cycle));
+        }
+    }
+
+    /**
+     * Generate only the values named in fieldNames, and then call the user-provided
+     * field setter for each name and object generated.
+     *
+     * @param fieldSetter user-provided object that implements {@link FieldSetter}.
+     * @param cycle       the cycle for which to generate values
+     * @param fieldName   A varargs list of field names, or a String[] of names to set
+     */
+    public void setFields(FieldSetter fieldSetter, long cycle, String... fieldName) {
+        for (String s : fieldName) {
+            fieldSetter.setField(s,get(s, cycle));
+        }
+    }
+
+    /**
+     * Generate all the values named in the bind point names, then call the user-provided
+     * field setter for each name and object generated.
+     * @param fieldSetter user-provided object that implements {@link FieldSetter}
+     * @param cycle the cycle for which to generate values
+     */
     public void setFields(FieldSetter fieldSetter, long cycle) {
         Object[] all = getAll(cycle);
         for (int i = 0; i < all.length; i++) {
-            fieldSetter.setField(template.getBindPointNames().get(i),all[i]);
+            fieldSetter.setField(template.getBindPointNames().get(i), all[i]);
         }
     }
 

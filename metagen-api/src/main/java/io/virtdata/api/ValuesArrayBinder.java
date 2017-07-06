@@ -1,5 +1,7 @@
 package io.virtdata.api;
 
+import io.virtdata.core.ContextualBindingsArrayTemplate;
+
 /**
  * <p>ValuesArrayBinder provides a way to apply an array of object values to a template
  * object of type T to yield a new object instance of type R. The object array is
@@ -15,7 +17,7 @@ package io.virtdata.api;
  * mapping functions to other calls, or they can be directly implemented in higher-order
  * types which include the ability to produce objects of type R from values provided.
  * Both types of use are found in this API. An example of the former type would be
- * {@link io.virtdata.core.ContextualBindingsTemplate},
+ * {@link ContextualBindingsArrayTemplate},
  * while and example of the latter would
  * be {@link io.virtdata.templates.StringCompositor}.
  * be {@link io.virtdata.templates.StringCompositor}.

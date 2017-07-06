@@ -52,6 +52,24 @@ public class BindingsTest {
     }
 
     @Test
+    public void testMapUpdater() {
+        Bindings bindings = new BindingsTemplate(AllDataMapperLibraries.get()) {{
+            addFieldBinding("mod5","Mod(5)");
+            addFieldBinding("mod7","Mod(7)");
+            addFieldBinding("mod13","Mod(13)");
+        }}.resolveBindings();
+
+        LinkedHashMap<String,Object> map = new LinkedHashMap<String,Object>() {{
+            put("mod5",null);
+            put("mod13","not-it");
+        }};
+        bindings.updateMap(map,12);
+        assertThat(map.size()).isEqualTo(2);
+        assertThat(map).containsEntry("mod5",2L);
+        assertThat(map).containsEntry("mod13",12L);
+    }
+
+    @Test
     public void testFieldSetter() {
         Bindings bindings = new BindingsTemplate(AllDataMapperLibraries.get()) {{
             addFieldBinding("mod5","Mod(5)");
@@ -69,4 +87,26 @@ public class BindingsTest {
         bindings.setFields(fs,12);
         assertThat(sb.toString()).isEqualTo("mod5=2;mod7=5;");
     }
+
+    @Test
+    public void testFieldSetterLimited() {
+        Bindings bindings = new BindingsTemplate(AllDataMapperLibraries.get()) {{
+            addFieldBinding("mod5","Mod(5)");
+            addFieldBinding("mod7","Mod(7)");
+            addFieldBinding("mod13", "Mod(13)");
+        }}.resolveBindings();
+
+        final StringBuilder sb = new StringBuilder();
+        Bindings.FieldSetter fs = new Bindings.FieldSetter() {
+            @Override
+            public void setField(String name, Object value) {
+                sb.append(name).append("=").append(value).append(";");
+            }
+        };
+
+        bindings.setFields(fs,12, "mod5", "mod7");
+        assertThat(sb.toString()).isEqualTo("mod5=2;mod7=5;");
+    }
+
+
 }
