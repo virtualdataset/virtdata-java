@@ -23,6 +23,7 @@ public interface ValuesBinder<T, R> {
      * target object of type R
      * @param context A context object that knows how to provide an instance of type R
      * @param bindings A Bindings instance from which to draw the values
+     * @param cycle The cycle for which to generate the values
      * @return The new result instance of R
      */
     R bindValues(T context, Bindings bindings, long cycle);
