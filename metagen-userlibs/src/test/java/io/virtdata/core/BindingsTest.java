@@ -18,12 +18,46 @@ package io.virtdata.core;
 import org.testng.annotations.Test;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Test
 public class BindingsTest {
+
+
+    @Test
+    public void testIteratedSuffixMap() {
+        Bindings bindings = new BindingsTemplate(AllDataMapperLibraries.get()) {{
+            addFieldBinding("mod5","Mod(5)");
+            addFieldBinding("mod7","Mod(7)");
+        }}.resolveBindings();
+
+        Map<String, Object> map = bindings.getIteratedSuffixMap(11, 2);
+        assertThat(map).hasSize(4);
+        assertThat(map.get("mod50")).isEqualTo(1L);
+        assertThat(map.get("mod70")).isEqualTo(4L);
+        assertThat(map.get("mod51")).isEqualTo(2L);
+        assertThat(map.get("mod71")).isEqualTo(5L);
+    }
+
+    public void testIteratedMaps() {
+        Bindings bindings = new BindingsTemplate(AllDataMapperLibraries.get()) {{
+            addFieldBinding("mod5","Mod(5)");
+            addFieldBinding("mod7","Mod(7)");
+        }}.resolveBindings();
+
+        List<Map<String, Object>> maps = bindings.getIteratedMaps(11, 2);
+        assertThat(maps).hasSize(2);
+        assertThat(maps.get(0)).hasSize(2);
+        assertThat(maps.get(1)).hasSize(2);
+        assertThat(maps.get(0).get("mod5")).isEqualTo(1L);
+        assertThat(maps.get(0).get("mod7")).isEqualTo(4L);
+        assertThat(maps.get(1).get("mod5")).isEqualTo(2L);
+        assertThat(maps.get(1).get("mod7")).isEqualTo(5L);
+
+    }
 
     @Test
     public void testMapResult() {
@@ -35,6 +69,18 @@ public class BindingsTest {
         Map<String, Object> map = bindings.getLazyMap(12);
         assertThat(map.get("mod5")).isEqualTo(2L);
         assertThat(map.get("mod7")).isEqualTo(5L);
+    }
+
+    @Test
+    public void testMapGetter() {
+        Bindings bindings = new BindingsTemplate(AllDataMapperLibraries.get()) {{
+            addFieldBinding("mod5","Mod(5)");
+            addFieldBinding("mod7","Mod(7)");
+        }}.resolveBindings();
+        Map<String, Object> map = bindings.getAllMap(13);
+        assertThat(map).hasSize(2);
+        assertThat(map.get("mod5")).isEqualTo(3L);
+        assertThat(map.get("mod7")).isEqualTo(6L);
     }
 
     @Test
@@ -70,7 +116,7 @@ public class BindingsTest {
     }
 
     @Test
-    public void testFieldSetter() {
+    public void testSetNamedFieldsIterated() {
         Bindings bindings = new BindingsTemplate(AllDataMapperLibraries.get()) {{
             addFieldBinding("mod5","Mod(5)");
             addFieldBinding("mod7","Mod(7)");
@@ -84,12 +130,52 @@ public class BindingsTest {
             }
         };
 
-        bindings.setFields(fs,12);
+        bindings.setNamedFieldsIterated(fs,12, 2, "mod5");
+        assertThat(sb.toString()).isEqualTo("mod50=2;mod51=3;");
+        bindings.setNamedFieldsIterated(fs,12, 2, "mod7");
+        assertThat(sb.toString()).isEqualTo("mod50=2;mod51=3;mod70=5;mod71=6;");
+    }
+
+    @Test
+    public void testSetFieldsIterated() {
+        Bindings bindings = new BindingsTemplate(AllDataMapperLibraries.get()) {{
+            addFieldBinding("mod5","Mod(5)");
+            addFieldBinding("mod7","Mod(7)");
+        }}.resolveBindings();
+
+        final StringBuilder sb = new StringBuilder();
+        Bindings.FieldSetter fs = new Bindings.FieldSetter() {
+            @Override
+            public void setField(String name, Object value) {
+                sb.append(name).append("=").append(value).append(";");
+            }
+        };
+
+        bindings.setAllFieldsIterated(fs,12, 2);
+        assertThat(sb.toString()).isEqualTo("mod50=2;mod50=2;mod71=6;mod71=6;");
+    }
+
+    @Test
+    public void testSetAllFields() {
+        Bindings bindings = new BindingsTemplate(AllDataMapperLibraries.get()) {{
+            addFieldBinding("mod5","Mod(5)");
+            addFieldBinding("mod7","Mod(7)");
+        }}.resolveBindings();
+
+        final StringBuilder sb = new StringBuilder();
+        Bindings.FieldSetter fs = new Bindings.FieldSetter() {
+            @Override
+            public void setField(String name, Object value) {
+                sb.append(name).append("=").append(value).append(";");
+            }
+        };
+
+        bindings.setAllFields(fs,12);
         assertThat(sb.toString()).isEqualTo("mod5=2;mod7=5;");
     }
 
     @Test
-    public void testFieldSetterLimited() {
+    public void testSetNamedFields() {
         Bindings bindings = new BindingsTemplate(AllDataMapperLibraries.get()) {{
             addFieldBinding("mod5","Mod(5)");
             addFieldBinding("mod7","Mod(7)");
@@ -104,9 +190,10 @@ public class BindingsTest {
             }
         };
 
-        bindings.setFields(fs,12, "mod5", "mod7");
+        bindings.setNamedFields(fs,12, "mod5", "mod7");
         assertThat(sb.toString()).isEqualTo("mod5=2;mod7=5;");
     }
+
 
 
 }
