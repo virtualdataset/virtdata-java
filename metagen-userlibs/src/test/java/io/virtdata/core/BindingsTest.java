@@ -28,6 +28,19 @@ public class BindingsTest {
 
 
     @Test
+    public void testGetNamedIteratedSuffixMap() {
+        Bindings bindings = new BindingsTemplate(AllDataMapperLibraries.get()) {{
+            addFieldBinding("mod5","Mod(5)");
+            addFieldBinding("mod7","Mod(7)");
+        }}.resolveBindings();
+
+        Map<String, Object> map = bindings.getIteratedSuffixMap(11, 2, "mod5");
+        assertThat(map).hasSize(2);
+        assertThat(map.get("mod50")).isEqualTo(1L);
+        assertThat(map.get("mod51")).isEqualTo(2L);
+    }
+
+    @Test
     public void testIteratedSuffixMap() {
         Bindings bindings = new BindingsTemplate(AllDataMapperLibraries.get()) {{
             addFieldBinding("mod5","Mod(5)");
@@ -41,6 +54,7 @@ public class BindingsTest {
         assertThat(map.get("mod51")).isEqualTo(2L);
         assertThat(map.get("mod71")).isEqualTo(5L);
     }
+
 
     public void testIteratedMaps() {
         Bindings bindings = new BindingsTemplate(AllDataMapperLibraries.get()) {{
@@ -193,7 +207,6 @@ public class BindingsTest {
         bindings.setNamedFields(fs,12, "mod5", "mod7");
         assertThat(sb.toString()).isEqualTo("mod5=2;mod7=5;");
     }
-
 
 
 }

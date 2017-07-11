@@ -154,6 +154,20 @@ public class Bindings {
         return suffixedMap;
     }
 
+    public Map<String,Object> getIteratedSuffixMap(long input, int count, String... fieldNames) {
+        Map<String, Object> suffixedMap = new LinkedHashMap<>(count * fieldNames.length);
+        setIteratedSuffixMap(suffixedMap,input, count, fieldNames);
+        return suffixedMap;
+    }
+
+    private void setIteratedSuffixMap(Map<String, Object> suffixedMap, long input, int count, String[] fieldNames) {
+        for (int i = 0; i < count; i++) {
+            for (String f : fieldNames) {
+                suffixedMap.put(f+i,get(f,input+i));
+            }
+        }
+    }
+
     /**
      * Get a value for the data mapper in slot i
      *
@@ -289,7 +303,6 @@ public class Bindings {
             for (int j = 0; j < all.length; j++) {
                 fieldSetter.setField(template.getBindPointNames().get(i) + i, all[i]);
             }
-
         }
     }
 
