@@ -87,4 +87,28 @@ public interface DataMapperLibrary {
                 .map(DataMapperFunctionMapper::map);
         return mapper;
     }
+
+    default Optional<DataMapper<Integer>> getIntegerDataMapper(String spec) {
+        if (!canParseSpec(spec)) {
+            return Optional.empty();
+        }
+        Optional<ResolvedFunction> resolvedFunction = resolveFunction(spec);
+        Optional<DataMapper<Integer>> mapper = resolvedFunction
+                .map(ResolvedFunction::getFunctionObject)
+                .map(DataMapperFunctionMapper::map);
+        return mapper;
+
+    }
+
+    default Optional<DataMapper<String>> getStringDataMapper(String spec) {
+        if (!canParseSpec(spec)) {
+            return Optional.empty();
+        }
+        Optional<ResolvedFunction> resolvedFunction = resolveFunction(spec);
+        Optional<DataMapper<String>> mapper = resolvedFunction
+                .map(ResolvedFunction::getFunctionObject)
+                .map(DataMapperFunctionMapper::map);
+        return mapper;
+
+    }
 }
