@@ -13,7 +13,7 @@ import java.util.Optional;
 
 /**
  * <p>This is a basic data mapping library that contains a variety of functions to build from.</p>
- * <p>
+ *
  * <p>This library simply relies on {@link FunctionalDataMappingLibrary}.</p>
  */
 @AutoService(DataMapperLibrary.class)

@@ -1,8 +1,8 @@
 package io.virtdata.parser;
 
 import io.virtdata.ast.MetagenAST;
-import io.virtdata.generated.MetagenCallLexer;
-import io.virtdata.generated.MetagenCallParser;
+import io.virtdata.generated.MetagenLexer;
+import io.virtdata.generated.MetagenParser;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.slf4j.Logger;
@@ -20,16 +20,16 @@ public class MetagenLanguage {
         logger.info("Parsing input '" + description + "'.");
         try {
             ANTLRInputStream ais = new ANTLRInputStream(input);
-            MetagenCallLexer lexer = new MetagenCallLexer(ais);
+            MetagenLexer lexer = new MetagenLexer(ais);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
-            MetagenCallParser parser = new MetagenCallParser(tokens);
+            MetagenParser parser = new MetagenParser(tokens);
             MetagenBuilder astListener = new MetagenBuilder();
 //        MetagenContextBuilder contextBuilder = new MetagenContextBuilder();
             parser.addParseListener(astListener);
 //        parser.addParseListener(contextBuilder);
 
             if (logger.isTraceEnabled()) {
-                MetagenCallParser.MetagenRecipeContext metagenRecipeContext = parser.metagenRecipe();
+                MetagenParser.MetagenRecipeContext metagenRecipeContext = parser.metagenRecipe();
                 logger.trace("parse tree:\n" + metagenRecipeContext.toStringTree(parser));
             }
 

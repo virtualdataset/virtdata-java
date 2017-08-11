@@ -1,8 +1,8 @@
 package io.virtdata.parser;
 
 import io.virtdata.ast.*;
-import io.virtdata.generated.MetagenCallLexer;
-import io.virtdata.generated.MetagenCallParser;
+import io.virtdata.generated.MetagenLexer;
+import io.virtdata.generated.MetagenParser;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.testng.annotations.Test;
@@ -43,13 +43,13 @@ public class MetagenBuilderTest {
         ANTLRInputStream ais = new ANTLRInputStream(chars, chars.length);
         String inputString = new String(chars);
         System.out.println("Parsing:\n" + inputString);
-        MetagenCallLexer lexer = new MetagenCallLexer(ais);
+        MetagenLexer lexer = new MetagenLexer(ais);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
-        MetagenCallParser parser = new MetagenCallParser(tokens);
+        MetagenParser parser = new MetagenParser(tokens);
         MetagenBuilder astListener = new MetagenBuilder();
         parser.addParseListener(astListener);
 
-        MetagenCallParser.MetagenRecipeContext metagenRecipeContext = parser.metagenRecipe();
+        MetagenParser.MetagenRecipeContext metagenRecipeContext = parser.metagenRecipe();
         System.out.println(metagenRecipeContext.toStringTree(parser));
 
         if (astListener.hasErrors()) {

@@ -1,8 +1,8 @@
 package io.virtdata.parser;
 
 import io.virtdata.ast.*;
-import io.virtdata.generated.MetagenCallBaseListener;
-import io.virtdata.generated.MetagenCallParser;
+import io.virtdata.generated.MetagenBaseListener;
+import io.virtdata.generated.MetagenParser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -14,21 +14,21 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
-public class MetagenBuilder extends MetagenCallBaseListener {
+public class MetagenBuilder extends MetagenBaseListener {
     private final static Logger logger = LoggerFactory.getLogger(MetagenBuilder.class);
 
     private MetagenAST model = new MetagenAST();
     private List<ErrorNode> errorNodes = new ArrayList<>();
 
-    private Stack<MetagenCallParser.MetagenFlowContext> flowContexts = new Stack<>();
-    private Stack<MetagenCallParser.ExpressionContext> expressionContexts = new Stack<>();
-    private Stack<MetagenCallParser.MetagenCallContext> callContexts = new Stack<>();
+    private Stack<MetagenParser.MetagenFlowContext> flowContexts = new Stack<>();
+    private Stack<MetagenParser.ExpressionContext> expressionContexts = new Stack<>();
+    private Stack<MetagenParser.MetagenCallContext> callContexts = new Stack<>();
 
     private LinkedList<MetagenFlow> flows = new LinkedList<>();
     private Stack<FunctionCall> calls = new Stack<FunctionCall>();
 
     @Override
-    public void enterMetagenRecipe(MetagenCallParser.MetagenRecipeContext ctx) {
+    public void enterMetagenRecipe(MetagenParser.MetagenRecipeContext ctx) {
         logger.debug("parsing metagen recipe.");
 
         flowContexts.clear();
@@ -40,12 +40,12 @@ public class MetagenBuilder extends MetagenCallBaseListener {
     }
 
     @Override
-    public void exitMetagenRecipe(MetagenCallParser.MetagenRecipeContext ctx) {
+    public void exitMetagenRecipe(MetagenParser.MetagenRecipeContext ctx) {
         logger.debug("parsed metagen recipe.");
     }
 
     @Override
-    public void enterMetagenFlow(MetagenCallParser.MetagenFlowContext ctx) {
+    public void enterMetagenFlow(MetagenParser.MetagenFlowContext ctx) {
         logger.debug("parsing metagen flow.");
         flowContexts.push(ctx);
         flows.push(new MetagenFlow());
@@ -53,37 +53,37 @@ public class MetagenBuilder extends MetagenCallBaseListener {
     }
 
     @Override
-    public void exitMetagenFlow(MetagenCallParser.MetagenFlowContext ctx) {
+    public void exitMetagenFlow(MetagenParser.MetagenFlowContext ctx) {
         model.addFlow(flows.pop());
 
         flowContexts.pop();
     }
 
     @Override
-    public void enterExpression(MetagenCallParser.ExpressionContext ctx) {
+    public void enterExpression(MetagenParser.ExpressionContext ctx) {
         expressionContexts.push(ctx);
         flows.peek().addExpression(new Expression());
         //logger.debug("parsing metagen expression.");
     }
 
     @Override
-    public void exitLvalue(MetagenCallParser.LvalueContext ctx) {
+    public void exitLvalue(MetagenParser.LvalueContext ctx) {
         flows.peek().getLastExpression().setAssignment(new Assignment(ctx.ID().getSymbol().getText()));
     }
 
     @Override
-    public void exitExpression(MetagenCallParser.ExpressionContext ctx) {
+    public void exitExpression(MetagenParser.ExpressionContext ctx) {
         expressionContexts.pop();
     }
 
     @Override
-    public void enterMetagenCall(MetagenCallParser.MetagenCallContext ctx) {
+    public void enterMetagenCall(MetagenParser.MetagenCallContext ctx) {
         callContexts.push(ctx);
         calls.push(new FunctionCall());
     }
 
     @Override
-    public void exitMetagenCall(MetagenCallParser.MetagenCallContext ctx) {
+    public void exitMetagenCall(MetagenParser.MetagenCallContext ctx) {
 
         FunctionCall topFunctionCall = calls.pop();
         if (calls.empty()) {
@@ -96,37 +96,37 @@ public class MetagenBuilder extends MetagenCallBaseListener {
     }
 
     @Override
-    public void exitInputType(MetagenCallParser.InputTypeContext ctx) {
+    public void exitInputType(MetagenParser.InputTypeContext ctx) {
         calls.peek().setInputType(ctx.getText());
     }
 
     @Override
-    public void exitFuncName(MetagenCallParser.FuncNameContext ctx) {
+    public void exitFuncName(MetagenParser.FuncNameContext ctx) {
         calls.peek().setFuncName(ctx.getText());
     }
 
     @Override
-    public void exitOutputType(MetagenCallParser.OutputTypeContext ctx) {
+    public void exitOutputType(MetagenParser.OutputTypeContext ctx) {
         calls.peek().setOutputType(ctx.getText());
     }
 
     @Override
-    public void exitRef(MetagenCallParser.RefContext ctx) {
+    public void exitRef(MetagenParser.RefContext ctx) {
         calls.peek().addFunctionArg(new RefArg(ctx.ID().getText()));
     }
 
     @Override
-    public void exitIntegerValue(MetagenCallParser.IntegerValueContext ctx) {
+    public void exitIntegerValue(MetagenParser.IntegerValueContext ctx) {
         calls.peek().addFunctionArg(new IntegerArg(Integer.valueOf(ctx.getText())));
     }
 
     @Override
-    public void exitFloatValue(MetagenCallParser.FloatValueContext ctx) {
+    public void exitFloatValue(MetagenParser.FloatValueContext ctx) {
         calls.peek().addFunctionArg(new FloatArg(Double.valueOf(ctx.getText())));
     }
 
     @Override
-    public void exitStringValue(MetagenCallParser.StringValueContext ctx) {
+    public void exitStringValue(MetagenParser.StringValueContext ctx) {
         calls.peek().addFunctionArg(new StringArg(ctx.getText().substring(1, ctx.getText().length() - 1)));
     }
 

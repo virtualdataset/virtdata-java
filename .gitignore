@@ -1,3 +1,4 @@
+**/generated
 **/.idea
 **/*.iml
 **/target
@@ -5,3 +6,4 @@
 **/.project
 **/.settings
 bin/metagen
+
