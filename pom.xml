@@ -17,13 +17,15 @@
     <modules>
         <module>project-defaults</module>
         <module>metagen-api</module>
+        <module>metagen-userlibs</module>
+        <module>metagen-lang</module>
+
         <module>metagen-lib-basics</module>
         <module>metagen-lib-random</module>
         <!--<module>metagen-lib-curves</module>-->
         <module>metagen-lib-curves4</module>
         <module>metagen-lib-composer</module>
         <module>metagen-lib-realer</module>
-        <module>metagen-userlibs</module>
     </modules>
 
     <scm>
