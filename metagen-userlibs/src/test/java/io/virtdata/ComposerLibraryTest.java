@@ -82,6 +82,13 @@ public class ComposerLibraryTest {
         Bindings bindings = bt.resolveBindings();
     }
 
+    @Test
+    public void testPrefixSuffix() {
+        BindingsTemplate bt = new BindingsTemplate(AllDataMapperLibraries.get());
+        bt.addFieldBinding("solr_query","compose HashRange(1000000000,9999999999); ToString(); Prefix(before); Suffix(after) -> String");
+        Bindings bindings = bt.resolveBindings();
+    }
+
     // TODO: Fix this test
     @Test(enabled=false)
     public void testTypeCoercionWhenNeeded() {
