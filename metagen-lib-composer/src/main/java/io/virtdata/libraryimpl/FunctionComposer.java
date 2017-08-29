@@ -13,11 +13,16 @@ public interface FunctionComposer<T> {
 
     default ResolvedFunction getResolvedFunction() {
         return new ResolvedFunction(getFunctionObject(),
-                getFunctionObject().getClass().getAnnotation(ThreadSafeMapper.class)!=null
+                getFunctionObject().getClass().getAnnotation(ThreadSafeMapper.class) != null
         );
+    }
+
+    default ResolvedFunction getResolvedFunction(boolean isThreadSafe) {
+        return new ResolvedFunction(getFunctionObject(), isThreadSafe);
     }
 
     default <R> DataMapper<R> getDataMapper() {
         return DataMapperFunctionMapper.map(getFunctionObject());
     }
+
 }

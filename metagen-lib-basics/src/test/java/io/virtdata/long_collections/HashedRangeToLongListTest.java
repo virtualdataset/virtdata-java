@@ -1,5 +1,6 @@
 package io.virtdata.long_collections;
 
+import io.virtdata.from_long.to_collection.HashedRangeToLongList;
 import org.testng.annotations.Test;
 
 import java.util.List;

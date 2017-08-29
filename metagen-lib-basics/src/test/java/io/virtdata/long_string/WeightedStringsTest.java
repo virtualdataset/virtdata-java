@@ -1,5 +1,6 @@
 package io.virtdata.long_string;
 
+import io.virtdata.from_long.to_string.WeightedStrings;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;

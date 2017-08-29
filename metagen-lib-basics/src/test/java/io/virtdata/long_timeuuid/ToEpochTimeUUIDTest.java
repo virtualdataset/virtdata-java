@@ -1,5 +1,7 @@
 package io.virtdata.long_timeuuid;
 
+import io.virtdata.DateTimeFormats;
+import io.virtdata.from_long.to_time_types.ToEpochTimeUUID;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.testng.annotations.Test;
@@ -15,7 +17,7 @@ public class ToEpochTimeUUIDTest {
         ToEpochTimeUUID e;
 
         List<String> formats = new ArrayList<>();
-        for (DateTimeFormatter formatter : ToEpochTimeUUID.formatters) {
+        for (DateTimeFormatter formatter : DateTimeFormats.formatters) {
             DateTime now = DateTime.now();
             String formatted = formatter.print(now);
             formats.add(formatted);

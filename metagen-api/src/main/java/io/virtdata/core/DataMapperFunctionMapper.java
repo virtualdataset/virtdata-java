@@ -64,57 +64,51 @@ public class DataMapperFunctionMapper {
     public static <R> DataMapper<R> map(DoubleFunction<R> f) {
         return (long l) -> f.apply((double) l);
     }
+
     public static DataMapper<Integer> map(DoubleToIntFunction f) {
         return f::applyAsInt;
     }
+
     public static DataMapper<Long> map(DoubleToLongFunction f) {
         return f::applyAsLong;
     }
+
     public static DataMapper<Double> map(DoubleUnaryOperator f) {
         return f::applyAsDouble;
     }
 
-    @org.jetbrains.annotations.Contract(pure = true)
     public static <R> DataMapper<R> map(IntFunction<R> f) {
         return (long l) -> f.apply((int) l);
     }
 
-    @org.jetbrains.annotations.Contract(pure = true)
     public static DataMapper<Long> map(IntToDoubleFunction f) {
         return (long l) -> (long) f.applyAsDouble((int) l);
     }
 
-    @org.jetbrains.annotations.Contract(pure = true)
     public static DataMapper<Long> map(IntToLongFunction f) {
         return (long l) -> f.applyAsLong((int) l);
     }
 
-    @org.jetbrains.annotations.Contract(pure = true)
     public static DataMapper<Integer> map(IntUnaryOperator f) {
         return (long l) -> f.applyAsInt((int) l);
     }
 
-    @org.jetbrains.annotations.Contract(pure = true)
     public static DataMapper<Double> map(LongToDoubleFunction f) {
         return f::applyAsDouble;
     }
 
-    @org.jetbrains.annotations.Contract(pure = true)
     public static DataMapper<Integer> map(LongToIntFunction f) {
         return f::applyAsInt;
     }
 
-    @org.jetbrains.annotations.Contract(pure = true)
     public static DataMapper<Long> map(LongUnaryOperator f) {
         return f::applyAsLong;
     }
 
-    @org.jetbrains.annotations.Contract(pure = true)
     public static <R> DataMapper<R> map(LongFunction<R> f) {
         return f::apply;
     }
 
-    @org.jetbrains.annotations.Contract(pure = true)
     public static <R> DataMapper<R> map(Function<Long, R> f) {
         return f::apply;
     }

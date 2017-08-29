@@ -22,18 +22,18 @@ import java.util.stream.Collectors;
  * This means that while you are able to compose a LongUnaryOperator with a LongUnaryOperator for maximum
  * efficiency, you can also compose LongUnaryOperator with an IntFunction, and a best effort attempt will be made to
  * do a reasonable conversion in between.</p>
-
+ *
  * <H2>Limitations</H2>
  * <P>Due to type erasure, it is not possible to know the generic type parameters for non-primitive functional types.
  * These include IntFunction&lt;?&gt;, LongFunction&lt;?&gt;, and in the worst case, Function&lt;?,?&gt;.
  * For these types, annotations are provided to better inform the runtime lambda compositor.</P>
-
+ *
  * <H2>Multiple Paths</H2>
  * <P>The library allows for there to be multiple functions which match the spec, possibly because multiple
  * functions have the same name, but exist in different libraries or in different packages within the same library.
  * This means that the composer library must find a connecting path between the functions that can match at each stage,
  * disregarding all but one.</P>
-
+ *
  * <H2>Path Finding</H2>
  * <P>The rule for finding the best path among the available functions is as follows, at each pairing between
  * adjacent stages of functions:</P>
@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
  * at the front of the list.</li>
  * <li>When no functions can be removed due to lack of co-compatible types, each stage is selected according to
  * type preferences as represented in {@link ValueType}</li>
-
+ *
  * <LI>If the next (outer) function does not have a compatible input type, move it down on the list.
  * If, after this step, there are functions which do have matching signatures, all others are removed.</LI>
  * </OL>
@@ -95,7 +95,7 @@ public class ComposerLibrary implements DataMapperLibrary {
                 if (vectoredFunctions.size() == 0) {
                     logger.warn("Falling back to sloppy conversion matching for " +
                             specData.getCanonicalSpec() + " in " + multiSpecData.getCanonicalSpec() +
-                    " since no co-compatible type signatures were found.");
+                            " since no co-compatible type signatures were found.");
                     vectoredFunctions = AllDataMapperLibraries.get().resolveFunctions(specData.getCanonicalSpec());
                 }
                 nodeFunctions.addAll(vectoredFunctions);
@@ -109,19 +109,35 @@ public class ComposerLibrary implements DataMapperLibrary {
         }
 
         if (!inputTypes.peekFirst().contains(ValueType.LONG)) {
-            throw new RuntimeException("There is no initial function which accepts a long input.");
+            throw new RuntimeException("There is no initial function which accepts a long input. Function chain, after type filtering: \n" +
+                    summarize(funcs));
         }
 
         ValueType resultType = multiSpecData.getResultType().orElseThrow(() -> new RuntimeException("missing result type specifier"));
         List<ResolvedFunction> flattenedFuncs = optimizePath(funcs, resultType);
 
         FunctionAssembly assembly = new FunctionAssembly();
+        boolean isThreadSafe=true;
         for (ResolvedFunction resolvedFunction : flattenedFuncs) {
             assembly.andThen(resolvedFunction.getFunctionObject());
+            if (!resolvedFunction.isThreadSafe()) {
+                isThreadSafe=false;
+            }
         }
 
-        ResolvedFunction composedFunction = assembly.getResolvedFunction();
+        ResolvedFunction composedFunction = assembly.getResolvedFunction(isThreadSafe);
         return Optional.of(composedFunction);
+    }
+
+    private String summarize(LinkedList<List<ResolvedFunction>> funcs) {
+        List<List<String>> spans = new LinkedList<>();
+        funcs.forEach(l -> spans.add(l.stream().map(String::valueOf).collect(Collectors.toList())));
+        List<Optional<Integer>> widths = spans.stream().map(
+                l -> l.stream().map(String::length).max(Integer::compare)).collect(Collectors.toList());
+        String summary = spans.stream().map(
+                l -> l.stream().map(String::valueOf).collect(Collectors.joining("|\n"))
+        ).collect(Collectors.joining("\n"));
+        return summary;
     }
 
     /**

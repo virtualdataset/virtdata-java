@@ -37,6 +37,23 @@ public interface DataMapperLibrary {
         return Optional.empty();
     }
 
+    default <T> Optional<DataMapper<T>> getOptionalDataMapper(String spec, Class<? extends T> clazz) {
+        return Optional.ofNullable(getDataMapper(spec, clazz));
+    }
+
+    default <T> DataMapper<T> getDataMapper(String spec, Class<? extends T> clazz) {
+        if (!canParseSpec(spec)) {
+            return null;
+        }
+        Optional<ResolvedFunction> resolvedFunction = resolveFunction(spec);
+        if (!resolvedFunction.isPresent()) {
+            return null;
+        }
+        ResolvedFunction rf = resolvedFunction.get();
+        DataMapper<Object> dm = DataMapperFunctionMapper.map(rf.getFunctionObject());
+        return (DataMapper<T>) dm;
+    }
+
     /**
      * DataMapper Libraries are required to test specifier strings in order to determine
      * whether or not the library could possibly find matching functions.
@@ -111,4 +128,5 @@ public interface DataMapperLibrary {
         return mapper;
 
     }
+
 }

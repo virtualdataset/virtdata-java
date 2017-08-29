@@ -1,5 +1,7 @@
 package io.virtdata.long_timeuuid;
 
+import io.virtdata.from_long.to_time_types.ToEpochTimeUUID;
+import io.virtdata.from_long.to_time_types.ToFinestTimeUUID;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
