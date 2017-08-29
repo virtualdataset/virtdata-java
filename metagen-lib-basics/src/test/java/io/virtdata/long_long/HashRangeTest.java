@@ -1,5 +1,6 @@
 package io.virtdata.long_long;
 
+import io.virtdata.from_long.to_long.HashRange;
 import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

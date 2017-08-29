@@ -3,12 +3,21 @@ package io.virtdata;
 import com.google.auto.service.AutoService;
 import io.virtdata.api.DataMapperLibrary;
 import io.virtdata.core.FunctionalDataMappingLibrary;
-import io.virtdata.long_byte.ModuloToByte;
-import io.virtdata.long_bytes.HashedToByteBuffer;
-import io.virtdata.long_collections.HashedLineToStringStringMap;
-import io.virtdata.long_double.LongRangeToDouble;
-import io.virtdata.long_short.ModuloToShort;
-import io.virtdata.long_string.HashedFileExtractToString;
+import io.virtdata.from_double.to_float.DoubleToFloat;
+import io.virtdata.from_long.to_bigdecimal.ModuloToBigDecimal;
+import io.virtdata.from_long.to_bigint.ToBigInt;
+import io.virtdata.from_long.to_boolean.ModuloToBoolean;
+import io.virtdata.from_long.to_byte.ModuloToByte;
+import io.virtdata.from_long.to_bytebuffer.HashedToByteBuffer;
+import io.virtdata.from_long.to_collection.HashedLineToStringStringMap;
+import io.virtdata.from_long.to_time_types.ToDate;
+import io.virtdata.from_long.to_double.LongRangeToDouble;
+import io.virtdata.from_long.to_inetaddress.ToInetAddress;
+import io.virtdata.from_long.to_int.Add;
+import io.virtdata.from_long.to_long.DivideToLong;
+import io.virtdata.from_long.to_short.ModuloToShort;
+import io.virtdata.from_long.to_string.HashedFileExtractToString;
+import io.virtdata.from_long.to_time_types.ToEpochTimeUUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,18 +44,26 @@ public class BasicDataMappers extends FunctionalDataMappingLibrary {
     public List<Package> getSearchPackages() {
         return new ArrayList<Package>() {
             {
-                add(io.virtdata.strings.Suffix.class.getPackage());
-                add(io.virtdata.long_long.Add.class.getPackage());
-                add(io.virtdata.long_int.Add.class.getPackage());
-                add(io.virtdata.int_int.Add.class.getPackage());
-                add(io.virtdata.functional.DivideToLong.class.getPackage());
-                add(io.virtdata.long_timeuuid.ToEpochTimeUUID.class.getPackage());
+                add(io.virtdata.nondeterministic.ThreadNumToLong.class.getPackage());
+                add(DoubleToFloat.class.getPackage());
+                add(ModuloToBigDecimal.class.getPackage());
+                add(ModuloToBoolean.class.getPackage());
+                add(ToInetAddress.class.getPackage());
+                add(ToBigInt.class.getPackage());
+                add(ToDate.class.getPackage());
+                add(io.virtdata.unary_string.Suffix.class.getPackage());
+                add(io.virtdata.from_long.to_long.Add.class.getPackage());
+                add(Add.class.getPackage());
+                add(io.virtdata.unary_int.Add.class.getPackage());
+                add(DivideToLong.class.getPackage());
+                add(ToEpochTimeUUID.class.getPackage());
                 add(HashedFileExtractToString.class.getPackage());
                 add(HashedLineToStringStringMap.class.getPackage());
                 add(HashedToByteBuffer.class.getPackage());
                 add(ModuloToShort.class.getPackage());
                 add(ModuloToByte.class.getPackage());
                 add(LongRangeToDouble.class.getPackage());
+
             }
         };
 
