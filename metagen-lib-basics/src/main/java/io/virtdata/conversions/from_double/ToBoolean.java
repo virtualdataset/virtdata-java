@@ -1,6 +1,6 @@
 package io.virtdata.conversions.from_double;
 
-import io.basics.virtdata.api.ThreadSafeMapper;
+import io.virtdata.api.ThreadSafeMapper;
 
 import java.util.function.Function;
 

@@ -1,8 +1,8 @@
 package io.virtdata.conversions;
 
 import com.google.auto.service.AutoService;
-import io.basics.virtdata.api.DataMapperLibrary;
-import io.basics.virtdata.core.FunctionalDataMappingLibrary;
+import io.virtdata.api.DataMapperLibrary;
+import io.virtdata.core.FunctionalDataMappingLibrary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

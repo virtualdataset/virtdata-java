@@ -18,7 +18,7 @@
 
 package io.virtdata.conversions.from_long;
 
-import io.basics.virtdata.api.ThreadSafeMapper;
+import io.virtdata.api.ThreadSafeMapper;
 
 import java.nio.ByteBuffer;
 import java.util.function.LongFunction;
