@@ -3,7 +3,7 @@
 
     <parent>
         <artifactId>project-defaults</artifactId>
-        <groupId>io.basics.virtdata</groupId>
+        <groupId>io.virtdata</groupId>
         <version>1.0.63-SNAPSHOT</version>
         <relativePath>../project-defaults</relativePath>
     </parent>
@@ -15,28 +15,28 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.basics.virtdata</groupId>
+            <groupId>io.virtdata</groupId>
             <artifactId>metagen-api</artifactId>
             <version>1.0.63-SNAPSHOT</version>
         </dependency>
         <dependency>
             <artifactId>metagen-lib-random</artifactId>
-            <groupId>io.basics.virtdata</groupId>
+            <groupId>io.virtdata</groupId>
             <version>1.0.63-SNAPSHOT</version>
         </dependency>
         <dependency>
             <artifactId>metagen-lib-basics</artifactId>
-            <groupId>io.basics.virtdata</groupId>
+            <groupId>io.virtdata</groupId>
             <version>1.0.63-SNAPSHOT</version>
         </dependency>
         <dependency>
             <artifactId>metagen-lib-composer</artifactId>
-            <groupId>io.basics.virtdata</groupId>
+            <groupId>io.virtdata</groupId>
             <version>1.0.63-SNAPSHOT</version>
         </dependency>
         <dependency>
             <artifactId>metagen-lib-curves4</artifactId>
-            <groupId>io.basics.virtdata</groupId>
+            <groupId>io.virtdata</groupId>
             <version>1.0.63-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -130,7 +130,7 @@
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>io.basics.virtdata.valuesapp.ValuesCheckerApp</mainClass>
+                                    <mainClass>io.virtdata.valuesapp.ValuesCheckerApp</mainClass>
                                 </transformer>
                             </transformers>
                             <finalName>${project.artifactId}</finalName>

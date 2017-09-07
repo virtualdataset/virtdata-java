@@ -3,7 +3,7 @@
 
     <parent>
         <artifactId>project-defaults</artifactId>
-        <groupId>io.basics.virtdata</groupId>
+        <groupId>io.virtdata</groupId>
         <version>1.0.63-SNAPSHOT</version>
         <relativePath>../project-defaults</relativePath>
     </parent>
@@ -24,7 +24,7 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>io.basics.virtdata</groupId>
+            <groupId>io.virtdata</groupId>
             <artifactId>metagen-api</artifactId>
             <version>1.0.63-SNAPSHOT</version>
         </dependency>

@@ -6,7 +6,7 @@
 
     <parent>
         <artifactId>project-defaults</artifactId>
-        <groupId>io.basics.virtdata</groupId>
+        <groupId>io.virtdata</groupId>
         <version>1.0.63-SNAPSHOT</version>
         <relativePath>../project-defaults</relativePath>
     </parent>
@@ -94,7 +94,7 @@
                     <sourceDirectory>src/main/java/io/basics/virtdata/grammars</sourceDirectory>
                     <arguments>
                         <argument>-package</argument>
-                        <argument>io.basics.virtdata.generated</argument>
+                        <argument>io.virtdata.generated</argument>
                     </arguments>
                     <outputDirectory>src/main/java/io/basics/virtdata/generated</outputDirectory>
                 </configuration>
