@@ -4,7 +4,7 @@
     <parent>
         <artifactId>project-defaults</artifactId>
         <groupId>io.basics.virtdata</groupId>
-        <version>1.0.61-SNAPSHOT</version>
+        <version>1.0.61</version>
         <relativePath>../project-defaults</relativePath>
     </parent>
 
@@ -26,7 +26,7 @@
         <dependency>
             <groupId>io.basics.virtdata</groupId>
             <artifactId>metagen-api</artifactId>
-            <version>1.0.61-SNAPSHOT</version>
+            <version>1.0.61</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
