@@ -6,7 +6,7 @@
 
     <parent>
         <artifactId>project-defaults</artifactId>
-        <groupId>io.virtdata</groupId>
+        <groupId>io.basics.virtdata</groupId>
         <version>1.0.61-SNAPSHOT</version>
         <relativePath>../project-defaults</relativePath>
     </parent>
@@ -91,12 +91,12 @@
                 <artifactId>antlr4-maven-plugin</artifactId>
                 <version>4.7</version>
                 <configuration>
-                    <sourceDirectory>${project.build.sourceDirectory}/io/virtdata/grammars</sourceDirectory>
+                    <sourceDirectory>src/main/java/io/basics/virtdata/grammars</sourceDirectory>
                     <arguments>
                         <argument>-package</argument>
-                        <argument>io.virtdata.generated</argument>
+                        <argument>io.basics.virtdata.generated</argument>
                     </arguments>
-                    <outputDirectory>${project.build.sourceDirectory}/io/virtdata/generated</outputDirectory>
+                    <outputDirectory>src/main/java/io/basics/virtdata/generated</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>

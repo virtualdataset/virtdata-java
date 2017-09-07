@@ -1,0 +1,14 @@
+package io.virtdata.basics.unary_string;
+
+import io.basics.virtdata.api.ThreadSafeMapper;
+
+import java.util.function.Function;
+
+@ThreadSafeMapper
+public class ToString implements Function<Object,String> {
+
+    @Override
+    public String apply(Object o) {
+        return String.valueOf(o);
+    }
+}
