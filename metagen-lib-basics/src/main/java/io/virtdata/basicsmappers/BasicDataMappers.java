@@ -45,6 +45,7 @@ public class BasicDataMappers extends FunctionalDataMappingLibrary {
         return new ArrayList<Package>() {
             {
                 add(io.virtdata.basicsmappers.nondeterministic.ThreadNumToLong.class.getPackage());
+                add(io.virtdata.basicsmappers.from_long.to_uuid.ToHashedUUID.class.getPackage());
                 add(DoubleToFloat.class.getPackage());
                 add(ModuloToBigDecimal.class.getPackage());
                 add(ModuloToBoolean.class.getPackage());

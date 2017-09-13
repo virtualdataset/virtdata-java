@@ -26,6 +26,7 @@ import java.util.function.LongFunction;
 
 /**
  * Hash a long input value into a byte buffer, at least length bytes long, but aligned on 8-byte
+ * boundary;
  */
 @ThreadSafeMapper
 public class HashedToByteBuffer implements LongFunction<ByteBuffer> {
@@ -35,8 +36,8 @@ public class HashedToByteBuffer implements LongFunction<ByteBuffer> {
     private final int bytes;
     private final int longs;
 
-    public HashedToByteBuffer(int length) {
-        this.length = length;
+    public HashedToByteBuffer(int lengthInBytes) {
+        this.length = lengthInBytes;
         this.hash = new Hash();
         this.longs = (length / Long.BYTES) +1;
         this.bytes = longs * Long.BYTES;
