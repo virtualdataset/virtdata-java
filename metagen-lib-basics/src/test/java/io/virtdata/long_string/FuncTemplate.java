@@ -52,6 +52,9 @@ public class FuncTemplate implements LongFunction<String> {
             }
 
         }
+        if (lits.size()<=funcs.size()) {
+            lits.add("");
+        }
         this.literals = lits.toArray(new String[0]);
         this.funcs = funcs.toArray(new DataMapper[0]);
 

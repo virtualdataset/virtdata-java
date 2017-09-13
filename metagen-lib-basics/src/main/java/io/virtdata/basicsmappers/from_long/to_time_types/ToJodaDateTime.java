@@ -36,7 +36,6 @@
 
 package io.virtdata.basicsmappers.from_long.to_time_types;
 
-import io.virtdata.api.DeprecatedFunction;
 import io.virtdata.api.ThreadSafeMapper;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -44,22 +43,21 @@ import org.joda.time.DateTimeZone;
 import java.util.function.LongFunction;
 
 @ThreadSafeMapper
-@DeprecatedFunction("This will be replaced by the more aptly named toJodaDateTime(...)")
-public class ToDateTime implements LongFunction<DateTime> {
+public class ToJodaDateTime implements LongFunction<DateTime> {
 
     private long spacing;
     private long repeat_count;
 
-    public ToDateTime(int spacing, int repeat_count){
+    public ToJodaDateTime(int spacing, int repeat_count){
         this.spacing = spacing;
         this.repeat_count = repeat_count;
     }
 
-    public ToDateTime(String spacing){
+    public ToJodaDateTime(String spacing){
         this(Integer.valueOf(spacing), 1);
     }
 
-    public ToDateTime(){
+    public ToJodaDateTime(){
         this.spacing=1;
         this.repeat_count=1;
     }

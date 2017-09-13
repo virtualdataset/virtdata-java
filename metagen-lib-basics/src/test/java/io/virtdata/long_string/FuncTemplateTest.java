@@ -14,4 +14,11 @@ public class FuncTemplateTest {
         assertThat(letter13).isEqualTo("c1(N)");
     }
 
+    @Test
+    public void testStringsAndCombos() {
+        FuncTemplate ft = new FuncTemplate("[[Combinations(0-9;a-z)]]-[[WeightedStrings(foo:0.33;bar:0.33;baz:0.34)]]");
+        assertThat(ft.apply(43L)).isEqualTo("1r-foo");
+        assertThat(ft.apply(4300L)).isEqualTo("5k-baz");
+    }
+
 }
