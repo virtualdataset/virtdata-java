@@ -98,6 +98,9 @@ public class ComposerLibrary implements DataMapperLibrary {
                             " since no co-compatible type signatures were found.");
                     vectoredFunctions = AllDataMapperLibraries.get().resolveFunctions(specData.getCanonicalSpec());
                 }
+                if (vectoredFunctions.size()==0) {
+                    throw new RuntimeException("Unable to find any functions for " + specData.getCanonicalSpec());
+                }
                 nodeFunctions.addAll(vectoredFunctions);
             }
             funcs.addFirst(nodeFunctions);

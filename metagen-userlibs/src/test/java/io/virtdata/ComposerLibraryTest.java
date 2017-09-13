@@ -15,10 +15,14 @@
 
 package io.virtdata;
 
+import io.virtdata.api.DataMapper;
 import io.virtdata.core.AllDataMapperLibraries;
 import io.virtdata.core.Bindings;
 import io.virtdata.core.BindingsTemplate;
 import org.testng.annotations.Test;
+
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -109,5 +113,23 @@ public class ComposerLibraryTest {
         BindingsTemplate bt = new BindingsTemplate(AllDataMapperLibraries.get());
         bt.addFieldBinding("phone","HashRange(1000000000, 9999999999)");
         Bindings bindings = bt.resolveBindings();
+    }
+
+    @Test
+    public void testUUIDChain() {
+        Optional<DataMapper<Object>> dm =
+                AllDataMapperLibraries.get()
+                        .getDataMapper("compose Mod(1000); ToHashedUUID() -> UUID");
+        assertThat(dm).isPresent();
+        Object o = dm.get().get(5L);
+        assertThat(o).isEqualTo(UUID.fromString("3df498b1-9568-4584-96fd-76f6081da01a"));
+    }
+
+    @Test
+    public void testNormalDoubleAdd() {
+        Optional<DataMapper<String>> dm =
+                AllDataMapperLibraries.get()
+                        .getStringDataMapper("compose normal(0.0,5.0); Add(5.0) -> double");
+        assertThat(dm).isPresent();
     }
 }

@@ -2,6 +2,7 @@ package io.virtdata.libimpl.continuous;
 
 import com.google.auto.service.AutoService;
 import io.virtdata.api.DataMapperLibrary;
+import io.virtdata.api.ValueType;
 import io.virtdata.api.specs.SpecData;
 import io.virtdata.core.ResolvedFunction;
 import io.virtdata.reflection.ConstructorResolver;
@@ -13,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.DoubleUnaryOperator;
+import java.util.function.IntToDoubleFunction;
 import java.util.function.LongToDoubleFunction;
 
 /**
@@ -120,6 +122,10 @@ public class RealDistributions implements DataMapperLibrary {
 
     @Override
     public Optional<ResolvedFunction> resolveFunction(String spec) {
+        return resolveFunction(spec, ValueType.LONG);
+    }
+
+    private Optional<ResolvedFunction> resolveFunction(String spec, ValueType inputType) {
         if (!canParseSpec(spec)) {
             return Optional.empty();
         }
@@ -136,20 +142,35 @@ public class RealDistributions implements DataMapperLibrary {
         boolean hashto = !funcName.contains(MAPTO) || funcName.contains(HASHTO);
 
         DoubleUnaryOperator icdSource = new RealDistributionICDSource(distribution);
-        LongToDoubleFunction samplingFunction = null;
-        if (interpolate) {
-            samplingFunction = new InterpolatingRealSampler(icdSource, 1000, hashto);
-        } else {
-            samplingFunction = new RealSampler(icdSource, hashto);
+
+        if (inputType==ValueType.LONG) {
+            LongToDoubleFunction samplingFunction = null;
+            if (interpolate) {
+                samplingFunction = new InterpolatingLongDoubleSampler(icdSource, 1000, hashto);
+            } else {
+                samplingFunction = new RealLongDoubleSampler(icdSource, hashto);
+            }
+            return Optional.of(new ResolvedFunction(samplingFunction, true));
         }
-        return Optional.of(new ResolvedFunction(samplingFunction, true));
+
+        if (inputType==ValueType.INT) {
+            IntToDoubleFunction samplingFunction = null;
+            if (interpolate) {
+                samplingFunction = new InterpolatingIntDoubleSampler(icdSource, 1000, hashto);
+            } else {
+                samplingFunction = new RealIntDoubleSampler(icdSource, hashto);
+            }
+            return Optional.of(new ResolvedFunction(samplingFunction, true));
+        }
+
+        return Optional.empty();
     }
 
     @Override
     public List<ResolvedFunction> resolveFunctions(String specifier) {
         List<ResolvedFunction> resolvedList = new ArrayList<>();
-        Optional<ResolvedFunction> resolvedFunction = resolveFunction(specifier);
-        resolvedFunction.map(resolvedList::add);
+        resolveFunction(specifier,ValueType.LONG).map(resolvedList::add);
+        resolveFunction(specifier,ValueType.INT).map(resolvedList::add);
         return resolvedList;
     }
 

@@ -3,16 +3,16 @@ package io.virtdata.libimpl.continuous;
 import io.virtdata.libimpl.ThreadSafeHash;
 
 import java.util.function.DoubleUnaryOperator;
-import java.util.function.LongToDoubleFunction;
+import java.util.function.IntToDoubleFunction;
 
-public class InterpolatingRealSampler implements LongToDoubleFunction {
+public class InterpolatingIntDoubleSampler implements IntToDoubleFunction{
 
     private final double[] lut;
     private final DoubleUnaryOperator f;
     private int resolution;
     private ThreadSafeHash hash;
 
-    public InterpolatingRealSampler(DoubleUnaryOperator icdSource, int resolution, boolean hash) {
+    public InterpolatingIntDoubleSampler(DoubleUnaryOperator icdSource, int resolution, boolean hash) {
         this.f = icdSource;
         this.resolution = resolution;
         if (hash) {
@@ -33,7 +33,8 @@ public class InterpolatingRealSampler implements LongToDoubleFunction {
     }
 
     @Override
-    public double applyAsDouble(long value) {
+    public double applyAsDouble(int input) {
+        long value = input;
         if (hash!=null) {
             value = hash.applyAsLong(value);
         }
