@@ -10,10 +10,7 @@ public class HashRangeTest {
     @Test
     public void testFixedSize() {
         HashRange hashRange = new HashRange(65);
-        for (int i = 0; i < 10; i++) {
-            long l = hashRange.applyAsLong(i);
-            assertThat(l).isEqualTo(65);
-        }
+        assertThat(hashRange.applyAsLong(32L)).isEqualTo(11L);
     }
 
 }

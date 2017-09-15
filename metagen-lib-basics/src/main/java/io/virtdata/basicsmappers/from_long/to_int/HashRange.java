@@ -21,7 +21,7 @@ public class HashRange implements LongToIntFunction {
         this.minValue = minValue;
 
         if (maxValue<=minValue) {
-            throw new RuntimeException("CycleRange must have min and max value in that order.");
+            throw new RuntimeException("HashRange must have min and max value in that order.");
         }
         this.width = maxValue - minValue;
     }
