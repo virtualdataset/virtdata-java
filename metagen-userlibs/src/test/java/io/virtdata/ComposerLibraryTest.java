@@ -132,4 +132,35 @@ public class ComposerLibraryTest {
                         .getStringDataMapper("compose normal(0.0,5.0); Add(5.0) -> double");
         assertThat(dm).isPresent();
     }
+
+    @Test
+    public void testDistInCompose() {
+        Optional<DataMapper<String>> dm =
+                AllDataMapperLibraries.get()
+                .getStringDataMapper("compose Hash(); uniform_integer(0,100); ToString() -> String");
+        assertThat(dm).isPresent();
+        String s = dm.get().get(5L);
+        assertThat(s).isNotEmpty();
+        assertThat(s).isEqualTo("78");
+    }
+
+    @Test
+    public void testComposeSingleFuncTypeCoercion() {
+        Optional<DataMapper<Object>> longMapper =
+                AllDataMapperLibraries.get()
+                        .getDataMapper("compose uniform_integer(1,10) -> long");
+        assertThat(longMapper).isPresent();
+        Object l = longMapper.get().get(23L);
+        assertThat(l).isNotNull();
+        assertThat(l.getClass()).isEqualTo(Long.class);
+
+        Optional<DataMapper<Object>> intMapper =
+                AllDataMapperLibraries.get()
+                        .getDataMapper("compose uniform_integer(1,10) -> int");
+        assertThat(longMapper).isPresent();
+        Object i = longMapper.get().get(23L);
+        assertThat(i).isNotNull();
+        assertThat(i.getClass()).isEqualTo(Integer.class);
+
+    }
 }

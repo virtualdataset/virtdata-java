@@ -3,14 +3,14 @@ package io.virtdata.libimpl.discrete;
 import io.virtdata.libimpl.ThreadSafeHash;
 
 import java.util.function.DoubleToIntFunction;
-import java.util.function.LongUnaryOperator;
+import java.util.function.LongToIntFunction;
 
-public class IntegerSampler implements LongUnaryOperator {
+public class DiscreteLongIntSampler implements LongToIntFunction {
 
     private final DoubleToIntFunction f;
     private ThreadSafeHash hash;
 
-    public IntegerSampler(DoubleToIntFunction parentFunc, boolean hash) {
+    public DiscreteLongIntSampler(DoubleToIntFunction parentFunc, boolean hash) {
         this.f = parentFunc;
         if (hash) {
             this.hash = new ThreadSafeHash();
@@ -18,7 +18,7 @@ public class IntegerSampler implements LongUnaryOperator {
     }
 
     @Override
-    public long applyAsLong(long value) {
+    public int applyAsInt(long value) {
         if (hash!=null) {
             value = hash.applyAsLong(value);
         }

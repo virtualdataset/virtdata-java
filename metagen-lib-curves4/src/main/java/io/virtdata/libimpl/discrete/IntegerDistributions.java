@@ -2,6 +2,7 @@ package io.virtdata.libimpl.discrete;
 
 import com.google.auto.service.AutoService;
 import io.virtdata.api.DataMapperLibrary;
+import io.virtdata.api.ValueType;
 import io.virtdata.api.specs.SpecData;
 import io.virtdata.core.ResolvedFunction;
 import io.virtdata.reflection.ConstructorResolver;
@@ -12,8 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.DoubleToIntFunction;
-import java.util.function.LongUnaryOperator;
+import java.util.function.*;
 
 /**
  * <p>This mapper provides inverse cumulative distribution sampling for integer-valued
@@ -120,6 +120,10 @@ public class IntegerDistributions implements DataMapperLibrary {
 
     @Override
     public Optional<ResolvedFunction> resolveFunction(String spec) {
+        return resolveFunction(spec,ValueType.LONG, ValueType.LONG);
+    }
+
+    public Optional<ResolvedFunction> resolveFunction(String spec, ValueType inputType, ValueType outputType) {
         if (!canParseSpec(spec)) {
             return Optional.empty();
         }
@@ -136,18 +140,51 @@ public class IntegerDistributions implements DataMapperLibrary {
         boolean hashto = !funcName.contains(MAPTO) || funcName.contains(HASHTO);
 
         DoubleToIntFunction icdSource = new IntegerDistributionICDSource(distribution);
-        LongUnaryOperator samplingFunction;
-        if (interpolate) {
-            samplingFunction = new InterpolatingIntegerSampler(icdSource, 1000, hashto);
-        } else {
-            samplingFunction = new IntegerSampler(icdSource, hashto);
+
+        if (inputType== ValueType.LONG && outputType==ValueType.LONG) {
+            LongUnaryOperator samplingFunction = null;
+            if (interpolate) {
+                samplingFunction = new InterpolatingLongLongSampler(icdSource, 1000, hashto);
+            } else {
+                samplingFunction = new DiscreteLongLongSampler(icdSource, hashto);
+            }
+            return Optional.of(new ResolvedFunction(samplingFunction, true));
+        } else if (inputType==ValueType.INT && outputType==ValueType.LONG) {
+            IntToLongFunction samplingFunction = null;
+            if (interpolate) {
+                samplingFunction = new InterpolatingIntLongSampler(icdSource, 1000, hashto);
+            } else {
+                samplingFunction = new DiscreteIntLongSampler(icdSource, hashto);
+            }
+            return Optional.of(new ResolvedFunction(samplingFunction, true));
+        } else if (inputType== ValueType.LONG && outputType==ValueType.INT) {
+            LongToIntFunction samplingFunction = null;
+            if (interpolate) {
+                samplingFunction = new InterpolatingLongIntSampler(icdSource, 1000, hashto);
+            } else {
+                samplingFunction = new DiscreteLongIntSampler(icdSource, hashto);
+            }
+            return Optional.of(new ResolvedFunction(samplingFunction, true));
+        } else if (inputType==ValueType.INT && outputType==ValueType.INT) {
+            IntUnaryOperator samplingFunction = null;
+            if (interpolate) {
+                samplingFunction = new InterpolatingIntIntSampler(icdSource, 1000, hashto);
+            } else {
+                samplingFunction = new DiscreteIntIntSampler(icdSource, hashto);
+            }
+            return Optional.of(new ResolvedFunction(samplingFunction, true));
         }
-        return Optional.of(new ResolvedFunction(samplingFunction, true));
+        return Optional.empty();
     }
 
     @Override
     public List<ResolvedFunction> resolveFunctions(String specifier) {
         List<ResolvedFunction> resolvedList = new ArrayList<>();
+        resolveFunction(specifier,ValueType.LONG, ValueType.LONG).map(resolvedList::add);
+        resolveFunction(specifier,ValueType.LONG, ValueType.INT).map(resolvedList::add);
+        resolveFunction(specifier,ValueType.INT, ValueType.LONG).map(resolvedList::add);
+        resolveFunction(specifier,ValueType.INT, ValueType.INT).map(resolvedList::add);
+
         Optional<ResolvedFunction> resolvedFunction = resolveFunction(specifier);
         resolvedFunction.map(resolvedList::add);
         return resolvedList;
@@ -167,7 +204,7 @@ public class IntegerDistributions implements DataMapperLibrary {
         return names;
     }
 
-    private static enum IntegerDistribution {
+    private enum IntegerDistribution {
         hypergeometric(HypergeometricDistribution.class), // hypergeometric(40,20,10) (int pop, int successes, int samples)
         uniform_integer(UniformIntegerDistribution.class), // uniform(0,100) (int min, int max)
         geometric(GeometricDistribution.class), // geometric(0.5) (double probability)

@@ -3,16 +3,16 @@ package io.virtdata.libimpl.discrete;
 import io.virtdata.libimpl.ThreadSafeHash;
 
 import java.util.function.DoubleToIntFunction;
-import java.util.function.LongUnaryOperator;
+import java.util.function.LongToIntFunction;
 
-public class InterpolatingIntegerSampler implements LongUnaryOperator {
+public class InterpolatingLongIntSampler implements LongToIntFunction {
 
     private final double[] lut;
     private final DoubleToIntFunction f;
     private int resolution;
     private ThreadSafeHash hash;
 
-    public InterpolatingIntegerSampler(DoubleToIntFunction icdSource, int resolution, boolean hash) {
+    public InterpolatingLongIntSampler(DoubleToIntFunction icdSource, int resolution, boolean hash) {
         this.f = icdSource;
         this.resolution = resolution;
         if (hash) {
@@ -33,7 +33,7 @@ public class InterpolatingIntegerSampler implements LongUnaryOperator {
     }
 
     @Override
-    public long applyAsLong(long value) {
+    public int applyAsInt(long value) {
         if (hash!=null) {
             value = hash.applyAsLong(value);
         }

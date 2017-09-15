@@ -14,7 +14,7 @@ public class IntegerDistributionsBinomialSanity {
 
     @Test
     public void testBinomialMappedDist() {
-        IntegerSampler b85 = new IntegerSampler(new IntegerDistributionICDSource(
+        DiscreteLongLongSampler b85 = new DiscreteLongLongSampler(new IntegerDistributionICDSource(
                 new BinomialDistribution(8, 0.5D)
         ),false);
         assertThat(b85.applyAsLong(0L)).isEqualTo(0);
@@ -54,7 +54,7 @@ public class IntegerDistributionsBinomialSanity {
 
     @Test(enabled=false)
     public void showBinomialICDF() {
-        IntegerSampler b85 = new IntegerSampler(new IntegerDistributionICDSource(
+        DiscreteLongLongSampler b85 = new DiscreteLongLongSampler(new IntegerDistributionICDSource(
                 new BinomialDistribution(8,0.5D)),false);
         for (int i = 0; i < 1000; i++) {
             double factor=((double) i / 1000D);
