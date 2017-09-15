@@ -11,9 +11,9 @@ public class HashRange implements IntUnaryOperator {
     private final int  width;
     private final Hash hash = new Hash();
 
-    public HashRange(int fixedValue) {
-        this.minValue = fixedValue;
-        this.width=1;
+    public HashRange(int width) {
+        this.minValue=0;
+        this.width=width;
     }
 
     public HashRange(int minValue, int maxValue) {

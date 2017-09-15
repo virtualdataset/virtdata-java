@@ -11,9 +11,9 @@ public class HashRange implements LongUnaryOperator {
     private final long width;
     private final Hash hash = new Hash();
 
-    public HashRange(long fixedValue) {
-        this.minValue=fixedValue;
-        this.width=1;
+    public HashRange(long width) {
+        this.minValue=0L;
+        this.width=width;
     }
 
     public HashRange(long minValue, long maxValue) {

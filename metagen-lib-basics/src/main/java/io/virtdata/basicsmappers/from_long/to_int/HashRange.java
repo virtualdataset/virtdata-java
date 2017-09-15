@@ -12,9 +12,9 @@ public class HashRange implements LongToIntFunction {
     private final long width;
     private final Hash hash = new Hash();
 
-    public HashRange(long fixedValue) {
-        this.minValue=fixedValue;
-        this.width=1;
+    public HashRange(long width) {
+        this.width=width;
+        this.minValue=0L;
     }
 
     public HashRange(long minValue, long maxValue) {
