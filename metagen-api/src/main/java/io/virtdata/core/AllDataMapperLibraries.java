@@ -142,10 +142,6 @@ public class AllDataMapperLibraries implements DataMapperLibrary {
                 parsingLibs++;
                 List<ResolvedFunction> resolvedFunctions1 = library.resolveFunctions(spec);
                 resolvedFunctions.addAll(resolvedFunctions1);
-//                Optional<ResolvedFunction> resolvedFunction = library.resolveFunction(spec);
-//                if (resolvedFunction.isPresent()) {
-//                    resolvedFunctions.add(resolvedFunction.get());
-//                }
             }
         }
         if (parsingLibs==0) {
