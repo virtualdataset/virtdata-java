@@ -39,7 +39,7 @@ public class ComposerForLongToDoubleFunction implements FunctionComposer<LongToD
                 return new ComposerForLongToDoubleFunction(f4);
             case R_T:
                 final LongFunction<?> f5 =
-                        (long l) -> ((LongFunction<?>) outer).apply((long) inner.applyAsDouble(l));
+                        (long l) -> ((Function<Double,?>) outer).apply(inner.applyAsDouble(l));
                 return new ComposerForLongFunction(f5);
             case int_int:
                 final LongToIntFunction f6 =

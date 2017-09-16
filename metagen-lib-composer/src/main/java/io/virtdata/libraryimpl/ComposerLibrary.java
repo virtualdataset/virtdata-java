@@ -87,7 +87,7 @@ public class ComposerLibrary implements DataMapperLibrary {
 
         for (int i = multiSpecData.getSpecs().size() - 1; i >= 0; i--) {
             SpecData specData = multiSpecData.getSpecs().get(i);
-            List<ResolvedFunction> nodeFunctions = new ArrayList<>();
+            List<ResolvedFunction> nodeFunctions = new LinkedList<>();
             for (ValueType valueType : inputTypes.peekFirst()) {
                 String vectoredSpec = specData.forResultType(valueType).getCanonicalSpec();
                 List<ResolvedFunction> vectoredFunctions = AllDataMapperLibraries.get().resolveFunctions(vectoredSpec);
@@ -98,7 +98,7 @@ public class ComposerLibrary implements DataMapperLibrary {
                             " since no co-compatible type signatures were found.");
                     vectoredFunctions = AllDataMapperLibraries.get().resolveFunctions(specData.getCanonicalSpec());
                 }
-                if (vectoredFunctions.size()==0) {
+                if (vectoredFunctions.size() == 0) {
                     throw new RuntimeException("Unable to find any functions for " + specData.getCanonicalSpec());
                 }
                 nodeFunctions.addAll(vectoredFunctions);
@@ -120,11 +120,11 @@ public class ComposerLibrary implements DataMapperLibrary {
         List<ResolvedFunction> flattenedFuncs = optimizePath(funcs, resultType);
 
         FunctionAssembly assembly = new FunctionAssembly();
-        boolean isThreadSafe=true;
+        boolean isThreadSafe = true;
         for (ResolvedFunction resolvedFunction : flattenedFuncs) {
             assembly.andThen(resolvedFunction.getFunctionObject());
             if (!resolvedFunction.isThreadSafe()) {
-                isThreadSafe=false;
+                isThreadSafe = false;
             }
         }
 
@@ -169,24 +169,29 @@ public class ComposerLibrary implements DataMapperLibrary {
         while (progress != 0) {
             progress = 0;
             progress += reduceByResultType(funcs.get(funcs.size() - 1), resultType);
-            for (List<ResolvedFunction> funcList : funcs) {
-                nextFuncs = funcList;
-                if (prevFuncs != null) {
-                    progress += reduceByDirectTypes(prevFuncs, nextFuncs);
-                    // attempt secondary strategy IFF higher precedence strategy failed
-                    if (progress == 0) {
-                        progress += reduceByPreferredTypes(prevFuncs, nextFuncs);
-                    }
-                } // else first pass, prime pointers
-                prevFuncs = nextFuncs;
+            if (funcs.size() > 1) {
+                for (List<ResolvedFunction> funcList : funcs) {
+                    nextFuncs = funcList;
+                    if (prevFuncs != null) {
+
+                        progress += reduceByDirectTypes(prevFuncs, nextFuncs);
+                        // attempt secondary strategy IFF higher precedence strategy failed
+                        if (progress == 0) {
+                            progress += reduceByPreferredTypes(prevFuncs, nextFuncs);
+                        }
+                    } // else first pass, prime pointers
+                    prevFuncs = nextFuncs;
+                }
+
             }
         }
-        return funcs.stream().map(l -> l.get(0)).collect(Collectors.toList());
+        List<ResolvedFunction> optimized = funcs.stream().map(l -> l.get(0)).collect(Collectors.toList());
+        return optimized;
     }
 
     private int reduceByResultType(List<ResolvedFunction> endFuncs, ValueType resultType) {
         int progressed = 0;
-        ArrayList<ResolvedFunction> tmpList = new ArrayList<>(endFuncs);
+        LinkedList<ResolvedFunction> tmpList = new LinkedList<>(endFuncs);
         for (ResolvedFunction endFunc : tmpList) {
             if (!resultType.getValueClass().isAssignableFrom(endFunc.getResultClass())) {
                 endFuncs.remove(endFunc);
@@ -241,13 +246,15 @@ public class ComposerLibrary implements DataMapperLibrary {
         Set<Class<?>> inputs = getInputs(nextFuncs);
         Sets.SetView<Class<?>> directMatches = Sets.intersection(inputs, outputs);
         if (directMatches.size() > 0) {
+            List<ResolvedFunction> toremove = new ArrayList<>();
             for (ResolvedFunction nextFunc : nextFuncs) {
                 if (!directMatches.contains(nextFunc.getArgType())) {
                     logger.debug("removing next func: " + nextFunc + " because its input types are not satisfied by an previous func");
-                    nextFuncs.remove(nextFunc);
+                    toremove.add(nextFunc);
                     progressed++;
                 }
             }
+            nextFuncs.removeAll(toremove);
         }
         return progressed;
     }

@@ -184,9 +184,6 @@ public class IntegerDistributions implements DataMapperLibrary {
         resolveFunction(specifier,ValueType.LONG, ValueType.INT).map(resolvedList::add);
         resolveFunction(specifier,ValueType.INT, ValueType.LONG).map(resolvedList::add);
         resolveFunction(specifier,ValueType.INT, ValueType.INT).map(resolvedList::add);
-
-        Optional<ResolvedFunction> resolvedFunction = resolveFunction(specifier);
-        resolvedFunction.map(resolvedList::add);
         return resolvedList;
     }
 

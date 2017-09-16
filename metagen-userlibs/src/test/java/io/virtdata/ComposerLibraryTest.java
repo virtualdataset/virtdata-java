@@ -156,9 +156,9 @@ public class ComposerLibraryTest {
 
         Optional<DataMapper<Object>> intMapper =
                 AllDataMapperLibraries.get()
-                        .getDataMapper("compose uniform_integer(1,10) -> int");
-        assertThat(longMapper).isPresent();
-        Object i = longMapper.get().get(23L);
+                        .getDataMapper("compose uniform_integer(1,123) -> int");
+        assertThat(intMapper).isPresent();
+        Object i = intMapper.get().get(23L);
         assertThat(i).isNotNull();
         assertThat(i.getClass()).isEqualTo(Integer.class);
 
