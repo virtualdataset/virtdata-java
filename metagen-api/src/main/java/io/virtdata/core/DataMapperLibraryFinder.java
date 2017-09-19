@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * Convenient singleton for accessing all loadable DataMapper Library instances.
@@ -45,13 +46,24 @@ public class DataMapperLibraryFinder {
             ClassLoader cl = Thread.currentThread().getContextClassLoader();
             logger.debug("loading DataMapper Libraries");
             ServiceLoader<DataMapperLibrary> sl = ServiceLoader.load(DataMapperLibrary.class);
+            Map<String,Integer> dups = new HashMap<>();
             for (DataMapperLibrary dataMapperLibrary : sl) {
+                logger.debug("Found data mapper library:" +
+                        dataMapperLibrary.getClass().getCanonicalName() + ":" +
+                        dataMapperLibrary.getLibraryName());
+
                 if (libraries.get(dataMapperLibrary.getLibraryName()) != null) {
-                    throw new RuntimeException("DataMapper Library '" + dataMapperLibrary.getLibraryName()
-                            + "' is already defined.");
+                    String name = dataMapperLibrary.getLibraryName();
+                    dups.put(name,dups.getOrDefault(name,0));
                 }
+
                 libraries.put(dataMapperLibrary.getLibraryName(),dataMapperLibrary);
             }
+            if (dups.size() > 0) {
+                logger.trace("Java runtime provided duplicates for " +
+                        dups.entrySet().stream().map(e -> e.getKey()+":"+e.getValue()).collect(Collectors.joining(",")));
+            }
+
         }
         logger.info("Loaded DataMapper Libraries:" + libraries.keySet());
         return libraries;
