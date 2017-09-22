@@ -14,8 +14,7 @@ public class SpecData implements Specifier {
     public final static String RTYPE_DELIM = "->";
     protected final static Pattern funcNamePattern =
             Pattern.compile("(?<func>[a-zA-Z][a-zA-Z0-9-_.]*)");
-    protected final static Pattern argPattern =
-            Pattern.compile("(\\s*(?<arg>[^,)]+)?\\s*(\\)|,)*)");
+    protected final static Pattern argScanPattern = Pattern.compile("(\\s*(?<arg>[^,)]+)?\\s*(\\)|,)*)");
     protected final static Pattern argsPattern =
             Pattern.compile("(?<args>(\\(.*?)\\))?");
     protected final static Pattern resultTypePattern =
@@ -49,12 +48,27 @@ public class SpecData implements Specifier {
             if (funcargs.startsWith("(") && funcargs.endsWith(")")) {
                 funcargs = funcargs.substring(1, funcargs.length() - 1);
             }
-            Matcher matchargs = argPattern.matcher(funcargs);
-            while (matchargs.find()) {
-                if (matchargs.group("arg") == null) {
-                    continue;
+
+            if (funcargs.startsWith("'") && funcargs.endsWith("'")) {
+                funcargs = funcargs.substring(1, funcargs.length() - 1);
+//                if (funcargs.contains("'")) {
+//                    throw new RuntimeException("Parser is not capable of handling nested single quotes yet.");
+//                }
+                args.add(funcargs);
+            } else if (funcargs.startsWith("\"") && funcargs.endsWith("\"")) {
+                funcargs = funcargs.substring(1, funcargs.length() - 1);
+//                if (funcargs.contains("\"")) {
+//                    throw new RuntimeException("Parser is not capable of handling nested double quotes yet.");
+//                }
+                args.add(funcargs);
+            } else {
+                Matcher matchargs = argScanPattern.matcher(funcargs);
+                while (matchargs.find()) {
+                    if (matchargs.group("arg") == null) {
+                        continue;
+                    }
+                    args.add(matchargs.group("arg"));
                 }
-                args.add(matchargs.group("arg"));
             }
         }
         String rtype = matcher.group("rtype");

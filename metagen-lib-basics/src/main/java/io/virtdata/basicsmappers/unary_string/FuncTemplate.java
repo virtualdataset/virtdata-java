@@ -1,4 +1,4 @@
-package io.virtdata.long_string;
+package io.virtdata.basicsmappers.unary_string;
 
 import io.virtdata.api.DataMapper;
 import io.virtdata.api.ThreadSafeMapper;
