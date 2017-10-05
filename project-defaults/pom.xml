@@ -97,6 +97,34 @@
             </plugin>
 
         </plugins>
+
+        <pluginManagement>
+            <plugins>
+                <!-- Shading -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>2.4.3</version>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>shade</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <transformers>
+                            <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                        </transformers>
+                        <createSourcesJar>true</createSourcesJar>
+                        <createDependencyReducedPom>false</createDependencyReducedPom>
+                        <minimizeJar>false</minimizeJar>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
     </build>
 
 
@@ -121,6 +149,7 @@
     </distributionManagement>
 
     <profiles>
+
         <profile>
             <id>release</id>
             <build>
@@ -144,5 +173,7 @@
 
             </build>
         </profile>
+
     </profiles>
+
 </project>
