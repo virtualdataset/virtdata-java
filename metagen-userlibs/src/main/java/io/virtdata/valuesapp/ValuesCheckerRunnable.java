@@ -74,6 +74,11 @@ public class ValuesCheckerRunnable implements Runnable {
                 logger.trace("Thread " + threadNum + " putting values into comparable array before acking");
                 expected.clear();
                 expected.addAll(Arrays.asList(output));
+                if (System.getProperties().containsKey("PRINTVALUES")) {
+                    for (int i=0; i<output.length; i++) {
+                        System.out.println(start+i + "->" + output[i]);
+                    }
+                }
             }
             synchronizeFor("generation complete " + rangeInfo);
 

@@ -23,8 +23,7 @@ public class StringBindings implements Binder<String> {
      */
     @Override
     public String bind(long value) {
-        Object[] allValues = bindings.getAll(value);
-        String s = compositor.bindValues(compositor, allValues);
+        String s = compositor.bindValues(compositor,bindings,value);
         return s;
     }
 }

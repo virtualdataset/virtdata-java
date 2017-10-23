@@ -1,6 +1,7 @@
 package io.virtdata.templates;
 
-import io.virtdata.api.ValuesArrayBinder;
+import io.virtdata.api.ValuesBinder;
+import io.virtdata.core.Bindings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,13 +13,11 @@ import java.util.regex.Pattern;
  * StringCompositor provides a way to build strings from a string template and provided values.
  *
  * <p>
- * The template is simply an array of string values, where odd indices represent literals, and even indices represent token
- * positions. If the token positions contains words, then these can be used as keys for looking up values in an associated
- * map. If not, then values are simply positional, in which case simple numerals are used as indices for debugging purposes,
- * although they are not referenced during string interpolation.
+ * The template is simply an array of string values, where odd indices represent token positions, and even indices represent
+ * literals. This version of the StringCompositor fetches data from the bindings only for the named fields in the template.
  * </p>
  */
-public class StringCompositor implements ValuesArrayBinder<StringCompositor, String> {
+public class StringCompositor implements ValuesBinder<StringCompositor, String> {
 
 //    private static Pattern tokenPattern = Pattern.compile("(?<!\\\\)\\{([^}]*)\\}(.*?)?",Pattern.DOTALL);
     private static Pattern tokenPattern = Pattern.compile("(?<section>(?<literal>[^{}]+)?(?<anchor>\\{(?<token>[a-zA-Z.-]+)?\\})?)");
@@ -62,25 +61,55 @@ public class StringCompositor implements ValuesArrayBinder<StringCompositor, Str
         return sections.toArray(new String[0]);
     }
 
+//    @Override
+//    public String bindValues(StringCompositor context, Object[] values) {
+//        StringBuilder sb = new StringBuilder(buffersize);
+//        int len=values.length;
+//        if (values.length != templateSegments.length>>1) {
+//            throw new RuntimeException("values array has " + values.length + " elements, but "
+//            + " the template needs " + (templateSegments.length>>1));
+//        }
+//        sb.append(templateSegments[0]);
+//
+//        for (int i = 0; i < len; i++) {
+//            sb.append(values[i]);
+//            sb.append(templateSegments[((2*i)+2)]);
+//        }
+//
+//        if (sb.length()>buffersize) {
+//            buffersize=sb.length()+5;
+//        }
+//
+//        return sb.toString();
+//    }
+//
+//    @Override
+//    public String bindValues(StringCompositor context, Map<String, Object> values) {
+//        StringBuilder sb = new StringBuilder(buffersize);
+//        for (int i = 0; i < templateSegments.length; i++) {
+//            if ((i&1)==0) { // even?
+//                sb.append(templateSegments[i]);
+//            } else {
+//                String key = templateSegments[i];
+//                Object value = values.get(key);
+//                sb.append(value.toString());
+//            }
+//        }
+//        return sb.toString();
+//    }
+//
     @Override
-    public String bindValues(StringCompositor context, Object[] values) {
+    public String bindValues(StringCompositor context, Bindings bindings, long cycle) {
         StringBuilder sb = new StringBuilder(buffersize);
-        int len=values.length;
-        if (values.length != templateSegments.length>>1) {
-            throw new RuntimeException("values array has " + values.length + " elements, but "
-            + " the template needs " + (templateSegments.length>>1));
+        for (int i = 0; i < templateSegments.length; i++) {
+            if ((i&1)==0) { // even?
+                sb.append(templateSegments[i]);
+            } else {
+                String key = templateSegments[i];
+                Object value = bindings.get(key,cycle);
+                sb.append(value.toString());
+            }
         }
-        sb.append(templateSegments[0]);
-
-        for (int i = 0; i < len; i++) {
-            sb.append(values[i]);
-            sb.append(templateSegments[((2*i)+2)]);
-        }
-
-        if (sb.length()>buffersize) {
-            buffersize=sb.length()+5;
-        }
-
         return sb.toString();
     }
 }
