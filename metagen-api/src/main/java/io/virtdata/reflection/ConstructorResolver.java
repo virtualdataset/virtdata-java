@@ -161,6 +161,7 @@ public class ConstructorResolver {
         Object[] ctorArgs = specializeArgs(args, matchingConstructor.getParameterTypes());
 
         // sanity check
+        // TODO: Reduce additional constructor invocations where possible
         try {
             ConstructorUtils.invokeConstructor(clazz, ctorArgs);
         } catch (Exception e) {

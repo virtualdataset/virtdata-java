@@ -25,8 +25,8 @@ public class DirectoryLines implements LongFunction<String> {
         this.basepath = basepath;
         this.namePattern = Pattern.compile(namePattern);
         allFiles = getAllFiles();
-        if (allFiles.size()==0) {
-            throw new RuntimeException("Loaded zero files from " + basepath +", full path:" + Paths.get(basepath).getFileName());
+        if (allFiles.size() == 0) {
+            throw new RuntimeException("Loaded zero files from " + basepath + ", full path:" + Paths.get(basepath).getFileName());
         }
         pathIterator = allFiles.iterator();
         try {
@@ -88,17 +88,16 @@ public class DirectoryLines implements LongFunction<String> {
         @Override
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
             seen++;
-            if (attrs.isRegularFile()) {
-                if (file.toString().matches(namePattern.pattern())) {
-                    paths.add(file);
-                    kept++;
-                }
+            if (file.toString().matches(namePattern.pattern())) {
+                paths.add(file);
+                kept++;
             }
             return FileVisitResult.CONTINUE;
         }
 
         @Override
         public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+            logger.warn("Error traversing file: " + file + ":" + exc);
             return FileVisitResult.CONTINUE;
         }
 
@@ -108,7 +107,7 @@ public class DirectoryLines implements LongFunction<String> {
         }
 
         public String toString() {
-            return ""+ kept + "/" + seen +" files with pattern '" + namePattern + "'";
+            return "" + kept + "/" + seen + " files with pattern '" + namePattern + "'";
         }
 
     }
