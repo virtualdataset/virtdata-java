@@ -25,6 +25,9 @@ public class DirectoryLines implements LongFunction<String> {
         this.basepath = basepath;
         this.namePattern = Pattern.compile(namePattern);
         allFiles = getAllFiles();
+        if (allFiles.size()==0) {
+            throw new RuntimeException("Loaded zero files from " + basepath +", full path:" + Paths.get(basepath).getFileName());
+        }
         pathIterator = allFiles.iterator();
         try {
             stringIterator = Files.readAllLines(pathIterator.next()).iterator();
@@ -56,18 +59,21 @@ public class DirectoryLines implements LongFunction<String> {
         Set<FileVisitOption> options = new HashSet<>();
         options.add(FileVisitOption.FOLLOW_LINKS);
         FileList fileList = new FileList(namePattern);
+
         try {
             Files.walkFileTree(Paths.get(basepath), options, 10, fileList);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        logger.debug("Loaded " + fileList.paths.size() + " file paths from " + basepath);
+        logger.debug("File reader: " + fileList.toString() + " in path: " + Paths.get(basepath).getFileName());
 
         return fileList.paths;
     }
 
     private static class FileList implements FileVisitor<Path> {
         public final Pattern namePattern;
+        public int seen;
+        public int kept;
         public List<Path> paths = new ArrayList<>();
 
         private FileList(Pattern namePattern) {
@@ -81,9 +87,11 @@ public class DirectoryLines implements LongFunction<String> {
 
         @Override
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+            seen++;
             if (attrs.isRegularFile()) {
                 if (file.toString().matches(namePattern.pattern())) {
                     paths.add(file);
+                    kept++;
                 }
             }
             return FileVisitResult.CONTINUE;
@@ -98,6 +106,11 @@ public class DirectoryLines implements LongFunction<String> {
         public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
             return FileVisitResult.CONTINUE;
         }
+
+        public String toString() {
+            return ""+ kept + "/" + seen +" files with pattern '" + namePattern + "'";
+        }
+
     }
 }
 
