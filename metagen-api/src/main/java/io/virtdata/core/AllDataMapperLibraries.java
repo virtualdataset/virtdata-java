@@ -160,7 +160,7 @@ public class AllDataMapperLibraries implements DataMapperLibrary {
             String resolvedNames = resolvedFunctionList.stream()
                     .map(r -> r.getClass().getCanonicalName())
                     .collect(Collectors.joining());
-            logger.warn("Found more than one matching data mapper for spec '" + spec + "' : " + resolvedNames);
+            logger.trace("Found more than one matching data mapper for spec '" + spec + "' : " + resolvedNames);
         }
         return Optional.of(resolvedFunctionList.get(0));
     }
