@@ -49,13 +49,13 @@ public class SpecData implements Specifier {
                 funcargs = funcargs.substring(1, funcargs.length() - 1);
             }
 
-            if (funcargs.startsWith("'") && funcargs.endsWith("'")) {
+            if (funcargs.startsWith("'") && funcargs.endsWith("'") && funcargs.length()>1) {
                 funcargs = funcargs.substring(1, funcargs.length() - 1);
 //                if (funcargs.contains("'")) {
 //                    throw new RuntimeException("Parser is not capable of handling nested single quotes yet.");
 //                }
                 args.add(funcargs);
-            } else if (funcargs.startsWith("\"") && funcargs.endsWith("\"")) {
+            } else if (funcargs.startsWith("\"") && funcargs.endsWith("\"") && funcargs.length()>1) {
                 funcargs = funcargs.substring(1, funcargs.length() - 1);
 //                if (funcargs.contains("\"")) {
 //                    throw new RuntimeException("Parser is not capable of handling nested double quotes yet.");
