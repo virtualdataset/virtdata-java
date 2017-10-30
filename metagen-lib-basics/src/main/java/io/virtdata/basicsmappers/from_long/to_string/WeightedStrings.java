@@ -7,6 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.LongFunction;
 
+/**
+ * Allows for weighted strings to be used, such as
+ * <pre>a:0.25;b:0.25;c:0.5</pre>
+ * or
+ * <pre>a:1;b:1.0;c:2.0</pre>
+ * The unit weights are normalized to the cumulative sum
+ * internally, so it is not necessary for them
+ * to add up to any particular value.
+ */
 @ThreadSafeMapper
 public class WeightedStrings implements LongFunction<String> {
 
