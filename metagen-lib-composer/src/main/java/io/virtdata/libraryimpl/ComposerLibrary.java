@@ -120,6 +120,7 @@ public class ComposerLibrary implements DataMapperLibrary {
         List<ResolvedFunction> flattenedFuncs = optimizePath(funcs, resultType);
 
         FunctionAssembly assembly = new FunctionAssembly();
+        logger.trace("composed summary: " + summarize(flattenedFuncs));
         boolean isThreadSafe = true;
         for (ResolvedFunction resolvedFunction : flattenedFuncs) {
             assembly.andThen(resolvedFunction.getFunctionObject());
@@ -130,6 +131,11 @@ public class ComposerLibrary implements DataMapperLibrary {
 
         ResolvedFunction composedFunction = assembly.getResolvedFunction(isThreadSafe);
         return Optional.of(composedFunction);
+    }
+
+    private String summarize(List<ResolvedFunction> funcs) {
+        return funcs.stream()
+        .map(String::valueOf).collect(Collectors.joining("|"));
     }
 
     private String summarize(LinkedList<List<ResolvedFunction>> funcs) {
@@ -197,8 +203,6 @@ public class ComposerLibrary implements DataMapperLibrary {
                 endFuncs.remove(endFunc);
                 logger.trace("removed function '" + endFunc + "' because it does not yield type " + resultType);
                 progressed++;
-            } else {
-                logger.trace("binding matched");
             }
         }
         if (endFuncs.size() == 0) {
