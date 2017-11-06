@@ -23,23 +23,20 @@ public class FieldExtractor implements Function<String,String> {
     private int[] indexes;
     private ThreadLocal<StringBuilder> tlsb = ThreadLocal.withInitial(StringBuilder::new);
 
-    public FieldExtractor(String delim, String fields) {
-        if (delim.length()>1) {
-            throw new RuntimeException("Single character delimiters are required.");
-        }
-        this.printDelim = delim;
-        this.splitDelim = "\\" + delim;
+    public FieldExtractor(String fields) {
         this.fields = fields;
-        indexes = initIndexes(fields);
+
+        String[] indexSpecs = fields.split(",");
+        this.printDelim = indexSpecs[0];
+        this.splitDelim = "\\" + indexSpecs[0];
+        indexes = new int[indexSpecs.length-1];
+        for (int i = 1; i <= indexes.length; i++) {
+            indexes[i-1] = Integer.valueOf(indexSpecs[i].trim())-1;
+        }
         maxIdx = Arrays.stream(indexes).max().orElse(-1);
     }
 
     private int[] initIndexes(String fields) {
-        String[] indexSpecs = fields.split(",");
-        int[] indexes = new int[indexSpecs.length];
-        for (int i = 0; i < indexes.length; i++) {
-            indexes[i] = Integer.valueOf(indexSpecs[i].trim())-1;
-        }
         return indexes;
     }
 
