@@ -20,9 +20,8 @@ import java.util.regex.Pattern;
 public class StringCompositor implements ValuesBinder<StringCompositor, String> {
 
 //    private static Pattern tokenPattern = Pattern.compile("(?<!\\\\)\\{([^}]*)\\}(.*?)?",Pattern.DOTALL);
-    private static Pattern tokenPattern = Pattern.compile("(?<section>(?<literal>[^{}]+)?(?<anchor>\\{(?<token>[a-zA-Z.-]+)?\\})?)");
+    private static Pattern tokenPattern = Pattern.compile("(?<section>(?<literal>[^{}]+)?(?<anchor>\\{(?<token>[a-zA-Z0-9-_.]+)?\\})?)");
     private String[] templateSegments;
-    private int buffersize=0;
 
     /**
      * Create a string template which has positional tokens, in "{}" form.
@@ -41,7 +40,6 @@ public class StringCompositor implements ValuesBinder<StringCompositor, String> 
     private String[] parseTemplate(String template) {
         Matcher matcher = tokenPattern.matcher(template);
         List<String> sections = new ArrayList<>();
-        int previous=0;
         int counter=0;
         while (matcher.find()) {
             String literal = matcher.group("literal");
@@ -100,9 +98,9 @@ public class StringCompositor implements ValuesBinder<StringCompositor, String> 
 //
     @Override
     public String bindValues(StringCompositor context, Bindings bindings, long cycle) {
-        StringBuilder sb = new StringBuilder(buffersize);
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < templateSegments.length; i++) {
-            if ((i&1)==0) { // even?
+            if (i % 2 == 0) {
                 sb.append(templateSegments[i]);
             } else {
                 String key = templateSegments[i];

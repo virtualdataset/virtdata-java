@@ -14,10 +14,12 @@ public class StringCompositorTest {
 
     @BeforeClass
     public void setupTemplate() {
-
         BindingsTemplate bindingsTemplate = new BindingsTemplate(AllDataMapperLibraries.get());
         bindingsTemplate.addFieldBinding("ident","Identity()");
         bindingsTemplate.addFieldBinding("mod5", "Mod(5)");
+        bindingsTemplate.addFieldBinding("mod-5", "Mod(5)");
+        bindingsTemplate.addFieldBinding("5_mod_5", "Mod(5)");
+        bindingsTemplate.addFieldBinding(".mod5", "Mod(5)");
         this.template = bindingsTemplate;
         this.bindings = bindingsTemplate.resolveBindings();
     }
@@ -29,4 +31,18 @@ public class StringCompositorTest {
         assertThat(s).isEqualTo("A0C");
     }
 
+    @Test
+    public void testBindValuesSpecialChars() {
+        StringCompositor c = new StringCompositor("A{mod-5}C");
+        String s = c.bindValues(c, bindings, 6L);
+        assertThat(s).isEqualTo("A1C");
+
+        c = new StringCompositor("A{5_mod_5}C");
+        s = c.bindValues(c, bindings, 7L);
+        assertThat(s).isEqualTo("A2C");
+
+        c = new StringCompositor("A{.mod5}C");
+        s = c.bindValues(c, bindings, 8L);
+        assertThat(s).isEqualTo("A3C");
+    }
 }
