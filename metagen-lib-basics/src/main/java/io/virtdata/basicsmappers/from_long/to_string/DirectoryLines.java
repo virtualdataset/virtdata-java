@@ -66,7 +66,7 @@ public class DirectoryLines implements LongFunction<String> {
             throw new RuntimeException(e);
         }
         logger.debug("File reader: " + fileList.toString() + " in path: " + Paths.get(basepath).getFileName());
-
+        fileList.paths.sort(Path::compareTo);
         return fileList.paths;
     }
 

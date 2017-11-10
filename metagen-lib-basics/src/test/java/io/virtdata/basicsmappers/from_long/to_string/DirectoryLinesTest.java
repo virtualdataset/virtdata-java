@@ -10,7 +10,6 @@ public class DirectoryLinesTest {
     @Test
     public void testResourceDirectory() {
         DirectoryLines directoryLines = new DirectoryLines("./src/test/resources/static-do-not-change", ".+txt");
-        String s;
         assertThat(directoryLines.apply(0)).isEqualTo("data1.txt-line1");
         assertThat(directoryLines.apply(0)).isEqualTo("data1.txt-line2");
         assertThat(directoryLines.apply(0)).isEqualTo("data1.txt-line3");
