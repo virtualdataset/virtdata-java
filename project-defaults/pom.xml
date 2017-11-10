@@ -3,7 +3,7 @@
 
     <groupId>io.virtdata</groupId>
     <artifactId>project-defaults</artifactId>
-    <version>1.0.82-SNAPSHOT</version>
+    <version>1.0.82</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
@@ -31,7 +31,7 @@
 
     <scm>
         <url>scm:git:https://github.com/virtualdataset/metagen-java.git</url>
-        <tag>HEAD</tag>
+        <tag>metagen-1.0.82</tag>
     </scm>
 
     <build>
@@ -115,7 +115,7 @@
                     </executions>
                     <configuration>
                         <transformers>
-                            <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
                         </transformers>
                         <createSourcesJar>true</createSourcesJar>
                         <createDependencyReducedPom>false</createDependencyReducedPom>
