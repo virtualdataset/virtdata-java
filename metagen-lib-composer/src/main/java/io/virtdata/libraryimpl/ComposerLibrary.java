@@ -115,6 +115,7 @@ public class ComposerLibrary implements DataMapperLibrary {
             throw new RuntimeException("There is no initial function which accepts a long input. Function chain, after type filtering: \n" +
                     summarize(funcs));
         }
+        removeNonLongFunctions(funcs.getFirst());
 
         ValueType resultType = multiSpecData.getResultType().orElseThrow(() -> new RuntimeException("missing result type specifier"));
         List<ResolvedFunction> flattenedFuncs = optimizePath(funcs, resultType);
@@ -131,6 +132,23 @@ public class ComposerLibrary implements DataMapperLibrary {
 
         ResolvedFunction composedFunction = assembly.getResolvedFunction(isThreadSafe);
         return Optional.of(composedFunction);
+    }
+
+    private void removeNonLongFunctions(List<ResolvedFunction> funcs)
+    {
+        List<ResolvedFunction> toRemove = new LinkedList<>();
+        for (ResolvedFunction func : funcs)
+        {
+            if (func.getFunctionType().getInputValueType() != ValueType.LONG)
+            {
+                toRemove.add(func);
+            }
+        }
+        if (toRemove.size() > 0 && toRemove.size() == funcs.size())
+        {
+            throw new RuntimeException("removeNonLongFunctions would remove all functions: " + funcs);
+        }
+        funcs.removeAll(toRemove);
     }
 
     private String summarize(List<ResolvedFunction> funcs) {

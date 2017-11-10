@@ -161,6 +161,50 @@ public class ComposerLibraryTest {
         Object i = intMapper.get().get(23L);
         assertThat(i).isNotNull();
         assertThat(i.getClass()).isEqualTo(Integer.class);
+    }
 
+    private static Object assertMapper(String def, long cycle)
+    {
+        Optional<DataMapper<Object>> mapper = AllDataMapperLibraries.get().getDataMapper(def);
+        assertThat(mapper).isPresent();
+        Object o = mapper.get().get(cycle);
+        assertThat(o).isNotNull();
+        return o;
+    }
+
+    private static void assertInteger(Object o, int expected)
+    {
+        assertThat(o.getClass()).isEqualTo(Integer.class);
+        assertThat(o).isEqualTo(expected);
+    }
+
+    @Test
+    public void testChainedHashRanges()
+    {
+        final int initialCycle = 0;
+        final int intermediateCycle = 39;
+        final int finalCycle = 81;
+
+        Object intermediateValue = assertMapper("compose HashRange(0,100) -> int", initialCycle);
+        assertInteger(intermediateValue, intermediateCycle);
+
+        Object finalValue = assertMapper("compose HashRange(0,100) -> int", intermediateCycle);
+        assertInteger(finalValue, finalCycle);
+
+        Object finalChainedValue = assertMapper("compose HashRange(0,100); HashRange(0,100) -> int", initialCycle);
+        assertInteger(finalChainedValue, finalCycle);
+    }
+
+    @Test
+    public void testLeadingIdentityDoesNotImpactTypes()
+    {
+        final int initialCycle = 0;
+        final int finalCycle = 167;
+
+        Object o1 = assertMapper("compose HashRange(0,1000); HashRange(0,1000) -> int", initialCycle);
+        assertInteger(o1, finalCycle);
+
+        Object o2 = assertMapper("compose Identity(); HashRange(0,1000); HashRange(0,1000) -> int", initialCycle);
+        assertInteger(o2, finalCycle);
     }
 }
