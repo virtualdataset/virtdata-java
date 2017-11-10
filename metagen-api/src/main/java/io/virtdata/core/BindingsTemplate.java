@@ -102,10 +102,11 @@ public class BindingsTemplate {
         return this.specifiers;
     }
 
+    @Override
     public String toString() {
         String delim = "";
         StringBuilder sb = new StringBuilder(BindingsTemplate.class.getSimpleName()).append(":");
-        for (int i = 0; i < bindPointNames.size() - 1; i++) {
+        for (int i = 0; i < bindPointNames.size(); i++) {
             sb.append(delim);
             sb.append("'").append(bindPointNames.get(i)).append("'");
             sb.append("=>");
@@ -118,7 +119,7 @@ public class BindingsTemplate {
     public String toString(Object[] values) {
         String delim = "";
         StringBuilder sb = new StringBuilder(BindingsTemplate.class.getSimpleName()).append(":");
-        for (int i = 0; i < bindPointNames.size() - 1; i++) {
+        for (int i = 0; i < bindPointNames.size(); i++) {
             sb.append(delim);
             sb.append("'").append(bindPointNames.get(i)).append("'");
             sb.append("=>");
