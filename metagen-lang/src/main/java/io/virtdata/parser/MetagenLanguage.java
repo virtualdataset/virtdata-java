@@ -3,7 +3,8 @@ package io.virtdata.parser;
 import io.virtdata.ast.MetagenAST;
 import io.virtdata.generated.MetagenLexer;
 import io.virtdata.generated.MetagenParser;
-import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CodePointCharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +20,8 @@ public class MetagenLanguage {
 
         logger.info("Parsing input '" + description + "'.");
         try {
-            ANTLRInputStream ais = new ANTLRInputStream(input);
-            MetagenLexer lexer = new MetagenLexer(ais);
+            CodePointCharStream charStream = CharStreams.fromReader(input);
+            MetagenLexer lexer = new MetagenLexer(charStream);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             MetagenParser parser = new MetagenParser(tokens);
             MetagenBuilder astListener = new MetagenBuilder();
