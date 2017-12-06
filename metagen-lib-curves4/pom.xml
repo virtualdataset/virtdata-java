@@ -96,7 +96,7 @@
         <repository>
             <id>apache-snapshots</id>
             <url>http://repository.apache.org/snapshots/</url>
-            <snapshots><updatePolicy>interval:1m</updatePolicy></snapshots>
+            <snapshots><updatePolicy>interval:60</updatePolicy></snapshots>
         </repository>
     </repositories>
 
