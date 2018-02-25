@@ -7,7 +7,9 @@ import io.virtdata.api.specs.SpecData;
 import io.virtdata.core.ResolvedFunction;
 import io.virtdata.reflection.ConstructorResolver;
 import io.virtdata.reflection.DeferredConstructor;
-import org.apache.commons.math4.distribution.*;
+import org.apache.commons.math4.distribution.EmpiricalDistribution;
+import org.apache.commons.math4.distribution.EnumeratedRealDistribution;
+import org.apache.commons.statistics.distribution.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -133,10 +135,10 @@ public class RealDistributions implements DataMapperLibrary {
         String funcName = specData.getFuncName();
         RealDistribution realDistribution =
                 RealDistribution.valueOf(distributionNameFor(funcName));
-        Class<? extends AbstractRealDistribution> distributionClass = realDistribution.getDistributionClass();
-        DeferredConstructor<? extends AbstractRealDistribution> deferred =
+        Class<? extends ContinuousDistribution> distributionClass = realDistribution.getDistributionClass();
+        DeferredConstructor<? extends ContinuousDistribution> deferred =
                 ConstructorResolver.resolve(distributionClass, specData.getArgs());
-        AbstractRealDistribution distribution = deferred.construct();
+        ContinuousDistribution distribution = deferred.construct();
 
         boolean interpolate = !funcName.contains(COMPUTE) || funcName.contains(INTERPOLATE);
         boolean hashto = !funcName.contains(MAPTO) || funcName.contains(HASHTO);
@@ -208,19 +210,19 @@ public class RealDistributions implements DataMapperLibrary {
         weibull(WeibullDistribution.class),
         chi_squared(ChiSquaredDistribution.class),
         gumbel(GumbelDistribution.class),
-        constant_real(ConstantRealDistribution.class),
+//        constant_real(ConstantRealDistribution.class),
         beta(BetaDistribution.class),
         pareto(ParetoDistribution.class),
         gamma(GammaDistribution.class),
-        uniform_real(UniformRealDistribution.class);
+        uniform_real(UniformContinuousDistribution.class);
 
-        private final Class<? extends AbstractRealDistribution> distribution;
+        private final Class<? extends ContinuousDistribution> distribution;
 
-        RealDistribution(Class<? extends AbstractRealDistribution> distribution) {
+        RealDistribution(Class<? extends ContinuousDistribution> distribution) {
             this.distribution = distribution;
         }
 
-        public Class<? extends AbstractRealDistribution> getDistributionClass() {
+        public Class<? extends ContinuousDistribution> getDistributionClass() {
             return distribution;
         }
     }

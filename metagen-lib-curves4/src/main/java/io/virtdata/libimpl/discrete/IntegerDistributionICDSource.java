@@ -1,14 +1,14 @@
 package io.virtdata.libimpl.discrete;
 
-import org.apache.commons.math4.distribution.IntegerDistribution;
+import org.apache.commons.statistics.distribution.DiscreteDistribution;
 
 import java.util.function.DoubleToIntFunction;
 
 public class IntegerDistributionICDSource implements DoubleToIntFunction {
 
-    private IntegerDistribution integerDistribution;
+    private DiscreteDistribution integerDistribution;
 
-    public IntegerDistributionICDSource(IntegerDistribution integerDistribution) {
+    public IntegerDistributionICDSource(DiscreteDistribution integerDistribution) {
         this.integerDistribution = integerDistribution;
     }
 

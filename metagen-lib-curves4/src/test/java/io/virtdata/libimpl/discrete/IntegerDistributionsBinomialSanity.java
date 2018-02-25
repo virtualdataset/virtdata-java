@@ -1,6 +1,6 @@
 package io.virtdata.libimpl.discrete;
 
-import org.apache.commons.math4.distribution.BinomialDistribution;
+import org.apache.commons.statistics.distribution.BinomialDistribution;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;

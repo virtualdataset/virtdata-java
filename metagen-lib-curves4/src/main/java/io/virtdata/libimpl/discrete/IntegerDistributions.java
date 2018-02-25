@@ -7,7 +7,7 @@ import io.virtdata.api.specs.SpecData;
 import io.virtdata.core.ResolvedFunction;
 import io.virtdata.reflection.ConstructorResolver;
 import io.virtdata.reflection.DeferredConstructor;
-import org.apache.commons.math4.distribution.*;
+import org.apache.commons.statistics.distribution.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -131,10 +131,10 @@ public class IntegerDistributions implements DataMapperLibrary {
         String funcName = specData.getFuncName();
         IntegerDistribution integerDistribution =
                 IntegerDistribution.valueOf(distributionNameFor(funcName));
-        Class<? extends AbstractIntegerDistribution> distributionClass = integerDistribution.getDistributionClass();
-        DeferredConstructor<? extends AbstractIntegerDistribution> deferred =
+        Class<? extends DiscreteDistribution> distributionClass = integerDistribution.getDistributionClass();
+        DeferredConstructor<? extends DiscreteDistribution> deferred =
                 ConstructorResolver.resolve(distributionClass, specData.getArgs());
-        AbstractIntegerDistribution distribution = deferred.construct();
+        DiscreteDistribution distribution = deferred.construct();
 
         boolean interpolate = !funcName.contains(COMPUTE) || funcName.contains(INTERPOLATE);
         boolean hashto = !funcName.contains(MAPTO) || funcName.contains(HASHTO);
@@ -203,20 +203,20 @@ public class IntegerDistributions implements DataMapperLibrary {
 
     private enum IntegerDistribution {
         hypergeometric(HypergeometricDistribution.class), // hypergeometric(40,20,10) (int pop, int successes, int samples)
-        uniform_integer(UniformIntegerDistribution.class), // uniform(0,100) (int min, int max)
+        uniform_integer(UniformDiscreteDistribution.class), // uniform(0,100) (int min, int max)
         geometric(GeometricDistribution.class), // geometric(0.5) (double probability)
         poisson(PoissonDistribution.class), // poisson(5.0) (double avgrate)
         zipf(ZipfDistribution.class), // zipf(10000, 5.0) (int elements, double exponent)
         binomial(BinomialDistribution.class), // binomial(8,0.5) - (int trials, double probability)
         pascal(PascalDistribution.class); // pascal(10,0.33) - (int successes, double probability)
 
-        private final Class<? extends AbstractIntegerDistribution> distribution;
+        private final Class<? extends DiscreteDistribution> distribution;
 
-        IntegerDistribution(Class<? extends AbstractIntegerDistribution> distribution) {
+        IntegerDistribution(Class<? extends DiscreteDistribution> distribution) {
             this.distribution = distribution;
         }
 
-        public Class<? extends AbstractIntegerDistribution> getDistributionClass() {
+        public Class<? extends DiscreteDistribution> getDistributionClass() {
             return distribution;
         }
     }

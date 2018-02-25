@@ -1,14 +1,14 @@
 package io.virtdata.libimpl.continuous;
 
-import org.apache.commons.math4.distribution.RealDistribution;
+import org.apache.commons.statistics.distribution.ContinuousDistribution;
 
 import java.util.function.DoubleUnaryOperator;
 
 public class RealDistributionICDSource implements DoubleUnaryOperator {
 
-    private RealDistribution realDistribution;
+    private ContinuousDistribution realDistribution;
 
-    public RealDistributionICDSource(RealDistribution realDistribution) {
+    public RealDistributionICDSource(ContinuousDistribution realDistribution) {
         this.realDistribution = realDistribution;
     }
 
