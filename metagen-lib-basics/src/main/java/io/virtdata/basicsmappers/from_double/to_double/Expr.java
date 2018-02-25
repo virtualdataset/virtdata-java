@@ -1,0 +1,30 @@
+package io.virtdata.basicsmappers.from_double.to_double;
+
+import io.virtdata.api.ThreadSafeMapper;
+import io.virtdata.basicsmappers.MVELExpr;
+import org.mvel2.MVEL;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.function.DoubleUnaryOperator;
+
+@ThreadSafeMapper
+public class Expr implements DoubleUnaryOperator {
+    private static ThreadLocal<HashMap<String,Object>> tlm = ThreadLocal.withInitial(HashMap::new);
+
+    private final String expr;
+    private final Serializable compiledExpr;
+
+    public Expr(String expr) {
+        this.expr = expr;
+        this.compiledExpr = MVELExpr.compile(double.class, "cycle", expr);
+    }
+
+    @Override
+    public double applyAsDouble(double operand) {
+        HashMap<String, Object> map = tlm.get();
+        map.put("cycle",operand);
+        double result = MVEL.executeExpression(compiledExpr, map, double.class);
+        return result;
+    }
+}
