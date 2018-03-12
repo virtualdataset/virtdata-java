@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Test
 public class IntegerDistributionsValuesTest {
 
-     @Test
+    @Test(enabled=false)
     public void testComputedZipf() {
         RunData runData = iterateMapper(new IntegerDistributions().getLongDataMapper(
                 "compute_zipf(10000,2.0)").orElse(null), 10000);
