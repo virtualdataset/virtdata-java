@@ -5,11 +5,9 @@ import com.google.common.collect.Sets;
 import io.virtdata.api.DataMapperLibrary;
 import io.virtdata.api.ValueType;
 import io.virtdata.api.specs.SpecData;
-import io.virtdata.ast.MetagenFlow;
 import io.virtdata.core.AllDataMapperLibraries;
 import io.virtdata.core.ResolvedFunction;
 import io.virtdata.libraryimpl.composers.MultiSpecData;
-import io.virtdata.parser.LambdaDSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +50,7 @@ import java.util.stream.Collectors;
  * </OL>
  */
 @AutoService(DataMapperLibrary.class)
-public class ComposerLibrary implements DataMapperLibrary {
+public class ComposerLibraryPrior implements DataMapperLibrary {
 
     private final static String PREAMBLE = "compose ";
     private final static Logger logger = LoggerFactory.getLogger(DataMapperLibrary.class);
@@ -69,18 +67,9 @@ public class ComposerLibrary implements DataMapperLibrary {
 
     @Override
     public List<ResolvedFunction> resolveFunctions(String spec) {
-        ArrayList<ResolvedFunction> resolvedFunctions = new ArrayList<>();
-
-        if (spec.startsWith("compose ")) {
-            spec=spec.substring(spec.indexOf(" ")+1);
-            Optional<MetagenFlow> flow = LambdaDSL.parse(spec);
-        } else {
-
-        }
-
         Optional<ResolvedFunction> resolvedFunction = resolveFunction(spec);
+        ArrayList<ResolvedFunction> resolvedFunctions = new ArrayList<>();
         resolvedFunction.ifPresent(resolvedFunctions::add);
-
         return resolvedFunctions;
     }
 

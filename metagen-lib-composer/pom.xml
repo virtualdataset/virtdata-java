@@ -27,6 +27,12 @@
             <version>1.0.86-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>io.virtdata</groupId>
+            <artifactId>metagen-lang</artifactId>
+            <version>1.0.86-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.25</version>
