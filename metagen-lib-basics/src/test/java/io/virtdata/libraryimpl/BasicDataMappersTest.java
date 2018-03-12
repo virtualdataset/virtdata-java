@@ -28,7 +28,7 @@ public class BasicDataMappersTest {
     }
 
     // TODO: Fix this when convergence around a guava version is possible, if ever
-    @Test(enabled=false)
+    @Test(enabled=true)
     public void testGetDataMapperNames() throws Exception {
         BasicDataMappers basics = new BasicDataMappers();
         List<String> gnames = basics.getDataMapperNames();
