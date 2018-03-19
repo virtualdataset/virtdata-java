@@ -1,13 +1,13 @@
 grammar MVv2;
 // https://www.youtube.com/watch?v=eW4WFgRtFeY
 
-metagenRecipe : metagenFlow (specend metagenFlow?)* EOF ;
+mgRecipe : mgFlow (specend mgFlow?)* EOF ;
 
-metagenFlow : expression (';' expression?)* ;
+mgFlow : expression (';' expression?)* ;
 
-expression : (lvalue ASSIGN)? metagenCall ;
+expression : (lvalue ASSIGN)? mgCall ;
 
-metagenCall :
+mgCall :
  ( inputType INPUTTYPE )?
  ( funcName '(' (arg (',' arg )* )? ')' )
  ( OUTPUTTYPE outputType )?
@@ -18,7 +18,7 @@ inputType : ID;
 funcName: ID;
 outputType : ID;
 
-arg : ( ref | metagenCall | value );
+arg : ( ref | mgCall | value );
 ref : ('$' ID );
 value : ( floatValue | integerValue | stringValue);
 stringValue : SSTRING_LITERAL | DSTRING_LITERAL ;

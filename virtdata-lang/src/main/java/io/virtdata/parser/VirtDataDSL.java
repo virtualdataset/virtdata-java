@@ -1,7 +1,7 @@
 package io.virtdata.parser;
 
-import io.virtdata.ast.MetagenAST;
-import io.virtdata.ast.MetagenFlow;
+import io.virtdata.ast.VirtDataAST;
+import io.virtdata.ast.VirtDataFlow;
 import io.virtdata.generated.VirtDataLexer;
 import io.virtdata.generated.VirtDataParser;
 import org.antlr.v4.runtime.CharStreams;
@@ -26,15 +26,15 @@ public class VirtDataDSL {
             VirtDataBuilder astListener = new VirtDataBuilder();
             parser.addParseListener(astListener);
 
-            VirtDataParser.VirtdataFlowContext metagenFlowContext = parser.virtdataFlow();
-            System.out.println(metagenFlowContext.toStringTree(parser));
+            VirtDataParser.VirtdataFlowContext virtdataFlowContext = parser.virtdataFlow();
+            System.out.println(virtdataFlowContext.toStringTree(parser));
 
             if (astListener.hasErrors()) {
                 System.out.println(astListener.getErrorNodes());
             }
 
-            MetagenAST ast = astListener.getModel();
-            List<MetagenFlow> flows = ast.getFlows();
+            VirtDataAST ast = astListener.getModel();
+            List<VirtDataFlow> flows = ast.getFlows();
             if (flows.size() > 1) {
                 throw new RuntimeException("Only one flow expected here.");
             }
@@ -53,8 +53,8 @@ public class VirtDataDSL {
 
     public static class ParseResult {
         public Throwable throwable;
-        public MetagenFlow flow;
-        public ParseResult(MetagenFlow flow) {
+        public VirtDataFlow flow;
+        public ParseResult(VirtDataFlow flow) {
             this.flow = flow;
         }
         public ParseResult(Throwable throwable) {

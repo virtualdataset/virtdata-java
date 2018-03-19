@@ -1,6 +1,6 @@
 package io.virtdata.parser;
 
-import io.virtdata.ast.MetagenAST;
+import io.virtdata.ast.VirtDataAST;
 import io.virtdata.generated.VirtDataLexer;
 import io.virtdata.generated.VirtDataParser;
 import org.antlr.v4.runtime.CharStreams;
@@ -16,7 +16,7 @@ public class VirtDataLanguage {
 
     private final static Logger logger = LoggerFactory.getLogger(VirtDataLanguage.class);
 
-    public static MetagenAST parse(String description, Reader input) {
+    public static VirtDataAST parse(String description, Reader input) {
 
         logger.info("Parsing input '" + description + "'.");
         try {
@@ -30,17 +30,17 @@ public class VirtDataLanguage {
 //        parser.addParseListener(contextBuilder);
 
             if (logger.isTraceEnabled()) {
-                VirtDataParser.VirtdataRecipeContext metagenRecipeContext = parser.virtdataRecipe();
-                logger.trace("parse tree:\n" + metagenRecipeContext.toStringTree(parser));
+                VirtDataParser.VirtdataRecipeContext virtdataRecipeContext = parser.virtdataRecipe();
+                logger.trace("parse tree:\n" + virtdataRecipeContext.toStringTree(parser));
             }
 
             if (astListener.hasErrors()) {
                 System.out.println(astListener.getErrorNodes());
             }
 
-            MetagenAST metagenAST = astListener.getModel();
+            VirtDataAST virtDataAST = astListener.getModel();
             logger.info("Parsed:\n" + description);
-            return metagenAST;
+            return virtDataAST;
 
 //        List<String> context = contextBuilder.getContext();
 

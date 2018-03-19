@@ -3,7 +3,7 @@ package io.virtdata.ast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MetagenFlow {
+public class VirtDataFlow {
     private List<Expression> expressions = new ArrayList<>();
 
     public List<Expression> getExpressions() {

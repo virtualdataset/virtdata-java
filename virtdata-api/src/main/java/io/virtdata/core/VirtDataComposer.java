@@ -6,7 +6,7 @@ import io.virtdata.api.ValueType;
 import io.virtdata.api.VirtDataFunctionLibrary;
 import io.virtdata.api.composers.FunctionAssembly;
 import io.virtdata.ast.FunctionCall;
-import io.virtdata.ast.MetagenFlow;
+import io.virtdata.ast.VirtDataFlow;
 import io.virtdata.parser.VirtDataDSL;
 import org.apache.commons.lang3.ClassUtils;
 import org.slf4j.Logger;
@@ -72,13 +72,13 @@ public class VirtDataComposer {
         if (parseResult.throwable!=null) {
             throw new RuntimeException(parseResult.throwable);
         }
-        MetagenFlow flow = parseResult.flow;
+        VirtDataFlow flow = parseResult.flow;
 
         return resolveFunctionFlow(flow);
     }
 
 
-    public Optional<ResolvedFunction> resolveFunctionFlow(MetagenFlow flow) {
+    public Optional<ResolvedFunction> resolveFunctionFlow(VirtDataFlow flow) {
 
         LinkedList<List<ResolvedFunction>> funcs = new LinkedList<>();
 

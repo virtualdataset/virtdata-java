@@ -4,7 +4,7 @@ import com.google.auto.service.AutoService;
 import io.virtdata.api.ValueType;
 import io.virtdata.api.VirtDataFunctionLibrary;
 import io.virtdata.ast.FunctionCall;
-import io.virtdata.ast.MetagenFlow;
+import io.virtdata.ast.VirtDataFlow;
 import io.virtdata.core.ResolvedFunction;
 import io.virtdata.libimpl.discrete.IntegerDistributions;
 import io.virtdata.parser.VirtDataDSL;
@@ -95,7 +95,7 @@ public class RealDistributions implements VirtDataFunctionLibrary {
         if (parseResult.throwable!=null) {
             throw new RuntimeException(parseResult.throwable);
         }
-        MetagenFlow flow = parseResult.flow;
+        VirtDataFlow flow = parseResult.flow;
         if (flow.getExpressions().size()>1) {
             throw new RuntimeException("Unable to parse flows in " + IntegerDistributions.class);
         }

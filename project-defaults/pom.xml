@@ -26,11 +26,11 @@
 
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/virtualdataset/metagen-java/issues</url>
+        <url>https://github.com/virtualdataset/virtdata-java/issues</url>
     </issueManagement>
 
     <scm>
-        <url>scm:git:https://github.com/virtualdataset/metagen-java.git</url>
+        <url>scm:git:https://github.com/virtualdataset/virtdata-java.git</url>
         <tag>HEAD</tag>
     </scm>
 

@@ -43,7 +43,7 @@ public class VirtdataBuilderTest {
 
     @Test
     private void testFullSyntax() {
-        char[] chars = readFile("test-syntax.metagen");
+        char[] chars = readFile("test-syntax.virtdata");
         ANTLRInputStream ais = new ANTLRInputStream(chars, chars.length);
         String inputString = new String(chars);
         System.out.println("Parsing:\n" + inputString);
@@ -53,18 +53,18 @@ public class VirtdataBuilderTest {
         VirtDataBuilder astListener = new VirtDataBuilder();
         parser.addParseListener(astListener);
 
-        VirtDataParser.VirtdataRecipeContext metagenRecipeContext = parser.virtdataRecipe();
-        System.out.println(metagenRecipeContext.toStringTree(parser));
+        VirtDataParser.VirtdataRecipeContext virtdataRecipeContext = parser.virtdataRecipe();
+        System.out.println(virtdataRecipeContext.toStringTree(parser));
 
         if (astListener.hasErrors()) {
             System.out.println(astListener.getErrorNodes());
         }
 
-        MetagenAST ast = astListener.getModel();
+        VirtDataAST ast = astListener.getModel();
         assertThat(ast.getFlows().size()).isEqualTo(3);
 
-        List<MetagenFlow> flows = ast.getFlows();
-        MetagenFlow flow0 = flows.get(0);
+        List<VirtDataFlow> flows = ast.getFlows();
+        VirtDataFlow flow0 = flows.get(0);
 
         assertThat(flow0.getExpressions().size()).isEqualTo(2);
         Expression expr00 = flow0.getExpressions().get(0);
@@ -88,11 +88,11 @@ public class VirtdataBuilderTest {
         RefArg refArg = (RefArg) arg1;
         assertThat(refArg.getRefName()).isEqualTo("joy");
 
-        MetagenFlow flow1 = flows.get(1);
+        VirtDataFlow flow1 = flows.get(1);
         assertThat(flow1.getExpressions().size()).isEqualTo(1);
         Expression expr10 = flow1.getExpressions().get(0);
 
-        MetagenFlow flow2 = flows.get(2);
+        VirtDataFlow flow2 = flows.get(2);
         assertThat(flow2.getExpressions().size()).isEqualTo(1);
         Expression expr20 = flow2.getExpressions().get(0);
 
@@ -103,7 +103,7 @@ public class VirtdataBuilderTest {
     public void testLambdaChains() {
         Path path=null;
         try {
-            URI uri = ClassLoader.getSystemResource("test-syntax-lambda.metagen").toURI();
+            URI uri = ClassLoader.getSystemResource("test-syntax-lambda.virtdata").toURI();
             path = Paths.get(uri);
             byte[] bytes = Files.readAllBytes(path);
             VirtDataDSL.ParseResult parseResult = VirtDataDSL.parse(new String(bytes));

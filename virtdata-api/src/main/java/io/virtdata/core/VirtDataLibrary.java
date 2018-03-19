@@ -2,7 +2,7 @@ package io.virtdata.core;
 
 import io.virtdata.api.DataMapper;
 import io.virtdata.api.VirtDataFunctionLibrary;
-import io.virtdata.ast.MetagenFlow;
+import io.virtdata.ast.VirtDataFlow;
 import io.virtdata.parser.VirtDataDSL;
 
 import java.util.HashMap;
@@ -34,7 +34,7 @@ public interface VirtDataLibrary {
         if (parseResult.throwable!=null) {
             throw new RuntimeException(parseResult.throwable);
         }
-        MetagenFlow flow = parseResult.flow;
+        VirtDataFlow flow = parseResult.flow;
         VirtDataComposer composer = new VirtDataComposer();
         Optional<ResolvedFunction> resolvedFunction = composer.resolveFunctionFlow(flow);
         return resolvedFunction.map(ResolvedFunction::getFunctionObject).map(DataMapperFunctionMapper::map);

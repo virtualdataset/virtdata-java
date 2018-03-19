@@ -27,10 +27,10 @@
     </modules>
 
     <scm>
-        <connection>scm:git:https://github.com/virtualdataset/metagen-java.git</connection>
-        <developerConnection>scm:git:https://github.com/virtualdataset/metagen-java.git</developerConnection>
+        <connection>scm:git:https://github.com/virtualdataset/virtdata-java.git</connection>
+        <developerConnection>scm:git:https://github.com/virtualdataset/virtdata-java.git</developerConnection>
         <!--<developerConnection>scm:git:git@github.com:engineblock/engineblock.git</developerConnection> broken? -->
-        <url>scm:git:git@github.com:virtualdataset/metagen-java.git</url>
+        <url>scm:git:git@github.com:virtualdataset/virtdata-java.git</url>
         <tag>HEAD</tag>
     </scm>
 

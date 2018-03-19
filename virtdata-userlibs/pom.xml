@@ -8,9 +8,9 @@
         <relativePath>../project-defaults</relativePath>
     </parent>
 
-    <artifactId>metagen-userlibs</artifactId>
+    <artifactId>virtdata-userlibs</artifactId>
     <packaging>jar</packaging>
-    <name>metagen-userlibs</name>
+    <name>virtdata-userlibs</name>
     <url>http://virtdata.io/</url>
 
     <dependencies>
@@ -20,17 +20,17 @@
             <version>1.2.2-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <artifactId>metagen-lib-random</artifactId>
+            <artifactId>virtdata-lib-random</artifactId>
             <groupId>io.virtdata</groupId>
             <version>1.2.2-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <artifactId>metagen-lib-basics</artifactId>
+            <artifactId>virtdata-lib-basics</artifactId>
             <groupId>io.virtdata</groupId>
             <version>1.2.2-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <artifactId>metagen-lib-curves4</artifactId>
+            <artifactId>virtdata-lib-curves4</artifactId>
             <groupId>io.virtdata</groupId>
             <version>1.2.2-SNAPSHOT</version>
         </dependency>

@@ -17,14 +17,14 @@ import java.util.Stack;
 public class VirtDataBuilder extends VirtDataBaseListener {
     private final static Logger logger = LoggerFactory.getLogger(VirtDataBuilder.class);
 
-    private MetagenAST model = new MetagenAST();
+    private VirtDataAST model = new VirtDataAST();
     private List<ErrorNode> errorNodes = new ArrayList<>();
 
     private Stack<VirtDataParser.VirtdataFlowContext> flowContexts = new Stack<>();
     private Stack<VirtDataParser.ExpressionContext> expressionContexts = new Stack<>();
     private Stack<VirtDataParser.VirtdataCallContext> callContexts = new Stack<>();
 
-    private LinkedList<MetagenFlow> flows = new LinkedList<>();
+    private LinkedList<VirtDataFlow> flows = new LinkedList<>();
     private Stack<FunctionCall> calls = new Stack<FunctionCall>();
 
 
@@ -47,7 +47,7 @@ public class VirtDataBuilder extends VirtDataBaseListener {
     public void enterVirtdataFlow(VirtDataParser.VirtdataFlowContext ctx) {
         logger.debug("parsing virtdata flow...");
         flowContexts.push(ctx);
-        flows.push(new MetagenFlow());
+        flows.push(new VirtDataFlow());
         calls.clear();
         if (ctx.COMPOSE()!=null) {
             logger.warn("The 'compose' keyword is no longer needed in lambda construction. It will be deprecated in the future.");
@@ -171,7 +171,7 @@ public class VirtDataBuilder extends VirtDataBaseListener {
         return calls.peek().getMetagenCall(0);
     }
 
-    public MetagenAST getModel() {
+    public VirtDataAST getModel() {
         return model;
     }
 }

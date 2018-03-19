@@ -8,9 +8,9 @@
         <relativePath>../project-defaults</relativePath>
     </parent>
 
-    <artifactId>metagen-lib-curves4</artifactId>
+    <artifactId>virtdata-lib-curves4</artifactId>
     <packaging>jar</packaging>
-    <name>metagen-lib-curves</name>
+    <name>virtdata-lib-curves</name>
     <url>http://virtdata.io/</url>
     <description>
         Statistical sampling library for use in virtualdataset libraries, based on apache commons math 4

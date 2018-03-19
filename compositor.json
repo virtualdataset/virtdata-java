@@ -1,10 +1,10 @@
 {
-  "name": "virtualdataset/metagen-java",
+  "name": "virtualdataset/virtdata-java",
   "version": "0.1.4",
   "libraries": {
     "xv": "^1.1.21"
   },
-  "title": "metagen-java",
+  "title": "virtdata-java",
   "branch": "master",
   "style": {
     "name": "Future",
@@ -46,25 +46,25 @@
       "component": "nav",
       "links": [
         {
-          "href": "https://github.com/virtualdataset/metagen-java",
+          "href": "https://github.com/virtualdataset/virtdata-java",
           "text": "GitHub"
         }
       ]
     },
     {
       "component": "header",
-      "heading": "metagen-java",
-      "subhead": "Metagen Java Libraries",
+      "heading": "virtdata-java",
+      "subhead": "VirtualDataSet Java Libraries",
       "children": [
         {
           "component": "ui/TweetButton",
-          "text": "metagen-java: Metagen Java Libraries",
+          "text": "virtdata-java: VirtualDataSet Java Libraries",
           "url": null
         },
         {
           "component": "ui/GithubButton",
           "user": "virtualdataset",
-          "repo": "metagen-java"
+          "repo": "virtdata-java"
         }
       ]
     },
@@ -73,13 +73,13 @@
       "metadata": {
         "source": "github.readme"
       },
-      "html": "<h1>Metagen for Java</h1>\n<p><a href=\"https://travis-ci.org/virtualdataset/metagen-java\"><img src=\"https://travis-ci.org/virtualdataset/metagen-java.svg?branch=master\"></a></p>\n"
+      "html": "<h1>Metagen for Java</h1>\n<p><a href=\"https://travis-ci.org/virtualdataset/virtdata-java\"><img src=\"https://travis-ci.org/virtualdataset/virtdata-java.svg?branch=master\"></a></p>\n"
     },
     {
       "component": "footer",
       "links": [
         {
-          "href": "https://github.com/virtualdataset/metagen-java",
+          "href": "https://github.com/virtualdataset/virtdata-java",
           "text": "GitHub"
         },
         {
