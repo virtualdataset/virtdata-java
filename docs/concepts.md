@@ -1,11 +1,18 @@
-Metagen Concepts
-================
+Virtual Dataset Concepts
+========================
 
-Metagen is a library for the flexible management and expressive use of procedural generation libraries. It is a reincarnation of a previous project. This version of the idea starts by focusing directly on usage aspects and extension points rather than the big idea.
+VirtData is a library for the flexible management and expressive use of
+procedural generation libraries. It is a reincarnation of a previous project.
+This version of the idea starts by focusing directly on usage aspects and
+extension points rather than the big idea.
 
 ### Procedural Generation
 
-Procedural generation is a general class of methods for taking a set of inputs and modifying them in a predictable way to generate content which appears random but is actually deterministic. For example, some games use procedural generation to take a single value known as the "seed" to generate an apparently rich and interesting world.
+Procedural generation is a general class of methods for taking a set of inputs
+and modifying them in a predictable way to generate content which appears random
+but is actually deterministic. For example, some games use procedural generation
+to take a single value known as the "seed" to generate an apparently rich and
+interesting world.
 
 ### Apparently Random RNGs
 

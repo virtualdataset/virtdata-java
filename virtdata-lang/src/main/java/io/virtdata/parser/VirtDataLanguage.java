@@ -25,9 +25,7 @@ public class VirtDataLanguage {
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             VirtDataParser parser = new VirtDataParser(tokens);
             VirtDataBuilder astListener = new VirtDataBuilder();
-//        MetagenContextBuilder contextBuilder = new MetagenContextBuilder();
             parser.addParseListener(astListener);
-//        parser.addParseListener(contextBuilder);
 
             if (logger.isTraceEnabled()) {
                 VirtDataParser.VirtdataRecipeContext virtdataRecipeContext = parser.virtdataRecipe();

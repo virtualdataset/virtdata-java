@@ -53,7 +53,7 @@ public class FunctionCall implements ArgType {
         return sb.toString();
     }
 
-    public FunctionCall getMetagenCall(int i) {
+    public FunctionCall getVirtdataCall(int i) {
         return (FunctionCall) args.get(i);
     }
 

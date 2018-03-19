@@ -54,8 +54,8 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.0.0</version>
                 <configuration>
-                    <doctitle>Metagen API</doctitle>
-                    <windowtitle>Metagen API</windowtitle>
+                    <doctitle>VirtualDataSet API</doctitle>
+                    <windowtitle>VirtualDataSet API</windowtitle>
                 </configuration>
                 <executions>
                     <execution>

@@ -167,8 +167,8 @@ public class VirtDataBuilder extends VirtDataBaseListener {
         return errorNodes;
     }
 
-    public FunctionCall getMetagenCall() {
-        return calls.peek().getMetagenCall(0);
+    public FunctionCall getVirtdataCall() {
+        return calls.peek().getVirtdataCall(0);
     }
 
     public VirtDataAST getModel() {
