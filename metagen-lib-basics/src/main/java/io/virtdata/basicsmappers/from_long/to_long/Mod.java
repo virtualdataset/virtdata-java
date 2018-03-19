@@ -23,7 +23,7 @@ public class Mod implements LongUnaryOperator {
 
     private Long modulo;
 
-    public Mod(Long modulo) {
+    public Mod(long modulo) {
         this.modulo = modulo;
     }
 

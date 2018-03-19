@@ -51,11 +51,11 @@ public class ToDate implements LongFunction<Date> {
         this.spacing = spacing;
         this.repeat_count = repeat_count;
     }
-    public ToDate(String spacing){
-        this(Integer.valueOf(spacing), 1);
+    public ToDate(int spacing){
+        this(spacing, 1);
     }
 
-    public ToDate(){
+    public ToDate() {
         this.spacing=1;
         this.repeat_count=1;
     }

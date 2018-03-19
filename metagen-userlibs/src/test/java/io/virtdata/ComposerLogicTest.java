@@ -1,7 +1,7 @@
 package io.virtdata;
 
 import io.virtdata.api.DataMapper;
-import io.virtdata.libraryimpl.ComposerLibrary;
+import io.virtdata.core.VirtData;
 import io.virtdata.testing.functions.ARandomPOJO;
 import org.testng.annotations.Test;
 
@@ -15,9 +15,8 @@ public class ComposerLogicTest {
 
     @Test
     public void testSignatureMapping() {
-        ComposerLibrary cl = new ComposerLibrary();
-        Optional<DataMapper<Object>> dataMapper = cl.getDataMapper(
-                "compose HashRange(1000000000,9999999999); ToString() -> String"
+        Optional<DataMapper<Object>> dataMapper = VirtData.getMapper(
+                "compose HashRange(1000000000,9999999999L); ToString() -> String"
         );
         assertThat(dataMapper).isNotNull();
         assertThat(dataMapper).isPresent();
@@ -27,9 +26,8 @@ public class ComposerLogicTest {
 
     @Test
     public void  testIntegratedComposer() {
-        ComposerLibrary cl = new ComposerLibrary();
-        Optional<DataMapper<Object>> dataMapper = cl.getDataMapper(
-                "compose binomial(8,0.5); ToDate -> Date"
+        Optional<DataMapper<Object>> dataMapper = VirtData.getMapper(
+                "binomial(8,0.5); ToDate() -> java.util.Date"
         );
         assertThat(dataMapper).isNotNull();
         assertThat(dataMapper).isPresent();
@@ -38,9 +36,8 @@ public class ComposerLogicTest {
 
     @Test
     public void testComplexComposition() {
-        ComposerLibrary cl = new ComposerLibrary();
-        Optional<DataMapper<Object>> dataMapper = cl.getDataMapper(
-                "compose Hash; mapto_normal(50,10.0); Add(50); ToString; Suffix(avgdays) -> String"
+        Optional<DataMapper<Object>> dataMapper = VirtData.getMapper(
+                "Hash(); mapto_normal(50,10.0); Add(50); ToString(); Suffix('avgdays') -> String"
         );
         assertThat(dataMapper).isNotNull();
         assertThat(dataMapper.isPresent()).isTrue();
@@ -52,26 +49,23 @@ public class ComposerLogicTest {
 
     @Test
     public void testComposerOnly() {
-        ComposerLibrary cl = new ComposerLibrary();
-        Optional<DataMapper<Object>> dataMapper = cl.getDataMapper("Add(5)");
-        assertThat(dataMapper.isPresent()).isFalse();
+        Optional<DataMapper<Object>> dataMapper = VirtData.getMapper("Add(5)");
+        assertThat(dataMapper.isPresent()).isTrue();
     }
 
     @Test
     public void testResourceLoader() {
-        ComposerLibrary cl = new ComposerLibrary();
-        Optional<DataMapper<Object>> dataMapper = cl.getDataMapper("compose ModuloLineToString(data/variable_words.txt) -> String");
+        Optional<DataMapper<Object>> dataMapper = VirtData.getMapper(" ModuloLineToString('data/variable_words.txt') -> String");
         assertThat(dataMapper).isPresent();
         assertThat(dataMapper.get().get(1)).isEqualToComparingFieldByField("completion_count");
-        dataMapper = cl.getDataMapper("compose ModuloLineToString(variable_words.txt) -> String");
+        dataMapper = VirtData.getMapper("compose ModuloLineToString('variable_words.txt') -> String");
         assertThat(dataMapper).isPresent();
         assertThat(dataMapper.get().get(1)).isEqualToComparingFieldByField("completion_count");
     }
 
     @Test
     public void testPOJOTypeSpecializer() {
-        ComposerLibrary cl = new ComposerLibrary();
-        Optional<DataMapper<Object>> dataMapper = cl.getDataMapper("compose LongToLongPOJO -> ARandomPOJO");
+        Optional<DataMapper<Object>> dataMapper = VirtData.getMapper("compose LongToLongPOJO() -> io.virtdata.testing.functions.ARandomPOJO");
         assertThat(dataMapper).isPresent();
         assertThat(dataMapper.get().get(1)).isOfAnyClassIn(ARandomPOJO.class);
     }

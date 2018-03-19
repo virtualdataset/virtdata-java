@@ -6,7 +6,6 @@ import io.virtdata.core.ResolvedFunction;
 import org.testng.annotations.Test;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -15,9 +14,11 @@ public class IntegerDistributionsTest {
     @Test
     public void testResolveFunction() throws Exception {
         IntegerDistributions mrs = new IntegerDistributions();
-        Optional<ResolvedFunction> resolved = mrs.resolveFunction("mapto_binomial(8,0.5)");
-        assertThat(resolved).isPresent();
-        ResolvedFunction f = resolved.get();
+//        Optional<ResolvedFunction> resolved = mrs.resolveFunction("mapto_binomial(8,0.5)");
+
+        List<ResolvedFunction> resolved = mrs.resolveFunctions(long.class, long.class, "mapto_binomial", 8, 0.5d);
+        assertThat(resolved).hasSize(1);
+        ResolvedFunction f = resolved.get(0);
         DataMapper<Object> mapper = DataMapperFunctionMapper.map(f.getFunctionObject());
         Object o = mapper.get(234234);
         assertThat(o).isNotNull();

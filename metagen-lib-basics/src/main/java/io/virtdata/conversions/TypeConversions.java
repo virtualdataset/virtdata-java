@@ -1,8 +1,8 @@
 package io.virtdata.conversions;
 
 import com.google.auto.service.AutoService;
-import io.virtdata.api.DataMapperLibrary;
-import io.virtdata.core.FunctionalDataMappingLibrary;
+import io.virtdata.api.BasicFunctionalLibrary;
+import io.virtdata.api.VirtDataFunctionLibrary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,14 +12,15 @@ import java.util.List;
 /**
  * <p>This is a basic data mapping library that contains a variety of functions to build from.</p>
  *
- * <p>This library simply relies on {@link FunctionalDataMappingLibrary}.</p>
+ * <p>This library simply relies on {@link VirtDataFunctionLibrary}.</p>
  */
-@AutoService(DataMapperLibrary.class)
-public class TypeConversions extends FunctionalDataMappingLibrary {
+@AutoService(VirtDataFunctionLibrary.class)
+public class TypeConversions extends BasicFunctionalLibrary {
+
     private static final Logger logger = LoggerFactory.getLogger(TypeConversions.class);
 
     @Override
-    public String getLibraryName() {
+    public String getName() {
         return "conversions";
     }
 

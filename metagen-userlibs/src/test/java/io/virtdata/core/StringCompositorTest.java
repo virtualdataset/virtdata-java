@@ -14,7 +14,7 @@ public class StringCompositorTest {
 
     @BeforeClass
     public void setupTemplate() {
-        BindingsTemplate bindingsTemplate = new BindingsTemplate(AllDataMapperLibraries.get());
+        BindingsTemplate bindingsTemplate = new BindingsTemplate();
         bindingsTemplate.addFieldBinding("ident","Identity()");
         bindingsTemplate.addFieldBinding("mod5", "Mod(5)");
         bindingsTemplate.addFieldBinding("mod-5", "Mod(5)");

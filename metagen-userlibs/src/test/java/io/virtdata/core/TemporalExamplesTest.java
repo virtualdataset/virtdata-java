@@ -1,10 +1,8 @@
 package io.virtdata.core;
 
 import io.virtdata.api.DataMapper;
-import io.virtdata.api.DataMapperLibrary;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.Date;
@@ -21,14 +19,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Test(singleThreaded = true)
 public class TemporalExamplesTest {
 
-    private BindingsTemplate bt;
-    private DataMapperLibrary lib;
+//    private BindingsTemplate bt;
+//    private DataMapperLibrary lib;
 
-    @BeforeMethod
-    public void setupExamples() {
-        bt = new BindingsTemplate(AllDataMapperLibraries.get());
-        lib = AllDataMapperLibraries.get();
-    }
+//    @BeforeMethod
+//    public void setupExamples() {
+//        bt = new BindingsTemplate(AllDataMapperLibraries.get());
+//        lib = AllDataMapperLibraries.get();
+//    }
 
 
     /**
@@ -40,8 +38,8 @@ public class TemporalExamplesTest {
      */
     @Test
     public void timeuuidRangeExample() {
-        DataMapper<UUID> uuidgen = lib.getDataMapper(
-                "compose HashRange(0,60000); ToEpochTimeUUID('2017-01-01 23:59:59') -> UUID;",
+        DataMapper<UUID> uuidgen = VirtData.getMapper(
+                "compose HashRange(0,60000); ToEpochTimeUUID('2017-01-01 23:59:59') -> java.util.UUID;",
                 UUID.class
         );
         UUID uuid1 = uuidgen.get(1L);
@@ -61,8 +59,8 @@ public class TemporalExamplesTest {
      */
     @Test
     public void timeuuidSkewExample() {
-        DataMapper<UUID> uuidgen = lib.getDataMapper(
-                "compose zipf(10,2); ToEpochTimeUUID('2017-01-01 23:59:59') -> UUID;",
+        DataMapper<UUID> uuidgen = VirtData.getMapper(
+                "compose zipf(10,2); ToEpochTimeUUID('2017-01-01 23:59:59') -> java.util.UUID;",
                 UUID.class
         );
         UUID uuid1 = uuidgen.get(1L);
@@ -76,8 +74,8 @@ public class TemporalExamplesTest {
      */
     @Test
     public void cyclingDateRangeExample() {
-        DataMapper<Date> dateMapper = lib.getDataMapper(
-                "compose Mod(10); ToDate() -> Date;",
+        DataMapper<Date> dateMapper = VirtData.getMapper(
+                "compose Mod(10); ToDate() -> java.util.Date;",
                 Date.class
         );
         Date date1 = dateMapper.get(3L);
@@ -92,8 +90,8 @@ public class TemporalExamplesTest {
      */
     @Test
     public void dateInRangeExample() {
-        DataMapper<Date> dateMapper = lib.getDataMapper(
-                "compose HashRange(0,10000000); ToDate() -> Date;",
+        DataMapper<Date> dateMapper = VirtData.getMapper(
+                "compose HashRange(0,10000000); ToDate() -> java.util.Date;",
                 Date.class
         );
         Date date = dateMapper.get(3L);
@@ -108,8 +106,8 @@ public class TemporalExamplesTest {
      */
     @Test
     public void dateTimeInRangeExample() {
-        DataMapper<DateTime> dateTimeMapper = lib.getDataMapper(
-                "compose HashRange(0,10000000); ToDateTime() -> DateTime;",
+        DataMapper<DateTime> dateTimeMapper = VirtData.getMapper(
+                "compose HashRange(0,10000000); ToDateTime() -> org.joda.time.DateTime;",
                 DateTime.class
         );
         DateTime dt = dateTimeMapper.get(6L);
@@ -132,8 +130,8 @@ public class TemporalExamplesTest {
      */
     @Test
     public void manualOffsetDateTimeExample() {
-        DataMapper<DateTime> dateTimeMapper = lib.getDataMapper(
-                "compose StartingEpochMillis(2015-01-01); ToDateTime-> DateTime;",
+        DataMapper<DateTime> dateTimeMapper = VirtData.getMapper(
+                "compose StartingEpochMillis('2015-01-01'); ToDateTime()-> org.joda.time.DateTime;",
                 DateTime.class
         );
         DateTime dt = dateTimeMapper.get(6L);
@@ -151,8 +149,8 @@ public class TemporalExamplesTest {
      */
     @Test
     public void manualOffsetAndSkewedDateTimeExample() {
-        DataMapper<DateTime> dateTimeMapper = lib.getDataMapper(
-                "compose zipf(10,2); StartingEpochMillis(2015-01-01); ToDateTime-> DateTime;",
+        DataMapper<DateTime> dateTimeMapper = VirtData.getMapper(
+                "compose zipf(10,2); StartingEpochMillis('2015-01-01'); ToDateTime()-> org.joda.time.DateTime;",
                 DateTime.class
         );
         DateTime dt = dateTimeMapper.get(6L);

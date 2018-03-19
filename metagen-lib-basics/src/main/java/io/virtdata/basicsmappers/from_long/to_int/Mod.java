@@ -21,9 +21,9 @@ import java.util.function.LongToIntFunction;
 @ThreadSafeMapper
 public class Mod implements LongToIntFunction {
 
-    private Long modulo;
+    private long modulo;
 
-    public Mod(Long modulo) {
+    public Mod(long modulo) {
         this.modulo = modulo;
     }
 

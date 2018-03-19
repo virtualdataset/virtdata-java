@@ -8,6 +8,7 @@ public class FunctionCall implements ArgType {
     private List<ArgType> args = new ArrayList<>();
     private String inputType;
     private String outputType;
+    private String inputClass;
 
     public FunctionCall() {}
 
@@ -71,4 +72,58 @@ public class FunctionCall implements ArgType {
     public List<ArgType> getArgs() {
         return this.args;
     }
+
+    public Object[] getArguments() {
+        List<Object> args = new ArrayList<>();
+        for (ArgType argType : getArgs()) {
+            ArgType.TypeName typeName = ArgType.TypeName.valueOf(argType);
+            switch (typeName) {
+                case RefArg:
+                    args.add(new VariableRef(((RefArg) argType).getRefName()));
+                    break;
+                case FunctionCall:
+                    args.add(argType); // TODO: revisit this
+                    break;
+                case StringArg:
+                    args.add(((StringArg) argType).getStringValue());
+                    break;
+                case FloatArg:
+                    args.add(((FloatArg) argType).getFloatValue());
+                    break;
+                case IntegerArg:
+                    args.add(((IntegerArg) argType).getIntValue());
+                    break;
+                default:
+                    throw new RuntimeException("Could not map type into argument object: " + typeName);
+            }
+        }
+        return args.toArray();
+    }
+
+    public String getInputClass() {
+        return inputClass;
+    }
+
+//    public Optional<Class<?>> getInputClass() {
+//        return classForFreeformTypeName(getInputType());
+//    }
+//    public Optional<Class<?>> getReturnClass() {
+//        return classForFreeformTypeName(getOutputType());
+//    }
+//
+//    private static Optional<Class<?>> classForFreeformTypeName(String basicTypeName) {
+//        ValueType.
+////        ValueType.valueOf
+////        if (basicTypeName==null) {
+////            return Optional.empty();
+////        }
+////        String canonicalType = basicTypeName;
+//////        String canonicalType = basicTypeName.contains(".") ? basicTypeName : "java.lang." + basicTypeName;
+////        try {
+////            return Optional.of(Class.forName(canonicalType));
+////        } catch (ClassNotFoundException e) {
+////            throw new RuntimeException("Unable to resolve class named '" + canonicalType +"', (originally just '" + basicTypeName +"'");
+////        }
+//    }
+
 }

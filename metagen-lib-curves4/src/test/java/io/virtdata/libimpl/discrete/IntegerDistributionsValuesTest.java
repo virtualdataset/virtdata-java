@@ -15,7 +15,7 @@ public class IntegerDistributionsValuesTest {
 
     @Test(enabled=false)
     public void testComputedZipf() {
-        RunData runData = iterateMapper(new IntegerDistributions().getLongDataMapper(
+        RunData runData = iterateMapper(new IntegerDistributions().<Long>getDataMapper(
                 "compute_zipf(10000,2.0)").orElse(null), 10000);
         System.out.println(runData.toString());
         assertThat(runData.getFractionalPercentile(0.6D))
@@ -30,7 +30,7 @@ public class IntegerDistributionsValuesTest {
 
     @Test
     public void testInterpolatedZipf() {
-        RunData runData = iterateMapper(new IntegerDistributions().getLongDataMapper(
+        RunData runData = iterateMapper(new IntegerDistributions().<Long>getDataMapper(
                 "interpolate_zipf(10000,2.0)").orElse(null), 10000);
         System.out.println(runData.toString());
         assertThat(runData.getFractionalPercentile(0.6D))

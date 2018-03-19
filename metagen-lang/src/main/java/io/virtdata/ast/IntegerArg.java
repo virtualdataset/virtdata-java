@@ -7,6 +7,10 @@ public class IntegerArg implements ArgType {
         this.intValue = integer;
     }
 
+    public int getIntValue() {
+        return intValue;
+    }
+
     @Override
     public String toString() {
         return String.valueOf(intValue);

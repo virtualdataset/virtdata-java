@@ -2,10 +2,14 @@ package io.virtdata.ast;
 
 public class FloatArg implements ArgType {
 
-    private final double floatValue;
+    private final float floatValue;
 
-    public FloatArg(double floatValue) {
+    public FloatArg(float floatValue) {
         this.floatValue = floatValue;
+    }
+
+    public double getFloatValue() {
+        return floatValue;
     }
 
     @Override

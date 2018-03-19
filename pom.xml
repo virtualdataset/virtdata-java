@@ -22,9 +22,7 @@
 
         <module>metagen-lib-basics</module>
         <module>metagen-lib-random</module>
-        <!--<module>metagen-lib-curves</module>-->
         <module>metagen-lib-curves4</module>
-        <module>metagen-lib-composer</module>
         <module>metagen-lib-realer</module>
     </modules>
 

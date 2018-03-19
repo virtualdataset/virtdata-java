@@ -1,6 +1,6 @@
 package io.virtdata.parser;
 
-import io.virtdata.ast.*;
+import io.virtdata.ast.Expression;
 import org.testng.annotations.Test;
 
 import java.net.URI;
@@ -21,8 +21,11 @@ public class LambdaBuilderTest {
             URI uri = ClassLoader.getSystemResource("test-syntax-lambda.metagen").toURI();
             path = Paths.get(uri);
             byte[] bytes = Files.readAllBytes(path);
-            MetagenFlow flow = LambdaDSL.parse(new String(bytes));
-            List<Expression> expressions = flow.getExpressions();
+            LambdasDSL.ParseResult parseResult = LambdasDSL.parse(new String(bytes));
+
+            assertThat(parseResult.flow).isNotNull();
+
+            List<Expression> expressions = parseResult.flow.getExpressions();
             assertThat(expressions).hasSize(4);
 
             Expression e0 = expressions.get(0);

@@ -2,7 +2,7 @@ package io.virtdata.basicsmappers.unary_string;
 
 import io.virtdata.api.DataMapper;
 import io.virtdata.api.ThreadSafeMapper;
-import io.virtdata.core.AllDataMapperLibraries;
+import io.virtdata.core.VirtData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,36 +27,39 @@ public class FuncTemplate implements LongFunction<String> {
 
     @SuppressWarnings("unchecked")
     private void parseTemplate(String rawTemplate) {
-        int pos = 0;
-        List<String> lits = new ArrayList<>();
-        List<DataMapper<String>> funcs = new ArrayList<>();
-        while (pos < rawTemplate.length()) {
-            int startat = rawTemplate.indexOf(EXPR_BEGIN, pos);
-            int endat = rawTemplate.indexOf(EXPR_END, pos);
-            if (startat >= 0 && endat >= startat) {
+        try {
+            int pos = 0;
+            List<String> lits = new ArrayList<>();
+            List<DataMapper<String>> funcs = new ArrayList<>();
+            while (pos < rawTemplate.length()) {
+                int startat = rawTemplate.indexOf(EXPR_BEGIN, pos);
+                int endat = rawTemplate.indexOf(EXPR_END, pos);
+                if (startat >= 0 && endat >= startat) {
 
-                String pre = rawTemplate.substring(pos, startat);
-                lits.add(pre);
+                    String pre = rawTemplate.substring(pos, startat);
+                    lits.add(pre);
 
-                String expr = rawTemplate.substring(startat + 2, endat);
-                Optional<DataMapper<String>> func = AllDataMapperLibraries.get().getStringDataMapper(expr);
-                funcs.add(func.orElseThrow(() -> new RuntimeException("Unable to resolve function: " + expr)));
+                    String expr = rawTemplate.substring(startat + 2, endat);
+                    Optional<DataMapper<String>> func = VirtData.getMapper(expr);
+                    funcs.add(func.orElseThrow(() -> new RuntimeException("Unable to resolve function: " + expr)));
 
-                pos = endat + 2;
-            } else if (startat >= 0 || endat >= 0) {
-                throw new RuntimeException("invalid (( and )) positions while parsing '" + rawTemplate + "' from position " + pos);
-            } else {
-                String remainder = rawTemplate.substring(pos, rawTemplate.length());
-                lits.add(remainder);
-                pos = rawTemplate.length();
+                    pos = endat + 2;
+                } else if (startat >= 0 || endat >= 0) {
+                    throw new RuntimeException("invalid (( and )) positions while parsing '" + rawTemplate + "' from position " + pos);
+                } else {
+                    String remainder = rawTemplate.substring(pos, rawTemplate.length());
+                    lits.add(remainder);
+                    pos = rawTemplate.length();
+                }
             }
-
+            if (lits.size() <= funcs.size()) {
+                lits.add("");
+            }
+            this.literals = lits.toArray(new String[0]);
+            this.funcs = funcs.toArray(new DataMapper[0]);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        if (lits.size()<=funcs.size()) {
-            lits.add("");
-        }
-        this.literals = lits.toArray(new String[0]);
-        this.funcs = funcs.toArray(new DataMapper[0]);
 
     }
 

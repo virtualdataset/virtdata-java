@@ -60,6 +60,11 @@
             <version>6.13.1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.virtdata</groupId>
+            <artifactId>metagen-lang</artifactId>
+            <version>1.0.86-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <profiles>

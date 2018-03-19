@@ -1,7 +1,6 @@
 package io.virtdata.core;
 
 import com.strobel.reflection.Type;
-import io.virtdata.api.DataMapperLibrary;
 import io.virtdata.api.FunctionType;
 import io.virtdata.api.ValueType;
 
@@ -11,29 +10,34 @@ import java.util.Comparator;
 import java.util.Optional;
 
 /**
- * A function that has been resolved by a library for use in data mapping.
+ * A function that has been resolved by a libraryName for use in data mapping.
  * Some API calls require this type, as it can only be constructed successfully
  * if the object type is valid for mapping to a data mapper function.
  */
 public class ResolvedFunction {
 
+    private final Class<?> inputType;
+    private final Class<?> outputType;
+    private Class<?>[] initializerSignature;
+    private Object[] initializerValues;
     private FunctionType functionType;
     private Object functionObject;
-    private DataMapperLibrary library;
+    private String libraryName;
     private boolean isThreadSafe;
-    // cache applyMethod, it's idempotent
 
-    public ResolvedFunction(Object g, boolean isThreadSafe, DataMapperLibrary library) {
-        this.library = library;
-        functionObject = g;
-        this.isThreadSafe = isThreadSafe;
-        functionType = FunctionType.valueOf(g); // sanity check the type of g
+    public ResolvedFunction(Object g, boolean isThreadSafe, Class<?>[] initializerSignature, Object[] initValues, Class<?> inputType, Class<?> outputType, String libraryName) {
+        this(g, isThreadSafe, initializerSignature, initValues, inputType, outputType);
+        this.libraryName = libraryName;
     }
 
-    public ResolvedFunction(Object g, boolean isThreadSafe) {
+    public ResolvedFunction(Object g, boolean isThreadSafe, Class<?>[] initializerSignature, Object[] initValues, Class<?> inputType, Class<?> outputType) {
         this.functionObject = g;
         this.isThreadSafe = isThreadSafe;
         functionType = FunctionType.valueOf(g);  // sanity check the type of g
+        this.initializerSignature = initializerSignature;
+        this.initializerValues = initValues;
+        this.inputType = inputType;
+        this.outputType = outputType;
     }
 
     public FunctionType getFunctionType() {
@@ -52,23 +56,16 @@ public class ResolvedFunction {
         this.functionObject = functionObject;
     }
 
-    public DataMapperLibrary getLibrary() {
-        return library;
-    }
-
-    public void setLibrary(DataMapperLibrary library) {
-        this.library = library;
-    }
-
-    public String toString() {
-        return "fn:" + functionObject.getClass().getCanonicalName() + ", type:" + functionType
-                + ((library==null) ? "" : ", lib:" + library.getLibraryName());
-    }
-
     public Class<?> getResultClass() {
         Method applyMethod = getMethod();
         Type<?> returnType = Type.of(functionObject.getClass()).getMethod(applyMethod.getName()).getReturnType();
         return returnType.getErasedClass();
+    }
+
+    public Class<?> getInputClass() {
+        Method applyMethod = getMethod();
+        Type<?> inputType = Type.of(functionObject.getClass()).getMethod(applyMethod.getName()).getParameters().get(0).getParameterType();
+        return inputType.getErasedClass();
     }
 
     public Class<?> getArgType() {
@@ -84,6 +81,7 @@ public class ResolvedFunction {
     private Method getMethod() {
 
         Optional<Method> foundMethod = Arrays.stream(functionObject.getClass().getMethods())
+                .filter(m -> !m.isSynthetic() && !m.isBridge() && !m.isDefault())
                 .filter(m -> m.getName().startsWith("apply"))
                 .findFirst();
 
@@ -107,16 +105,51 @@ public class ResolvedFunction {
 
         @Override
         public int compare(ResolvedFunction o1, ResolvedFunction o2) {
-            ValueType iv1 = ValueType.valueOfClass(o1.getArgType());
-            ValueType iv2 = ValueType.valueOfClass(o2.getArgType());
+            ValueType iv1 = ValueType.valueOfAssignableClass(o1.getArgType());
+            ValueType iv2 = ValueType.valueOfAssignableClass(o2.getArgType());
             int inputComparison = iv1.compareTo(iv2);
             if (inputComparison != 0) {
                 return inputComparison;
             }
-            iv1 = ValueType.valueOfClass(o1.getResultClass());
-            iv2 = ValueType.valueOfClass(o2.getResultClass());
+            iv1 = ValueType.valueOfAssignableClass(o1.getResultClass());
+            iv2 = ValueType.valueOfAssignableClass(o2.getResultClass());
             return iv1.compareTo(iv2);
         }
     }
+
+    public static String getStringLegend() {
+        return "[<library name>::] input->class->output [initializer type->parameter type,...]";
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (libraryName!=null) {
+            sb.append(libraryName).append("::");
+        }
+        sb.append(getArgType().getSimpleName()).append("->");
+        sb.append(getMethod().getDeclaringClass().getName());
+//        sb.append(getFunctionObject().getClass().getPackage().getLibname()).append(".").append(getMethod().getLibname());
+        sb.append("->").append(getResultClass().getName());
+
+        if (initializerValues!=null && initializerValues.length>0) {
+            sb.append(" [");
+            for (int i = 0; i < initializerValues.length; i++) {
+                Class<?> init = initializerValues[i].getClass();
+                sb.append(init.isPrimitive() ? init.getName() : init.getSimpleName());
+                sb.append("=>");
+                Class<?> isig = initializerSignature[i];
+                sb.append(isig.isPrimitive() ? isig.getName() : isig.getSimpleName());
+                if (i<initializerValues.length-1) {
+                    sb.append(",");
+                }
+            }
+            sb.append("]");
+        }
+        return sb.toString();
+//        return "fn:" + functionObject.getClass().getCanonicalName() + ", type:" + functionType
+//                + ((libraryName ==null) ? "" : ", lib:" + this.libraryName);
+    }
+
+
 
 }

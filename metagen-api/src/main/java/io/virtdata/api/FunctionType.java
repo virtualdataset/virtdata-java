@@ -33,8 +33,8 @@ public enum FunctionType {
         this.functionClass = functionClass;
         this.inputClass = inputClass;
         this.returnClass = returnClass;
-        this.returnValueType = ValueType.valueOfClass(returnClass);
-        this.inputValueType = ValueType.valueOfClass(inputClass);
+        this.returnValueType = ValueType.valueOfAssignableClass(returnClass);
+        this.inputValueType = ValueType.valueOfAssignableClass(inputClass);
     }
 
     public static FunctionType valueOf(Class<?> clazz) {

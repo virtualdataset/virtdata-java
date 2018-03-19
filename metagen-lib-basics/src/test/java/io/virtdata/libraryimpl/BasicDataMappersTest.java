@@ -1,7 +1,7 @@
 package io.virtdata.libraryimpl;
 
-import io.virtdata.basicsmappers.BasicDataMappers;
 import io.virtdata.api.DataMapper;
+import io.virtdata.basicsmappers.BasicDataMappers;
 import org.testng.annotations.Test;
 
 import java.util.Date;
@@ -15,14 +15,14 @@ public class BasicDataMappersTest {
 
     @Test
     public void testGetLibraryName() throws Exception {
-        String libraryName = new BasicDataMappers().getLibraryName();
+        String libraryName = new BasicDataMappers().getName();
         assertThat(libraryName).isEqualTo("basics");
 
     }
 
     @Test
     public void testGetDataMapper() throws Exception {
-        Optional<DataMapper<Object>> dataMapper = new BasicDataMappers().getDataMapper("StaticStringMapper(foo)");
+        Optional<DataMapper<Object>> dataMapper = new BasicDataMappers().getDataMapper("StaticStringMapper('foo')");
         assertThat(dataMapper.isPresent()).isTrue();
         assertThat(dataMapper.get().get(5)).isEqualTo("foo");
     }
@@ -40,7 +40,7 @@ public class BasicDataMappersTest {
     @Test
     public void testMultipleChoiceLong() {
         BasicDataMappers basics = new BasicDataMappers();
-        Optional<DataMapper<Object>> add5 = basics.getDataMapper("Add(5) -> long");
+        Optional<DataMapper<Object>> add5 = basics.getDataMapper("long -> Add(5) -> long");
         assertThat(add5).isPresent();
         Object o = add5.get().get(5);
         assertThat(o.getClass()).isEqualTo(Long.class);
@@ -49,9 +49,10 @@ public class BasicDataMappersTest {
     @Test
     public void testMultipleChoiceInt() {
         BasicDataMappers basics = new BasicDataMappers();
-        Optional<DataMapper<Object>> add5 = basics.getDataMapper("Add(5) -> int");
-        assertThat(add5).isPresent();
-        Object o = add5.get().get(5);
+        List<DataMapper<Object>> dataMappers = basics.getDataMappers("Add(5) -> int");
+        assertThat(dataMappers).hasSize(2);
+        DataMapper<Object> add5 = dataMappers.get(0);
+        Object o = add5.get(5);
         assertThat(o.getClass()).isEqualTo(Integer.class);
     }
 
@@ -78,7 +79,7 @@ public class BasicDataMappersTest {
     @Test
     public void testToDateInstantiator() throws Exception {
         BasicDataMappers basics = new BasicDataMappers();
-        Optional<DataMapper<Date>> dataMapper = basics.getDataMapper("ToDate");
+        Optional<DataMapper<Date>> dataMapper = basics.getDataMapper("ToDate()");
         assertThat(dataMapper).isNotNull();
         assertThat(dataMapper.get()).isNotNull();
         Date d1 = dataMapper.get().get(1);
@@ -97,10 +98,23 @@ public class BasicDataMappersTest {
     @Test
     public void testRandomLineToIntInstantiator() throws Exception {
         BasicDataMappers basics = new BasicDataMappers();
-        Optional<DataMapper<Integer>> dataMapper = basics.getDataMapper("HashedLineToInt(data/numbers.txt)");
+        Optional<DataMapper<Integer>> dataMapper = basics.getDataMapper("HashedLineToInt('data/numbers.txt')");
         assertThat(dataMapper).isNotNull();
         assertThat(dataMapper.get()).isNotNull();
         assertThat(dataMapper.get().get(1)).isNotNull();
     }
+
+//    @Test
+//    public void testArgConversions() {
+//        try {
+//            Object[] args = new Object[]{ new Integer(5)};
+//            Constructor<Mod> ctors = Mod.class.getDeclaredConstructor(new Class[]{Long.TYPE});
+//            System.out.println(ctors.toString());
+//            Mod mod = ctors.newInstance(args);
+//            assertThat(mod).isNotNull();
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
 }

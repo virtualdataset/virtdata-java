@@ -122,7 +122,7 @@ public class MetagenBuilder extends MetagenBaseListener {
 
     @Override
     public void exitFloatValue(MetagenParser.FloatValueContext ctx) {
-        calls.peek().addFunctionArg(new FloatArg(Double.valueOf(ctx.getText())));
+        calls.peek().addFunctionArg(new FloatArg(Float.valueOf(ctx.getText())));
     }
 
     @Override

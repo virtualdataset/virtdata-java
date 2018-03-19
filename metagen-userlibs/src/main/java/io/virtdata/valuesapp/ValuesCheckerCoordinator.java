@@ -1,7 +1,7 @@
 package io.virtdata.valuesapp;
 
 import io.virtdata.api.DataMapper;
-import io.virtdata.core.AllDataMapperLibraries;
+import io.virtdata.core.VirtData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,7 +68,7 @@ public class ValuesCheckerCoordinator implements Callable<RunData> {
 
         // Generate reference values in single-threaded mode.
         DataMapper<Object> mapper =
-                AllDataMapperLibraries.get().getDataMapper(specifier).orElseThrow(
+                VirtData.getMapper(specifier).orElseThrow(
                         () -> new RuntimeException("Unable to map function for specifier: " + specifier)
                 );
 
@@ -99,8 +99,7 @@ public class ValuesCheckerCoordinator implements Callable<RunData> {
                         readyQueue, goTime, lock, reference
                 );
             } else {
-                DataMapper<?> threadMapper = AllDataMapperLibraries.get()
-                        .getDataMapper(mapperSpec)
+                DataMapper<?> threadMapper = VirtData.getMapper(mapperSpec)
                         .orElseThrow(
                                 () -> new RuntimeException("Unable to map function for specifier: " + specifier)
                         );

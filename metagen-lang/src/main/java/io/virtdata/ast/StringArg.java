@@ -7,6 +7,10 @@ public class StringArg implements ArgType {
         this.text = text;
     }
 
+    public String getStringValue() {
+        return text;
+    }
+
     @Override
     public String toString() {
         return "'"+text+"'";

@@ -1,16 +1,19 @@
 package io.virtdata.libimpl.continuous;
 
 import com.google.auto.service.AutoService;
-import io.virtdata.api.DataMapperLibrary;
 import io.virtdata.api.ValueType;
-import io.virtdata.api.specs.SpecData;
+import io.virtdata.api.VirtDataFunctionLibrary;
+import io.virtdata.ast.FunctionCall;
+import io.virtdata.ast.MetagenFlow;
 import io.virtdata.core.ResolvedFunction;
-import io.virtdata.reflection.ConstructorResolver;
-import io.virtdata.reflection.DeferredConstructor;
+import io.virtdata.libimpl.discrete.IntegerDistributions;
+import io.virtdata.parser.LambdasDSL;
+import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.apache.commons.math4.distribution.EmpiricalDistribution;
 import org.apache.commons.math4.distribution.EnumeratedRealDistribution;
 import org.apache.commons.statistics.distribution.*;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -78,8 +81,8 @@ import java.util.function.LongToDoubleFunction;
  * access.</em> Interpolation is usually the better way.</li>
  * </ul>
  */
-@AutoService(DataMapperLibrary.class)
-public class RealDistributions implements DataMapperLibrary {
+@AutoService(VirtDataFunctionLibrary.class)
+public class RealDistributions implements VirtDataFunctionLibrary {
 
     private static final String MAPTO = "mapto_";
     private static final String HASHTO = "hashto_";
@@ -87,11 +90,37 @@ public class RealDistributions implements DataMapperLibrary {
     private static final String INTERPOLATE = "interpolate_";
 
     public static LongToDoubleFunction forSpec(String spec) {
-        Optional<ResolvedFunction> resolvedFunction = new RealDistributions().resolveFunction(spec);
-        return resolvedFunction
-                .map(ResolvedFunction::getFunctionObject)
-                .map(f -> ((LongToDoubleFunction) f))
-                .orElseThrow(() -> new RuntimeException("Invalid spec: " + spec));
+
+        LambdasDSL.ParseResult parseResult = LambdasDSL.parse(spec);
+        if (parseResult.throwable!=null) {
+            throw new RuntimeException(parseResult.throwable);
+        }
+        MetagenFlow flow = parseResult.flow;
+        if (flow.getExpressions().size()>1) {
+            throw new RuntimeException("Unable to parse flows in " + IntegerDistributions.class);
+        }
+        FunctionCall call = flow.getLastExpression().getCall();
+        Class<?> inType = Optional.ofNullable(call.getInputType()).map(ValueType::valueOfClassName).map(ValueType::getValueClass).orElse(null);
+        Class<?> outType = Optional.ofNullable(call.getOutputType()).map(ValueType::valueOfClassName).map(ValueType::getValueClass).orElse(null);
+        if (inType!=null && inType!=long.class) {
+            throw new RuntimeException("This only supports long for input.");
+        }
+        if (outType!=null && outType!=double.class) {
+            throw new RuntimeException("This only supports double fo routput.");
+        }
+        inType = (inType==null ? long.class : inType);
+        outType = (outType==null ? int.class : outType);
+
+        List<ResolvedFunction> resolvedFunctions = new RealDistributions().resolveFunctions(
+                outType, inType, call.getFunctionName(), call.getArguments()
+        );
+
+        if (resolvedFunctions.size()>1) {
+            throw new RuntimeException("Found " + resolvedFunctions.size() + " implementations, be more specific with" +
+                    "input or output qualifiers as in int -> or -> long");
+        }
+
+        return ((LongToDoubleFunction) resolvedFunctions.get(0).getFunctionObject());
     }
 
     private static String distributionNameFor(String specName) {
@@ -102,78 +131,78 @@ public class RealDistributions implements DataMapperLibrary {
     }
 
     @Override
-    public String getLibraryName() {
+    public String getName() {
         return "math4-ccurves";
     }
 
     @Override
-    public boolean canParseSpec(String specifier) {
-        Optional<SpecData> optionalData = SpecData.forOptionalSpec(specifier);
-        if (!optionalData.isPresent()) {
-            return false;
+    public List<ResolvedFunction> resolveFunctions(Class<?> outputClass, Class<?> inputClass, String functionName, Object... parameters) {
+        List<ResolvedFunction> resolvedFunctions = new ArrayList<>();
+
+        ValueType inputType = inputClass==null ? null : ValueType.valueOfAssignableClass(inputClass);
+
+        Optional<RealDistribution> optionalRealDistribution =
+                RealDistribution.optionalValueOf(distributionNameFor(functionName));
+        if (!optionalRealDistribution.isPresent()) {
+            return resolvedFunctions;
         }
-        SpecData specData = optionalData.get();
+        Class<? extends ContinuousDistribution> distributionClass = optionalRealDistribution.get().getDistributionClass();
+
+        Class<?>[] initTypes = new Class<?>[parameters.length];
+        for (int i = 0; i < parameters.length; i++) {
+            initTypes[i] = parameters[i].getClass();
+        }
+        Constructor<? extends ContinuousDistribution> usingCtor =
+                ConstructorUtils.getMatchingAccessibleConstructor(distributionClass, initTypes);
+
+        ContinuousDistribution distribution;
         try {
-            String distName = distributionNameFor(specData.getFuncName());
-            RealDistribution.valueOf(distName);
-            return true;
-        } catch (Exception ignored) {
+            distribution = ConstructorUtils.invokeConstructor(distributionClass, parameters);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return false;
-    }
 
-    @Override
-    public Optional<ResolvedFunction> resolveFunction(String spec) {
-        return resolveFunction(spec, ValueType.LONG);
-    }
-
-    private Optional<ResolvedFunction> resolveFunction(String spec, ValueType inputType) {
-        if (!canParseSpec(spec)) {
-            return Optional.empty();
-        }
-        SpecData specData = SpecData.forSpec(spec);
-        String funcName = specData.getFuncName();
-        RealDistribution realDistribution =
-                RealDistribution.valueOf(distributionNameFor(funcName));
-        Class<? extends ContinuousDistribution> distributionClass = realDistribution.getDistributionClass();
-        DeferredConstructor<? extends ContinuousDistribution> deferred =
-                ConstructorResolver.resolve(distributionClass, specData.getArgs());
-        ContinuousDistribution distribution = deferred.construct();
-
-        boolean interpolate = !funcName.contains(COMPUTE) || funcName.contains(INTERPOLATE);
-        boolean hashto = !funcName.contains(MAPTO) || funcName.contains(HASHTO);
+        boolean interpolate = !functionName.contains(COMPUTE) || functionName.contains(INTERPOLATE);
+        boolean hashto = !functionName.contains(MAPTO) || functionName.contains(HASHTO);
 
         DoubleUnaryOperator icdSource = new RealDistributionICDSource(distribution);
 
-        if (inputType==ValueType.LONG) {
+        if (inputType==ValueType.LONG || inputType==null) {
             LongToDoubleFunction samplingFunction = null;
             if (interpolate) {
                 samplingFunction = new InterpolatingLongDoubleSampler(icdSource, 1000, hashto);
             } else {
                 samplingFunction = new RealLongDoubleSampler(icdSource, hashto);
             }
-            return Optional.of(new ResolvedFunction(samplingFunction, true));
+            resolvedFunctions.add(
+                    new ResolvedFunction(
+                            samplingFunction,
+                            true,
+                            usingCtor.getParameterTypes(), parameters,
+                            Long.TYPE, Double.TYPE,
+                            getName()
+                    )
+            );
         }
 
-        if (inputType==ValueType.INT) {
+        if (inputType==ValueType.INT || inputType==null) {
             IntToDoubleFunction samplingFunction = null;
             if (interpolate) {
                 samplingFunction = new InterpolatingIntDoubleSampler(icdSource, 1000, hashto);
             } else {
                 samplingFunction = new RealIntDoubleSampler(icdSource, hashto);
             }
-            return Optional.of(new ResolvedFunction(samplingFunction, true));
+            resolvedFunctions.add(
+                    new ResolvedFunction(
+                            samplingFunction,
+                            true,
+                            usingCtor.getParameterTypes(), parameters,
+                            Integer.TYPE, Double.TYPE,
+                            getName())
+            );
         }
 
-        return Optional.empty();
-    }
-
-    @Override
-    public List<ResolvedFunction> resolveFunctions(String specifier) {
-        List<ResolvedFunction> resolvedList = new ArrayList<>();
-        resolveFunction(specifier,ValueType.LONG).map(resolvedList::add);
-        resolveFunction(specifier,ValueType.INT).map(resolvedList::add);
-        return resolvedList;
+        return resolvedFunctions;
     }
 
     @Override
@@ -224,6 +253,15 @@ public class RealDistributions implements DataMapperLibrary {
 
         public Class<? extends ContinuousDistribution> getDistributionClass() {
             return distribution;
+        }
+
+        public static Optional<RealDistribution> optionalValueOf(String name) {
+            for (RealDistribution realDistribution : values()) {
+                if (realDistribution.toString().equals(name)) {
+                    return Optional.of(realDistribution);
+                }
+            }
+            return Optional.empty();
         }
     }
 

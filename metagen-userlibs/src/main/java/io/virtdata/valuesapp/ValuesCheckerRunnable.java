@@ -1,7 +1,7 @@
 package io.virtdata.valuesapp;
 
 import io.virtdata.api.DataMapper;
-import io.virtdata.core.AllDataMapperLibraries;
+import io.virtdata.core.VirtData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +46,7 @@ public class ValuesCheckerRunnable implements Runnable {
         this.goTime = goTime;
         this.lock = lock;
 
-        this.mapper = (dataMapper != null) ? dataMapper : AllDataMapperLibraries.get().getDataMapper(mapperSpec)
+        this.mapper = (dataMapper != null) ? dataMapper : VirtData.getMapper(mapperSpec)
                 .orElseThrow(
                         () -> new RuntimeException("unable to resolve mapper for " + mapperSpec)
                 );
@@ -99,7 +99,7 @@ public class ValuesCheckerRunnable implements Runnable {
             }
             synchronizeFor("verification complete" + rangeInfo);
 
-//            logger.info("verified values for thread " + Thread.currentThread().getName() + " in range " +
+//            logger.info("verified values for thread " + Thread.currentThread().getLibname() + " in range " +
 //                    rangeStart + ".." + (rangeStart + bufsize)
 //            );
         }

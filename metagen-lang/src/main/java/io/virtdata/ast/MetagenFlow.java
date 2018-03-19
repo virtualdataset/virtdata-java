@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MetagenFlow {
-    private List<Expression> expressions = new ArrayList();
+    private List<Expression> expressions = new ArrayList<>();
 
     public List<Expression> getExpressions() {
         return expressions;

@@ -21,7 +21,6 @@ package io.virtdata.core;
 //
 
 import io.virtdata.api.DataMapper;
-import io.virtdata.api.DataMapperLibrary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,15 +42,19 @@ public class BindingsTemplate {
     private List<String> bindPointNames = new ArrayList<String>();
     private List<String> specifiers = new ArrayList<String>();
 
-    private DataMapperLibrary genlib = AllDataMapperLibraries.get(); // by default
+    private VirtDataLibrary library =VirtData.get(); // by default
 
-    public BindingsTemplate(DataMapperLibrary genlib) {
-        this.genlib = genlib;
+    public BindingsTemplate(VirtDataLibrary library) {
+        this.library = library;
     }
 
-    public BindingsTemplate(DataMapperLibrary genlib, Map<String,String> specs) {
-        this(genlib);
+    public BindingsTemplate(VirtDataLibrary library, Map<String,String> specs) {
+        this(library);
         specs.forEach(this::addFieldBinding);
+    }
+
+    public BindingsTemplate() {
+        this(VirtData.get());
     }
 
     public void addFieldBinding(String bindPointName, String genSpec) {
@@ -75,14 +78,14 @@ public class BindingsTemplate {
     public Bindings resolveBindings() {
         List<DataMapper<?>> dataMappers = new ArrayList<DataMapper<?>>();
         for (String specifier : specifiers) {
-            Optional<DataMapper<Object>> optionalDataMapper = genlib.getDataMapper(specifier);
+            Optional<DataMapper<Object>> optionalDataMapper = library.getDataMapper(specifier);
             if (optionalDataMapper.isPresent()) {
                 dataMappers.add(optionalDataMapper.get());
             } else {
                 logAvailableDataMappers();
                 throw new RuntimeException(
                         "data mapper binding was unsuccessful for "
-                                + "lib:" + genlib.getLibraryName()
+                                + "lib:" + library.getLibname()
                                 + ", spec:" + specifier
                                 + ", see log for known data mapper names.");
             }
@@ -91,7 +94,7 @@ public class BindingsTemplate {
     }
 
     private void logAvailableDataMappers() {
-        genlib.getDataMapperNames().forEach(gn -> logger.info("DATAMAPPER " + gn));
+        library.getDataMapperNames().forEach(gn -> logger.info("DATAMAPPER " + gn));
     }
 
     public List<String> getBindPointNames() {

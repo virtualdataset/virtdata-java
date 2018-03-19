@@ -1,14 +1,16 @@
 package io.virtdata.libimpl.discrete;
 
 import com.google.auto.service.AutoService;
-import io.virtdata.api.DataMapperLibrary;
 import io.virtdata.api.ValueType;
-import io.virtdata.api.specs.SpecData;
+import io.virtdata.api.VirtDataFunctionLibrary;
+import io.virtdata.ast.FunctionCall;
+import io.virtdata.ast.MetagenFlow;
 import io.virtdata.core.ResolvedFunction;
-import io.virtdata.reflection.ConstructorResolver;
-import io.virtdata.reflection.DeferredConstructor;
+import io.virtdata.parser.LambdasDSL;
+import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.apache.commons.statistics.distribution.*;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -74,8 +76,8 @@ import java.util.function.*;
  * access.</em> Interpolation is usually the better way.</li>
  * </ul>
  */
-@AutoService(DataMapperLibrary.class)
-public class IntegerDistributions implements DataMapperLibrary {
+@AutoService(VirtDataFunctionLibrary.class)
+public class IntegerDistributions implements VirtDataFunctionLibrary {
 
     private static final String MAPTO = "mapto_";
     private static final String HASHTO = "hashto_";
@@ -83,11 +85,30 @@ public class IntegerDistributions implements DataMapperLibrary {
     private static final String INTERPOLATE = "interpolate_";
 
     public static LongUnaryOperator forSpec(String spec) {
-        Optional<ResolvedFunction> resolvedFunction = new IntegerDistributions().resolveFunction(spec);
-        return resolvedFunction
-                .map(ResolvedFunction::getFunctionObject)
-                .map(f -> ((LongUnaryOperator) f))
-                .orElseThrow(() -> new RuntimeException("Invalid spec: " + spec));
+        LambdasDSL.ParseResult parseResult = LambdasDSL.parse(spec);
+        if (parseResult.throwable!=null) {
+            throw new RuntimeException(parseResult.throwable);
+        }
+
+        MetagenFlow flow = parseResult.flow;
+        if (flow.getExpressions().size()>1) {
+            throw new RuntimeException("Unable to parse flows in " + IntegerDistributions.class);
+        }
+        FunctionCall call = flow.getLastExpression().getCall();
+        Class<?> inType = Optional.ofNullable(call.getInputType()).map(ValueType::valueOfClassName).map(ValueType::getValueClass).orElse(null);
+        Class<?> outType = Optional.ofNullable(call.getOutputType()).map(ValueType::valueOfClassName).map(ValueType::getValueClass).orElse(null);
+        inType = (inType==null ? long.class : inType);
+        outType = (outType==null ? long.class : outType);
+
+        List<ResolvedFunction> resolvedFunctions = new IntegerDistributions().resolveFunctions(
+                outType, inType, call.getFunctionName(), call.getArguments()
+        );
+
+        if (resolvedFunctions.size()>1) {
+            throw new RuntimeException("Found " + resolvedFunctions.size() + " implementations, be more specific with" +
+                    "input or output qualifiers as in int -> or -> long");
+        }
+        return (LongUnaryOperator) resolvedFunctions.get(0).getFunctionObject();
     }
 
     private static String distributionNameFor(String specName) {
@@ -98,93 +119,116 @@ public class IntegerDistributions implements DataMapperLibrary {
     }
 
     @Override
-    public String getLibraryName() {
-        return "math4-dcurves";
-    }
+    public List<ResolvedFunction> resolveFunctions(Class<?> returnClass, Class<?> inputClass, String funcName, Object... parameters) {
+        List<ResolvedFunction> resolvedFunctions = new ArrayList<>();
 
-    @Override
-    public boolean canParseSpec(String specifier) {
-        Optional<SpecData> optionalData = SpecData.forOptionalSpec(specifier);
-        if (!optionalData.isPresent()) {
-            return false;
+        ValueType inputValueType = inputClass!=null ? ValueType.valueOfAssignableClass(inputClass) : null;
+        ValueType outputValueType = returnClass!=null ? ValueType.valueOfAssignableClass(returnClass) : null;
+//        inputValueType = inputValueType!=null ? inputValueType : ValueType.LONG;
+//        outputValueType = outputValueType!=null ? outputValueType : ValueType.LONG;
+
+        Optional<IntegerDistribution> optionalIntegerDistribution =
+                IntegerDistribution.optionalValueOf(distributionNameFor(funcName));
+
+        if (!optionalIntegerDistribution.isPresent()) {
+            return resolvedFunctions;
         }
-        SpecData specData = optionalData.get();
+
+        Class<? extends DiscreteDistribution> distributionClass = optionalIntegerDistribution.get().getDistributionClass();
+
+        Class<?>[] initTypes = new Class<?>[parameters.length];
+        for (int i = 0; i < parameters.length; i++) {
+            initTypes[i] = parameters[i].getClass();
+        }
+        Constructor<? extends DiscreteDistribution> usingCtor =
+                ConstructorUtils.getMatchingAccessibleConstructor(distributionClass, initTypes);
+
+        DiscreteDistribution distribution;
         try {
-            String distName = distributionNameFor(specData.getFuncName());
-            IntegerDistribution.valueOf(distName);
-            return true;
-        } catch (Exception ignored) {
+            distribution = ConstructorUtils.invokeConstructor(distributionClass, parameters);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return false;
-    }
-
-    @Override
-    public Optional<ResolvedFunction> resolveFunction(String spec) {
-        return resolveFunction(spec,ValueType.LONG, ValueType.LONG);
-    }
-
-    public Optional<ResolvedFunction> resolveFunction(String spec, ValueType inputType, ValueType outputType) {
-        if (!canParseSpec(spec)) {
-            return Optional.empty();
-        }
-        SpecData specData = SpecData.forSpec(spec);
-        String funcName = specData.getFuncName();
-        IntegerDistribution integerDistribution =
-                IntegerDistribution.valueOf(distributionNameFor(funcName));
-        Class<? extends DiscreteDistribution> distributionClass = integerDistribution.getDistributionClass();
-        DeferredConstructor<? extends DiscreteDistribution> deferred =
-                ConstructorResolver.resolve(distributionClass, specData.getArgs());
-        DiscreteDistribution distribution = deferred.construct();
 
         boolean interpolate = !funcName.contains(COMPUTE) || funcName.contains(INTERPOLATE);
         boolean hashto = !funcName.contains(MAPTO) || funcName.contains(HASHTO);
 
         DoubleToIntFunction icdSource = new IntegerDistributionICDSource(distribution);
 
-        if (inputType== ValueType.LONG && outputType==ValueType.LONG) {
+        if ((inputValueType==null || inputValueType== ValueType.LONG)
+                && (outputValueType==null || outputValueType==ValueType.LONG)) {
             LongUnaryOperator samplingFunction = null;
             if (interpolate) {
                 samplingFunction = new InterpolatingLongLongSampler(icdSource, 1000, hashto);
             } else {
                 samplingFunction = new DiscreteLongLongSampler(icdSource, hashto);
             }
-            return Optional.of(new ResolvedFunction(samplingFunction, true));
-        } else if (inputType==ValueType.INT && outputType==ValueType.LONG) {
+            resolvedFunctions.add(
+                    new ResolvedFunction(
+                            samplingFunction,
+                            true,
+                            usingCtor.getParameterTypes(), parameters,
+                            Long.TYPE, Long.TYPE,
+                            getName()
+                    )
+            );
+        } else if ((inputValueType==null || inputValueType==ValueType.INT)
+                && (outputValueType==null || outputValueType==ValueType.LONG)) {
             IntToLongFunction samplingFunction = null;
             if (interpolate) {
                 samplingFunction = new InterpolatingIntLongSampler(icdSource, 1000, hashto);
             } else {
                 samplingFunction = new DiscreteIntLongSampler(icdSource, hashto);
             }
-            return Optional.of(new ResolvedFunction(samplingFunction, true));
-        } else if (inputType== ValueType.LONG && outputType==ValueType.INT) {
+            resolvedFunctions.add(
+                    new ResolvedFunction(
+                            samplingFunction,
+                            true,
+                            usingCtor.getParameterTypes(), parameters,
+                            Integer.TYPE, Long.TYPE,
+                            getName())
+            );
+        } else if ((inputValueType==null || inputValueType== ValueType.LONG)
+                && (outputValueType==null || outputValueType==ValueType.INT)) {
             LongToIntFunction samplingFunction = null;
             if (interpolate) {
                 samplingFunction = new InterpolatingLongIntSampler(icdSource, 1000, hashto);
             } else {
                 samplingFunction = new DiscreteLongIntSampler(icdSource, hashto);
             }
-            return Optional.of(new ResolvedFunction(samplingFunction, true));
-        } else if (inputType==ValueType.INT && outputType==ValueType.INT) {
+            resolvedFunctions.add(
+                    new ResolvedFunction(
+                            samplingFunction,
+                            true,
+                            usingCtor.getParameterTypes(), parameters,
+                            Long.TYPE, Integer.TYPE,
+                            getName())
+            );
+        } else if ((inputValueType==null || inputValueType==ValueType.INT)
+                && (outputValueType==null || outputValueType==ValueType.INT)) {
             IntUnaryOperator samplingFunction = null;
             if (interpolate) {
                 samplingFunction = new InterpolatingIntIntSampler(icdSource, 1000, hashto);
             } else {
                 samplingFunction = new DiscreteIntIntSampler(icdSource, hashto);
             }
-            return Optional.of(new ResolvedFunction(samplingFunction, true));
+            resolvedFunctions.add(
+                    new ResolvedFunction(
+                            samplingFunction,
+                            true,
+                            usingCtor.getParameterTypes(), parameters,
+                            Integer.TYPE, Integer.TYPE,
+                            getName()
+                    )
+            );
         }
-        return Optional.empty();
+
+        return resolvedFunctions;
     }
 
     @Override
-    public List<ResolvedFunction> resolveFunctions(String specifier) {
-        List<ResolvedFunction> resolvedList = new ArrayList<>();
-        resolveFunction(specifier,ValueType.LONG, ValueType.LONG).map(resolvedList::add);
-        resolveFunction(specifier,ValueType.LONG, ValueType.INT).map(resolvedList::add);
-        resolveFunction(specifier,ValueType.INT, ValueType.LONG).map(resolvedList::add);
-        resolveFunction(specifier,ValueType.INT, ValueType.INT).map(resolvedList::add);
-        return resolvedList;
+    public String getName() {
+        return "math4-dcurves";
     }
 
     @Override
@@ -218,6 +262,15 @@ public class IntegerDistributions implements DataMapperLibrary {
 
         public Class<? extends DiscreteDistribution> getDistributionClass() {
             return distribution;
+        }
+
+        public static Optional<IntegerDistribution> optionalValueOf(String name) {
+            for (IntegerDistribution integerDistribution : values()) {
+                if (integerDistribution.toString().equals(name)) {
+                    return Optional.of(integerDistribution);
+                }
+            }
+            return Optional.empty();
         }
     }
 

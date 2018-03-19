@@ -16,8 +16,8 @@ public class RealDistributionsValuesTest {
 
     @Test
     public void testComputedNormal() {
-        RunData runData = iterateMapper(new RealDistributions().getDoubleDataMapper(
-                "compute_normal(10.0,2.0)").orElse(null), 1000000);
+        RunData runData = iterateMapper(
+                new RealDistributions().<Double>getDataMapper("long->compute_normal(10.0,2.0)").orElse(null), 1000000);
         System.out.println(runData.toString());
         assertThat(runData.getFractionalPercentile(0.5D))
                 .isCloseTo(10.0D, Offset.offset(0.01D));
@@ -29,8 +29,8 @@ public class RealDistributionsValuesTest {
 
     @Test
     public void testInterpolatedNormal() {
-        RunData runData = iterateMapper(new RealDistributions().getDoubleDataMapper(
-                "interpolate_normal(10.0,2.0)").orElse(null), 1000000);
+        RunData runData = iterateMapper(new RealDistributions().<Double>getDataMapper(
+                "long->interpolate_normal(10.0,2.0)").orElse(null), 1000000);
         System.out.println(runData.toString());
         assertThat(runData.getFractionalPercentile(0.5D))
                 .isCloseTo(10.0D, Offset.offset(0.01D));
@@ -42,7 +42,7 @@ public class RealDistributionsValuesTest {
 
     @Test
     public void testComputedUniform() {
-        RunData runData = iterateMapper(new RealDistributions().getDoubleDataMapper("compute_uniform_real(0.0,100.0)").orElse(null), 1000000);
+        RunData runData = iterateMapper(new RealDistributions().<Double>getDataMapper("long->compute_uniform_real(0.0,100.0)").orElse(null), 1000000);
         assertThat(runData.getFractionalPercentile(0.33D))
                 .isCloseTo(33.33D, Offset.offset(1.0D));
         assertThat(runData.getFractionalPercentile(0.5D))
@@ -55,7 +55,7 @@ public class RealDistributionsValuesTest {
     @Test
     public void testInterpolatedUniform() {
         RunData runData = iterateMapper(
-                new RealDistributions().getDoubleDataMapper("interpolate_uniform_real(0.0,100.0)").orElse(null), 1000000);
+                new RealDistributions().<Double>getDataMapper("long->interpolate_uniform_real(0.0,100.0)").orElse(null), 1000000);
         assertThat(runData.getFractionalPercentile(0.33D))
                 .isCloseTo(33.33D, Offset.offset(1.0D));
         assertThat(runData.getFractionalPercentile(0.5D))
@@ -67,7 +67,7 @@ public class RealDistributionsValuesTest {
 
     @Test
     public void testInterpolatedMappedUniform() {
-        DataMapper<Double> mapper = new RealDistributions().getDoubleDataMapper("interpolate_mapto_uniform_real(0.0,100.0)").orElse(null);
+        DataMapper<Double> mapper = new RealDistributions().<Double>getDataMapper("long->interpolate_mapto_uniform_real(0.0,100.0)").orElse(null);
         RunData runData = iterateMapper(mapper,10000000);
         assertThat(runData.getFractionalPercentile(0.999D))
                 .isCloseTo(0.0D, Offset.offset(1.0D));

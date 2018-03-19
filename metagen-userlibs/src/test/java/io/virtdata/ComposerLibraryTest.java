@@ -16,9 +16,9 @@
 package io.virtdata;
 
 import io.virtdata.api.DataMapper;
-import io.virtdata.core.AllDataMapperLibraries;
 import io.virtdata.core.Bindings;
 import io.virtdata.core.BindingsTemplate;
+import io.virtdata.core.VirtData;
 import org.testng.annotations.Test;
 
 import java.util.Optional;
@@ -46,8 +46,8 @@ public class ComposerLibraryTest {
 
     @Test(enabled=true)
     public void testArgumentMatchingViaMainLib() {
-        BindingsTemplate bt = new BindingsTemplate(AllDataMapperLibraries.get());
-        bt.addFieldBinding("param","RandomLineToString(data/variable_words.txt)");
+        BindingsTemplate bt = new BindingsTemplate();
+        bt.addFieldBinding("param","RandomLineToString('data/variable_words.txt')");
         Bindings bindings = bt.resolveBindings();
         Object[] all = bindings.getAll(5);
         assertThat(all).isNotNull();
@@ -58,14 +58,14 @@ public class ComposerLibraryTest {
 
     @Test(enabled=true)
     public void testChainedTypeResolutionForLong() {
-        BindingsTemplate bt = new BindingsTemplate(AllDataMapperLibraries.get());
+        BindingsTemplate bt = new BindingsTemplate();
         bt.addFieldBinding("longchain", "compose CycleRange(123456789) ; Div(3); Mod(7) -> long");
         Bindings bindings = bt.resolveBindings();
     }
 
     @Test(enabled=true)
     public void testChainedTypeResolutionForWithInternalLong() {
-        BindingsTemplate bt = new BindingsTemplate(AllDataMapperLibraries.get());
+        BindingsTemplate bt = new BindingsTemplate();
         bt.addFieldBinding("longchain", "compose HashRange(1234,6789) -> long; Mod(3) -> int;");
         Bindings bindings = bt.resolveBindings();
         Object n1 = bindings.getAll(123)[0];
@@ -74,29 +74,29 @@ public class ComposerLibraryTest {
 
     @Test(enabled=true)
     public void testChainedTypeResolutionForInt() {
-        BindingsTemplate bt = new BindingsTemplate(AllDataMapperLibraries.get());
+        BindingsTemplate bt = new BindingsTemplate();
         bt.addFieldBinding("intchain", "compose ToInt() ; CycleRange(123456789) ; Div(3) ; Mod(7) -> int");
         Bindings bindings = bt.resolveBindings();
     }
 
     @Test
     public void testStringConversion() {
-        BindingsTemplate bt = new BindingsTemplate(AllDataMapperLibraries.get());
-        bt.addFieldBinding("phone","compose HashRange(1000000000,9999999999); ToString() -> String");
+        BindingsTemplate bt = new BindingsTemplate();
+        bt.addFieldBinding("phone","compose HashRange(1000000000,9999999999L); ToString() -> String");
         Bindings bindings = bt.resolveBindings();
     }
 
     @Test
     public void testPrefixSuffix() {
-        BindingsTemplate bt = new BindingsTemplate(AllDataMapperLibraries.get());
-        bt.addFieldBinding("solr_query","compose HashRange(1000000000,9999999999); ToString(); Prefix(before); Suffix(after) -> String");
+        BindingsTemplate bt = new BindingsTemplate();
+        bt.addFieldBinding("solr_query","compose HashRange(1000000000,9999999999L); ToString(); Prefix('before'); Suffix('after') -> String");
         Bindings bindings = bt.resolveBindings();
     }
 
     // TODO: Fix this test
     @Test(enabled=false)
     public void testTypeCoercionWhenNeeded() {
-        BindingsTemplate bt = new BindingsTemplate(AllDataMapperLibraries.get());
+        BindingsTemplate bt = new BindingsTemplate();
         bt.addFieldBinding("mod_to_string", "compose Mod(3) ; Suffix('0000000000') -> String");
         Bindings bindings = bt.resolveBindings();
         Object[] all = bindings.getAll(5);
@@ -110,7 +110,7 @@ public class ComposerLibraryTest {
     // TODO: Fix this test
     @Test(enabled=false)
     public void testBasicRange() {
-        BindingsTemplate bt = new BindingsTemplate(AllDataMapperLibraries.get());
+        BindingsTemplate bt = new BindingsTemplate();
         bt.addFieldBinding("phone","HashRange(1000000000, 9999999999)");
         Bindings bindings = bt.resolveBindings();
     }
@@ -118,8 +118,7 @@ public class ComposerLibraryTest {
     @Test
     public void testUUIDChain() {
         Optional<DataMapper<Object>> dm =
-                AllDataMapperLibraries.get()
-                        .getDataMapper("compose Mod(1000); ToHashedUUID() -> UUID");
+                VirtData.getMapper("compose Mod(1000); ToHashedUUID() -> java.util.UUID");
         assertThat(dm).isPresent();
         Object o = dm.get().get(5L);
         assertThat(o).isEqualTo(UUID.fromString("3df498b1-9568-4584-96fd-76f6081da01a"));
@@ -128,16 +127,14 @@ public class ComposerLibraryTest {
     @Test
     public void testNormalDoubleAdd() {
         Optional<DataMapper<String>> dm =
-                AllDataMapperLibraries.get()
-                        .getStringDataMapper("compose normal(0.0,5.0); Add(5.0) -> double");
+                VirtData.getMapper("compose normal(0.0,5.0); Add(5.0) -> double");
         assertThat(dm).isPresent();
     }
 
     @Test
     public void testDistInCompose() {
         Optional<DataMapper<String>> dm =
-                AllDataMapperLibraries.get()
-                .getStringDataMapper("compose Hash(); uniform_integer(0,100); ToString() -> String");
+                VirtData.getMapper("compose Hash(); uniform_integer(0,100); ToString() -> String");
         assertThat(dm).isPresent();
         String s = dm.get().get(5L);
         assertThat(s).isNotEmpty();
@@ -147,16 +144,14 @@ public class ComposerLibraryTest {
     @Test
     public void testComposeSingleFuncTypeCoercion() {
         Optional<DataMapper<Object>> longMapper =
-                AllDataMapperLibraries.get()
-                        .getDataMapper("compose uniform_integer(1,10) -> long");
+                VirtData.getMapper("compose uniform_integer(1,10) -> long");
         assertThat(longMapper).isPresent();
         Object l = longMapper.get().get(23L);
         assertThat(l).isNotNull();
         assertThat(l.getClass()).isEqualTo(Long.class);
 
         Optional<DataMapper<Object>> intMapper =
-                AllDataMapperLibraries.get()
-                        .getDataMapper("compose uniform_integer(1,123) -> int");
+                VirtData.getMapper("compose uniform_integer(1,123) -> int");
         assertThat(intMapper).isPresent();
         Object i = intMapper.get().get(23L);
         assertThat(i).isNotNull();
@@ -165,7 +160,7 @@ public class ComposerLibraryTest {
 
     private static Object assertMapper(String def, long cycle)
     {
-        Optional<DataMapper<Object>> mapper = AllDataMapperLibraries.get().getDataMapper(def);
+        Optional<DataMapper<Object>> mapper = VirtData.getMapper(def);
         assertThat(mapper).isPresent();
         Object o = mapper.get().get(cycle);
         assertThat(o).isNotNull();

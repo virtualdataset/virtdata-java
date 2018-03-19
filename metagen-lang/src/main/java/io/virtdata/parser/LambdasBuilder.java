@@ -3,8 +3,6 @@ package io.virtdata.parser;
 import io.virtdata.ast.*;
 import io.virtdata.generated.LambdasBaseListener;
 import io.virtdata.generated.LambdasParser;
-import io.virtdata.generated.MetagenBaseListener;
-import io.virtdata.generated.MetagenParser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -48,10 +46,13 @@ public class LambdasBuilder extends LambdasBaseListener {
 
     @Override
     public void enterMetagenFlow(LambdasParser.MetagenFlowContext ctx) {
-        logger.debug("parsing metagen flow.");
+        logger.debug("parsing metagen flow...");
         flowContexts.push(ctx);
         flows.push(new MetagenFlow());
         calls.clear();
+        if (ctx.COMPOSE()!=null) {
+            logger.warn("The 'compose' keyword is no longer needed in lambda construction. It will be deprecated in the future.");
+        }
     }
 
     @Override
@@ -124,7 +125,7 @@ public class LambdasBuilder extends LambdasBaseListener {
 
     @Override
     public void exitFloatValue(LambdasParser.FloatValueContext ctx) {
-        calls.peek().addFunctionArg(new FloatArg(Double.valueOf(ctx.getText())));
+        calls.peek().addFunctionArg(new FloatArg(Float.valueOf(ctx.getText())));
     }
 
     @Override
