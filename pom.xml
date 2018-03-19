@@ -67,7 +67,7 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <executable>${project.basedir}/wrap_metagen.sh</executable>
+                            <executable>${project.basedir}/wrap_virtdata.sh</executable>
                         </configuration>
                     </execution>
                 </executions>

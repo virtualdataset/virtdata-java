@@ -93,6 +93,12 @@ public class FunctionCall implements ArgType {
                 case IntegerArg:
                     args.add(((IntegerArg) argType).getIntValue());
                     break;
+                case LongArg:
+                    args.add(((LongArg) argType).getLongValue());
+                    break;
+                case DoubleArg:
+                    args.add(((DoubleArg) argType).getDoubleValue());
+                    break;
                 default:
                     throw new RuntimeException("Could not map type into argument object: " + typeName);
             }

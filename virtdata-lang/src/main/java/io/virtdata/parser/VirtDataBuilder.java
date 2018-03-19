@@ -133,12 +133,12 @@ public class VirtDataBuilder extends VirtDataBaseListener {
 
     @Override
     public void exitDoubleValue(VirtDataParser.DoubleValueContext ctx) {
-        calls.peek().addFunctionArg(new DoubleArg(Double.valueOf(ctx.getText())));
+        calls.peek().addFunctionArg(new DoubleArg(Double.valueOf(ctx.getText().substring(0,ctx.getText().length()-1))));
     }
 
     @Override
     public void exitLongValue(VirtDataParser.LongValueContext ctx) {
-        calls.peek().addFunctionArg(new LongArg(Long.valueOf(ctx.getText())));
+        calls.peek().addFunctionArg(new LongArg(Long.valueOf(ctx.getText().substring(0,ctx.getText().length()-1))));
     }
 
     @Override

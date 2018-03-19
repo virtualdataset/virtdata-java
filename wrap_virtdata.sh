@@ -12,8 +12,8 @@ fi
 exec "$java" $JAVA_OPTS $java_args -jar $MYSELF "$@"
 exit 1 
 EOSTUB
-) >bin/metagen
+) >bin/virtdata
 
-cat metagen-userlibs/target/metagen-userlibs.jar >>bin/metagen
-chmod +x bin/metagen
+cat virtdata-userlibs/target/virtdata-userlibs.jar >>bin/virtdata
+chmod +x bin/virtdata
 
