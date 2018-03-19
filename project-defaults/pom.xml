@@ -9,7 +9,7 @@
     <name>${project.artifactId}</name>
     <url>http://virtdata.io/</url>
     <description>
-        Metagen is a way to write and use basic data generation libraries for test data
+        VirtualDataSet is a way to write and use data generation libraries for test data.
     </description>
 
     <properties>
