@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>metagen</artifactId>
+    <artifactId>virtdata</artifactId>
     <packaging>pom</packaging>
 
     <parent>
@@ -11,19 +11,19 @@
         <relativePath>project-defaults</relativePath>
     </parent>
 
-    <name>metagen</name>
+    <name>virtdata</name>
     <url>http://virtdata.io/</url>
 
     <modules>
         <module>project-defaults</module>
-        <module>metagen-api</module>
-        <module>metagen-userlibs</module>
-        <module>metagen-lang</module>
+        <module>virtdata-api</module>
+        <module>virtdata-userlibs</module>
+        <module>virtdata-lang</module>
 
-        <module>metagen-lib-basics</module>
-        <module>metagen-lib-random</module>
-        <module>metagen-lib-curves4</module>
-        <module>metagen-lib-realer</module>
+        <module>virtdata-lib-basics</module>
+        <module>virtdata-lib-random</module>
+        <module>virtdata-lib-curves4</module>
+        <module>virtdata-lib-realer</module>
     </modules>
 
     <scm>

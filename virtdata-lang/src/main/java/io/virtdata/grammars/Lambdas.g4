@@ -5,7 +5,7 @@ metagenRecipe : metagenFlow (specend metagenFlow?)* EOF ;
 
 metagenFlow : (COMPOSE)? expression (';' expression?)* ;
 
-expression : metagenCall ;
+expression : (lvalue ASSIGN)? metagenCall ;
 
 metagenCall :
  ( inputType OUTPUTTYPE )?
