@@ -7,7 +7,7 @@ import io.virtdata.ast.FunctionCall;
 import io.virtdata.ast.MetagenFlow;
 import io.virtdata.core.ResolvedFunction;
 import io.virtdata.libimpl.discrete.IntegerDistributions;
-import io.virtdata.parser.LambdasDSL;
+import io.virtdata.parser.VirtDataDSL;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.apache.commons.math4.distribution.EmpiricalDistribution;
 import org.apache.commons.math4.distribution.EnumeratedRealDistribution;
@@ -91,7 +91,7 @@ public class RealDistributions implements VirtDataFunctionLibrary {
 
     public static LongToDoubleFunction forSpec(String spec) {
 
-        LambdasDSL.ParseResult parseResult = LambdasDSL.parse(spec);
+        VirtDataDSL.ParseResult parseResult = VirtDataDSL.parse(spec);
         if (parseResult.throwable!=null) {
             throw new RuntimeException(parseResult.throwable);
         }

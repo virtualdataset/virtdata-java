@@ -1,4 +1,4 @@
-grammar Metagen;
+grammar MGv1;
 // https://www.youtube.com/watch?v=eW4WFgRtFeY
 
 gencontextdef : ( entitydef | samplerdef)* ;

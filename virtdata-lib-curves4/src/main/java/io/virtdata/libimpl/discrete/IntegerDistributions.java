@@ -6,7 +6,7 @@ import io.virtdata.api.VirtDataFunctionLibrary;
 import io.virtdata.ast.FunctionCall;
 import io.virtdata.ast.MetagenFlow;
 import io.virtdata.core.ResolvedFunction;
-import io.virtdata.parser.LambdasDSL;
+import io.virtdata.parser.VirtDataDSL;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.apache.commons.statistics.distribution.*;
 
@@ -85,7 +85,7 @@ public class IntegerDistributions implements VirtDataFunctionLibrary {
     private static final String INTERPOLATE = "interpolate_";
 
     public static LongUnaryOperator forSpec(String spec) {
-        LambdasDSL.ParseResult parseResult = LambdasDSL.parse(spec);
+        VirtDataDSL.ParseResult parseResult = VirtDataDSL.parse(spec);
         if (parseResult.throwable!=null) {
             throw new RuntimeException(parseResult.throwable);
         }

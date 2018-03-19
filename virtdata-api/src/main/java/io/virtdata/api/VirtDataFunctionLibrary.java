@@ -4,7 +4,7 @@ import io.virtdata.ast.Expression;
 import io.virtdata.ast.FunctionCall;
 import io.virtdata.core.DataMapperFunctionMapper;
 import io.virtdata.core.ResolvedFunction;
-import io.virtdata.parser.LambdasDSL;
+import io.virtdata.parser.VirtDataDSL;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +61,7 @@ public interface VirtDataFunctionLibrary extends Named {
     default List<ResolvedFunction> resolveFunctions(String spec) {
         List<ResolvedFunction> resolvedFunctions = new ArrayList<>();
 
-        LambdasDSL.ParseResult parseResult = LambdasDSL.parse(spec);
+        VirtDataDSL.ParseResult parseResult = VirtDataDSL.parse(spec);
         if (parseResult.throwable!=null) {
             throw new RuntimeException(parseResult.throwable);
         }

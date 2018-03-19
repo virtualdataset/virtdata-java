@@ -3,7 +3,7 @@ package io.virtdata.core;
 import io.virtdata.api.DataMapper;
 import io.virtdata.api.VirtDataFunctionLibrary;
 import io.virtdata.ast.MetagenFlow;
-import io.virtdata.parser.LambdasDSL;
+import io.virtdata.parser.VirtDataDSL;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +30,7 @@ public interface VirtDataLibrary {
 
     default <T> Optional<DataMapper<T>> getDataMapper(String flowSpec) {
 
-        LambdasDSL.ParseResult parseResult = LambdasDSL.parse(flowSpec);
+        VirtDataDSL.ParseResult parseResult = VirtDataDSL.parse(flowSpec);
         if (parseResult.throwable!=null) {
             throw new RuntimeException(parseResult.throwable);
         }
@@ -49,7 +49,7 @@ public interface VirtDataLibrary {
     default BindingsTemplate getBindingsTemplate(Map<String, String> namedBindings) {
 
         for(String bindingSpec : namedBindings.values()) {
-            LambdasDSL.ParseResult parseResult = LambdasDSL.parse(bindingSpec);
+            VirtDataDSL.ParseResult parseResult = VirtDataDSL.parse(bindingSpec);
             if (parseResult.throwable!=null) {
                 throw new RuntimeException(parseResult.throwable);
             }

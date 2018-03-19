@@ -1,16 +1,16 @@
-grammar Metagen;
+grammar VirtData;
 // https://www.youtube.com/watch?v=eW4WFgRtFeY
 
-metagenRecipe : metagenFlow (specend metagenFlow?)* EOF ;
+virtdataRecipe : virtdataFlow (specend virtdataFlow?)* EOF ;
 
-metagenFlow : expression (';' expression?)* ;
+virtdataFlow : (COMPOSE)? expression (';' expression?)* ;
 
-expression : (lvalue ASSIGN)? metagenCall ;
+expression : (lvalue ASSIGN)? virtdataCall ;
 
-metagenCall :
- ( inputType INPUTTYPE )?
+virtdataCall :
+ ( inputType TYPEARROW )?
  ( funcName '(' (arg (',' arg )* )? ')' )
- ( OUTPUTTYPE outputType )?
+ ( TYPEARROW outputType )?
  ;
 
 lvalue : ID;
@@ -18,19 +18,23 @@ inputType : ID;
 funcName: ID;
 outputType : ID;
 
-arg : ( ref | metagenCall | value );
+arg : ( value | virtdataCall | ref );
 ref : ('$' ID );
-value : ( floatValue | integerValue | stringValue);
+value : ( floatValue | doubleValue | integerValue | longValue | stringValue);
 stringValue : SSTRING_LITERAL | DSTRING_LITERAL ;
-floatValue: FLOAT;
+longValue: LONG;
+doubleValue: DOUBLE;
 integerValue: INTEGER;
+floatValue: FLOAT;
 
-FLOAT
-    :   '-'? INT '.' INT EXP?   // 1.35, 1.35E-9, 0.3, -4.5
-    |   '-'? INT EXP            // 1e10 -3e4
-    |   '-'? INT                // -3, 45
-    ;
 INTEGER : INT ;
+LONG : INT ('l'|'L') ;
+FLOAT
+    :    '-'? INT '.' INT EXP?   // 1.35, 1.35E-9, 0.3, -4.5
+    |   '-'? INT EXP            // 1e10 -3e4
+    |   '-'? INT    // -3, 45
+    ;
+DOUBLE    :   ('-'? INT '.' INT EXP? | '-'? INT EXP | '-'? INT ) ('d'|'D') ;
 
 fragment INT :   '0' | [1-9] [0-9]* ; // no leading zeros
 fragment EXP :   [Ee] [+\-]? INT ;
@@ -39,7 +43,8 @@ specend: ( ';;' NEWLINE+ ) | ';;' | NEWLINE+ ;
 
 NEWLINE   : '\r' '\n' | '\n' | '\r';
 
-OUTPUTTYPE: '->' ;
+COMPOSE: 'compose' ;
+TYPEARROW: '->' ;
 INPUTTYPE: '>-' ;
 ASSIGN: '=';
 SSTRING_LITERAL : '\'' (~('\'' | '\\' | '\r' | '\n') | '\\' ('\'' | '\\'))* '\'';

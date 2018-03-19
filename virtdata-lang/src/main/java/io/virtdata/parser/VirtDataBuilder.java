@@ -1,8 +1,8 @@
 package io.virtdata.parser;
 
 import io.virtdata.ast.*;
-import io.virtdata.generated.LambdasBaseListener;
-import io.virtdata.generated.LambdasParser;
+import io.virtdata.generated.VirtDataBaseListener;
+import io.virtdata.generated.VirtDataParser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -14,39 +14,38 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
-public class LambdasBuilder extends LambdasBaseListener {
-    private final static Logger logger = LoggerFactory.getLogger(LambdasBuilder.class);
+public class VirtDataBuilder extends VirtDataBaseListener {
+    private final static Logger logger = LoggerFactory.getLogger(VirtDataBuilder.class);
 
     private MetagenAST model = new MetagenAST();
     private List<ErrorNode> errorNodes = new ArrayList<>();
 
-    private Stack<LambdasParser.MetagenFlowContext> flowContexts = new Stack<>();
-    private Stack<LambdasParser.ExpressionContext> expressionContexts = new Stack<>();
-    private Stack<LambdasParser.MetagenCallContext> callContexts = new Stack<>();
+    private Stack<VirtDataParser.VirtdataFlowContext> flowContexts = new Stack<>();
+    private Stack<VirtDataParser.ExpressionContext> expressionContexts = new Stack<>();
+    private Stack<VirtDataParser.VirtdataCallContext> callContexts = new Stack<>();
 
     private LinkedList<MetagenFlow> flows = new LinkedList<>();
     private Stack<FunctionCall> calls = new Stack<FunctionCall>();
 
-    @Override
-    public void enterMetagenRecipe(LambdasParser.MetagenRecipeContext ctx) {
-        logger.debug("parsing metagen lambda recipe.");
 
+    @Override
+    public void enterVirtdataRecipe(VirtDataParser.VirtdataRecipeContext ctx) {
+        logger.debug("parsing virtdata lambda recipe.");
         flowContexts.clear();
         expressionContexts.clear();
         callContexts.clear();
 
         flows.clear();
-//        calls.push(new FunctionCall("root"));
     }
 
     @Override
-    public void exitMetagenRecipe(LambdasParser.MetagenRecipeContext ctx) {
-        logger.debug("parsed metagen recipe.");
+    public void exitVirtdataRecipe(VirtDataParser.VirtdataRecipeContext ctx) {
+        logger.debug("parsed virtdata recipe.");
     }
 
     @Override
-    public void enterMetagenFlow(LambdasParser.MetagenFlowContext ctx) {
-        logger.debug("parsing metagen flow...");
+    public void enterVirtdataFlow(VirtDataParser.VirtdataFlowContext ctx) {
+        logger.debug("parsing virtdata flow...");
         flowContexts.push(ctx);
         flows.push(new MetagenFlow());
         calls.clear();
@@ -56,37 +55,36 @@ public class LambdasBuilder extends LambdasBaseListener {
     }
 
     @Override
-    public void exitMetagenFlow(LambdasParser.MetagenFlowContext ctx) {
+    public void exitVirtdataFlow(VirtDataParser.VirtdataFlowContext ctx) {
         model.addFlow(flows.pop());
-
         flowContexts.pop();
     }
 
     @Override
-    public void enterExpression(LambdasParser.ExpressionContext ctx) {
+    public void enterExpression(VirtDataParser.ExpressionContext ctx) {
         expressionContexts.push(ctx);
         flows.peek().addExpression(new Expression());
-        //logger.debug("parsing metagen expression.");
+        //logger.debug("parsing virtdata expression.");
     }
 
     @Override
-    public void exitLvalue(LambdasParser.LvalueContext ctx) {
+    public void exitLvalue(VirtDataParser.LvalueContext ctx) {
         flows.peek().getLastExpression().setAssignment(new Assignment(ctx.ID().getSymbol().getText()));
     }
 
     @Override
-    public void exitExpression(LambdasParser.ExpressionContext ctx) {
+    public void exitExpression(VirtDataParser.ExpressionContext ctx) {
         expressionContexts.pop();
     }
 
     @Override
-    public void enterMetagenCall(LambdasParser.MetagenCallContext ctx) {
+    public void enterVirtdataCall(VirtDataParser.VirtdataCallContext ctx) {
         callContexts.push(ctx);
         calls.push(new FunctionCall());
     }
 
     @Override
-    public void exitMetagenCall(LambdasParser.MetagenCallContext ctx) {
+    public void exitVirtdataCall(VirtDataParser.VirtdataCallContext ctx) {
 
         FunctionCall topFunctionCall = calls.pop();
         if (calls.empty()) {
@@ -99,38 +97,48 @@ public class LambdasBuilder extends LambdasBaseListener {
     }
 
     @Override
-    public void exitInputType(LambdasParser.InputTypeContext ctx) {
+    public void exitInputType(VirtDataParser.InputTypeContext ctx) {
         calls.peek().setInputType(ctx.getText());
     }
 
     @Override
-    public void exitFuncName(LambdasParser.FuncNameContext ctx) {
+    public void exitFuncName(VirtDataParser.FuncNameContext ctx) {
         calls.peek().setFuncName(ctx.getText());
     }
 
     @Override
-    public void exitOutputType(LambdasParser.OutputTypeContext ctx) {
+    public void exitOutputType(VirtDataParser.OutputTypeContext ctx) {
         calls.peek().setOutputType(ctx.getText());
     }
 
     @Override
-    public void exitRef(LambdasParser.RefContext ctx) {
+    public void exitRef(VirtDataParser.RefContext ctx) {
         calls.peek().addFunctionArg(new RefArg(ctx.ID().getText()));
     }
 
     @Override
-    public void exitIntegerValue(LambdasParser.IntegerValueContext ctx) {
+    public void exitIntegerValue(VirtDataParser.IntegerValueContext ctx) {
         calls.peek().addFunctionArg(new IntegerArg(Integer.valueOf(ctx.getText())));
     }
 
     @Override
-    public void exitFloatValue(LambdasParser.FloatValueContext ctx) {
+    public void exitFloatValue(VirtDataParser.FloatValueContext ctx) {
         calls.peek().addFunctionArg(new FloatArg(Float.valueOf(ctx.getText())));
     }
 
     @Override
-    public void exitStringValue(LambdasParser.StringValueContext ctx) {
+    public void exitStringValue(VirtDataParser.StringValueContext ctx) {
         calls.peek().addFunctionArg(new StringArg(ctx.getText().substring(1, ctx.getText().length() - 1)));
+    }
+
+    @Override
+    public void exitDoubleValue(VirtDataParser.DoubleValueContext ctx) {
+        calls.peek().addFunctionArg(new DoubleArg(Double.valueOf(ctx.getText())));
+    }
+
+    @Override
+    public void exitLongValue(VirtDataParser.LongValueContext ctx) {
+        calls.peek().addFunctionArg(new LongArg(Long.valueOf(ctx.getText())));
     }
 
     @Override
@@ -145,12 +153,10 @@ public class LambdasBuilder extends LambdasBaseListener {
 
     @Override
     public void enterEveryRule(ParserRuleContext parserRuleContext) {
-
     }
 
     @Override
     public void exitEveryRule(ParserRuleContext parserRuleContext) {
-
     }
 
     public boolean hasErrors() {

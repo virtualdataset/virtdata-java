@@ -2,8 +2,8 @@ package io.virtdata.parser;
 
 import io.virtdata.ast.MetagenAST;
 import io.virtdata.ast.MetagenFlow;
-import io.virtdata.generated.LambdasLexer;
-import io.virtdata.generated.LambdasParser;
+import io.virtdata.generated.VirtDataLexer;
+import io.virtdata.generated.VirtDataParser;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CodePointCharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -13,20 +13,20 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 
-public class LambdasDSL {
-    private final static Logger logger  = LoggerFactory.getLogger(LambdasDSL.class);
+public class VirtDataDSL {
+    private final static Logger logger  = LoggerFactory.getLogger(VirtDataDSL.class);
 
-    public static LambdasDSL.ParseResult parse(String input) {
+    public static VirtDataDSL.ParseResult parse(String input) {
 
         try {
             CodePointCharStream cstream = CharStreams.fromString(input);
-            LambdasLexer lexer = new LambdasLexer(cstream);
+            VirtDataLexer lexer = new VirtDataLexer(cstream);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
-            LambdasParser parser = new LambdasParser(tokens);
-            LambdasBuilder astListener = new LambdasBuilder();
+            VirtDataParser parser = new VirtDataParser(tokens);
+            VirtDataBuilder astListener = new VirtDataBuilder();
             parser.addParseListener(astListener);
 
-            LambdasParser.MetagenFlowContext metagenFlowContext = parser.metagenFlow();
+            VirtDataParser.VirtdataFlowContext metagenFlowContext = parser.virtdataFlow();
             System.out.println(metagenFlowContext.toStringTree(parser));
 
             if (astListener.hasErrors()) {

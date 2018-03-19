@@ -6,6 +6,8 @@ public interface ArgType {
         FunctionCall(FunctionCall.class,FunctionCall.class),
         StringArg(StringArg.class, String.class),
         FloatArg(FloatArg.class, float.class),
+        DoubleArg(DoubleArg.class, double.class),
+        LongArg(LongArg.class, long.class),
         IntegerArg(IntegerArg.class, int.class);
 
         private final Class<?> valueClass;

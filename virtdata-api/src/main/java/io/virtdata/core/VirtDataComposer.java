@@ -7,7 +7,7 @@ import io.virtdata.api.VirtDataFunctionLibrary;
 import io.virtdata.api.composers.FunctionAssembly;
 import io.virtdata.ast.FunctionCall;
 import io.virtdata.ast.MetagenFlow;
-import io.virtdata.parser.LambdasDSL;
+import io.virtdata.parser.VirtDataDSL;
 import org.apache.commons.lang3.ClassUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +68,7 @@ public class VirtDataComposer {
     public Optional<ResolvedFunction> resolveFunctionFlow(String flowspec) {
 
         String strictSpec = flowspec.startsWith("compose ") ? flowspec.substring(8) : flowspec;
-        LambdasDSL.ParseResult parseResult = LambdasDSL.parse(strictSpec);
+        VirtDataDSL.ParseResult parseResult = VirtDataDSL.parse(strictSpec);
         if (parseResult.throwable!=null) {
             throw new RuntimeException(parseResult.throwable);
         }

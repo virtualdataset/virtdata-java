@@ -1,4 +1,4 @@
-grammar MetagenRedux;
+grammar MgRedux;
 // https://www.youtube.com/watch?v=eW4WFgRtFeY
 
 gencontext:

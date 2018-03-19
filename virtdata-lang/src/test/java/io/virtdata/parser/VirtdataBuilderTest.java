@@ -1,8 +1,8 @@
 package io.virtdata.parser;
 
 import io.virtdata.ast.*;
-import io.virtdata.generated.MetagenLexer;
-import io.virtdata.generated.MetagenParser;
+import io.virtdata.generated.VirtDataLexer;
+import io.virtdata.generated.VirtDataParser;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.testng.annotations.Test;
@@ -10,13 +10,17 @@ import org.testng.annotations.Test;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.nio.CharBuffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Test
-public class MetagenBuilderTest {
+public class VirtdataBuilderTest {
 
     private static char[] readFile(String filename) {
         BufferedReader sr = new BufferedReader(
@@ -38,18 +42,18 @@ public class MetagenBuilderTest {
     }
 
     @Test
-    private void testMetagenSyntax() {
+    private void testFullSyntax() {
         char[] chars = readFile("test-syntax.metagen");
         ANTLRInputStream ais = new ANTLRInputStream(chars, chars.length);
         String inputString = new String(chars);
         System.out.println("Parsing:\n" + inputString);
-        MetagenLexer lexer = new MetagenLexer(ais);
+        VirtDataLexer lexer = new VirtDataLexer(ais);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
-        MetagenParser parser = new MetagenParser(tokens);
-        MetagenBuilder astListener = new MetagenBuilder();
+        VirtDataParser parser = new VirtDataParser(tokens);
+        VirtDataBuilder astListener = new VirtDataBuilder();
         parser.addParseListener(astListener);
 
-        MetagenParser.MetagenRecipeContext metagenRecipeContext = parser.metagenRecipe();
+        VirtDataParser.VirtdataRecipeContext metagenRecipeContext = parser.virtdataRecipe();
         System.out.println(metagenRecipeContext.toStringTree(parser));
 
         if (astListener.hasErrors()) {
@@ -94,5 +98,38 @@ public class MetagenBuilderTest {
 
     }
 
+
+    @Test
+    public void testLambdaChains() {
+        Path path=null;
+        try {
+            URI uri = ClassLoader.getSystemResource("test-syntax-lambda.metagen").toURI();
+            path = Paths.get(uri);
+            byte[] bytes = Files.readAllBytes(path);
+            VirtDataDSL.ParseResult parseResult = VirtDataDSL.parse(new String(bytes));
+
+            assertThat(parseResult.flow).isNotNull();
+
+            List<Expression> expressions = parseResult.flow.getExpressions();
+            assertThat(expressions).hasSize(4);
+
+            Expression e0 = expressions.get(0);
+            assertThat(e0.getCall().getFunctionName()).isEqualTo("Func2");
+
+            Expression e1 = expressions.get(1);
+            assertThat(e1.getCall().getFunctionName()).isEqualTo("Func3");
+
+            Expression e2 = expressions.get(2);
+            assertThat(e2.getCall().getFunctionName()).isEqualTo("func4");
+
+            Expression e3 = expressions.get(3);
+            assertThat(e3.getCall().getFunctionName()).isEqualTo("f5");
+
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 
 }
