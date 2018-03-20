@@ -36,6 +36,15 @@ public enum FunctionType {
         this.returnValueType = ValueType.valueOfAssignableClass(returnClass);
         this.inputValueType = ValueType.valueOfAssignableClass(inputClass);
     }
+    public Class<?> getInputClass() {
+        return inputClass;
+    }
+    public Class<?> getReturnClass() {
+        return returnClass;
+    }
+    public Class<?> getFunctionClass() {
+        return functionClass;
+    }
 
     public static FunctionType valueOf(Class<?> clazz) {
         for(FunctionType functionType: FunctionType.values()) {
@@ -52,10 +61,6 @@ public enum FunctionType {
             }
         }
         throw new RuntimeException("Unable to determine FunctionType for object class:" + g.getClass());
-    }
-
-    public ValueType getReturnValueType() {
-        return returnValueType;
     }
 
     public ValueType getInputValueType() {

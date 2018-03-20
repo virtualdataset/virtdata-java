@@ -99,6 +99,7 @@ public class VirtDataComposer {
             Class<?> inputType = classOf(call.getInputType());
             Class<?> outputType = classOf(call.getOutputType());
             Object[] args = call.getArguments();
+            args = populateFunctions(args);
 
             List<ResolvedFunction> resolved = functionLibrary.resolveFunctions(outputType, inputType, funcName, args);
             if (resolved.size() == 0) {
@@ -135,6 +136,28 @@ public class VirtDataComposer {
         ResolvedFunction composedFunction = assembly.getResolvedFunction(isThreadSafe);
 
         return Optional.of(composedFunction);
+    }
+
+    private Object[] populateFunctions(Object[] args) {
+        for (int i = 0; i < args.length; i++) {
+            Object o = args[i];
+            if (o instanceof FunctionCall) {
+                FunctionCall call = (FunctionCall) o;
+
+                String funcName = call.getFunctionName();
+                Class<?> inputType = classOf(call.getInputType());
+                Class<?> outputType = classOf(call.getOutputType());
+                Object[] fargs = call.getArguments();
+                fargs = populateFunctions(fargs);
+
+                List<ResolvedFunction> resolved = functionLibrary.resolveFunctions(outputType, inputType, funcName, fargs);
+                if (resolved.size() == 0) {
+                    throw new RuntimeException("Unable to find a even one function for " + call);
+                }
+                args[i]=resolved.get(0).getFunctionObject();
+            }
+        }
+        return args;
     }
 
     private Class<?> classOf(String inputType) {

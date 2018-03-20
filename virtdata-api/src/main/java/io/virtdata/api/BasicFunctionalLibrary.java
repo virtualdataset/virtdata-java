@@ -39,7 +39,7 @@ public abstract class BasicFunctionalLibrary implements VirtDataFunctionLibrary 
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        List<Constructor<?>> matchingFunctionalClasses = matchingClasses.stream()
+        List<Constructor<?>> matchingConstructors = matchingClasses.stream()
                 .filter(c -> {
                     // This form for debugging
                     boolean isFunctional = isFunctionalInterface(c);
@@ -55,18 +55,18 @@ public abstract class BasicFunctionalLibrary implements VirtDataFunctionLibrary 
                 })
                 .collect(Collectors.toList());
 
-        if (returnType != null && inputType != null && matchingFunctionalClasses.size() > 1) {
+        if (returnType != null && inputType != null && matchingConstructors.size() > 1) {
             throw new RuntimeException(
-                    "found more than one (" + matchingFunctionalClasses.size() + ") matching constructor for " +
+                    "found more than one (" + matchingConstructors.size() + ") matching constructor for " +
                             "return type '" + returnType + "', " +
                             "inputType '" + inputType + "', " +
                             "function name '" + functionName + ", " +
                             "and parameter types '" + Arrays.toString(parameters) + "', " +
-                            "ctors: " + matchingFunctionalClasses);
+                            "ctors: " + matchingConstructors);
 
         }
 
-        for (Constructor<?> ctor : matchingFunctionalClasses) {
+        for (Constructor<?> ctor : matchingConstructors) {
             try {
                 Object func = ctor.newInstance(parameters);
                 boolean threadSafe = ctor.getClass().getAnnotation(ThreadSafeMapper.class) != null;
@@ -101,34 +101,32 @@ public abstract class BasicFunctionalLibrary implements VirtDataFunctionLibrary 
         return (nonDefaultMethodCount==1 && applyMethod.isPresent());
     }
 
+    // TODO: Make this work with varargs constructors
     private boolean canAssignArguments(Constructor<?> targetConstructor, Object[] sourceParameters) {
         Class<?>[] targetTypes = targetConstructor.getParameterTypes();
         if (sourceParameters.length != targetTypes.length) {
             logger.trace(targetConstructor.toString() + " does not match source parameters (size): " + Arrays.toString(sourceParameters));
             return false;
         }
-        for (int i = 0; i < targetTypes.length; i++) {
-            Class<?> targetType = reduceType(targetTypes[i]);
-            Class<?> sourceType = reduceType(sourceParameters[i].getClass());
-            if (!ClassUtils.isAssignable(sourceType, targetType,true)) {
-//            if (!targetType.isAssignableFrom(sourceType)) {
-                logger.trace(targetConstructor.toString() + " is not assignable from input types (pair-wise): " + Arrays.toString(sourceParameters));
-                return false;
-            }
+        Class<?>[] sourceTypes = new Class<?>[sourceParameters.length];
+        for (int i = 0; i < sourceTypes.length; i++) {
+            sourceTypes[i]=sourceParameters[i].getClass();
         }
-        return true;
-    }
+//        targetConstructor.get
 
-    private Class<?> reduceType(Class<?> c) {
-        if (c.isPrimitive()) {
-            if (Long.TYPE.equals(c)) {
-                return Long.TYPE;
-            }
-            if (Integer.TYPE.equals(c)) {
-                return Integer.TYPE;
-            }
-        }
-        return c;
+        boolean isAssignable = ClassUtils.isAssignable(sourceTypes, targetTypes, true);
+        return isAssignable;
+//        for (int i = 0; i < targetTypes.length; i++) {
+//            Class<?> targetType = targetTypes[i];
+//            Class<?> sourceType = sourceParameters[i].getClass();
+//            if (!ClassUtils.isAssignable(sourceType, targetType,true)
+//                    && !targetType.isAssignableFrom(sourceType)) {
+////            if (!targetType.isAssignableFrom(sourceType)) {
+//                logger.trace(targetConstructor.toString() + " is not assignable from input types (pair-wise): " + Arrays.toString(sourceParameters));
+//                return false;
+//            }
+//        }
+//        return true;
     }
 
     private boolean canAssignReturnType(Class<?> functionalClass, Class<?> returnType) {

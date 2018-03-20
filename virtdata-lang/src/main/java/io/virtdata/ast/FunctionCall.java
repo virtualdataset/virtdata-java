@@ -39,7 +39,7 @@ public class FunctionCall implements ArgType {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(inputType==null ? "" : inputType + ">-");
+        sb.append(inputType==null ? "" : inputType + "->");
         sb.append(funcName);
         sb.append("(");
         String sep = "";

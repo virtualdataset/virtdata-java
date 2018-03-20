@@ -1,10 +1,12 @@
 package io.virtdata;
 
 import io.virtdata.api.DataMapper;
+import io.virtdata.basicsmappers.unary_string.MapTemplate;
 import io.virtdata.core.VirtData;
 import io.virtdata.testing.functions.ARandomPOJO;
 import org.testng.annotations.Test;
 
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -70,4 +72,29 @@ public class ComposerLogicTest {
         assertThat(dataMapper.get().get(1)).isOfAnyClassIn(ARandomPOJO.class);
     }
 
+//    @Test
+//    public void testNestedFunction() {
+//        Template t = new Template("_{}_{}_", String::valueOf, String::valueOf);
+//        String r = t.apply(5);
+//        assertThat(r).isEqualTo("_5_5_");
+//        Optional<DataMapper<Object>> m2 = VirtData.getMapper("Template('_{}_',NumberNameToString())");
+//        assertThat(m2).isPresent();
+//        DataMapper<Object> dm2 = m2.get();
+//        Object r3 = dm2.get(42L);
+//
+//    }
+
+    @Test
+    public void testMapTemplate() {
+        MapTemplate mt = new MapTemplate(l -> (int)l,String::valueOf, String::valueOf);
+        assertThat(mt.apply(3)).containsEntry("3","3");
+        Optional<DataMapper<Map>> optionalMapper =VirtData.getMapper(
+                "MapTemplate(long->Mod(5)->int,NumberNameToString(),NumberNameToString())"
+        );
+        assertThat(optionalMapper).isPresent();
+        DataMapper<Map> mapper = optionalMapper.get();
+        Map o = mapper.get(6L);
+        assertThat(o).isNotNull();
+        assertThat(o.get("six")).isEqualTo("six");
+    }
 }

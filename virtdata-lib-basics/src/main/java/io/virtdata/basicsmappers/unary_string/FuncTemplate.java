@@ -24,7 +24,6 @@ public class FuncTemplate implements LongFunction<String> {
         this.parseTemplate(rawTemplate);
     }
 
-
     @SuppressWarnings("unchecked")
     private void parseTemplate(String rawTemplate) {
         try {
