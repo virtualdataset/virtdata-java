@@ -14,7 +14,9 @@ public class MapTemplate implements LongFunction<Map<String,String>> {
     private final LongFunction<String> keyFunc;
     private final LongFunction<String> valueFunc;
 
-    public MapTemplate(LongToIntFunction sizeFunc, LongFunction<String> keyFunc, LongFunction<String> valueFunc) {
+    public MapTemplate(LongToIntFunction sizeFunc,
+                       LongFunction<String> keyFunc,
+                       LongFunction<String> valueFunc) {
         this.sizeFunc = sizeFunc;
         this.keyFunc = keyFunc;
         this.valueFunc = valueFunc;

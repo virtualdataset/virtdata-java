@@ -97,4 +97,15 @@ public class ComposerLogicTest {
         assertThat(o).isNotNull();
         assertThat(o.get("six")).isEqualTo("six");
     }
+
+    @Test
+    public void testNegativeLongs() {
+        Optional<DataMapper<Long>> mo = VirtData.getMapper("HashRange(-2147483648L,2147483647L) -> long");
+        assertThat(mo).isPresent();
+        DataMapper<Long> longDataMapper = mo.get();
+        Long result = longDataMapper.get(5L);
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(1398623797L);
+
+    }
 }
