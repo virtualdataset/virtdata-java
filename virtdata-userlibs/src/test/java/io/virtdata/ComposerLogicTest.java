@@ -1,7 +1,7 @@
 package io.virtdata;
 
 import io.virtdata.api.DataMapper;
-import io.virtdata.basicsmappers.unary_string.MapTemplate;
+import io.virtdata.basicsmappers.from_long.to_string.MapTemplate;
 import io.virtdata.core.VirtData;
 import io.virtdata.testing.functions.ARandomPOJO;
 import org.testng.annotations.Test;

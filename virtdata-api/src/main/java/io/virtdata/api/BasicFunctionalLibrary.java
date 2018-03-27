@@ -86,19 +86,18 @@ public abstract class BasicFunctionalLibrary implements VirtDataFunctionLibrary 
     }
 
     private boolean isFunctionalInterface(Class<?> c) {
-        List<Method> applyMethods = Arrays.stream(c.getDeclaredMethods())
-                .filter(m -> !m.isDefault() && !m.isBridge() && !m.isSynthetic())
-                .filter(m -> (m.getModifiers()&Modifier.PUBLIC)>0)
-                .filter(m -> !m.getName().equals("toString"))
-                .collect(Collectors.toList());
-        logger.trace("apply methods found for "+ c.getCanonicalName() + ":" + applyMethods);
-        int nonDefaultMethodCount = applyMethods.size();
-        Optional<Method> applyMethod = Arrays.stream(c.getMethods())
-                .filter(m -> !m.isDefault() && !m.isBridge() && !m.isSynthetic())
-                .filter(m -> (m.getModifiers()&Modifier.PUBLIC)>0)
-                .filter(m -> m.getName().startsWith("apply"))
+        Optional<Method> applyMethods = Arrays.stream(c.getMethods())
+                .filter(m -> {
+                    boolean isNotDefault = !m.isDefault();
+                    boolean isNotBridge = !m.isBridge();
+                    boolean isNotSynthetic = !m.isSynthetic();
+                    boolean isPublic = (m.getModifiers()&Modifier.PUBLIC)>0;
+                    boolean isNotString = !m.getName().equals("toString");
+                    boolean isApplyMethod = m.getName().startsWith("apply");
+                    return isNotDefault && isNotBridge && isNotSynthetic && isPublic && isNotString && isApplyMethod;
+                })
                 .findFirst();
-        return (nonDefaultMethodCount==1 && applyMethod.isPresent());
+        return applyMethods.isPresent();
     }
 
     // TODO: Make this work with varargs constructors

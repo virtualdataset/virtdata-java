@@ -17,16 +17,15 @@
 
 package io.virtdata.util;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URL;
 import java.nio.CharBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ResourceFinder {
@@ -53,6 +52,20 @@ public class ResourceFinder {
                 "Unable to find " + basename + " with extension " + extension + " in file system or in classpath, with"
                         + " search paths: " + Arrays.stream(searchPaths).collect(Collectors.joining(","))
         ));
+    }
+
+    public static Reader findRequiredReader(String basename, String extension, String... searchPaths) {
+        Optional<Reader> optionalReader = findOptionalReader(basename, extension, searchPaths);
+        return optionalReader.orElseThrow(() -> new RuntimeException(
+                "Unable to find " + basename + " with extension " + extension + " in file system or in classpath, with"
+                        + " search paths: " + Arrays.stream(searchPaths).collect(Collectors.joining(","))
+        ));
+    }
+
+    public static Optional<Reader> findOptionalReader(String basename, String extenion, String... searchPaths) {
+        return findOptionalStreamOrFile(basename, extenion, searchPaths)
+                .map(InputStreamReader::new)
+                .map(BufferedReader::new);
     }
 
     public static Optional<InputStream> findOptionalStreamOrFile(String basename, String extension, String... searchPaths) {
@@ -133,6 +146,17 @@ public class ResourceFinder {
             return filedata;
         } catch (IOException ioe) {
             throw new RuntimeException("Error while reading required file to string", ioe);
+        }
+    }
+
+    public static CSVParser readFileCSV(String basename, String... searchPaths) {
+        Reader reader = findRequiredReader(basename, "csv", searchPaths);
+        CSVFormat format = CSVFormat.newFormat(',').withFirstRecordAsHeader();
+        try {
+            CSVParser parser = new CSVParser(reader, format);
+            return parser;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

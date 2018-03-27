@@ -1,0 +1,17 @@
+package io.virtdata;
+
+import io.virtdata.stathelpers.aliasmethod.WeightedStrings;
+import org.testng.annotations.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@Test
+public class AliasMethodTests {
+
+    @Test
+    public void testCensusData() {
+        WeightedStrings surnames = new WeightedStrings("data/surnames", "Name", "prop100k");
+        String n = surnames.apply(2343);
+        assertThat(n).isEqualTo("Strandberg");
+    }
+}

@@ -27,7 +27,7 @@ public class VirtDataDSL {
             parser.addParseListener(astListener);
 
             VirtDataParser.VirtdataFlowContext virtdataFlowContext = parser.virtdataFlow();
-            System.out.println(virtdataFlowContext.toStringTree(parser));
+            logger.debug("parse tree: " + virtdataFlowContext.toStringTree(parser));
 
             if (astListener.hasErrors()) {
                 System.out.println(astListener.getErrorNodes());

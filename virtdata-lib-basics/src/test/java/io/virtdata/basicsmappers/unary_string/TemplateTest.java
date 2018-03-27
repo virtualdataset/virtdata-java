@@ -1,5 +1,6 @@
 package io.virtdata.basicsmappers.unary_string;
 
+import io.virtdata.basicsmappers.from_long.to_string.Template;
 import org.testng.annotations.Test;
 
 import java.util.function.LongFunction;

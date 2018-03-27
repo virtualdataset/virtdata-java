@@ -20,6 +20,7 @@
         <module>virtdata-userlibs</module>
         <module>virtdata-lang</module>
 
+        <module>virtdata-realdata</module>
         <module>virtdata-lib-basics</module>
         <module>virtdata-lib-random</module>
         <module>virtdata-lib-curves4</module>
