@@ -10,7 +10,7 @@ public class AliasMethodTests {
 
     @Test
     public void testCensusData() {
-        WeightedStrings surnames = new WeightedStrings("data/surnames", "Name", "prop100k");
+        WeightedStrings surnames = new WeightedStrings("Name", "prop100k", "data/surnames");
         String n = surnames.apply(2343);
         assertThat(n).isEqualTo("Strandberg");
     }
