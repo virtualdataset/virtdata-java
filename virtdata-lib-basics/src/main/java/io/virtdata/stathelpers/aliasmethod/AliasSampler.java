@@ -39,44 +39,42 @@ public class AliasSampler implements DoubleToIntFunction {
 
     public AliasSampler(List<EvProbD> events) {
         int size = events.size();
+
+        int[] alias = new int[events.size()];
+        double[] prob = new double[events.size()];
+
+        LinkedList<EvProbD> small = new LinkedList<>();
+        LinkedList<EvProbD> large = new LinkedList<>();
+        List<Slot> slots = new ArrayList<>();
+
+        // array-size normalization
         double sumProbability = events.stream().mapToDouble(EvProbD::getProbability).sum();
         events = events.stream().map(e -> new EvProbD(e.getEventId(), (e.getProbability()/sumProbability)*size)).collect(Collectors.toList());
 
-        Collections.sort(events,EvProbD.DESCENDING_PROBABILTY); // reverse probability
-        LinkedList<EvProbD> llevents = new LinkedList<>(events);
-//        int size = events.size()/2;
+        // presort
+        for (EvProbD event : events) {
+            (event.getProbability()<1.0D ? small : large).addLast(event);
+        }
 
-        ArrayList<Slot> slots = new ArrayList<>();
-
-        //LinkedList<EvProbD> nextlist = new LinkedList<>(events);
-        while (llevents.peekFirst()!=null) {
-            EvProbD first = llevents.removeFirst();
-            double remaining = first.getProbability();
-            if (remaining < 1.0D) {
-                throw new RuntimeException("first event must have an array-normalized probability greater than or equal to 1.0D");
-            }
-            while (remaining >= 1.0D && llevents.peekLast()!=null) {
-                EvProbD last = llevents.removeLast();
-                Slot slot = new Slot(first.getEventId(), last.getEventId(), last.getProbability());
-                slots.add(slot);
-                remaining -= (1.0D - last.getProbability());
-            }
-            if (remaining==1.0D || Math.abs(1.0D - remaining)<0.0000000001D) {
-                slots.add(new Slot(first.getEventId(), first.getEventId(), 1.0D));
-            } else if (remaining>0.0000000000001D) {
-                first.setProbability(remaining);
-                ListIterator<EvProbD> lit = llevents.listIterator();
-                // This is the bottleneck for large data sets
-                while (lit.hasNext() && lit.next().getProbability() > remaining) {
-                }
-                lit.add(first);
-            } else {
-                throw new RuntimeException("Is this an issue?");
-            }
+        while (small.peekFirst()!=null && large.peekFirst()!=null) {
+            EvProbD l = small.removeFirst();
+            EvProbD g = large.removeFirst();
+            slots.add(new Slot(g.getEventId(), l.getEventId(), l.getProbability()));
+            g.setProbability((g.getProbability()+l.getProbability())-1);
+            (g.getProbability()<1.0D ? small : large).addLast(g); // requeue
+        }
+        while (large.peekFirst()!=null) {
+            EvProbD g = large.removeFirst();
+            slots.add(new Slot(g.getEventId(),g.getEventId(),1.0));
+        }
+        while (small.peekFirst()!=null) {
+            EvProbD l = small.removeFirst();
+            slots.add(new Slot(l.getEventId(),l.getEventId(),1.0));
         }
         if (slots.size()!=size) {
             throw new RuntimeException("basis for average probability is incorrect, because only " + slots.size() + " slotCount of " + size + " were created.");
         }
+        // align to indexes
         for (int i = 0; i < slots.size(); i++) {
             slots.get(i).rescale(i, i+1);
         }

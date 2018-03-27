@@ -3,7 +3,6 @@ package io.virtdata.stathelpers.aliasmethod;
 import io.virtdata.stathelpers.EvProbD;
 import org.testng.annotations.Test;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,35 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AliasSamplerTest {
 
     @Test
-    public void testBasicAccuracy() {
-
-        ByteBuffer bb = ByteBuffer.allocate(10 * AliasSampler.RECORD_LEN);
-        System.out.println("remaining: " + bb.remaining());
-        double pool=1.0D;
-        for (int i = 0; i < 10; i++) {
-            double slice = pool / (i+2);
-            if (i==9) slice=pool;
-            pool-=slice;
-
-            bb.putDouble(slice);
-            bb.putInt(i);
-            bb.putInt(i+10);
-            System.out.format("s:%f i0=%d, i1=%d ",slice,i,i+10);
-            System.out.println(" remaining: " + bb.remaining());
-        }
-        bb.flip();
-
-        AliasSampler as = new AliasSampler(bb);
-
-        for (int i = 0; i < 100; i++) {
-            double samplePoint = (double)i/100D;
-            int i1 = as.applyAsInt(samplePoint);
-            System.out.println(i1);
-        }
-    }
-
-    @Test
-    public void testAliasTableGeneration() {
+    public void testAliasSamplerBinaryFractions() {
         List<EvProbD> events = new ArrayList<>();
         events.add(new EvProbD(1,1.0D));
         events.add(new EvProbD(2,1.0D));
@@ -60,12 +31,12 @@ public class AliasSamplerTest {
             stats[idx]++;
         }
         System.out.println(Arrays.toString(stats));
-        assertThat(stats).containsExactly(0,79,79,157,313,626,1250,2498,4998);
+        assertThat(stats).containsExactly(0,79,79,157,313,626,1250,2499,4997);
 
     }
 
     @Test
-    public void testAliasTableGeneration2() {
+    public void testAliasSamplerSimple() {
         List<EvProbD> events = new ArrayList<>();
         events.add(new EvProbD(1,1D));
         events.add(new EvProbD(2,2D));
@@ -80,13 +51,13 @@ public class AliasSamplerTest {
             stats[idx]++;
         }
         System.out.println(Arrays.toString(stats));
-        assertThat(stats).containsExactly(0,1667,3333,5000);
+        assertThat(stats).containsExactly(0,1667,3334,4999);
     }
 
 
-    // Single threaded performance: 100_000_000 ops in 1_352_739_727 nanos for 73_924_050.579761 ops/s
-    // yes, that is 73M discrete probability samples per second, but hey, it's only 3 discrete probabilities in this test
-    @Test(enabled=true)
+    // Single threaded performance: 100000000 ops in 1366334133 nanos for 73188539.746449 ops/s
+    // yes, that is >70M discrete probability samples per second, but hey, it's only 3 discrete probabilities in this test
+    @Test(enabled=false)
     public void testAliasMicroBenchSmallMany() {
         List<EvProbD> events = new ArrayList<>();
         events.add(new EvProbD(1,1D));
@@ -107,13 +78,12 @@ public class AliasSamplerTest {
         System.out.format("Single threaded performance: %d ops in %d nanos for %f ops/s\n", count, nanos, oprate);
     }
 
-    // Single threaded performance: 100_000_000 ops in 1_232_994_499 nanos for 81_103_362.651742 ops/s
-    // yes, that is 81M discrete probability samples per second, but hey, it's only 100K discrete probabilities in this test
-    // Warning: Using datasets with higher counts than this will result in uncomfortably long setup times.
-    @Test(enabled=true)
+    // Single threaded performance: 100000000 ops in 1346200937 nanos for 74283115.730739 ops/s
+    // yes, that is >70M discrete probability samples per second, but hey, it's only 1M discrete probabilities in this test,
+    @Test(enabled=false)
     public void testAliasMicroBenchLargeMany() {
         List<EvProbD> events = new ArrayList<>();
-        int evt_count=1_00_000;
+        int evt_count=1_000_000;
         for (int i = 0; i < evt_count; i++) {
             double val = (double)i/(double)evt_count;
             events.add(new EvProbD(i,val));
