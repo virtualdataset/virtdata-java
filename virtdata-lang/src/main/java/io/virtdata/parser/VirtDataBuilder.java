@@ -30,7 +30,7 @@ public class VirtDataBuilder extends VirtDataBaseListener {
 
     @Override
     public void enterVirtdataRecipe(VirtDataParser.VirtdataRecipeContext ctx) {
-        logger.debug("parsing virtdata lambda recipe.");
+        logger.trace("parsing virtdata lambda recipe.");
         flowContexts.clear();
         expressionContexts.clear();
         callContexts.clear();
@@ -40,12 +40,12 @@ public class VirtDataBuilder extends VirtDataBaseListener {
 
     @Override
     public void exitVirtdataRecipe(VirtDataParser.VirtdataRecipeContext ctx) {
-        logger.debug("parsed virtdata recipe.");
+        logger.trace("parsed virtdata recipe.");
     }
 
     @Override
     public void enterVirtdataFlow(VirtDataParser.VirtdataFlowContext ctx) {
-        logger.debug("parsing virtdata flow...");
+        logger.trace("parsing virtdata flow...");
         flowContexts.push(ctx);
         flows.push(new VirtDataFlow());
         calls.clear();
@@ -64,7 +64,6 @@ public class VirtDataBuilder extends VirtDataBaseListener {
     public void enterExpression(VirtDataParser.ExpressionContext ctx) {
         expressionContexts.push(ctx);
         flows.peek().addExpression(new Expression());
-        //logger.debug("parsing virtdata expression.");
     }
 
     @Override
