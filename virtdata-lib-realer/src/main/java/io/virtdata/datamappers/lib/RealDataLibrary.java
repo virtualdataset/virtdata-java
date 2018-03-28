@@ -18,7 +18,7 @@ public class RealDataLibrary extends BasicFunctionalLibrary implements VirtDataF
 
     @Override
     public String getName() {
-        return "realdata";
+        return "realer";
     }
 
     @Override
