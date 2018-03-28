@@ -8,12 +8,17 @@ import io.virtdata.datamappers.functions.LastNames;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This library provides high-level data generation functions which
+ * can be used out of the box with little customization needed.
+ * In some cases, the data is seeded from actual data.
+ */
 @AutoService(VirtDataFunctionLibrary.class)
-public class RealerFunctionLibrary extends BasicFunctionalLibrary implements VirtDataFunctionLibrary {
+public class RealDataLibrary extends BasicFunctionalLibrary implements VirtDataFunctionLibrary {
 
     @Override
     public String getName() {
-        return "realer";
+        return "realdata";
     }
 
     @Override
