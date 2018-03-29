@@ -115,6 +115,9 @@
                     <target>1.8</target>
                     <annotationProcessors>
                         <annotationProcessor>
+                            io.virtdata.processors.ManifestProcessor
+                        </annotationProcessor>
+                        <annotationProcessor>
                             com.google.auto.service.processor.AutoServiceProcessor
                         </annotationProcessor>
                     </annotationProcessors>

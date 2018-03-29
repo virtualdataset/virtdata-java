@@ -12,6 +12,7 @@ import org.reflections.util.FilterBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -68,8 +69,25 @@ public abstract class BasicFunctionalLibrary implements VirtDataFunctionLibrary 
         }
 
         for (Constructor<?> ctor : matchingConstructors) {
+            Object[] args=parameters;
+            if (ctor.isVarArgs()) {
+                args = new Object[ctor.getParameterCount()];
+                int varArgsCount = (parameters.length - ctor.getParameterCount())+1;
+                Class<?> varargArrayType = ctor.getParameterTypes()[ctor.getParameterTypes().length - 1];
+                Class<?> varArgType = varargArrayType.getComponentType();
+                Object varArgs = Array.newInstance(varArgType, varArgsCount);
+                for (int i = 0; i < parameters.length; i++) {
+                    if (i<args.length-1) {
+                        args[i] = parameters[i];
+                    } else {
+                        ((Object[])varArgs)[(i-args.length)+1]=varArgType.cast(parameters[i]);
+                    }
+                }
+                args[args.length-1]=varArgs;
+            }
+
             try {
-                Object func = ctor.newInstance(parameters);
+                Object func = ctor.newInstance((Object[])args);
                 boolean threadSafe = ctor.getClass().getAnnotation(ThreadSafeMapper.class) != null;
                 resolvedFunctions.add(
                         new ResolvedFunction(
@@ -103,8 +121,10 @@ public abstract class BasicFunctionalLibrary implements VirtDataFunctionLibrary 
 
     // TODO: Make this work with varargs constructors
     private boolean canAssignArguments(Constructor<?> targetConstructor, Object[] sourceParameters) {
+        boolean isAssignable=true;
         Class<?>[] targetTypes = targetConstructor.getParameterTypes();
-        if (sourceParameters.length != targetTypes.length) {
+
+        if (!targetConstructor.isVarArgs() && sourceParameters.length != targetTypes.length) {
             logger.trace(targetConstructor.toString() + " does not match source parameters (size): " + Arrays.toString(sourceParameters));
             return false;
         }
@@ -112,21 +132,27 @@ public abstract class BasicFunctionalLibrary implements VirtDataFunctionLibrary 
         for (int i = 0; i < sourceTypes.length; i++) {
             sourceTypes[i]=sourceParameters[i].getClass();
         }
-//        targetConstructor.get
 
-        boolean isAssignable = ClassUtils.isAssignable(sourceTypes, targetTypes, true);
+        if (targetConstructor.isVarArgs()) {
+            for (int i = 0; i < targetTypes.length - 1; i++) {
+                if (!ClassUtils.isAssignable(sourceTypes[i],targetTypes[i])) {
+                    isAssignable=false;
+                    break;
+                }
+            }
+            Class<?> componentType = targetTypes[targetTypes.length-1].getComponentType();
+            for (int i = targetTypes.length-1; i < sourceTypes.length; i++) {
+                if (!ClassUtils.isAssignable(sourceTypes[i],componentType,true)) {
+
+                    isAssignable=false;
+                    break;
+                }
+            }
+        } else {
+
+            isAssignable = ClassUtils.isAssignable(sourceTypes, targetTypes, true);
+        }
         return isAssignable;
-//        for (int i = 0; i < targetTypes.length; i++) {
-//            Class<?> targetType = targetTypes[i];
-//            Class<?> sourceType = sourceParameters[i].getClass();
-//            if (!ClassUtils.isAssignable(sourceType, targetType,true)
-//                    && !targetType.isAssignableFrom(sourceType)) {
-////            if (!targetType.isAssignableFrom(sourceType)) {
-//                logger.trace(targetConstructor.toString() + " is not assignable from input types (pair-wise): " + Arrays.toString(sourceParameters));
-//                return false;
-//            }
-//        }
-//        return true;
     }
 
     private boolean canAssignReturnType(Class<?> functionalClass, Class<?> returnType) {
