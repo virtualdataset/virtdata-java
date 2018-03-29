@@ -1,11 +1,11 @@
 package io.virtdata.basicsmappers.unary_string;
 
-import io.virtdata.api.Desc;
-import io.virtdata.api.ThreadSafeMapper;
+import io.virtdata.annotations.Description;
+import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.Function;
 
-@Desc("adds a String suffix to the input")
+@Description("adds a String suffix to the input")
 @ThreadSafeMapper
 public class Suffix implements Function<String,String> {
     private String suffix;

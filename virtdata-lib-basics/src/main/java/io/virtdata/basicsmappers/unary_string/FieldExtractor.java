@@ -1,6 +1,6 @@
 package io.virtdata.basicsmappers.unary_string;
 
-import io.virtdata.api.ThreadSafeMapper;
+import io.virtdata.annotations.ThreadSafeMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,8 +1,8 @@
 package io.virtdata.basicsmappers.from_long.to_string;
 
 import com.google.common.base.Charsets;
-import io.virtdata.api.Example;
-import io.virtdata.api.ThreadSafeMapper;
+import io.virtdata.annotations.Example;
+import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;

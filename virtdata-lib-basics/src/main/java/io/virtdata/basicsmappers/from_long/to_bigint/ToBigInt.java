@@ -1,6 +1,6 @@
 package io.virtdata.basicsmappers.from_long.to_bigint;
 
-import io.virtdata.api.ThreadSafeMapper;
+import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.math.BigInteger;
 import java.util.function.LongFunction;

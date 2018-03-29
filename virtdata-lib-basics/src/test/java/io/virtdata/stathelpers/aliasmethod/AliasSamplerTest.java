@@ -80,7 +80,7 @@ public class AliasSamplerTest {
 
     // Single threaded performance: 100000000 ops in 1346200937 nanos for 74283115.730739 ops/s
     // yes, that is >70M discrete probability samples per second, but hey, it's only 1M discrete probabilities in this test,
-    @Test(enabled=false)
+    @Test(enabled=true)
     public void testAliasMicroBenchLargeMany() {
         List<EvProbD> events = new ArrayList<>();
         int evt_count=1_000_000;
@@ -90,7 +90,7 @@ public class AliasSamplerTest {
         }
         AliasSampler as = new AliasSampler(events);
 
-        long count=1_000_000_00;
+        long count=100_000_000;
         long startAt = System.nanoTime();
         for (int i = 0; i < count; i++) {
             double v = (double)i / count;

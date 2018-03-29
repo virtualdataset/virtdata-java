@@ -36,8 +36,8 @@
 
 package io.virtdata.basicsmappers.from_long.to_time_types;
 
-import io.virtdata.api.DeprecatedFunction;
-import io.virtdata.api.ThreadSafeMapper;
+import io.virtdata.annotations.DeprecatedFunction;
+import io.virtdata.annotations.ThreadSafeMapper;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 

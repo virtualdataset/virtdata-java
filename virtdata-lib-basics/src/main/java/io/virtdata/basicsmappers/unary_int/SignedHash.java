@@ -1,7 +1,7 @@
 package io.virtdata.basicsmappers.unary_int;
 
 import de.greenrobot.common.hash.Murmur3F;
-import io.virtdata.api.ThreadSafeMapper;
+import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.nio.ByteBuffer;
 import java.util.function.IntUnaryOperator;

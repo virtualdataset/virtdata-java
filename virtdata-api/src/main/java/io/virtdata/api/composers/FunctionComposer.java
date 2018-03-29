@@ -1,7 +1,7 @@
 package io.virtdata.api.composers;
 
+import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.api.DataMapper;
-import io.virtdata.api.ThreadSafeMapper;
 import io.virtdata.core.DataMapperFunctionMapper;
 import io.virtdata.core.ResolvedFunction;
 

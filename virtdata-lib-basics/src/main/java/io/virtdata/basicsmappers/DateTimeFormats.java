@@ -1,7 +1,7 @@
 package io.virtdata.basicsmappers;
 
-import io.virtdata.api.Example;
-import io.virtdata.api.ThreadSafeMapper;
+import io.virtdata.annotations.Example;
+import io.virtdata.annotations.ThreadSafeMapper;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;

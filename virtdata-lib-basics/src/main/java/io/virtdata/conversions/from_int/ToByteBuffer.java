@@ -18,7 +18,7 @@
 
 package io.virtdata.conversions.from_int;
 
-import io.virtdata.api.ThreadSafeMapper;
+import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.nio.ByteBuffer;
 import java.util.function.IntFunction;

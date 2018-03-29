@@ -18,7 +18,7 @@
 
 package io.virtdata.basicsmappers.from_long.to_long;
 
-import io.virtdata.api.ThreadSafeMapper;
+import io.virtdata.annotations.ThreadSafeMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

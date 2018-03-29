@@ -1,6 +1,6 @@
 package io.virtdata.stathelpers.aliasmethod;
 
-import io.virtdata.api.ThreadSafeMapper;
+import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.stathelpers.EvProbD;
 
 import java.nio.ByteBuffer;

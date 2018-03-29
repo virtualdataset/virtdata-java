@@ -18,7 +18,7 @@
 
 package io.virtdata.random;
 
-import io.virtdata.api.DeprecatedFunction;
+import io.virtdata.annotations.DeprecatedFunction;
 import org.apache.commons.math3.random.MersenneTwister;
 
 import java.nio.ByteBuffer;

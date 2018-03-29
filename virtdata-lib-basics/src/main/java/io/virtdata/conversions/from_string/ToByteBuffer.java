@@ -19,7 +19,7 @@
 package io.virtdata.conversions.from_string;
 
 import com.google.common.base.Charsets;
-import io.virtdata.api.ThreadSafeMapper;
+import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.nio.ByteBuffer;
 import java.util.function.Function;

@@ -2,6 +2,7 @@ package io.virtdata;
 
 import io.virtdata.api.DataMapper;
 import io.virtdata.basicsmappers.from_long.to_string.MapTemplate;
+import io.virtdata.basicsmappers.from_long.to_string.Template;
 import io.virtdata.core.VirtData;
 import io.virtdata.testing.functions.ARandomPOJO;
 import org.testng.annotations.Test;
@@ -72,17 +73,17 @@ public class ComposerLogicTest {
         assertThat(dataMapper.get().get(1)).isOfAnyClassIn(ARandomPOJO.class);
     }
 
-//    @Test
-//    public void testNestedFunction() {
-//        Template t = new Template("_{}_{}_", String::valueOf, String::valueOf);
-//        String r = t.apply(5);
-//        assertThat(r).isEqualTo("_5_5_");
-//        Optional<DataMapper<Object>> m2 = VirtData.getMapper("Template('_{}_',NumberNameToString())");
-//        assertThat(m2).isPresent();
-//        DataMapper<Object> dm2 = m2.get();
-//        Object r3 = dm2.get(42L);
-//
-//    }
+    @Test
+    public void testNestedFunction() {
+        Template t = new Template("_{}_{}_", String::valueOf, String::valueOf);
+        String r = t.apply(5);
+        assertThat(r).isEqualTo("_5_5_");
+        Optional<DataMapper<String>> m2 = VirtData.getMapper("Template('_{}_',long->NumberNameToString()->java.lang.String)");
+        assertThat(m2).isPresent();
+        DataMapper<String> dm2 = m2.get();
+        Object r3 = dm2.get(42L);
+
+    }
 
     @Test
     public void testMapTemplate() {

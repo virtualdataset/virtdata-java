@@ -18,7 +18,7 @@
 
 package io.virtdata.basicsmappers.from_long.to_string;
 
-import io.virtdata.api.ThreadSafeMapper;
+import io.virtdata.annotations.ThreadSafeMapper;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 

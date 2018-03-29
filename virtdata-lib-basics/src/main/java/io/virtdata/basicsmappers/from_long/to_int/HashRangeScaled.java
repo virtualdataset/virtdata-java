@@ -1,6 +1,6 @@
 package io.virtdata.basicsmappers.from_long.to_int;
 
-import io.virtdata.api.ThreadSafeMapper;
+import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.basicsmappers.from_long.to_long.Hash;
 
 import java.util.function.LongToIntFunction;

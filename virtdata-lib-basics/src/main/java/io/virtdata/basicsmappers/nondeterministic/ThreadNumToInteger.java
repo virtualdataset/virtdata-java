@@ -18,7 +18,7 @@
 
 package io.virtdata.basicsmappers.nondeterministic;
 
-import io.virtdata.api.ThreadSafeMapper;
+import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongFunction;
 import java.util.regex.Matcher;

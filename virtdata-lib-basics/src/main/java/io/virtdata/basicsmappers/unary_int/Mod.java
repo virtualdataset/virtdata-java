@@ -14,7 +14,7 @@
 */
 package io.virtdata.basicsmappers.unary_int;
 
-import io.virtdata.api.ThreadSafeMapper;
+import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.IntUnaryOperator;
 

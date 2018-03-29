@@ -1,6 +1,6 @@
 package io.virtdata.datamappers.functions;
 
-import io.virtdata.api.ThreadSafeMapper;
+import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.stathelpers.aliasmethod.WeightedStrings;
 
 import java.util.function.LongFunction;

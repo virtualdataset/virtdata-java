@@ -16,6 +16,9 @@
 
     <modules>
         <module>project-defaults</module>
+        <module>project-annotations</module>
+        <module>project-processors</module>
+
         <module>virtdata-api</module>
         <module>virtdata-userlibs</module>
         <module>virtdata-lang</module>

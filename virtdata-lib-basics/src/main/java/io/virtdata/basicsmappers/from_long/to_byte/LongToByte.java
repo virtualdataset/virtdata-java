@@ -1,6 +1,6 @@
 package io.virtdata.basicsmappers.from_long.to_byte;
 
-import io.virtdata.api.ThreadSafeMapper;
+import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongFunction;
 

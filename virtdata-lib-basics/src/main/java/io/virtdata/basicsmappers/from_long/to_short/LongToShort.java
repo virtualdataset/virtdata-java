@@ -1,7 +1,7 @@
 package io.virtdata.basicsmappers.from_long.to_short;
 
-import io.virtdata.api.DeprecatedFunction;
-import io.virtdata.api.ThreadSafeMapper;
+import io.virtdata.annotations.DeprecatedFunction;
+import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongFunction;
 

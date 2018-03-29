@@ -1,8 +1,8 @@
 package io.virtdata.basicsmappers.from_long.to_time_types;
 
+import io.virtdata.annotations.Example;
+import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.basicsmappers.DateTimeFormats;
-import io.virtdata.api.Example;
-import io.virtdata.api.ThreadSafeMapper;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;

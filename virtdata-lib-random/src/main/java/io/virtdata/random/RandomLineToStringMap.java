@@ -19,7 +19,7 @@
 package io.virtdata.random;
 
 
-import io.virtdata.api.DeprecatedFunction;
+import io.virtdata.annotations.DeprecatedFunction;
 import org.apache.commons.math3.distribution.IntegerDistribution;
 import org.apache.commons.math3.distribution.UniformIntegerDistribution;
 import org.apache.commons.math3.random.MersenneTwister;

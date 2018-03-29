@@ -14,12 +14,12 @@
 */
 package io.virtdata.basicsmappers.from_long.to_long;
 
-import io.virtdata.api.Desc;
-import io.virtdata.api.ThreadSafeMapper;
+import io.virtdata.annotations.Description;
+import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongUnaryOperator;
 
-@Desc("divides the operand by an long and returns the whole part")
+@Description("divides the operand by an long and returns the whole part")
 @ThreadSafeMapper
 public class Div implements LongUnaryOperator {
     private int divisor;

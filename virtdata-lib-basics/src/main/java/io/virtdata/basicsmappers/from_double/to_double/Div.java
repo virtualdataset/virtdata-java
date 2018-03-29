@@ -1,6 +1,6 @@
 package io.virtdata.basicsmappers.from_double.to_double;
 
-import io.virtdata.api.ThreadSafeMapper;
+import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.DoubleUnaryOperator;
 

@@ -1,7 +1,7 @@
 package io.virtdata.random;
 
+import io.virtdata.annotations.DeprecatedFunction;
 import io.virtdata.api.DataMapper;
-import io.virtdata.api.DeprecatedFunction;
 import org.apache.commons.math3.random.MersenneTwister;
 
 @DeprecatedFunction("random mappers are not deterministic. They will be replaced with hash-based functions.")

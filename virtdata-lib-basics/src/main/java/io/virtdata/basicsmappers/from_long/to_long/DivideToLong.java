@@ -18,14 +18,14 @@
 
 package io.virtdata.basicsmappers.from_long.to_long;
 
-import io.virtdata.api.Desc;
+import io.virtdata.annotations.Description;
 
 import java.util.function.LongUnaryOperator;
 
 /**
  * Integer devide the cycle, the other side of modulo.
  */
-@Desc("divide the long input by a long divisor, returning a long result")
+@Description("divide the long input by a long divisor, returning a long result")
 public class DivideToLong implements LongUnaryOperator {
 
     private final long divisor;

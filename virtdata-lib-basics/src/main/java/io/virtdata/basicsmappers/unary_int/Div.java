@@ -14,12 +14,12 @@
 */
 package io.virtdata.basicsmappers.unary_int;
 
-import io.virtdata.api.Desc;
-import io.virtdata.api.ThreadSafeMapper;
+import io.virtdata.annotations.Description;
+import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.IntUnaryOperator;
 
-@Desc("divides the operand by an integer and returns the whole part")
+@Description("divides the operand by an integer and returns the whole part")
 @ThreadSafeMapper
 public class Div implements IntUnaryOperator {
     private int divisor;

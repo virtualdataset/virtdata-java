@@ -36,7 +36,7 @@
 
 package io.virtdata.basicsmappers.from_long.to_time_types;
 
-import io.virtdata.api.ThreadSafeMapper;
+import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.Date;
 import java.util.function.LongFunction;

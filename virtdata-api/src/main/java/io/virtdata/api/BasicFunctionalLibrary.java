@@ -1,5 +1,6 @@
 package io.virtdata.api;
 
+import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.core.ResolvedFunction;
 import org.apache.commons.lang3.ClassUtils;
 import org.reflections.Reflections;

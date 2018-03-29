@@ -15,9 +15,9 @@ import io.virtdata.basicsmappers.from_long.to_inetaddress.ToInetAddress;
 import io.virtdata.basicsmappers.from_long.to_int.Add;
 import io.virtdata.basicsmappers.from_long.to_short.ModuloToShort;
 import io.virtdata.basicsmappers.from_long.to_string.HashedFileExtractToString;
+import io.virtdata.basicsmappers.from_long.to_string.Template;
 import io.virtdata.basicsmappers.from_long.to_time_types.ToDate;
 import io.virtdata.basicsmappers.from_long.to_time_types.ToEpochTimeUUID;
-import io.virtdata.basicsmappers.unary_string.Suffix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +45,7 @@ public class BasicDataMappers extends BasicFunctionalLibrary {
     public List<Package> getSearchPackages() {
         return new ArrayList<Package>() {
             {
+                add(Template.class.getPackage());
                 add(io.virtdata.basicsmappers.from_double.to_double.Add.class.getPackage());
                 add(io.virtdata.basicsmappers.nondeterministic.ThreadNumToLong.class.getPackage());
                 add(io.virtdata.basicsmappers.from_long.to_uuid.ToHashedUUID.class.getPackage());

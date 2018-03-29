@@ -14,12 +14,12 @@
 */
 package io.virtdata.basicsmappers.from_long.to_int;
 
-import io.virtdata.api.Desc;
-import io.virtdata.api.ThreadSafeMapper;
+import io.virtdata.annotations.Description;
+import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongToIntFunction;
 
-@Desc("divides the operand by an long and returns the whole part")
+@Description("divides the operand by an long and returns the whole part")
 @ThreadSafeMapper
 public class Div implements LongToIntFunction {
     private int divisor;

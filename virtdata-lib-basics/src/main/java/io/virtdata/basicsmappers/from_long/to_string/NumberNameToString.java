@@ -18,7 +18,7 @@
 
 package io.virtdata.basicsmappers.from_long.to_string;
 
-import io.virtdata.api.ThreadSafeMapper;
+import io.virtdata.annotations.ThreadSafeMapper;
 import uk.ydubey.formatter.numtoword.NumberInWordsFormatter;
 
 import java.util.function.LongFunction;
