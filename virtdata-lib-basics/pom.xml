@@ -113,9 +113,10 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
+                    <generatedSourcesDirectory>${project.build.directory}/classes/io/virtdata/generated/annotations</generatedSourcesDirectory>
                     <annotationProcessors>
                         <annotationProcessor>
-                            io.virtdata.processors.ManifestProcessor
+                            io.virtdata.processors.DocumentationProcessor
                         </annotationProcessor>
                         <annotationProcessor>
                             com.google.auto.service.processor.AutoServiceProcessor
