@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.function.LongUnaryOperator;
 
 /**
- * Provides a stable hashed that is seeded by all the interface
+ * Provides a stable hash that is seeded by all the interface
  * naming data on a given host. Three string properties from each known
  * interface on the system is used to create a stable seed value.
  * This is used to initialize the hash function each time before it is
@@ -19,7 +19,7 @@ import java.util.function.LongUnaryOperator;
  * seeding, this hash function operates exactly the same as {@link Hash}
  */
 @Example("HostHash()")
-@Example("HostHash(subseed)")
+@Example({"HostHash(subseed)","Further permute the host hash with a specific seed"})
 public class HostHash implements LongUnaryOperator {
 
     private static long hostHash = computeHostHash();

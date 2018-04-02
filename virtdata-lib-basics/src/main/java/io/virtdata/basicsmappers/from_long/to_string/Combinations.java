@@ -26,12 +26,12 @@ import java.util.function.LongFunction;
  * which can be represented in a long value. (This is a very high
  * number).
  */
+@Example({"Combinations('A-Z;A-Z')","a two digit alphanumeric code. Wraps at 26^2"})
+@Example({"Combinations('0-9A-F')","a single hexadecimal digit"})
+@Example({"Combinations('0123456789ABCDEF')","a single hexadecimal digit"})
+@Example({"Combinations('0-9A-F;0-9A-F;0-9A-F;0-9A-F;')","two bytes of hexadecimal"})
+@Example({"Combinations('A-9')","upper case alphanumeric"})
 @ThreadSafeMapper
-@Example("Combinations('A-Z;A-Z') // A two digit alphanumeric code. Wraps at 26^2")
-@Example("Combinations('0-9A-F') // A single digit of hexadecimal")
-@Example("Combinations('0123456789ABCDEF') // Same as Above")
-@Example("Combinations('0-9A-F;0-9A-F;0-9A-F;0-9A-F;') // For digits of hexadecimal")
-@Example("Combinations('A-9')")
 public class Combinations implements LongFunction<String> {
 
     private final char[][] charsets;

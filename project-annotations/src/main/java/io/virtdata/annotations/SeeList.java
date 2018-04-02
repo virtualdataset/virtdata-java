@@ -1,11 +1,13 @@
 package io.virtdata.annotations;
 
-
 import java.lang.annotation.*;
 
+
+/**
+ * Direct the user to additional resources
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@Repeatable(value = Examples.class)
-public @interface Example {
-    String[] value();
+public @interface SeeList {
+    See[] value();
 }
