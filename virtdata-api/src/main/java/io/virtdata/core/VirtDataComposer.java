@@ -121,6 +121,7 @@ public class VirtDataComposer {
         List<ResolvedFunction> flattenedFuncs = optimizePath(funcs, classOf(flow.getLastExpression().getCall().getOutputType()));
 
         if (flattenedFuncs.size() == 1) {
+            logger.trace("FUNCTION resolution succeeded (single): '" + flow.toString() + "'");
             return Optional.of(flattenedFuncs.get(0));
         }
 
@@ -128,11 +129,18 @@ public class VirtDataComposer {
         logger.trace("composed summary: " + summarize(flattenedFuncs));
         boolean isThreadSafe = true;
         for (ResolvedFunction resolvedFunction : flattenedFuncs) {
-            assembly.andThen(resolvedFunction.getFunctionObject());
-            if (!resolvedFunction.isThreadSafe()) {
-                isThreadSafe = false;
+            try {
+                assembly.andThen(resolvedFunction.getFunctionObject());
+                if (!resolvedFunction.isThreadSafe()) {
+                    isThreadSafe = false;
+                }
+            } catch (Exception e) {
+                logger.error("FUNCTION resolution failed: '" + flow.toString() + "': " + e.toString());
+                throw e;
             }
         }
+        logger.trace("FUNCTION resolution succeeded: (multi) '" + flow.toString() + "'");
+
         ResolvedFunction composedFunction = assembly.getResolvedFunction(isThreadSafe);
 
         return Optional.of(composedFunction);
