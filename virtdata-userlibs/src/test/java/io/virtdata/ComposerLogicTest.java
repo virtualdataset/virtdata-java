@@ -77,7 +77,7 @@ public class ComposerLogicTest {
     public void testNestedFunction() {
         Template t = new Template("_{}_{}_", String::valueOf, String::valueOf);
         String r = t.apply(5);
-        assertThat(r).isEqualTo("_5_5_");
+        assertThat(r).isEqualTo("_5_6_");
         Optional<DataMapper<String>> m2 = VirtData.getMapper("Template('_{}_',long->NumberNameToString()->java.lang.String)");
         assertThat(m2).isPresent();
         DataMapper<String> dm2 = m2.get();
@@ -85,6 +85,13 @@ public class ComposerLogicTest {
 
     }
 
+    public void testBrokenTemplate() {
+        Optional<DataMapper<String>> m2 = VirtData.getMapper("Template('{\"alt1-{}\",\"alt2-{}\"}',ToLongFunction(Identity()),ToLongFunction(Identity()))");
+        assertThat(m2).isPresent();
+        DataMapper<String> dm2 = m2.get();
+        Object r3 = dm2.get(42L);
+
+    }
     @Test
     public void testMapTemplate() {
         MapTemplate mt = new MapTemplate(l -> (int)l,String::valueOf, String::valueOf);

@@ -7,13 +7,20 @@ import java.util.function.LongFunction;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Test
 public class TemplateTest {
 
-    @Test
     public void testTemplate() {
         Template t = new Template("{}-->{}{}", new F("={}="), new F("_{}_"), new F("<{}>"));
-        assertThat(t.apply(6L)).isEqualTo("=6=-->_6_<6>");
+        assertThat(t.apply(6L)).isEqualTo("=6=-->_7_<8>");
     }
+
+    public void testExtraCurlyBraces() {
+        Template t = new Template("{{}-->{}{}}", new F("={}="), new F("_{}_"), new F("<{}>"));
+        assertThat(t.apply(6L)).isEqualTo("{=6=-->_7_<8>}");
+    }
+
+
 
     private static class F implements LongFunction<String> {
 

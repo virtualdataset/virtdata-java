@@ -113,7 +113,8 @@ public abstract class BasicFunctionalLibrary implements VirtDataFunctionLibrary 
                     boolean isPublic = (m.getModifiers()&Modifier.PUBLIC)>0;
                     boolean isNotString = !m.getName().equals("toString");
                     boolean isApplyMethod = m.getName().startsWith("apply");
-                    return isNotDefault && isNotBridge && isNotSynthetic && isPublic && isNotString && isApplyMethod;
+                    boolean isFunctional = isNotDefault && isNotBridge && isNotSynthetic && isPublic && isNotString && isApplyMethod;
+                    return isFunctional;
                 })
                 .findFirst();
         return applyMethods.isPresent();

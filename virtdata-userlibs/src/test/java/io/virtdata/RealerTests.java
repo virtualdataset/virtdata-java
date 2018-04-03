@@ -12,7 +12,7 @@ public class RealerTests {
     public void testLastNames() {
         DataMapper mapper = VirtData.getMapper("LastNames()").orElse(null);
         assertThat(mapper).isNotNull();
-        assertThat(mapper.get(0L)).isEqualTo("Strandberg");
+        assertThat(mapper.get(0L)).isEqualTo("Vanderploeg");
     }
 
     public void testFirstNames() {
@@ -36,7 +36,7 @@ public class RealerTests {
     public void testFullNames() {
         DataMapper mapper = VirtData.getMapper("FullNames()").orElse(null);
         assertThat(mapper).isNotNull();
-        assertThat(mapper.get(0L)).isEqualTo("Leigh Strandberg");
+        assertThat(mapper.get(0L)).isEqualTo("Leigh Vanderploeg");
     }
 
 

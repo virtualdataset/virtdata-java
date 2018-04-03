@@ -37,10 +37,10 @@ public class VirtDataLibraries implements VirtDataFunctionLibrary  {
     {
         List<ResolvedFunction> resolvedFunctions = new ArrayList<>();
         for (VirtDataFunctionLibrary library : libraries.values()) {
-            List<ResolvedFunction> forlib = library.resolveFunctions(returnType, inputType, functionName, parameters);
+            List<ResolvedFunction> resolved = library.resolveFunctions(returnType, inputType, functionName, parameters);
             // Written this way to allow for easy debugging and understanding, do not convert to .stream()...
-            if (forlib.size()>0) {
-                resolvedFunctions.addAll(forlib);
+            if (resolved.size()>0) {
+                resolvedFunctions.addAll(resolved);
             }
         }
         return resolvedFunctions;
