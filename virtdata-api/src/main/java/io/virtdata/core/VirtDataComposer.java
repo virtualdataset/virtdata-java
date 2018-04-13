@@ -208,7 +208,7 @@ public class VirtDataComposer {
                 l -> l.stream().map(String::length).max(Integer::compare)).collect(Collectors.toList());
         String summary = spans.stream().map(
                 l -> l.stream().map(String::valueOf).collect(Collectors.joining("|\n"))
-        ).collect(Collectors.joining("\n"));
+        ).collect(Collectors.joining("\n\n"));
         return summary;
     }
 

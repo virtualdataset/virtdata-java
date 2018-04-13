@@ -16,7 +16,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ComposerLogicTest {
 
 
-    @Test
     public void testSignatureMapping() {
         Optional<DataMapper<Object>> dataMapper = VirtData.getMapper(
                 "compose HashRange(1000000000,9999999999L); ToString() -> String"
@@ -27,7 +26,6 @@ public class ComposerLogicTest {
         assertThat(v).isNotNull();
     }
 
-    @Test
     public void  testIntegratedComposer() {
         Optional<DataMapper<Object>> dataMapper = VirtData.getMapper(
                 "binomial(8,0.5); ToDate() -> java.util.Date"
@@ -37,7 +35,6 @@ public class ComposerLogicTest {
         assertThat(dataMapper.get().get(1)).isNotNull();
     }
 
-    @Test
     public void testComplexComposition() {
         Optional<DataMapper<Object>> dataMapper = VirtData.getMapper(
                 "Hash(); mapto_normal(50,10.0); Add(50); ToString(); Suffix('avgdays') -> String"
@@ -50,13 +47,11 @@ public class ComposerLogicTest {
 //        }
     }
 
-    @Test
     public void testComposerOnly() {
         Optional<DataMapper<Object>> dataMapper = VirtData.getMapper("Add(5)");
         assertThat(dataMapper.isPresent()).isTrue();
     }
 
-    @Test
     public void testResourceLoader() {
         Optional<DataMapper<Object>> dataMapper = VirtData.getMapper(" ModuloLineToString('data/variable_words.txt') -> String");
         assertThat(dataMapper).isPresent();
@@ -66,14 +61,12 @@ public class ComposerLogicTest {
         assertThat(dataMapper.get().get(1)).isEqualToComparingFieldByField("completion_count");
     }
 
-    @Test
     public void testPOJOTypeSpecializer() {
         Optional<DataMapper<Object>> dataMapper = VirtData.getMapper("compose LongToLongPOJO() -> io.virtdata.testing.functions.ARandomPOJO");
         assertThat(dataMapper).isPresent();
         assertThat(dataMapper.get().get(1)).isOfAnyClassIn(ARandomPOJO.class);
     }
 
-    @Test
     public void testNestedFunction() {
         Template t = new Template("_{}_{}_", String::valueOf, String::valueOf);
         String r = t.apply(5);
@@ -92,7 +85,7 @@ public class ComposerLogicTest {
         Object r3 = dm2.get(42L);
 
     }
-    @Test
+
     public void testMapTemplate() {
         MapTemplate mt = new MapTemplate(l -> (int)l,String::valueOf, String::valueOf);
         assertThat(mt.apply(3)).containsEntry("3","3");
@@ -106,7 +99,6 @@ public class ComposerLogicTest {
         assertThat(o.get("six")).isEqualTo("six");
     }
 
-    @Test
     public void testNegativeLongs() {
         Optional<DataMapper<Long>> mo = VirtData.getMapper("HashRange(-2147483648L,2147483647L) -> long");
         assertThat(mo).isPresent();
@@ -114,6 +106,11 @@ public class ComposerLogicTest {
         Long result = longDataMapper.get(5L);
         assertThat(result).isNotNull();
         assertThat(result).isEqualTo(1398623797L);
+    }
+
+    public void testBrokenFlow() {
+        Optional<DataMapper<String>> mo = VirtData.getMapper("HashRange(-2147483648L,2147483647L) -> long");
+        assertThat(mo).isPresent();
 
     }
 }

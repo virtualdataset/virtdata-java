@@ -10,7 +10,7 @@ import io.virtdata.basicsmappers.from_long.to_boolean.ModuloToBoolean;
 import io.virtdata.basicsmappers.from_long.to_byte.ModuloToByte;
 import io.virtdata.basicsmappers.from_long.to_bytebuffer.HashedToByteBuffer;
 import io.virtdata.basicsmappers.from_long.to_collection.HashedLineToStringStringMap;
-import io.virtdata.basicsmappers.from_long.to_double.LongRangeToDouble;
+import io.virtdata.basicsmappers.from_long.to_double.ToDouble;
 import io.virtdata.basicsmappers.from_long.to_inetaddress.ToInetAddress;
 import io.virtdata.basicsmappers.from_long.to_int.Add;
 import io.virtdata.basicsmappers.from_long.to_short.ModuloToShort;
@@ -67,7 +67,7 @@ public class BasicDataMappers extends BasicFunctionalLibrary {
                 add(HashedToByteBuffer.class.getPackage());
                 add(ModuloToShort.class.getPackage());
                 add(ModuloToByte.class.getPackage());
-                add(LongRangeToDouble.class.getPackage());
+                add(ToDouble.class.getPackage());
             }
         }
         .stream().distinct().collect(Collectors.toList());
