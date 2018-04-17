@@ -9,7 +9,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class AliasSamplerTest {
+public class AliasSamplerDoubleIntTest {
 
     @Test
     public void testAliasSamplerBinaryFractions() {
@@ -23,7 +23,7 @@ public class AliasSamplerTest {
         events.add(new EvProbD(7,32.0D));
         events.add(new EvProbD(8,64.0D));
 
-        AliasSampler as = new AliasSampler(events);
+        AliasSamplerDoubleInt as = new AliasSamplerDoubleInt(events);
         int[] stats = new int[9];
         for (int i = 0; i < 10000; i++) {
             double v = (double)i / 10000D;
@@ -42,7 +42,7 @@ public class AliasSamplerTest {
         events.add(new EvProbD(2,2D));
         events.add(new EvProbD(3,3D));
 
-        AliasSampler as = new AliasSampler(events);
+        AliasSamplerDoubleInt as = new AliasSamplerDoubleInt(events);
 
         int[] stats = new int[4];
         for (int i = 0; i < 10000; i++) {
@@ -64,7 +64,7 @@ public class AliasSamplerTest {
         events.add(new EvProbD(2,2D));
         events.add(new EvProbD(3,3D));
 
-        AliasSampler as = new AliasSampler(events);
+        AliasSamplerDoubleInt as = new AliasSamplerDoubleInt(events);
 
         long count=1_000_000_00;
         long startAt = System.nanoTime();
@@ -88,7 +88,7 @@ public class AliasSamplerTest {
             double val = (double)i/(double)evt_count;
             events.add(new EvProbD(i,val));
         }
-        AliasSampler as = new AliasSampler(events);
+        AliasSamplerDoubleInt as = new AliasSamplerDoubleInt(events);
 
         long count=100_000_000;
         long startAt = System.nanoTime();

@@ -21,7 +21,7 @@ public class WeightedStrings implements LongFunction<String> {
     private final String valueColumn;
     private final String weightColumn;
     private final String[] lines;
-    private final AliasSampler sampler;
+    private final AliasSamplerDoubleInt sampler;
 
     /**
      * Creata a sampler of strings from the given CSV file. The CSV file must have plain CSV headers
@@ -46,7 +46,7 @@ public class WeightedStrings implements LongFunction<String> {
                 events.add(new EvProbD(values.size()-1,Double.valueOf(weight)));
             }
         }
-        sampler = new AliasSampler(events);
+        sampler = new AliasSamplerDoubleInt(events);
         lines = values.toArray(new String[0]);
     }
 
