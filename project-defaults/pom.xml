@@ -137,17 +137,6 @@
         </developer>
     </developers>
 
-    <repositories>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>bintray-jeta-maven</id>
-            <name>bintray</name>
-            <url>https://bintray.com/brooth/maven</url>
-        </repository>
-    </repositories>
-
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh-snapshot</id>
