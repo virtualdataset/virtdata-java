@@ -13,9 +13,7 @@ import java.util.function.LongUnaryOperator;
  * value to this base value as determined by the provided
  * time specifier. It wraps any overflow within this range as well.
  */
-@Example("StartingEpochMillis('2017-01-01T23:59:59')")
-@Example("StartingEpochMillis('2012',12345)")
-@Example("StartingEpochMillis('20171231T1015.243',123,456)")
+@Example("StartingEpochMillis('2017-01-01 23:59:59')")
 @ThreadSafeMapper
 public class StartingEpochMillis implements LongUnaryOperator {
 

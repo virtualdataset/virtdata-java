@@ -29,7 +29,7 @@ import java.util.List;
 @Example("ToEpochTimeUUID() // basetime 0, computed node data, empty clock data")
 @Example("ToEpochTimeUUID(5234) // basetime 0, specified node data (5234), empty clock data")
 @Example("ToEpochTimeUUID(31,337) // basetime 0, specified node data (31) and clock data (337)")
-@Example("ToEpochTimeUUID('2017-01-01T23:59:59') // specified basetime, computed node data, empty clock data")
+@Example("ToEpochTimeUUID('2017-01-01 23:59:59') // specified basetime, computed node data, empty clock data")
 @Example("ToEpochTimeUUID('2012',12345) // basetime at start if 2012, with node data 12345, empty clock data")
 @Example("ToEpochTimeUUID('20171231T1015.243',123,456) // ms basetime, specified node and clock data")
 @ThreadSafeMapper

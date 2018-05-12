@@ -33,9 +33,9 @@ import java.util.stream.Collectors;
  */
 @AutoService(VirtDataFunctionLibrary.class)
 public class BasicDataMappers extends BasicFunctionalLibrary {
-    private static final Logger logger = LoggerFactory.getLogger(BasicDataMappers.class);
 
     public final static String dataDir = "data";
+    private static final Logger logger = LoggerFactory.getLogger(BasicDataMappers.class);
 
     @Override
     public String getName() {
@@ -70,7 +70,7 @@ public class BasicDataMappers extends BasicFunctionalLibrary {
                 add(ToDouble.class.getPackage());
             }
         }
-        .stream().distinct().collect(Collectors.toList());
+                .stream().distinct().collect(Collectors.toList());
 
     }
 }
