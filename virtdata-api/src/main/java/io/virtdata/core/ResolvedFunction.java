@@ -137,8 +137,12 @@ public class ResolvedFunction {
                 Class<?> init = initializerValues[i].getClass();
                 sb.append(init.isPrimitive() ? init.getName() : init.getSimpleName());
                 sb.append("=>");
-                Class<?> isig = initializerSignature[i];
-                sb.append(isig.isPrimitive() ? isig.getName() : isig.getSimpleName());
+                if (i<initializerSignature.length) {
+                    Class<?> isig = initializerSignature[i];
+                    sb.append(isig.isPrimitive() ? isig.getName() : isig.getSimpleName());
+                } else {
+                    sb.append("init-signature-mismatch");
+                }
                 if (i<initializerValues.length-1) {
                     sb.append(",");
                 }

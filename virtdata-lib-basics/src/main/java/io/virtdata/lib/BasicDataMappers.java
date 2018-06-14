@@ -1,6 +1,7 @@
 package io.virtdata.lib;
 
 import com.google.auto.service.AutoService;
+import io.virtdata.annotations.MappingLibrary;
 import io.virtdata.api.BasicFunctionalLibrary;
 import io.virtdata.api.VirtDataFunctionLibrary;
 import io.virtdata.basicsmappers.from_double.to_float.DoubleToFloat;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
  * <p>This library simply relies on {@link VirtDataFunctionLibrary}.</p>
  */
 @AutoService(VirtDataFunctionLibrary.class)
+@MappingLibrary(name = "basics")
 public class BasicDataMappers extends BasicFunctionalLibrary {
 
     public final static String dataDir = "data";

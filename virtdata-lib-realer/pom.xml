@@ -70,6 +70,9 @@
                         <annotationProcessor>
                             com.google.auto.service.processor.AutoServiceProcessor
                         </annotationProcessor>
+                        <annotationProcessor>
+                            io.virtdata.processors.DocumentationProcessor
+                        </annotationProcessor>
                     </annotationProcessors>
                 </configuration>
             </plugin>

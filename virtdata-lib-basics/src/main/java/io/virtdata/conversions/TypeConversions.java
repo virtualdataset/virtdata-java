@@ -1,6 +1,7 @@
 package io.virtdata.conversions;
 
 import com.google.auto.service.AutoService;
+import io.virtdata.annotations.MappingLibrary;
 import io.virtdata.api.BasicFunctionalLibrary;
 import io.virtdata.api.VirtDataFunctionLibrary;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import java.util.List;
  * <p>This library simply relies on {@link VirtDataFunctionLibrary}.</p>
  */
 @AutoService(VirtDataFunctionLibrary.class)
+@MappingLibrary(name = "conversions")
 public class TypeConversions extends BasicFunctionalLibrary {
 
     private static final Logger logger = LoggerFactory.getLogger(TypeConversions.class);
