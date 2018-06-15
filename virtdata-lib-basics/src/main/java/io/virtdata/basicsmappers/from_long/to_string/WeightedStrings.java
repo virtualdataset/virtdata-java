@@ -43,8 +43,8 @@ public class WeightedStrings implements LongFunction<String> {
             if (pair.length != 2) {
                 throw new RuntimeException("Each pair must be in value:weight form");
             }
-            values[i] = pair[0];
-            parsedWeights.add(Double.valueOf(pair[1]));
+            values[i] = pair[0].trim();
+            parsedWeights.add(Double.valueOf(pair[1].trim()));
         }
         double total = parsedWeights.stream().mapToDouble(f -> f).sum();
         unitWeights = parsedWeights.stream().mapToDouble(f -> f / total).toArray();

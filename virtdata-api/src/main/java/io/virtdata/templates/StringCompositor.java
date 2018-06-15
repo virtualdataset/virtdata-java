@@ -59,43 +59,6 @@ public class StringCompositor implements ValuesBinder<StringCompositor, String> 
         return sections.toArray(new String[0]);
     }
 
-//    @Override
-//    public String bindValues(StringCompositor context, Object[] values) {
-//        StringBuilder sb = new StringBuilder(buffersize);
-//        int len=values.length;
-//        if (values.length != templateSegments.length>>1) {
-//            throw new RuntimeException("values array has " + values.length + " elements, but "
-//            + " the template needs " + (templateSegments.length>>1));
-//        }
-//        sb.append(templateSegments[0]);
-//
-//        for (int i = 0; i < len; i++) {
-//            sb.append(values[i]);
-//            sb.append(templateSegments[((2*i)+2)]);
-//        }
-//
-//        if (sb.length()>buffersize) {
-//            buffersize=sb.length()+5;
-//        }
-//
-//        return sb.toString();
-//    }
-//
-//    @Override
-//    public String bindValues(StringCompositor context, Map<String, Object> values) {
-//        StringBuilder sb = new StringBuilder(buffersize);
-//        for (int i = 0; i < templateSegments.length; i++) {
-//            if ((i&1)==0) { // even?
-//                sb.append(templateSegments[i]);
-//            } else {
-//                String key = templateSegments[i];
-//                Object value = values.get(key);
-//                sb.append(value.toString());
-//            }
-//        }
-//        return sb.toString();
-//    }
-//
     @Override
     public String bindValues(StringCompositor context, Bindings bindings, long cycle) {
         StringBuilder sb = new StringBuilder();
@@ -109,5 +72,15 @@ public class StringCompositor implements ValuesBinder<StringCompositor, String> 
             }
         }
         return sb.toString();
+    }
+
+    public List<String> getBindPointNames() {
+        List<String> tokens = new ArrayList<>();
+        for (int i = 0; i <templateSegments.length; i++) {
+            if (i%2==1) {
+                tokens.add(templateSegments[i]);
+            }
+        }
+        return tokens;
     }
 }

@@ -24,7 +24,7 @@ public class WeightedStrings implements LongFunction<String> {
     private final AliasSamplerDoubleInt sampler;
 
     /**
-     * Creata a sampler of strings from the given CSV file. The CSV file must have plain CSV headers
+     * Create a sampler of strings from the given CSV file. The CSV file must have plain CSV headers
      * as its first line.
      * @param valueColumn The name of the value column to be sampled
      * @param weightColumn The name of the weight column, which must be parsable as a double

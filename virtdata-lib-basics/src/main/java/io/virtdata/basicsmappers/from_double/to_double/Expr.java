@@ -2,6 +2,7 @@ package io.virtdata.basicsmappers.from_double.to_double;
 
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.basicsmappers.MVELExpr;
+import io.virtdata.threadstate.ThreadLocalState;
 import org.mvel2.MVEL;
 
 import java.io.Serializable;
@@ -10,7 +11,6 @@ import java.util.function.DoubleUnaryOperator;
 
 @ThreadSafeMapper
 public class Expr implements DoubleUnaryOperator {
-    private static ThreadLocal<HashMap<String,Object>> tlm = ThreadLocal.withInitial(HashMap::new);
 
     private final String expr;
     private final Serializable compiledExpr;
@@ -22,7 +22,7 @@ public class Expr implements DoubleUnaryOperator {
 
     @Override
     public double applyAsDouble(double operand) {
-        HashMap<String, Object> map = tlm.get();
+        HashMap<String, Object> map = ThreadLocalState.tl_ObjectMap.get();
         map.put("cycle",operand);
         double result = MVEL.executeExpression(compiledExpr, map, double.class);
         return result;
