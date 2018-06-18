@@ -51,7 +51,7 @@ public class DocumentationProcessor extends AbstractProcessor {
             }
         });
 
-        enumerator.addListener(new YamlDocsEnumerator());
+        enumerator.addListener(new YamlDocsEnumerator(this.filer,this.messenger));
 
         List<Element> ts = new ArrayList<>();
 

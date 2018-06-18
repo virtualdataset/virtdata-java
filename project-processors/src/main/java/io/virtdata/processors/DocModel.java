@@ -78,6 +78,10 @@ public class DocModel {
         return sb.toString();
     }
 
+    public String getPackageName() {
+        return this.packageName;
+    }
+
     public static class Ctor {
 
         private LinkedHashMap<String, String> args;
