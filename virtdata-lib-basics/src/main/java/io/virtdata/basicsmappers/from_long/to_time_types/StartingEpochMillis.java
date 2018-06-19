@@ -1,8 +1,8 @@
 package io.virtdata.basicsmappers.from_long.to_time_types;
 
-import io.virtdata.basicsmappers.DateTimeFormats;
 import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
+import io.virtdata.basicsmappers.DateTimeFormats;
 import org.joda.time.DateTime;
 
 import java.util.function.LongUnaryOperator;
@@ -13,7 +13,6 @@ import java.util.function.LongUnaryOperator;
  * value to this base value as determined by the provided
  * time specifier. It wraps any overflow within this range as well.
  */
-@Example("StartingEpochMillis('2017-01-01 23:59:59')")
 @ThreadSafeMapper
 public class StartingEpochMillis implements LongUnaryOperator {
 
@@ -21,6 +20,7 @@ public class StartingEpochMillis implements LongUnaryOperator {
     private final long startingUnixEpochMillis;
     private final long headroom;
 
+    @Example({"{StartingEpochMillis('2017-01-01 23:59:59')}","add the millisecond epoch time of 2017-01-01 23:59:59 to all input values"})
     public StartingEpochMillis(String baseTimeSpec) {
         startingTime = DateTimeFormats.parseEpochTimeToDateTime(baseTimeSpec);
         startingUnixEpochMillis = startingTime.getMillis();

@@ -2,13 +2,9 @@ package io.virtdata.api;
 
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.core.ResolvedFunction;
+import io.virtdata.processors.DocFuncData;
+import io.virtdata.processors.VirtDataLibraryInfo;
 import org.apache.commons.lang3.ClassUtils;
-import org.reflections.Reflections;
-import org.reflections.scanners.ResourcesScanner;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
-import org.reflections.util.FilterBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +15,7 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class BasicFunctionalLibrary implements VirtDataFunctionLibrary {
+public abstract class BasicFunctionalLibrary implements VirtDataFunctionLibrary, EnhancedDocs {
     private final static Logger logger = LoggerFactory.getLogger(BasicFunctionalLibrary.class);
 
     @Override
@@ -197,32 +193,32 @@ public abstract class BasicFunctionalLibrary implements VirtDataFunctionLibrary 
     }
 
     @Override
-    public List<String> getDataMapperNames() {
+    public List<DocFuncData> getDocModels() {
+        List<DocFuncData> docs = new ArrayList<>();
 
-        List<ClassLoader> classLoadersList = new LinkedList<>();
-        classLoadersList.add(ClasspathHelper.contextClassLoader());
-        classLoadersList.add(ClasspathHelper.staticClassLoader());
-
-        ConfigurationBuilder cb = new ConfigurationBuilder();
-        cb.setScanners(new SubTypesScanner(false /* don't exclude Object.class */), new ResourcesScanner());
-        cb.setUrls(ClasspathHelper.forClassLoader(classLoadersList.toArray(new ClassLoader[0])));
-
-        FilterBuilder fb = new FilterBuilder();
-
-        for (Package aPackage : getSearchPackages()) {
-            fb.include(FilterBuilder.prefix(aPackage.getName()));
+        String docsClassName = this.getClass().getCanonicalName()+"AutoDocsInfo";
+        Class<? extends VirtDataLibraryInfo> docsClass =null;
+        try {
+            docsClass = Class.forName(docsClassName).asSubclass(VirtDataLibraryInfo.class);
+        } catch (ClassNotFoundException e) {
+            logger.warn("Unable to find documentation class " + docsClassName);
+            return docs;
         }
-        cb.filterInputsBy(fb);
-        Reflections reflections = new Reflections(cb);
 
-        Set<Class<?>> subTypesOf =
-                reflections.getSubTypesOf(Object.class);
+        try {
+            VirtDataLibraryInfo enhancedDocs = docsClass.newInstance();
+            return enhancedDocs.getDocsInfo();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
-        ArrayList<String> collected = subTypesOf.stream()
-                .map(Class::getSimpleName)
-                .collect(Collectors.toCollection(ArrayList::new));
 
-        return collected;
+    }
+
+    @Override
+    public List<String> getDataMapperNames() {
+        List<DocFuncData> docModels = getDocModels();
+        return docModels.stream().map(DocFuncData::getClassName).collect(Collectors.toList());
 
     }
 

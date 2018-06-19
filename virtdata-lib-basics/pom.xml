@@ -95,6 +95,24 @@
 
     <build>
 
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.md</include>
+                    <include>**/*.yaml</include>
+                    <include>**/*.txt</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**</include>
+                </includes>
+            </resource>
+
+        </resources>
+
         <plugins>
 
             <plugin>
@@ -113,7 +131,7 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
-                    <generatedSourcesDirectory>${project.build.directory}/classes/io/virtdata/generated/annotations</generatedSourcesDirectory>
+                    <generatedSourcesDirectory>${project.build.directory}/classes/</generatedSourcesDirectory>
                     <annotationProcessors>
                         <annotationProcessor>
                             io.virtdata.processors.DocumentationProcessor

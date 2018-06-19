@@ -27,7 +27,6 @@ import io.virtdata.lfsrs.MetaShift;
  */
 @ThreadSafeMapper
 @Description("Provides virtual shuffling extremely large numbers.")
-@Example("Shuffle(11,99) // Provide all values between 11 and 98 inclusive, in some order, then repeat")
 public class Shuffle extends MetaShift.Func {
 
     private final long max;
@@ -35,7 +34,7 @@ public class Shuffle extends MetaShift.Func {
     private final long size;
 //    public int[] stats = new int[1];
 
-
+    @Example({"Shuffle(11,99)","Provide all values between 11 and 98 inclusive, in some order, then repeat"})
     public Shuffle(long min, long maxPlusOne) {
         this(min, maxPlusOne, Integer.MAX_VALUE);
     }

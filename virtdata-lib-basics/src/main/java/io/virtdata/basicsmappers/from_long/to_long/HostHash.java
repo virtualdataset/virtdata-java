@@ -13,23 +13,23 @@ import java.util.function.LongUnaryOperator;
 /**
  * Provides a stable hash that is seeded by all the interface
  * naming data on a given host. Three string properties from each known
- * interface on the system is used to create a stable seed value.
+ * interface on the system are used to create a stable seed value.
  * This is used to initialize the hash function each time before it is
  * used to generate a hash from the input long. Apart from the per-system
  * seeding, this hash function operates exactly the same as {@link Hash}
  */
-@Example("HostHash()")
-@Example({"HostHash(subseed)","Further permute the host hash with a specific seed"})
 public class HostHash implements LongUnaryOperator {
 
     private static long hostHash = computeHostHash();
     private ByteBuffer bb = ByteBuffer.allocate(Long.BYTES);
     private Murmur3F murmur3F;
 
+    @Example({"HostHash()","a simple per-host hash function"})
     public HostHash() {
         murmur3F = new Murmur3F((int) hostHash % Integer.MAX_VALUE);
     }
 
+    @Example({"HostHash(2343)","further permute the host hash with a specific seed"})
     public HostHash(int seedMod) {
         murmur3F = new Murmur3F((int) hostHash % Integer.MAX_VALUE);
         murmur3F.update(seedMod);

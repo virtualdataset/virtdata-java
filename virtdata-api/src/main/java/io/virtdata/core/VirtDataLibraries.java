@@ -52,6 +52,10 @@ public class VirtDataLibraries implements VirtDataFunctionLibrary  {
                 .flatMap(l -> l.getDataMapperNames().stream()).collect(Collectors.toList());
     }
 
+    public Map<String,VirtDataFunctionLibrary> getLibraries() {
+        return libraries;
+    }
+
     private static class Finder {
         public synchronized static Map<String, VirtDataFunctionLibrary> find() {
             Map<String,VirtDataFunctionLibrary> libraries = new HashMap<>();

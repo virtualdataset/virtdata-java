@@ -7,13 +7,15 @@ import java.util.function.LongUnaryOperator;
 @Description("Return an interpolated number along a")
 @Input(Range.NonNegativeLongs)
 @Output(Range.Longs)
-@Example("Interpolate(0.0,100.0) // return a linear value, 0L -> 0.0D, Long.MAX_VALUE -> 100.0D")
 @ThreadSafeMapper
 public class Interpolate implements LongUnaryOperator {
 
     private final int resolution;
     private final double[] lut;
 
+    @Example({"Interpolate(0.0d,100.0d)","return a linear value between 0L and 100L based on input in range 0L, Long.MAX_VALUE"})
+    @Example({"Interpolate(0.0d,90.0d,95.0d,98.0d,100.0d)","return a weighted value between 0L and 100L based on input in range 0L, Long.MAX_VALUE" +
+            ", where the first second and third quartiles map to 90.0D, 95.0D, and 98.0D"})
     public Interpolate(double... value) {
         this(value.length, value);
     }

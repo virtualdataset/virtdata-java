@@ -20,6 +20,6 @@ import java.lang.annotation.*;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface MappingLibrary {
+public @interface DocManifestAnchor {
     String name();
 }

@@ -38,12 +38,6 @@ import java.util.function.LongFunction;
  * <li>yyyy, for example: 2015</li>
  * </ol>
  */
-@Example("ToEpochTimeUUID() // basetime 0, computed node data, empty clock data")
-@Example("ToEpochTimeUUID(5234) // basetime 0, specified node data (5234), empty clock data")
-@Example("ToEpochTimeUUID(31,337) // basetime 0, specified node data (31) and clock data (337)")
-@Example("ToEpochTimeUUID('2017-01-01T23:59:59') // specified basetime, computed node data, empty clock data")
-@Example("ToEpochTimeUUID('2012',12345) // basetime at start if 2012, with node data 12345, empty clock data")
-@Example("ToEpochTimeUUID('20171231T1015.243',123,456) // ms basetime, specified node and clock data")
 @ThreadSafeMapper
 public class ToEpochTimeUUID implements LongFunction<UUID> {
 
@@ -56,6 +50,7 @@ public class ToEpochTimeUUID implements LongFunction<UUID> {
      * The node and clock components are seeded from network interface data. In this case,
      * the clock data is not seeded uniquely.
      */
+    @Example({"ToEpochTimeUUID()","basetime 0, computed node data, empty clock data"})
     public ToEpochTimeUUID() {
         this.node = 0L;
         this.clock = 0L;
@@ -70,6 +65,7 @@ public class ToEpochTimeUUID implements LongFunction<UUID> {
      *
      * @param node a fixture value for testing that replaces node and clock bits
      */
+    @Example({"ToEpochTimeUUID(5234)","basetime 0, specified node data (5234), empty clock data"})
     public ToEpochTimeUUID(long node) {
         this.node = node;
         this.clock = 0L;
@@ -85,6 +81,7 @@ public class ToEpochTimeUUID implements LongFunction<UUID> {
      * @param node  a fixture value for testing that replaces node bits
      * @param clock a fixture value for testing that replaces clock bits
      */
+    @Example({"ToEpochTimeUUID(31,337)","basetime 0, specified node data (31) and clock data (337)"})
     public ToEpochTimeUUID(long node, long clock) {
         this.node = node;
         this.clock = clock;
@@ -98,6 +95,7 @@ public class ToEpochTimeUUID implements LongFunction<UUID> {
      *
      * @param baseSpec - a string specification for the base time value
      */
+    @Example({"ToEpochTimeUUID('2017-01-01T23:59:59')","specified basetime, computed node data, empty clock data"})
     public ToEpochTimeUUID(String baseSpec) {
         this.node = 0L;
         this.clock = 0L;
@@ -113,6 +111,7 @@ public class ToEpochTimeUUID implements LongFunction<UUID> {
      * @param baseSpec - a string specification for the base time value
      * @param node     a fixture value for testing that replaces node and clock bits
      */
+    @Example({"ToEpochTimeUUID('2012',12345)","basetime at start if 2012, with node data 12345, empty clock data"})
     public ToEpochTimeUUID(String baseSpec, long node) {
         this.node = node;
         this.clock = 0L;
@@ -129,6 +128,7 @@ public class ToEpochTimeUUID implements LongFunction<UUID> {
      * @param node     a fixture value for testing that replaces node bits
      * @param clock    a fixture value for testing that replaces clock bits
      */
+    @Example({"ToEpochTimeUUID('20171231T1015.243',123,456)","ms basetime, specified node and clock data"})
     public ToEpochTimeUUID(String baseSpec, long node, long clock) {
         this.node = node;
         this.clock = clock;
