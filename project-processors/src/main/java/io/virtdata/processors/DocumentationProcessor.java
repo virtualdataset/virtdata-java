@@ -56,7 +56,8 @@ public class DocumentationProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 
         if (this.anchorPackage==null) {
-            if (!findAnchor(roundEnv, enumerator)) { return false; };
+            messenger.printMessage(Diagnostic.Kind.WARNING, "Looking for manifest anchor in " + roundEnv.getRootElements().toString());
+            findAnchor(roundEnv, enumerator);
         }
 
         List<Element> ts = new ArrayList<>();
@@ -78,8 +79,9 @@ public class DocumentationProcessor extends AbstractProcessor {
             String packageName = pnm.group("packageName");
             String simpleClassName = pnm.group("className");
             String classDoc = elementUtils.getDocComment(classElem);
+            classDoc = classDoc==null ? "" : cleanJavadoc(classDoc);
 
-            enumerator.onClass(packageName, simpleClassName, classDoc != null ? classDoc : "");
+            enumerator.onClass(packageName, simpleClassName, classDoc);
 
             for (Element ctorElem : classElem.getEnclosedElements()) {
                 if (ctorElem.getKind() == ElementKind.METHOD) {
@@ -103,7 +105,7 @@ public class DocumentationProcessor extends AbstractProcessor {
 
                     // Javadoc
                     String ctorDoc = elementUtils.getDocComment(ctorElem);
-                    ctorDoc = ctorDoc == null ? "" : ctorDoc;
+                    ctorDoc = ctorDoc == null ? "" : cleanJavadoc(ctorDoc);
 
 //                    // Examples
 //                    Examples[] examples = ctorElem.getAnnotationsByType(Examples.class);
@@ -129,17 +131,28 @@ public class DocumentationProcessor extends AbstractProcessor {
         }
 
         if (roundEnv.processingOver()) {
+            if (anchorPackage==null) {
+                messenger.printMessage(Diagnostic.Kind.ERROR, "There should be exactly one element in this library which has an " +
+                        "annotation of type @" + DocManifestAnchor.class.getSimpleName() + ". Found none.");
+                return false;
+            }
+            enumerator.onAnchor(anchorPackage, anchorSimpleName);
             enumerator.onComplete();
         }
 
         return false;
     }
 
+    private String cleanJavadoc(String ctorDoc) {
+        return ctorDoc.replaceAll("(?m)^ ","");
+    }
+
     private boolean findAnchor(RoundEnvironment roundEnv, DocsEnumerator enumerator) {
         Set<? extends Element> anchors = roundEnv.getElementsAnnotatedWith(DocManifestAnchor.class);
-        if (anchors.size() != 1) {
-            messenger.printMessage(Diagnostic.Kind.ERROR, "There should be exactly one element in this library which has an " +
-                    "annotation of type @" + DocManifestAnchor.class.getSimpleName() + ". Found: " + anchors.toString());
+        if (anchors.size() >1) {
+            messenger.printMessage(Diagnostic.Kind.ERROR, "Found " + anchors.size() + " @DocManifestAnchor classes, expected 1.");
+        }
+        if (anchors.size()==0) {
             return false;
         }
         Element anchor = new ArrayList<>(anchors).get(0);
@@ -154,7 +167,6 @@ public class DocumentationProcessor extends AbstractProcessor {
         this.anchorPackage = anchorPackage;
         this.anchorSimpleName=anchorSimpleName;
 
-        enumerator.onAnchor(anchorPackage, anchorSimpleName);
         return true;
     }
 

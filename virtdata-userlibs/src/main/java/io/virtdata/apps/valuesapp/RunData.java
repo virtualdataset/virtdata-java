@@ -1,4 +1,4 @@
-package io.virtdata.valuesapp;
+package io.virtdata.apps.valuesapp;
 
 public class RunData {
     public String spec;
@@ -26,18 +26,18 @@ public class RunData {
 
     @Override
     public String toString() {
-        return  "        run data = [derived values in brackets]\n" +
-                "       specifier = '" + spec + "'\n" +
-                "         threads = " + threads + "\n" +
-                "             min = " + min + "\n" +
-                "             max = " + max + "\n" +
-                "         [count] = " + (max - min) + "\n" +
-                "      buffersize = " + buffersize + "\n" +
-                "        isolated = " + isolated + "\n" +
+        return  "         run data = [derived values in brackets]\n" +
+                "        specifier = '" + spec + "'\n" +
+                "          threads = " + threads + "\n" +
+                "              min = " + min + "\n" +
+                "              max = " + max + "\n" +
+                "          [count] = " + (max - min) + "\n" +
+                "       buffersize = " + buffersize + "\n" +
+                "         isolated = " + isolated + "\n" +
                 " [totalGenTimeMs] = " + totalGenTimeMs + "\n" +
                 " [totalCmpTimeMs] = " + totalCmpTimeMs + "\n" +
-                String.format("     [genPerMs] = %.3f\n", ((double) threads * (double) (max - min)) / totalGenTimeMs) +
-                String.format("     [cmpPerMs] = %.3f\n", ((double) threads * (double) (max - min)) / totalCmpTimeMs) +
+                String.format("      [genPerMs] = %.3f\n", ((double) threads * (double) (max - min)) / totalGenTimeMs) +
+                String.format("      [cmpPerMs] = %.3f\n", ((double) threads * (double) (max - min)) / totalCmpTimeMs) +
                 String.format("      [genPerS] = %.3f\n", 1000.0d * ((double) threads * (double) (max-min)) / totalGenTimeMs) +
                 String.format("      [cmpPerS] = %.3f\n", 1000.0d * ((double) threads * (double) (max-min)) / totalCmpTimeMs);
     }

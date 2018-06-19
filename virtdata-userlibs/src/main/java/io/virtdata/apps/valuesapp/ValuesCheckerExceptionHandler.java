@@ -1,4 +1,4 @@
-package io.virtdata.valuesapp;
+package io.virtdata.apps.valuesapp;
 
 public class ValuesCheckerExceptionHandler implements Thread.UncaughtExceptionHandler {
 

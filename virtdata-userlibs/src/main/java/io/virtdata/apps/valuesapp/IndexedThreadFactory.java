@@ -16,7 +16,7 @@
  *
  */
 
-package io.virtdata.valuesapp;
+package io.virtdata.apps.valuesapp;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;

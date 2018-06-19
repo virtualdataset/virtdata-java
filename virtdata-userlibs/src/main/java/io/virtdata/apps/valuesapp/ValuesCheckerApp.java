@@ -1,4 +1,4 @@
-package io.virtdata.valuesapp;
+package io.virtdata.apps.valuesapp;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

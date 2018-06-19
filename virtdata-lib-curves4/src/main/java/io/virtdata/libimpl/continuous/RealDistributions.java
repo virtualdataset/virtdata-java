@@ -106,7 +106,7 @@ public class RealDistributions implements VirtDataFunctionLibrary {
             throw new RuntimeException("This only supports long for input.");
         }
         if (outType!=null && outType!=double.class) {
-            throw new RuntimeException("This only supports double fo routput.");
+            throw new RuntimeException("This only supports double for output.");
         }
         inType = (inType==null ? long.class : inType);
         outType = (outType==null ? int.class : outType);

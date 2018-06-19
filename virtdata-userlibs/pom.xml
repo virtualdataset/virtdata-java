@@ -130,7 +130,7 @@
                             </relocations>
                             <transformers combine.children="append">
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>io.virtdata.valuesapp.ValuesCheckerApp</mainClass>
+                                    <mainClass>io.virtdata.apps.MainRouting</mainClass>
                                 </transformer>
                             </transformers>
                             <finalName>${project.artifactId}</finalName>

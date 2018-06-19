@@ -1,4 +1,4 @@
-package io.virtdata.valuesapp;
+package io.virtdata.apps.valuesapp;
 
 import io.virtdata.api.DataMapper;
 import io.virtdata.core.VirtData;
