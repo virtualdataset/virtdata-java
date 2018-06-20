@@ -19,6 +19,7 @@ import io.virtdata.basicsmappers.from_long.to_string.HashedFileExtractToString;
 import io.virtdata.basicsmappers.from_long.to_string.Template;
 import io.virtdata.basicsmappers.from_long.to_time_types.ToDate;
 import io.virtdata.basicsmappers.from_long.to_time_types.ToEpochTimeUUID;
+import io.virtdata.basicsmappers.stateful.Show;
 import io.virtdata.functionadapters.ToLongUnaryOperator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +49,7 @@ public class BasicDataMappers extends BasicFunctionalLibrary {
     public List<Package> getSearchPackages() {
         return new ArrayList<Package>() {
             {
+                add(Show.class.getPackage());
                 add(ToLongUnaryOperator.class.getPackage());
                 add(Template.class.getPackage());
                 add(io.virtdata.basicsmappers.from_double.to_double.Add.class.getPackage());
