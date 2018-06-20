@@ -54,11 +54,6 @@
             <artifactId>logback-core</artifactId>
             <version>1.2.3</version>
         </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>23.6-jre</version>
-        </dependency>
 
         <dependency>
             <groupId>org.testng</groupId>

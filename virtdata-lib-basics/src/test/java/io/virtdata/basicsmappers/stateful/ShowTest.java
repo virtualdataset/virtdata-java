@@ -1,18 +1,21 @@
 package io.virtdata.basicsmappers.stateful;
 
+import io.virtdata.basicsmappers.from_long.to_long.Save;
 import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Test
 public class ShowTest {
 
     @Test
     public void testBasicStateSupport() {
         io.virtdata.basicsmappers.from_long.to_long.Save saveFoo = new io.virtdata.basicsmappers.from_long.to_long.Save("foo");
         saveFoo.applyAsLong(23);
+        new Save("cycle").applyAsLong(-1L);
         Show showAll=new Show();
         String shown = showAll.apply(234L);
-        assertThat(shown).isEqualTo("{foo=23}");
+        assertThat(shown).isEqualTo("{foo=23, cycle=-1}");
         io.virtdata.basicsmappers.unary_string.Save saveBar = new io.virtdata.basicsmappers.unary_string.Save("bar");
         saveBar.apply("Bar");
         Show showFoo = new Show("foo");
