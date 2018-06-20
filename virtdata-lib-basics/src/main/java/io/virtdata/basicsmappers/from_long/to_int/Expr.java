@@ -9,11 +9,22 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.function.LongToIntFunction;
 
+/**
+ * Allow for the use of arbitrary expressions according to the
+ * [MVEL](http://mvel.documentnode.com/) expression language.
+ *
+ * Variables that have been set by a Save function are available
+ * to be used in this function.
+ *
+ * The variable name **cycle** is reserved, and is always equal to
+ * the current input value.
+ */
 @ThreadSafeMapper
 public class Expr implements LongToIntFunction {
 
     private final String expr;
     private final Serializable compiledExpr;
+
 
     public Expr(String expr) {
         this.expr = expr;

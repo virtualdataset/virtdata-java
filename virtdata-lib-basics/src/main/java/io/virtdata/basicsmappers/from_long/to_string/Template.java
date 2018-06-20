@@ -1,5 +1,6 @@
 package io.virtdata.basicsmappers.from_long.to_string;
 
+import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.ArrayList;
@@ -12,8 +13,9 @@ import java.util.regex.Pattern;
 /**
  * Creates a template function which will yield a string which fits the template
  * provided, with all occurrences of <pre>{}</pre> substituted pair-wise with the
- * result of the provided function. The number of <pre>{}</pre> entries in the template
+ * result of the provided functions. The number of <pre>{}</pre> entries in the template
  * must strictly match the number of functions or an error will be thrown.
+ *
  * To provide differing values for similarly defined functions in the list, the input
  * value used is automatically incremented by one for each function, starting with
  * the initial input value.
@@ -28,6 +30,7 @@ public class Template implements LongFunction<String> {
     private String[] literals;
     private LongFunction<?>[] funcs;
 
+    @Example({"Template('{}-{}',Add(10),Hash())","concatenate input+10, '-', and a pseudo-random long"})
     public Template(String template, LongFunction<?>... funcs) {
         this.funcs = funcs;
         this.rawTemplate = template;

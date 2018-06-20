@@ -13,10 +13,6 @@ public class Add implements IntUnaryOperator {
 
     private int addend;
 
-    /**
-     * This version is for ints only.
-     * @param addend the value to add
-     */
     @Example({"Add(23)", "adds integer 23 to the input integer value"})
     public Add(int addend) {
         this.addend = addend;

@@ -8,15 +8,26 @@ import io.virtdata.threadstate.ThreadLocalState;
 import java.util.HashMap;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * Clears the per-thread map which is used by the Expr function.
+ */
 @ThreadSafeMapper
 @Categories({Category.state})
 public class Clear implements LongUnaryOperator {
 
     private final String[] names;
 
+    /**
+     * Clear all named entries from the per-thread map.
+     */
     public Clear() {
         this.names=null;
     }
+
+    /**
+     * Clear the specified names from the per-thread map.
+     * @param names The names to be removed from the map.
+     */
     public Clear(String... names) {
         this.names = names;
     }

@@ -4,6 +4,9 @@ import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.IntUnaryOperator;
 
+/**
+ * Adds a pseudo-random value within the specified range to the input.
+ */
 @ThreadSafeMapper
 public class AddHashRange implements IntUnaryOperator {
 

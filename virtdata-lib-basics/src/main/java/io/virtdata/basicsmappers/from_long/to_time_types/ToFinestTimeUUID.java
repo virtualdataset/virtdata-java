@@ -60,7 +60,7 @@ public class ToFinestTimeUUID implements LongFunction<UUID> {
      *
      * @param node a fixture value for testing that replaces node and clock bits
      */
-    @Example({"ToFinestTimeUUID(5234)\",\"basetime 0, specified node data (5234), empty clock data"})
+    @Example({"ToFinestTimeUUID(5234)","basetime 0, specified node data (5234), empty clock data"})
     public ToFinestTimeUUID(long node) {
         this.node = node;
         this.clock = 0L;
@@ -76,7 +76,7 @@ public class ToFinestTimeUUID implements LongFunction<UUID> {
      * @param node  a fixture value for testing that replaces node bits
      * @param clock a fixture value for testing that replaces clock bits
      */
-    @Example({"ToFinestTimeUUID(31,337)\",\"basetime 0, specified node data (31) and clock data (337)"})
+    @Example({"ToFinestTimeUUID(31,337)","basetime 0, specified node data (31) and clock data (337)"})
     public ToFinestTimeUUID(long node, long clock) {
         this.node = node;
         this.clock = clock;
@@ -90,7 +90,7 @@ public class ToFinestTimeUUID implements LongFunction<UUID> {
      *
      * @param baseTimeSpec - a string specification for the base time value
      */
-    @Example({"ToFinestTimeUUID('2017-01-01T23:59:59')\",\"specified basetime, computed node data, empty clock data"})
+    @Example({"ToFinestTimeUUID('2017-01-01T23:59:59')","specified basetime, computed node data, empty clock data"})
     public ToFinestTimeUUID(String baseTimeSpec) {
         this.node = 0L;
         this.clock = 0L;
@@ -106,7 +106,7 @@ public class ToFinestTimeUUID implements LongFunction<UUID> {
      * @param baseTimeSpec - a string specification for the base time value
      * @param node         a fixture value for testing that replaces node and clock bits
      */
-    @Example({"ToFinestTimeUUID('2012',12345)\",\"basetime at start if 2012, with node data 12345, empty clock data"})
+    @Example({"ToFinestTimeUUID('2012',12345)","basetime at start if 2012, with node data 12345, empty clock data"})
     public ToFinestTimeUUID(String baseTimeSpec, long node) {
         this.node = node;
         this.clock = 0L;
@@ -123,7 +123,7 @@ public class ToFinestTimeUUID implements LongFunction<UUID> {
      * @param clock        a fixture value for testing that replaces clock bits
      * @param baseTimeSpec - a string specification for the base time value
      */
-    @Example({"ToFinestTimeUUID('20171231T1015.243',123,456)\",\"ms basetime, specified node and clock data"})
+    @Example({"ToFinestTimeUUID('20171231T1015.243',123,456)","ms basetime, specified node and clock data"})
     public ToFinestTimeUUID(String baseTimeSpec, long node, long clock) {
         this.node = node;
         this.clock = clock;

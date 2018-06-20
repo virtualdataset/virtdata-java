@@ -4,6 +4,9 @@ import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.IntUnaryOperator;
 
+/**
+ * Adds a cycle range to the input, producing an increasing sawtooth-like output.
+ */
 @ThreadSafeMapper
 public class AddCycleRange implements IntUnaryOperator {
 

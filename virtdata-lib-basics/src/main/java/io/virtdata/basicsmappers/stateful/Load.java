@@ -8,6 +8,11 @@ import io.virtdata.threadstate.ThreadLocalState;
 import java.util.HashMap;
 import java.util.function.Function;
 
+/**
+ * Load a named value from the per-thread state map.
+ * The previous input value will be forgotten, and the named value will replace it
+ * before the next function in the chain.
+ */
 @ThreadSafeMapper
 @Categories({Category.state})
 public class Load implements Function<Object,Object> {

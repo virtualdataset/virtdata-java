@@ -96,11 +96,17 @@ public class DocumentationProcessor extends AbstractProcessor {
 
             for (Element ctorElem : classElem.getEnclosedElements()) {
                 if (ctorElem.getKind() == ElementKind.CONSTRUCTOR) {
+
+
                     // Args
                     List<? extends VariableElement> parameters = ((ExecutableElement) ctorElem).getParameters();
                     LinkedHashMap<String, String> args = new LinkedHashMap<>();
-                    for (VariableElement parameter : parameters) {
-                        args.put(parameter.getSimpleName().toString(), parameter.asType().toString());
+                    boolean isVarArgs = ((ExecutableElement) ctorElem).isVarArgs();
+                    for (int i = 0; i < parameters.size(); i++) {
+                        VariableElement var = parameters.get(i);
+                        String varName = var.getSimpleName().toString();
+                        String varType = var.asType().toString() + (i==parameters.size()-1 ? (isVarArgs ? "..." : "") : "") ;
+                        args.put(varName,varType);
                     }
 
                     // Javadoc

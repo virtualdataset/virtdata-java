@@ -63,6 +63,8 @@ public class DocsApp {
         docdata = docdata.replaceAll("(<p>|</p>| \n)+", "\n");
         docdata = docdata.replaceAll("<pre>","`").replaceAll("</pre>","`");
         docdata = docdata.replaceAll("\\{@link (.+?)}", "$1");
+        docdata = docdata.replaceAll("(?m)@param .*\n","");
+        docdata = docdata.replaceAll("(?m)\n\n+","\n\n");
 
         if (output!=null) {
             try {
@@ -110,23 +112,6 @@ public class DocsApp {
 
             sb.append("## ").append(name).append("\n\n");
 
-            for (DocFuncData doc : docs) {
-                List<DocCtorData> ctors = doc.getCtors();
-                for (DocCtorData ctor : ctors) {
-                    sb.append("- ").append(doc.getInType()).append(" -> ");
-                    sb.append(doc.getClassName());
-                    sb.append("(");
-                    sb.append(
-                            ctor.getArgs().entrySet().stream().map(
-                                    e -> e.getValue()+": "+e.getKey()
-                            ).collect(Collectors.joining(", "))
-                    );
-                    sb.append(")");
-                    sb.append(" -> ").append(doc.getOutType()).append("\n");
-                }
-            }
-            sb.append("\n");
-
             List<DocFuncData> classdocs = docs.stream()
                     .filter(d -> d.getClassJavadoc() != null && !d.getClassJavadoc().isEmpty())
                     .collect(Collectors.toList());
@@ -154,6 +139,35 @@ public class DocsApp {
                     sb.append("\n");
                 }
             }
+
+            for (DocFuncData doc : docs) {
+                List<DocCtorData> ctors = doc.getCtors();
+                for (DocCtorData ctor : ctors) {
+                    sb.append("- ").append(doc.getInType()).append(" -> ");
+                    sb.append(doc.getClassName());
+                    sb.append("(");
+                    sb.append(
+                            ctor.getArgs().entrySet().stream().map(
+                                    e -> e.getValue()+": "+e.getKey()
+                            ).collect(Collectors.joining(", "))
+                    );
+                    sb.append(")");
+                    sb.append(" -> ").append(doc.getOutType()).append("\n");
+                    String ctorDoc = ctor.getCtorJavaDoc();
+                    if (!ctorDoc.isEmpty()) {
+                        sb.append("  - *notes:* ").append(ctorDoc);
+                    }
+                    for (List<String> example : ctor.getExamples()) {
+                        sb.append("  - *ex:* `" + example.get(0) + "`");
+                        if (example.size()>1) {
+                            sb.append(" - *").append(example.get(1)).append("*");
+                        }
+                        sb.append("\n");
+                    }
+                }
+            }
+            sb.append("\n");
+
 
             sb.append("\n");
         }

@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.function.LongFunction;
 
 @ThreadSafeMapper
+@Deprecated
 public class FuncTemplate implements LongFunction<String> {
     private static final String EXPR_BEGIN = "[[";
     private static final String EXPR_END = "]]";
@@ -18,6 +19,7 @@ public class FuncTemplate implements LongFunction<String> {
     private DataMapper<String>[] funcs;
     private final String rawTemplate;
     private final static ThreadLocal<StringBuilder> sb = ThreadLocal.withInitial(StringBuilder::new);
+
 
     public FuncTemplate(String rawTemplate) {
         this.rawTemplate = rawTemplate;
