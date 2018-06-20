@@ -21,7 +21,7 @@ public class CombinationsTest {
         Combinations binaryByte = new Combinations("0-1;0-1;0-1;0-1;0-1;0-1;0-1;0-1;");
         assertThat(binaryByte.apply(37)).isEqualTo("00100101");
         for (int i = 0; i < 512; i++) {
-            System.out.println("i:" +i +" = b:" + binaryByte.apply(i));
+            System.out.println("i:" + i + " = b:" + binaryByte.apply(i));
         }
     }
 
@@ -34,7 +34,7 @@ public class CombinationsTest {
     @Test
     public void testHexaDecimalDecimalOctalBinaryUnaryInsanity() {
         Combinations combinations = new Combinations(
-            "0-9A-F;0-9;0-7;0-1;1"
+                "0-9A-F;0-9;0-7;0-1;1"
         );
         assertThat(combinations.apply(1)).isEqualTo("00011");
     }
@@ -74,17 +74,33 @@ public class CombinationsTest {
         // (104^9 / 2^63) < 1.0
         // (104^10 / 2^63) > 1.0
         Combinations combinations = new Combinations(
-          "A-ZA-ZA-ZA-Z;"
-                  + "A-ZA-ZA-ZA-Z;"
-                  + "A-ZA-ZA-ZA-Z;"
-                  + "A-ZA-ZA-ZA-Z;"
-                  + "A-ZA-ZA-ZA-Z;"
-                  + "A-ZA-ZA-ZA-Z;"
-                  + "A-ZA-ZA-ZA-Z;"
-                  + "A-ZA-ZA-ZA-Z;"
-                  + "A-ZA-ZA-ZA-Z;"
-                  + "A-ZA-ZA-ZA-Z;"
+                "A-ZA-ZA-ZA-Z;"
+                        + "A-ZA-ZA-ZA-Z;"
+                        + "A-ZA-ZA-ZA-Z;"
+                        + "A-ZA-ZA-ZA-Z;"
+                        + "A-ZA-ZA-ZA-Z;"
+                        + "A-ZA-ZA-ZA-Z;"
+                        + "A-ZA-ZA-ZA-Z;"
+                        + "A-ZA-ZA-ZA-Z;"
+                        + "A-ZA-ZA-ZA-Z;"
+                        + "A-ZA-ZA-ZA-Z;"
         );
+
+        combinations.apply(Long.MAX_VALUE);
+    }
+
+
+    @Test
+    public void testOverflowLong() {
+        Combinations c = new Combinations("a-z;a-z;a-z;a-z;a-z;a-z;a-z;a-z;0-9;");
+        String value ;
+        value = c.apply(((long) Integer.MAX_VALUE) + 1L);
+        value = c.apply((int)2945182322382062539L);
+        value = c.apply(Long.MAX_VALUE);
+        value = c.apply(((long) Integer.MAX_VALUE) *2);
+        value = c.apply(((long) Integer.MAX_VALUE) *4);
+        value = c.apply(((long) Integer.MAX_VALUE) *8);
+        value = c.apply(((long) Integer.MAX_VALUE) *16);
     }
 
 }

@@ -48,7 +48,9 @@ public class Combinations implements LongFunction<String> {
         for (int cs = 0; cs < charsets.length; cs++) {
             int charv = (int) (value / modulo[cs]);
             value %= modulo[cs];
-            cb.put(cs, charsets[cs][charv % charsets[cs].length]);
+            int selector = charv % charsets[cs].length;
+            char c = charsets[cs][selector];
+            cb.put(cs, c);
         }
         return cb.toString();
     }
