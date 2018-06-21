@@ -1,14 +1,19 @@
 package io.virtdata;
 
 import io.virtdata.api.DataMapper;
+import io.virtdata.basicsmappers.from_long.to_long.Identity;
 import io.virtdata.basicsmappers.from_long.to_string.MapTemplate;
+import io.virtdata.basicsmappers.from_long.to_string.NumberNameToString;
 import io.virtdata.basicsmappers.from_long.to_string.Template;
 import io.virtdata.core.VirtData;
 import io.virtdata.testing.functions.ARandomPOJO;
+import org.apache.commons.lang3.ClassUtils;
 import org.testng.annotations.Test;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.LongFunction;
+import java.util.function.LongUnaryOperator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -111,6 +116,20 @@ public class ComposerLogicTest {
     public void testBrokenFlow() {
         Optional<DataMapper<String>> mo = VirtData.getMapper("HashRange(-2147483648L,2147483647L) -> long");
         assertThat(mo).isPresent();
+
+    }
+
+    @Test
+    public void sanityCheckFunctionCasting() {
+        Class<?> c1 = NumberNameToString.class;
+        Class<?> c2 = LongFunction.class;
+        assertThat(ClassUtils.isAssignable(c1,c2));
+
+        Class<?> c3 = Identity.class;
+        Class<?> c4 = LongFunction.class;
+        assertThat(ClassUtils.isAssignable(c3,c4));
+        LongUnaryOperator f;
+        f = new Identity();
 
     }
 }

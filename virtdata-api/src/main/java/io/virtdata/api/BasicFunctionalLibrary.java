@@ -137,8 +137,7 @@ public abstract class BasicFunctionalLibrary implements VirtDataFunctionLibrary,
                 logger.trace(targetConstructor.toString() + " (varargs) does not match, not enough source parameters: " + Arrays.toString(sourceParameters));
                 return false;
             }
-        }
-        if (sourceParameters.length != targetTypes.length) {
+        } else if (sourceParameters.length != targetTypes.length) {
             logger.trace(targetConstructor.toString() + " (varargs) does not match source parameters (size): " + Arrays.toString(sourceParameters));
             return false;
         }
@@ -149,7 +148,7 @@ public abstract class BasicFunctionalLibrary implements VirtDataFunctionLibrary,
         }
 
         if (targetConstructor.isVarArgs()) {
-            for (int i = 0; i < targetTypes.length; i++) {
+            for (int i = 0; i < targetTypes.length-1; i++) {
                 if (!ClassUtils.isAssignable(sourceTypes[i],targetTypes[i])) {
                     isAssignable=false;
                     break;
@@ -164,8 +163,14 @@ public abstract class BasicFunctionalLibrary implements VirtDataFunctionLibrary,
                 }
             }
         } else {
-
-            isAssignable = ClassUtils.isAssignable(sourceTypes, targetTypes, true);
+            for (int i = 0; i < targetTypes.length; i++) {
+                if (!ClassUtils.isAssignable(sourceTypes[i],targetTypes[i])) {
+                    isAssignable=false;
+                    break;
+                }
+            }
+//
+//            isAssignable = ClassUtils.isAssignable(sourceTypes, targetTypes, true);
         }
         return isAssignable;
     }
