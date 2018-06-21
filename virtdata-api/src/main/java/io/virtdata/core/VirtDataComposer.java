@@ -128,6 +128,8 @@ public class VirtDataComposer {
         FunctionAssembly assembly = new FunctionAssembly();
         logger.trace("composed summary: " + summarize(flattenedFuncs));
         boolean isThreadSafe = true;
+
+        logger.trace("FUNCTION chain selected: (multi) '" + this.summarize(flattenedFuncs) + "'");
         for (ResolvedFunction resolvedFunction : flattenedFuncs) {
             try {
                 assembly.andThen(resolvedFunction.getFunctionObject());

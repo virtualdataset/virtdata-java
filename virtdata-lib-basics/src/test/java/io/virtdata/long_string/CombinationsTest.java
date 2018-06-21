@@ -95,7 +95,7 @@ public class CombinationsTest {
         Combinations c = new Combinations("a-z;a-z;a-z;a-z;a-z;a-z;a-z;a-z;0-9;");
         String value ;
         value = c.apply(((long) Integer.MAX_VALUE) + 1L);
-        value = c.apply((int)2945182322382062539L);
+        //value = c.apply((int)2945182322382062539L);
         value = c.apply(Long.MAX_VALUE);
         value = c.apply(((long) Integer.MAX_VALUE) *2);
         value = c.apply(((long) Integer.MAX_VALUE) *4);

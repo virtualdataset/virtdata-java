@@ -1,6 +1,5 @@
 package io.virtdata.basicsmappers;
 
-import io.virtdata.annotations.ThreadSafeMapper;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
@@ -25,7 +24,6 @@ import java.util.List;
  * <li>yyyy, for example: 2015</li>
  * </ol>
  */
-@ThreadSafeMapper
 public class DateTimeFormats {
 
     public final static DateTimeFormatter[] formatters = new DateTimeFormatter[]{

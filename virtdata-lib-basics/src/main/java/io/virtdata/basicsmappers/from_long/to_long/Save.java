@@ -1,5 +1,6 @@
 package io.virtdata.basicsmappers.from_long.to_long;
 
+import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.threadstate.ThreadLocalState;
 
@@ -10,6 +11,7 @@ public class Save implements LongUnaryOperator {
 
     private final String name;
 
+    @Example({"Save('foo')","save the current long value to the name 'foo' in this thread"})
     public Save(String name) {
         this.name = name;
     }

@@ -1,5 +1,6 @@
 package io.virtdata.basicsmappers.unary_int;
 
+import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.threadstate.ThreadLocalState;
 
@@ -10,6 +11,7 @@ public class Load implements IntUnaryOperator {
 
     private final String name;
 
+    @Example({"Load('foo')","load an int value from the named variable for this thread"})
     public Load(String name) {
         this.name = name;
     }

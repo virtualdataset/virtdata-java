@@ -18,10 +18,22 @@ import java.util.stream.Collectors;
 public abstract class BasicFunctionalLibrary implements VirtDataFunctionLibrary, EnhancedDocs {
     private final static Logger logger = LoggerFactory.getLogger(BasicFunctionalLibrary.class);
 
+    private List<String> searchPackages;
+
     @Override
     public abstract String getName();
 
     public abstract List<Package> getSearchPackages();
+
+    private synchronized List<String> getAllPackageNames() {
+        if (searchPackages==null) {
+            Set<String> packageNames = new HashSet<>();
+            getSearchPackages().stream().map(Package::getName).forEachOrdered(packageNames::add);
+            packageNames.addAll(this.getDocPackages());
+            searchPackages= new ArrayList<>(packageNames);
+        }
+        return searchPackages;
+    }
 
     @Override
     public List<ResolvedFunction> resolveFunctions(Class<?> returnType, Class<?> inputType, String functionName, Object... parameters) {
@@ -31,8 +43,8 @@ public abstract class BasicFunctionalLibrary implements VirtDataFunctionLibrary,
         // TODO: Further, make lambda construction honor exact matches first as well.
 
         List<ResolvedFunction> resolvedFunctions = new ArrayList<>();
-        List<Class<?>> matchingClasses = getSearchPackages().stream()
-                .map(p -> p.getName() + "." + functionName)
+        List<Class<?>> matchingClasses = getAllPackageNames().stream()
+                .map(p -> p + "." + functionName)
                 .map(this::maybeClassForName)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
@@ -116,22 +128,28 @@ public abstract class BasicFunctionalLibrary implements VirtDataFunctionLibrary,
         return applyMethods.isPresent();
     }
 
-    // TODO: Make this work with varargs constructors
     private boolean canAssignArguments(Constructor<?> targetConstructor, Object[] sourceParameters) {
         boolean isAssignable=true;
         Class<?>[] targetTypes = targetConstructor.getParameterTypes();
 
-        if (!targetConstructor.isVarArgs() && sourceParameters.length != targetTypes.length) {
-            logger.trace(targetConstructor.toString() + " does not match source parameters (size): " + Arrays.toString(sourceParameters));
+        if (targetConstructor.isVarArgs()) {
+            if (sourceParameters.length< (targetTypes.length-1)) {
+                logger.trace(targetConstructor.toString() + " (varargs) does not match, not enough source parameters: " + Arrays.toString(sourceParameters));
+                return false;
+            }
+        }
+        if (sourceParameters.length != targetTypes.length) {
+            logger.trace(targetConstructor.toString() + " (varargs) does not match source parameters (size): " + Arrays.toString(sourceParameters));
             return false;
         }
+
         Class<?>[] sourceTypes = new Class<?>[sourceParameters.length];
         for (int i = 0; i < sourceTypes.length; i++) {
             sourceTypes[i]=sourceParameters[i].getClass();
         }
 
         if (targetConstructor.isVarArgs()) {
-            for (int i = 0; i < targetTypes.length - 1; i++) {
+            for (int i = 0; i < targetTypes.length; i++) {
                 if (!ClassUtils.isAssignable(sourceTypes[i],targetTypes[i])) {
                     isAssignable=false;
                     break;
