@@ -11,7 +11,7 @@ import java.util.List;
  * This enumerator receives stateful updates out of order from the annotation
  * processor and constructs consistent view of document models for listeners.
  */
-public class DocsEnumerator {
+public class FuncEnumerator {
 
     private final Types types;
     private final Elements elements;
@@ -22,7 +22,7 @@ public class DocsEnumerator {
     private String anchorPackage;
     private String anchorSimpleName;
 
-    public DocsEnumerator(Types types, Elements elements, Filer filer) {
+    public FuncEnumerator(Types types, Elements elements, Filer filer) {
         this.types = types;
         this.elements = elements;
         this.filer = filer;
@@ -62,33 +62,15 @@ public class DocsEnumerator {
         model=null;
     }
 
-    public void onComplete() {
-        this.listeners.forEach(Listener::onComplete);
-    }
-
     /**
-     * These Listeners handle data that has been found by the DocsEnumerator.
+     * These Listeners handle data that has been found by the FuncEnumerator.
      */
     public interface Listener {
-        /**
-         * The anchor model is simply location data that can locate rendered docs data
-         * within a known naming scheme, such that it can be found in a uniform way at
-         * runtime by the using module.
-         * @param packageName the anchor element's package name
-         * @param anchorName the simple class name of the anchor element
-         */
-        public void onAnchorModel(String packageName, String anchorName);
-
         /**
          * Handle each logical function model that has been found.
          * @param functionDoc the documentation model for a single mapping function
          */
         public void onFunctionModel(DocForFunc functionDoc);
 
-        /**
-         * If any buffering has occurred in the listener, signal the listener to do
-         * any completion processing.
-         */
-        public void onComplete();
     }
 }

@@ -1,7 +1,5 @@
 package io.virtdata;
 
-import com.google.auto.service.AutoService;
-import io.virtdata.annotations.DocManifestAnchor;
 import io.virtdata.api.BasicFunctionalLibrary;
 import io.virtdata.api.VirtDataFunctionLibrary;
 import io.virtdata.core.ResolvedFunction;
@@ -17,8 +15,6 @@ import java.util.List;
  *
  * <p>This library simply relies on {@link VirtDataFunctionLibrary}.</p>
  */
-@AutoService(VirtDataFunctionLibrary.class)
-@DocManifestAnchor(name = "random")
 public class RandomDataMappers extends BasicFunctionalLibrary {
     public final static String dataDir = "data";
     private static final Logger logger = LoggerFactory.getLogger(RandomDataMappers.class);

@@ -16,16 +16,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class InlineDocData implements DocsEnumerator.Listener {
+public class InlineDocData implements FuncEnumerator.Listener {
 
     private final String suffix;
-    Yaml yamlAPI = new Yaml();
     private Filer filer;
     private Messager messenger;
-    private String anchorPackage;
-    private String anchorElement;
     private List<DocForFunc> docs = new ArrayList<>();
-    private Writer writer;
 
     public InlineDocData(Filer filer, Messager messenger, String suffix) {
         this.filer = filer;
@@ -34,18 +30,11 @@ public class InlineDocData implements DocsEnumerator.Listener {
     }
 
     @Override
-    public void onAnchorModel(String packageName, String anchorName) {
-        this.anchorPackage = packageName;
-        this.anchorElement = anchorName;
-    }
-
-    @Override
     public void onFunctionModel(DocForFunc functionDoc) {
         docs.add(functionDoc);
     }
 
-    @Override
-    public void onComplete() {
+    public void writeMultiple() {
 
         MethodSpec.Builder methodSpec = MethodSpec.methodBuilder("getDocsInfo")
                 .addModifiers(Modifier.PUBLIC)

@@ -95,23 +95,23 @@
 
     <build>
 
-        <resources>
-            <resource>
-                <directory>src/main/java</directory>
-                <includes>
-                    <include>**/*.md</include>
-                    <include>**/*.yaml</include>
-                    <include>**/*.txt</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>**</include>
-                </includes>
-            </resource>
+        <!--<resources>-->
+            <!--<resource>-->
+                <!--<directory>src/main/java</directory>-->
+                <!--<includes>-->
+                    <!--<include>**/*.md</include>-->
+                    <!--<include>**/*.yaml</include>-->
+                    <!--<include>**/*.txt</include>-->
+                <!--</includes>-->
+            <!--</resource>-->
+            <!--<resource>-->
+                <!--<directory>src/main/resources</directory>-->
+                <!--<includes>-->
+                    <!--<include>**</include>-->
+                <!--</includes>-->
+            <!--</resource>-->
 
-        </resources>
+        <!--</resources>-->
 
         <plugins>
 
@@ -137,7 +137,7 @@
                             io.virtdata.processors.DocumentationProcessor
                         </annotationProcessor>
                         <annotationProcessor>
-                            com.google.auto.service.processor.AutoServiceProcessor
+                            io.virtdata.processors.ServiceProcessor
                         </annotationProcessor>
                     </annotationProcessors>
                 </configuration>

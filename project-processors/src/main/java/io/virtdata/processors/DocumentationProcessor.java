@@ -19,7 +19,6 @@ import java.util.regex.Pattern;
 @SupportedOptions({"title"})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 @SupportedAnnotationTypes({
-        "io.virtdata.annotations.DocManifestAnchor",
         "io.virtdata.annotations.ThreadSafeMapper",
         "io.virtdata.annotations.PerThreadMapper"})
 public class DocumentationProcessor extends AbstractProcessor {
@@ -33,7 +32,7 @@ public class DocumentationProcessor extends AbstractProcessor {
     private Types typeUtils;
     private String anchorPackage;
     private String anchorSimpleName;
-    private DocsEnumerator enumerator;
+    private FuncEnumerator enumerator;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -45,7 +44,7 @@ public class DocumentationProcessor extends AbstractProcessor {
         this.sourceVersion = processingEnv.getSourceVersion();
         this.typeUtils = processingEnv.getTypeUtils();
 
-        this.enumerator = new DocsEnumerator(this.typeUtils, this.elementUtils, this.filer);
+        this.enumerator = new FuncEnumerator(this.typeUtils, this.elementUtils, this.filer);
 //        enumerator.addListener(new StdoutListener());
 //        enumerator.addListener(new YamlDocsEnumerator(this.filer, this.messenger));
         enumerator.addListener(new InlineDocData(this.filer,this.messenger,"AutoDocsInfo"));
@@ -153,7 +152,7 @@ public class DocumentationProcessor extends AbstractProcessor {
         return ctorDoc.replaceAll("(?m)^ ","");
     }
 
-    private boolean findAnchor(RoundEnvironment roundEnv, DocsEnumerator enumerator) {
+    private boolean findAnchor(RoundEnvironment roundEnv, FuncEnumerator enumerator) {
         Set<? extends Element> anchors = roundEnv.getElementsAnnotatedWith(DocManifestAnchor.class);
         if (anchors.size() >1) {
             messenger.printMessage(Diagnostic.Kind.ERROR, "Found " + anchors.size() + " @DocManifestAnchor classes, expected 1.");
@@ -176,7 +175,7 @@ public class DocumentationProcessor extends AbstractProcessor {
         return true;
     }
 
-    private static class StdoutListener implements DocsEnumerator.Listener {
+    private static class StdoutListener implements FuncEnumerator.Listener {
         @Override
         public void onAnchorModel(String packageName, String anchorName) {
             System.out.println("anchor: " + packageName + " . " + anchorName);

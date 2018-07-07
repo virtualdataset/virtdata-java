@@ -119,6 +119,20 @@ public class ComposerLogicTest {
 
     }
 
+    public void testConversionMatchingManual() {
+        Optional<DataMapper<String>> tm = VirtData.getMapper("ToEpochTimeUUID(); java.lang.Object -> ToString() -> String");
+        assertThat(tm).isPresent();
+        String s = tm.get().get(55L);
+        assertThat(s).isEqualTo("1389a470-1dd2-11b2-8000-000000000000");
+    }
+
+    public void testConversionMatchingAuto() {
+        Optional<DataMapper<String>> tm = VirtData.getMapper("ToEpochTimeUUID(); ToString()");
+        assertThat(tm).isPresent();
+        String s = tm.get().get(55L);
+        assertThat(s).isEqualTo("1389a470-1dd2-11b2-8000-000000000000");
+    }
+
     @Test
     public void sanityCheckFunctionCasting() {
         Class<?> c1 = NumberNameToString.class;

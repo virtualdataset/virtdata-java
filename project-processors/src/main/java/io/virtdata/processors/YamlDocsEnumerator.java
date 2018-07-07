@@ -12,7 +12,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class YamlDocsEnumerator implements DocsEnumerator.Listener {
+public class YamlDocsEnumerator implements FuncEnumerator.Listener {
 
     Yaml yamlAPI = new Yaml();
     private Filer filer;
