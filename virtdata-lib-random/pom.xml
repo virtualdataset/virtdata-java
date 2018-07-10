@@ -122,14 +122,6 @@
                     <source>1.8</source>
                     <target>1.8</target>
                     <generatedSourcesDirectory>${project.build.directory}/classes/</generatedSourcesDirectory>
-                    <annotationProcessors>
-                        <annotationProcessor>
-                            io.virtdata.processors.FunctionDocInfoProcessor
-                        </annotationProcessor>
-                        <annotationProcessor>
-                            com.google.auto.service.processor.AutoServiceProcessor
-                        </annotationProcessor>
-                    </annotationProcessors>
 
                 </configuration>
             </plugin>

@@ -1,6 +1,5 @@
 package io.virtdata.libimpl.discrete;
 
-import com.google.auto.service.AutoService;
 import io.virtdata.api.ValueType;
 import io.virtdata.api.VirtDataFunctionLibrary;
 import io.virtdata.ast.FunctionCall;
@@ -76,7 +75,6 @@ import java.util.function.*;
  * access.</em> Interpolation is usually the better way.</li>
  * </ul>
  */
-@AutoService(VirtDataFunctionLibrary.class)
 public class IntegerDistributions implements VirtDataFunctionLibrary {
 
     private static final String MAPTO = "mapto_";
