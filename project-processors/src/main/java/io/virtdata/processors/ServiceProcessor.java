@@ -2,7 +2,10 @@ package io.virtdata.processors;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.*;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
@@ -14,14 +17,12 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 /**
- * This documentation processor is responsible for finding all the enumerated that feed documentation
- * manifests. It simply calls listener interfaces to do the rest of the work.
+ * This annotation processor is responsible for adding services to the
+ * <pre>classes/META-INF/services/servicename</pre> file for each
+ * implemented and annotated service name.
  */
-@SupportedOptions({"title"})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
-@SupportedAnnotationTypes({
-        "io.virtdata.annotations.ThreadSafeMapper",
-        "io.virtdata.annotations.PerThreadMapper"})
+@SupportedAnnotationTypes({"io.virtdata.annotations.Service"})
 public class ServiceProcessor extends AbstractProcessor {
 
     private static Pattern packageNamePattern = Pattern.compile("(?<packageName>.+)?\\.(?<className>.+)");
@@ -48,7 +49,7 @@ public class ServiceProcessor extends AbstractProcessor {
         String serviceName = clazz.getCanonicalName();
         return writers.computeIfAbsent(serviceName, s -> {
             try {
-                return filer.createResource(StandardLocation.CLASS_OUTPUT, "META-INF", "services." + s, elements)
+                return filer.createResource(StandardLocation.CLASS_OUTPUT, "", "META-INF/services/" + s, elements)
                         .openWriter();
             } catch (IOException e) {
                 messenger.printMessage(Diagnostic.Kind.ERROR, e.toString());
@@ -57,6 +58,7 @@ public class ServiceProcessor extends AbstractProcessor {
         });
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 
@@ -67,8 +69,23 @@ public class ServiceProcessor extends AbstractProcessor {
                 Class<? extends Annotation> annotationClass =
                         (Class<? extends Annotation>) Class.forName(annotationType);
                 Set<? extends Element> tsms = roundEnv.getElementsAnnotatedWith(annotationClass);
+
+
+                for (Element element : tsms) {
+                    for (AnnotationMirror am : element.getAnnotationMirrors()) {
+                        if (am.getAnnotationType().toString().equals("io.virtdata.annotations.Service")) {
+                            if(am.getElementValues().size()==1) {
+                                AnnotationValue av = am.getElementValues().get("0");
+                            } else {
+                                messenger.printMessage(Diagnostic.Kind.ERROR, element.toString() + " should have one service interface name");
+                            }
+                        }
+                    }
+                }
+
                 if (tsms.size() > 0) {
-                    Writer w = getWriterForClass(annotationClass, tsms.toArray(new Element[tsms.size()]));
+
+                    Writer w = getWriterForClass(annotationClass, tsms.toArray(new Element[0]));
                     for (Element e : tsms) {
                         w.write(((TypeElement) e).getQualifiedName() + "\n");
                     }

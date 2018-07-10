@@ -1,7 +1,7 @@
 package io.virtdata.libraryimpl;
 
 import io.virtdata.api.DataMapper;
-import io.virtdata.lib.BasicDataMappers;
+import io.virtdata.core.VirtData;
 import org.testng.annotations.Test;
 
 import java.util.Date;
@@ -14,50 +14,23 @@ public class BasicDataMappersTest {
 
 
     @Test
-    public void testGetLibraryName() throws Exception {
-        String libraryName = new BasicDataMappers().getName();
-        assertThat(libraryName).isEqualTo("basics");
-
-    }
-
-    @Test
     public void testGetDataMapper() throws Exception {
-        Optional<DataMapper<Object>> dataMapper = new BasicDataMappers().getDataMapper("StaticStringMapper('foo')");
+        Optional<DataMapper<Object>> dataMapper = VirtData.getMapper("StaticStringMapper('foo')");
         assertThat(dataMapper.isPresent()).isTrue();
         assertThat(dataMapper.get().get(5)).isEqualTo("foo");
     }
 
-    @Test(enabled=true)
-    public void testGetDataMapperNames() throws Exception {
-        BasicDataMappers basics = new BasicDataMappers();
-        List<String> gnames = basics.getDataMapperNames();
-        assertThat(gnames.size()>5);
-        assertThat(gnames.contains("StaticStringMapper")).isTrue();
-    }
-
     @Test
     public void testMultipleChoiceLong() {
-        BasicDataMappers basics = new BasicDataMappers();
-        Optional<DataMapper<Object>> add5 = basics.getDataMapper("long -> Add(5) -> long");
+        Optional<DataMapper<Object>> add5 = VirtData.getMapper("long -> Add(5) -> long");
         assertThat(add5).isPresent();
         Object o = add5.get().get(5);
         assertThat(o.getClass()).isEqualTo(Long.class);
     }
 
     @Test
-    public void testMultipleChoiceInt() {
-        BasicDataMappers basics = new BasicDataMappers();
-        List<DataMapper<Object>> dataMappers = basics.getDataMappers("Add(5) -> int");
-        assertThat(dataMappers).hasSize(2);
-        DataMapper<Object> add5 = dataMappers.get(0);
-        Object o = add5.get(5);
-        assertThat(o.getClass()).isEqualTo(Integer.class);
-    }
-
-    @Test
     public void testToDateSpaceInstantiator() throws Exception {
-        BasicDataMappers basics = new BasicDataMappers();
-        Optional<DataMapper<Date>> dataMapper = basics.getDataMapper("ToDate(1000)");
+        Optional<DataMapper<Date>> dataMapper = VirtData.getMapper("ToDate(1000)");
         assertThat(dataMapper).isNotNull();
         assertThat(dataMapper.get()).isNotNull();
         Date d1 = dataMapper.get().get(1);
@@ -66,8 +39,7 @@ public class BasicDataMappersTest {
     }
     @Test
     public void testToDateSpaceAndCountInstantiator() throws Exception {
-        BasicDataMappers basics = new BasicDataMappers();
-        Optional<DataMapper<Date>> dataMapper = basics.getDataMapper("ToDate(1000,10)");
+        Optional<DataMapper<Date>> dataMapper = VirtData.getMapper("ToDate(1000,10)");
         assertThat(dataMapper).isNotNull();
         assertThat(dataMapper.get()).isNotNull();
         Date d1 = dataMapper.get().get(1);
@@ -76,8 +48,7 @@ public class BasicDataMappersTest {
     }
     @Test
     public void testToDateInstantiator() throws Exception {
-        BasicDataMappers basics = new BasicDataMappers();
-        Optional<DataMapper<Date>> dataMapper = basics.getDataMapper("ToDate()");
+        Optional<DataMapper<Date>> dataMapper = VirtData.getMapper("ToDate()");
         assertThat(dataMapper).isNotNull();
         assertThat(dataMapper.get()).isNotNull();
         Date d1 = dataMapper.get().get(1);
@@ -86,8 +57,7 @@ public class BasicDataMappersTest {
 
     @Test
     public void testToDateBucketInstantiator() throws Exception {
-        BasicDataMappers basics = new BasicDataMappers();
-        Optional<DataMapper<Date>> dataMapper = basics.getDataMapper("ToDate(1000,10000)");
+        Optional<DataMapper<Date>> dataMapper = VirtData.getMapper("ToDate(1000,10000)");
         assertThat(dataMapper).isNotNull();
         assertThat(dataMapper.get()).isNotNull();
         assertThat(dataMapper.get().get(1).after(new Date(1)));
@@ -95,8 +65,7 @@ public class BasicDataMappersTest {
 
     @Test
     public void testRandomLineToIntInstantiator() throws Exception {
-        BasicDataMappers basics = new BasicDataMappers();
-        Optional<DataMapper<Integer>> dataMapper = basics.getDataMapper("HashedLineToInt('data/numbers.txt')");
+        Optional<DataMapper<Integer>> dataMapper = VirtData.getMapper("HashedLineToInt('data/numbers.txt')");
         assertThat(dataMapper).isNotNull();
         assertThat(dataMapper.get()).isNotNull();
         assertThat(dataMapper.get().get(1)).isNotNull();

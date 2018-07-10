@@ -42,12 +42,6 @@ public class FuncEnumerator {
         model.setClassJavadoc(classJavadoc);
     }
 
-    public void onAnchor(String anchorPackage, String anchorSimpleName) {
-        for (Listener listener : listeners) {
-            listener.onAnchorModel(anchorPackage,anchorSimpleName);
-        }
-    }
-
     public void onApplyTypes(String inType, String outType) {
         model.setInType(inType);
         model.setOutType(outType);

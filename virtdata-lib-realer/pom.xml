@@ -72,7 +72,7 @@
                             com.google.auto.service.processor.AutoServiceProcessor
                         </annotationProcessor>
                         <annotationProcessor>
-                            io.virtdata.processors.DocumentationProcessor
+                            io.virtdata.processors.FunctionDocInfoProcessor
                         </annotationProcessor>
                     </annotationProcessors>
                 </configuration>

@@ -1,13 +1,15 @@
-package io.virtdata.api;
+package io.virtdata.core;
 
 import io.virtdata.annotations.ThreadSafeMapper;
-import io.virtdata.core.ResolvedFunction;
+import io.virtdata.api.EnhancedDocs;
+import io.virtdata.api.VirtDataFunctionLibrary;
 import io.virtdata.processors.DocFuncData;
 import io.virtdata.processors.VirtDataLibraryInfo;
 import org.apache.commons.lang3.ClassUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.*;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -15,27 +17,9 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class BasicFunctionalLibrary implements VirtDataFunctionLibrary, EnhancedDocs {
-    private final static Logger logger = LoggerFactory.getLogger(BasicFunctionalLibrary.class);
+public class VirtDataFunctionResolver {
+    private final static Logger logger = LoggerFactory.getLogger(VirtDataFunctionResolver.class);
 
-    private List<String> searchPackages;
-
-    @Override
-    public abstract String getName();
-
-    public abstract List<Package> getSearchPackages();
-
-    private synchronized List<String> getAllPackageNames() {
-        if (searchPackages==null) {
-            Set<String> packageNames = new HashSet<>();
-            getSearchPackages().stream().map(Package::getName).forEachOrdered(packageNames::add);
-            packageNames.addAll(this.getDocPackages());
-            searchPackages= new ArrayList<>(packageNames);
-        }
-        return searchPackages;
-    }
-
-    @Override
     public List<ResolvedFunction> resolveFunctions(Class<?> returnType, Class<?> inputType, String functionName, Object... parameters) {
 
         // TODO: Make this look for both assignment compatible matches as well as exact assignment matches, and only
@@ -43,8 +27,10 @@ public abstract class BasicFunctionalLibrary implements VirtDataFunctionLibrary,
         // TODO: Further, make lambda construction honor exact matches first as well.
 
         List<ResolvedFunction> resolvedFunctions = new ArrayList<>();
-        List<Class<?>> matchingClasses = getAllPackageNames().stream()
-                .map(p -> p + "." + functionName)
+
+        List<Class<?>> matchingClasses = getFunctionNames()
+                .stream()
+                .filter(s -> s.endsWith(functionName))
                 .map(this::maybeClassForName)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
@@ -102,7 +88,7 @@ public abstract class BasicFunctionalLibrary implements VirtDataFunctionLibrary,
                                 func, threadSafe, ctor.getParameterTypes(), parameters,
                                 getInputClass(ctor.getDeclaringClass()),
                                 getOutputClas(ctor.getDeclaringClass()),
-                                this.getName())
+                                "defaultimpl")
                 );
             } catch (Exception e) {
                 throw new RuntimeException("Error while calling constructor '" + ctor.toString() + "': " + e, e);
@@ -215,38 +201,29 @@ public abstract class BasicFunctionalLibrary implements VirtDataFunctionLibrary,
         );
     }
 
-    @Override
+    public List<String> getFunctionNames() {
+        ClassLoader cl = VirtDataFunctionResolver.class.getClassLoader();
+        InputStream funcstream = cl.getResourceAsStream("META-INF/functions");
+        if (funcstream==null) {
+            throw new RuntimeException("unable to find META-INF/functions.");
+        }
+        BufferedReader reader = new BufferedReader(new InputStreamReader(funcstream));
+        List<String> names = reader.lines().map(String::trim).collect(Collectors.toList());
+        return names;
+    }
+
+
     public List<DocFuncData> getDocModels() {
-        List<DocFuncData> docs = new ArrayList<>();
-
-        String docsClassName = this.getClass().getCanonicalName()+"AutoDocsInfo";
-        Class<? extends VirtDataLibraryInfo> docsClass =null;
-        try {
-            docsClass = Class.forName(docsClassName).asSubclass(VirtDataLibraryInfo.class);
-        } catch (ClassNotFoundException e) {
-            logger.warn("Unable to find documentation class " + docsClassName);
-            return docs;
+        List<String> classes=getFunctionNames().stream().map(s -> s+"DocInfo").collect(Collectors.toList());
+        List<DocFuncData> docFuncData = new ArrayList<>(classes.size());
+        for (String aClass : classes) {
+            try {
+                Class<? extends DocFuncData> docClass = (Class<? extends DocFuncData>) Class.forName(aClass);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
         }
-
-        try {
-            VirtDataLibraryInfo enhancedDocs = docsClass.newInstance();
-            return enhancedDocs.getDocsInfo();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-
-    }
-
-    @Override
-    public List<String> getDataMapperNames() {
-        List<DocFuncData> docModels = getDocModels();
-        return docModels.stream().map(DocFuncData::getClassName).collect(Collectors.toList());
-
-    }
-
-    public String toString() {
-        return getName();
+        return docFuncData;
     }
 
 }

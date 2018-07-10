@@ -134,10 +134,10 @@
                     <generatedSourcesDirectory>${project.build.directory}/classes/</generatedSourcesDirectory>
                     <annotationProcessors>
                         <annotationProcessor>
-                            io.virtdata.processors.DocumentationProcessor
+                            io.virtdata.processors.FunctionDocInfoProcessor
                         </annotationProcessor>
                         <annotationProcessor>
-                            io.virtdata.processors.ServiceProcessor
+                            io.virtdata.processors.FunctionManifestProcessor
                         </annotationProcessor>
                     </annotationProcessors>
                 </configuration>

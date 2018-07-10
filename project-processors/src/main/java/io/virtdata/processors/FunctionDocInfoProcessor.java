@@ -7,7 +7,6 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import javax.tools.Diagnostic;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,7 +20,7 @@ import java.util.regex.Pattern;
 @SupportedAnnotationTypes({
         "io.virtdata.annotations.ThreadSafeMapper",
         "io.virtdata.annotations.PerThreadMapper"})
-public class DocumentationProcessor extends AbstractProcessor {
+public class FunctionDocInfoProcessor extends AbstractProcessor {
 
     private static Pattern packageNamePattern = Pattern.compile("(?<packageName>.+)?\\.(?<className>.+)");
     private Filer filer;
@@ -30,8 +29,6 @@ public class DocumentationProcessor extends AbstractProcessor {
     private Messager messenger;
     private SourceVersion sourceVersion;
     private Types typeUtils;
-    private String anchorPackage;
-    private String anchorSimpleName;
     private FuncEnumerator enumerator;
 
     @Override
@@ -47,17 +44,12 @@ public class DocumentationProcessor extends AbstractProcessor {
         this.enumerator = new FuncEnumerator(this.typeUtils, this.elementUtils, this.filer);
 //        enumerator.addListener(new StdoutListener());
 //        enumerator.addListener(new YamlDocsEnumerator(this.filer, this.messenger));
-        enumerator.addListener(new InlineDocData(this.filer,this.messenger,"AutoDocsInfo"));
+        enumerator.addListener(new FunctionDocInfoWriter(this.filer, this.messenger, "AutoDocsInfo"));
 
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-
-        if (this.anchorPackage==null) {
-            messenger.printMessage(Diagnostic.Kind.WARNING, "Looking for manifest anchor in " + roundEnv.getRootElements().toString());
-            findAnchor(roundEnv, enumerator);
-        }
 
         List<Element> ts = new ArrayList<>();
 
@@ -78,7 +70,7 @@ public class DocumentationProcessor extends AbstractProcessor {
             String packageName = pnm.group("packageName");
             String simpleClassName = pnm.group("className");
             String classDoc = elementUtils.getDocComment(classElem);
-            classDoc = classDoc==null ? "" : cleanJavadoc(classDoc);
+            classDoc = classDoc == null ? "" : cleanJavadoc(classDoc);
 
             enumerator.onClass(packageName, simpleClassName, classDoc);
 
@@ -104,8 +96,8 @@ public class DocumentationProcessor extends AbstractProcessor {
                     for (int i = 0; i < parameters.size(); i++) {
                         VariableElement var = parameters.get(i);
                         String varName = var.getSimpleName().toString();
-                        String varType = var.asType().toString() + (i==parameters.size()-1 ? (isVarArgs ? "..." : "") : "") ;
-                        args.put(varName,varType);
+                        String varType = var.asType().toString() + (i == parameters.size() - 1 ? (isVarArgs ? "..." : "") : "");
+                        args.put(varName, varType);
                     }
 
                     // Javadoc
@@ -135,61 +127,17 @@ public class DocumentationProcessor extends AbstractProcessor {
             enumerator.flush();
         }
 
-        if (roundEnv.processingOver()) {
-            if (anchorPackage==null) {
-                messenger.printMessage(Diagnostic.Kind.ERROR, "There should be exactly one element in this library which has an " +
-                        "annotation of type @" + DocManifestAnchor.class.getSimpleName() + ". Found none.");
-                return false;
-            }
-            enumerator.onAnchor(anchorPackage, anchorSimpleName);
-            enumerator.onComplete();
-        }
-
         return false;
     }
 
     private String cleanJavadoc(String ctorDoc) {
-        return ctorDoc.replaceAll("(?m)^ ","");
-    }
-
-    private boolean findAnchor(RoundEnvironment roundEnv, FuncEnumerator enumerator) {
-        Set<? extends Element> anchors = roundEnv.getElementsAnnotatedWith(DocManifestAnchor.class);
-        if (anchors.size() >1) {
-            messenger.printMessage(Diagnostic.Kind.ERROR, "Found " + anchors.size() + " @DocManifestAnchor classes, expected 1.");
-        }
-        if (anchors.size()==0) {
-            return false;
-        }
-        Element anchor = new ArrayList<>(anchors).get(0);
-        Name anchorElement = ((TypeElement) anchor).getQualifiedName();
-        Matcher pnm = packageNamePattern.matcher(anchorElement);
-        if (!pnm.matches()) {
-            messenger.printMessage(Diagnostic.Kind.ERROR, "Unable to match qualified name for package and name: " + anchorElement);
-        }
-
-        String anchorPackage = pnm.group("packageName");
-        String anchorSimpleName = pnm.group("className");
-        this.anchorPackage = anchorPackage;
-        this.anchorSimpleName=anchorSimpleName;
-
-        return true;
+        return ctorDoc.replaceAll("(?m)^ ", "");
     }
 
     private static class StdoutListener implements FuncEnumerator.Listener {
         @Override
-        public void onAnchorModel(String packageName, String anchorName) {
-            System.out.println("anchor: " + packageName + " . " + anchorName);
-        }
-
-        @Override
         public void onFunctionModel(DocForFunc functionDoc) {
             System.out.println(functionDoc);
-        }
-
-        @Override
-        public void onComplete() {
-            System.out.println("complete");
-
         }
     }
 }

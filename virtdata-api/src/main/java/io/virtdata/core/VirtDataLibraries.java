@@ -16,6 +16,8 @@ public class VirtDataLibraries implements VirtDataFunctionLibrary  {
 
     private final Map<String,VirtDataFunctionLibrary> libraries= Finder.find();
 
+    private final VirtDataFunctionResolver resolver = new VirtDataFunctionResolver();
+
     public static VirtDataLibraries get() {
         return instance;
     }
@@ -36,12 +38,12 @@ public class VirtDataLibraries implements VirtDataFunctionLibrary  {
             Object... parameters)
     {
         List<ResolvedFunction> resolvedFunctions = new ArrayList<>();
-        for (VirtDataFunctionLibrary library : libraries.values()) {
-            List<ResolvedFunction> resolved = library.resolveFunctions(returnType, inputType, functionName, parameters);
-            // Written this way to allow for easy debugging and understanding, do not convert to .stream()...
-            if (resolved.size()>0) {
-                resolvedFunctions.addAll(resolved);
-            }
+
+
+        List<ResolvedFunction> resolved = resolver.resolveFunctions(returnType, inputType, functionName, parameters);
+        // Written this way to allow for easy debugging and understanding, do not convert to .stream()...
+        if (resolved.size()>0) {
+            resolvedFunctions.addAll(resolved);
         }
         return resolvedFunctions;
     }

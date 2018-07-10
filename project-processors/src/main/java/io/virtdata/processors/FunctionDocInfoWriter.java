@@ -14,15 +14,16 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-public class SingleInlineDocData implements FuncEnumerator.Listener {
+public class FunctionDocInfoWriter implements FuncEnumerator.Listener {
 
     private final String suffix;
     private Filer filer;
     private Messager messenger;
     private List<DocForFunc> docs = new ArrayList<>();
 
-    public SingleInlineDocData(Filer filer, Messager messenger, String suffix) {
+    public FunctionDocInfoWriter(Filer filer, Messager messenger, String suffix) {
         this.filer = filer;
         this.messenger = messenger;
         this.suffix = suffix;
@@ -41,7 +42,7 @@ public class SingleInlineDocData implements FuncEnumerator.Listener {
         try {
             javafile.writeTo(this.filer);
         } catch (IOException e) {
-            messenger.printMessage(Diagnostic.Kind.ERROR, "Error writing javafile " + anchorElement + suffix + " in package " + this.anchorPackage);
+            messenger.printMessage(Diagnostic.Kind.ERROR, "Error writing javafile " + javafile.packageName + "." + javafile.typeSpec.toString());
             throw new RuntimeException(e);
         }
 
@@ -65,7 +66,7 @@ public class SingleInlineDocData implements FuncEnumerator.Listener {
 
         methods.add(getPackageName);
 
-        MethodSpec getClassJavaDoc = MethodSpec.methodBuilder("getClassJavaDoc")
+        MethodSpec getClassJavaDoc = MethodSpec.methodBuilder("getClassJavadoc")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(String.class)
                 .addStatement("return $S", doc.getClassJavadoc())
@@ -88,22 +89,32 @@ public class SingleInlineDocData implements FuncEnumerator.Listener {
 
 
 
-        CodeBlock ctorsHead = CodeBlock.builder().add("return new $T<$T>() {{$>\n", ArrayList.class, DocForFuncCtor.class).build();
-        CodeBlock ctorsTail = CodeBlock.builder().add("$<};").build();
+        CodeBlock ctorsHead = CodeBlock.builder().add("return new $T<$T>() {{$>\n", ArrayList.class, DocCtorData.class).build();
+        CodeBlock ctorsTail = CodeBlock.builder().add("$<}}").build();
 
         CodeBlock.Builder ctors = CodeBlock.builder().add(ctorsHead);
         for (DocCtorData ctor : doc.getCtors()) {
-            ctors.add("add(new DocForFuncCtor($S, $S, \n$>new $T<String, String>() {{\n$>", ctor.getClassName(), ctor.getCtorJavaDoc(), LinkedHashMap.class);
+            ctors.add("add(new $T($S, $S, \n$>new $T<String, String>() {{\n$>", DocForFuncCtor.class,ctor.getClassName(), ctor.getCtorJavaDoc(), LinkedHashMap.class);
             for (Map.Entry<String, String> arg : ctor.getArgs().entrySet()) {
                 ctors.add("put($S,$S);\n", arg.getKey(), arg.getValue());
             }
-            ctors.add("$<}}\n$<));\n");
+            ctors.add("$<}},\n");
+            ctors.add("new $T<$T<$T>>() {{\n$>", ArrayList.class, List.class,String.class);
+            for (List<String> example : ctor.getExamples()) {
+                ctors.add("add(new $T<$T>() {{$>\n",ArrayList.class,String.class);
+                for (String s : example) {
+                    ctors.add("add(\""+s+"\");\n");
+                }
+                ctors.add("$<}});\n");
+            }
+            ctors.add("$<}}");
+            ctors.add("\n$<));\n");
         }
         ctors.add(ctorsTail);
 
         MethodSpec getCtorsMethod = MethodSpec.methodBuilder("getCtors")
                 .addModifiers(Modifier.PUBLIC)
-                .returns(ParameterizedTypeName.get(List.class,DocForFuncCtor.class))
+                .returns(ParameterizedTypeName.get(List.class,DocCtorData.class))
                 .addStatement(ctors.build())
                 .build();
         methods.add(getCtorsMethod);
