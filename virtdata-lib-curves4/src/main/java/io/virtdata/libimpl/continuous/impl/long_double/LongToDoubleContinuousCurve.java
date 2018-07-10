@@ -1,4 +1,4 @@
-package io.virtdata.libimpl.continuous.impl;
+package io.virtdata.libimpl.continuous.impl.long_double;
 
 import io.virtdata.libimpl.continuous.InterpolatingLongDoubleSampler;
 import io.virtdata.libimpl.continuous.RealDistributionICDSource;

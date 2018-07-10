@@ -1,10 +1,10 @@
 package io.virtdata.libimpl.continuous.impl;
 
+import io.virtdata.libimpl.continuous.impl.long_double.Levy;
 import org.assertj.core.data.Offset;
 import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.testng.Assert.*;
 
 @Test
 public class LevyTest {
