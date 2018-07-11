@@ -6,7 +6,7 @@ import io.virtdata.basicsmappers.from_long.to_string.MapTemplate;
 import io.virtdata.basicsmappers.from_long.to_string.NumberNameToString;
 import io.virtdata.basicsmappers.from_long.to_string.Template;
 import io.virtdata.core.VirtData;
-import io.virtdata.testing.functions.ARandomPOJO;
+import io.virtdata.testing.ARandomPOJO;
 import org.apache.commons.lang3.ClassUtils;
 import org.testng.annotations.Test;
 
@@ -67,7 +67,7 @@ public class ComposerLogicTest {
     }
 
     public void testPOJOTypeSpecializer() {
-        Optional<DataMapper<Object>> dataMapper = VirtData.getMapper("compose LongToLongPOJO() -> io.virtdata.testing.functions.ARandomPOJO");
+        Optional<DataMapper<Object>> dataMapper = VirtData.getMapper("compose LongToLongPOJO() -> io.virtdata.testing.ARandomPOJO");
         assertThat(dataMapper).isPresent();
         assertThat(dataMapper.get().get(1)).isOfAnyClassIn(ARandomPOJO.class);
     }

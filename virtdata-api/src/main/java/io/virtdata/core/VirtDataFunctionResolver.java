@@ -14,6 +14,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -203,6 +204,17 @@ public class VirtDataFunctionResolver {
 
     public List<String> getFunctionNames() {
         ClassLoader cl = VirtDataFunctionResolver.class.getClassLoader();
+        Enumeration<URL> resources;
+        try {
+            resources = ClassLoader.getSystemResources("META-INF/functions");
+            
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        List<URL> urls = new ArrayList<>();
+        while(resources.hasMoreElements()) {
+            urls.add(resources.nextElement());
+        }
         InputStream funcstream = cl.getResourceAsStream("META-INF/functions");
         if (funcstream==null) {
             throw new RuntimeException("unable to find META-INF/functions.");
