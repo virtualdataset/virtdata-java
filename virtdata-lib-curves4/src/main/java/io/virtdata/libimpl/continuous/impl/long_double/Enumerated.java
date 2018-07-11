@@ -3,8 +3,11 @@ package io.virtdata.libimpl.continuous.impl.long_double;
 import io.virtdata.annotations.ThreadSafeMapper;
 import org.apache.commons.math4.distribution.EnumeratedRealDistribution;
 
-import java.util.Arrays;
-
+/**
+ * {@inheritDoc}
+ *
+ * @see io.virtdata.libimpl.continuous.impl.long_double.LongToDoubleContinuousCurve
+ */
 @ThreadSafeMapper
 public class Enumerated extends LongToDoubleContinuousCurve {
     public Enumerated(String data, String... mods) {
