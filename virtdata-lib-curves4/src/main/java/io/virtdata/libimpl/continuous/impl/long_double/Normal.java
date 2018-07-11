@@ -1,15 +1,16 @@
 package io.virtdata.libimpl.continuous.impl.long_double;
 
 import io.virtdata.annotations.ThreadSafeMapper;
-import org.apache.commons.statistics.distribution.LevyDistribution;
+import org.apache.commons.statistics.distribution.NormalDistribution;
 
 /**
  * {@inheritDoc}
  *
  * @see io.virtdata.libimpl.continuous.impl.long_double.LongToDoubleContinuousCurve
  */
-
 @ThreadSafeMapper
-public class Levy extends LongToDoubleContinuousCurve { public Levy(double mu, double c, String... mods) { super(new LevyDistribution(mu,c), mods);
+public class Normal extends LongToDoubleContinuousCurve {
+    public Normal(double mean, double sd, String... mods) {
+        super(new NormalDistribution(mean, sd), mods);
     }
 }
