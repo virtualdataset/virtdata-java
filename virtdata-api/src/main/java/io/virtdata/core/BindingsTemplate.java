@@ -44,24 +44,45 @@ public class BindingsTemplate {
 
     private VirtDataLibrary library =VirtData.get(); // by default
 
+    /**
+     * Create an empty bindings template with a user-provided VirtDataLibrary.
+     * @param library a user-provided instance of VirtDataLibrary
+     */
     public BindingsTemplate(VirtDataLibrary library) {
         this.library = library;
     }
 
+    /**
+     * Create a bindings template with a user-provided VirtDataLibrary and a map of binding specs
+     * @param library a user-provided instance of a VirtDataLibrary
+     * @param specs an map of binding specs
+     */
     public BindingsTemplate(VirtDataLibrary library, Map<String,String> specs) {
         this(library);
         specs.forEach(this::addFieldBinding);
     }
 
+    /**
+     * Create a bindings template with the default VirtDataLibrary.
+     */
     public BindingsTemplate() {
         this(VirtData.get());
     }
 
+    /**
+     * Add a named binding specifier to the template
+     * @param bindPointName the name associated with the binding specifier
+     * @param genSpec the binding specifier
+     */
     public void addFieldBinding(String bindPointName, String genSpec) {
         this.bindPointNames.add(bindPointName);
         this.specifiers.add(genSpec);
     }
 
+    /**
+     * Add multiple named bindings to the template
+     * @param bindPairs A map of named binding specifiers
+     */
     public void addFieldBindings(Map<String,String> bindPairs) {
         for (Map.Entry<String, String> e : bindPairs.entrySet()) {
             this.bindPointNames.add(e.getKey());
