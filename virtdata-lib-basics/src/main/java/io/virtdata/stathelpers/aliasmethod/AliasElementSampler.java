@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * even over larger sets of data. This form requires a unit interval sample value
  * between 0.0 and 1.0. Assuming the maximal amount of memory is used for distinct
  * outcomes N, a memory buffer of N*16 bytes is required for this implementation,
- * requiring 32MB of memory for 1M entries. Not bad, eh?
+ * requiring 32MB of memory for 1M entries.
  *
  * This sampler should be shared between threads, and will be by default, in order
  * to avoid many instances of a 32MB buffer on heap.
