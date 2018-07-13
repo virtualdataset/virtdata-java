@@ -1,8 +1,8 @@
 package io.virtdata.continuous.long_double;
 
-import io.virtdata.continuous.InterpolatingLongDoubleSampler;
-import io.virtdata.continuous.RealDistributionICDSource;
-import io.virtdata.continuous.RealLongDoubleSampler;
+import io.virtdata.continuous.common.InterpolatingLongDoubleSampler;
+import io.virtdata.continuous.common.RealDistributionICDSource;
+import io.virtdata.continuous.common.RealLongDoubleSampler;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.function.DoubleUnaryOperator;

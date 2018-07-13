@@ -3,7 +3,7 @@ package io.virtdata.libimpl.discrete;
 import io.virtdata.api.DataMapper;
 import io.virtdata.core.DataMapperFunctionMapper;
 import io.virtdata.core.ResolvedFunction;
-import io.virtdata.discrete.IntegerDistributions;
+import io.virtdata.discrete.common.IntegerDistributions;
 import org.testng.annotations.Test;
 
 import java.util.List;

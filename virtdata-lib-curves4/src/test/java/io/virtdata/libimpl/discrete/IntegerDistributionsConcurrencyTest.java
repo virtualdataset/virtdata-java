@@ -1,6 +1,6 @@
 package io.virtdata.libimpl.discrete;
 
-import io.virtdata.discrete.IntegerDistributions;
+import io.virtdata.discrete.common.IntegerDistributions;
 import org.apache.commons.statistics.distribution.BinomialDistribution;
 import org.assertj.core.data.Offset;
 import org.testng.annotations.Test;

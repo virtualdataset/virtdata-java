@@ -1,14 +1,14 @@
-package io.virtdata.continuous.int_double;
+package io.virtdata.discrete.int_long;
 
-import io.virtdata.continuous.common.InterpolatingIntDoubleSampler;
-import io.virtdata.continuous.common.RealDistributionICDSource;
-import io.virtdata.continuous.common.RealIntDoubleSampler;
-import org.apache.commons.statistics.distribution.ContinuousDistribution;
+import io.virtdata.discrete.common.DiscreteIntLongSampler;
+import io.virtdata.discrete.common.IntegerDistributionICDSource;
+import io.virtdata.discrete.common.InterpolatingIntLongSampler;
+import org.apache.commons.statistics.distribution.DiscreteDistribution;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.function.DoubleUnaryOperator;
-import java.util.function.IntToDoubleFunction;
+import java.util.function.DoubleToIntFunction;
+import java.util.function.IntToLongFunction;
 
 /**
  * Generate samples according to the specified probability density.
@@ -49,16 +49,16 @@ import java.util.function.IntToDoubleFunction;
  * specifiers as a form of verbosity or explicit specification.
  */
 
-public class IntToDoubleContinuousCurve implements IntToDoubleFunction {
+public class IntToLongDiscreteCurve implements IntToLongFunction {
 
-    private ContinuousDistribution distribution;
-    private IntToDoubleFunction function;
+    private DiscreteDistribution distribution;
+    private IntToLongFunction function;
 
-    public IntToDoubleContinuousCurve(ContinuousDistribution distribution, String... modslist) {
+    public IntToLongDiscreteCurve(DiscreteDistribution distribution, String... modslist) {
         this.distribution = distribution;
         HashSet<String> mods = new HashSet<>(Arrays.asList(modslist));
 
-        DoubleUnaryOperator icdSource = new RealDistributionICDSource(distribution);
+        DoubleToIntFunction icdSource = new IntegerDistributionICDSource(distribution);
 
         if (mods.contains("hash") && mods.contains("map")) {
             throw new RuntimeException("mods must not contain both hash and map.");
@@ -71,13 +71,13 @@ public class IntToDoubleContinuousCurve implements IntToDoubleFunction {
         boolean interpolate = ( mods.contains("interpolate") || !mods.contains("compute"));
 
         function = interpolate ?
-                new InterpolatingIntDoubleSampler(icdSource, 1000, hash)
+                new InterpolatingIntLongSampler(icdSource, 1000, hash)
                 :
-                new RealIntDoubleSampler(icdSource, hash);
+                new DiscreteIntLongSampler(icdSource, hash);
     }
 
     @Override
-    public double applyAsDouble(int value) {
-        return function.applyAsDouble(value);
+    public long applyAsLong(int value) {
+        return function.applyAsLong(value);
     }
 }

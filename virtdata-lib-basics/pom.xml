@@ -132,14 +132,6 @@
                     <source>1.8</source>
                     <target>1.8</target>
                     <generatedSourcesDirectory>${project.build.directory}/classes/</generatedSourcesDirectory>
-                    <annotationProcessors>
-                        <annotationProcessor>
-                            io.virtdata.processors.FunctionDocInfoProcessor
-                        </annotationProcessor>
-                        <annotationProcessor>
-                            io.virtdata.processors.FunctionManifestProcessor
-                        </annotationProcessor>
-                    </annotationProcessors>
                 </configuration>
             </plugin>
         </plugins>

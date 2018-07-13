@@ -2,16 +2,15 @@ package io.virtdata.processors;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.*;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import javax.tools.StandardLocation;
-import java.io.IOException;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
-import java.util.*;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * This annotation processor is responsible for finding all annotated functions and adding
@@ -68,6 +67,6 @@ public class FunctionManifestProcessor extends AbstractProcessor {
         } catch (Exception e) {
             messenger.printMessage(Diagnostic.Kind.ERROR, e.toString());
         }
-        return true;
+        return false;
     }
 }

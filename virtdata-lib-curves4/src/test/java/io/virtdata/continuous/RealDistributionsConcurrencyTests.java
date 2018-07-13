@@ -1,5 +1,6 @@
 package io.virtdata.continuous;
 
+import io.virtdata.continuous.common.RealDistributions;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;

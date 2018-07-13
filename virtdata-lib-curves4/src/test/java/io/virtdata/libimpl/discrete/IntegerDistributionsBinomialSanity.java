@@ -1,7 +1,7 @@
 package io.virtdata.libimpl.discrete;
 
-import io.virtdata.discrete.DiscreteLongLongSampler;
-import io.virtdata.discrete.IntegerDistributionICDSource;
+import io.virtdata.discrete.common.DiscreteLongLongSampler;
+import io.virtdata.discrete.common.IntegerDistributionICDSource;
 import org.apache.commons.statistics.distribution.BinomialDistribution;
 import org.testng.annotations.Test;
 
