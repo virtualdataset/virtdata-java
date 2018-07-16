@@ -5,8 +5,10 @@ import io.virtdata.annotations.*;
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
+import javax.tools.Diagnostic;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -71,6 +73,8 @@ public class FunctionDocInfoProcessor extends AbstractProcessor {
             String simpleClassName = pnm.group("className");
             String classDoc = elementUtils.getDocComment(classElem);
             classDoc = classDoc == null ? "" : cleanJavadoc(classDoc);
+            classDoc = inheritDocs(classDoc,classElem);
+
 
             enumerator.onClass(packageName, simpleClassName, classDoc);
 
@@ -116,6 +120,7 @@ public class FunctionDocInfoProcessor extends AbstractProcessor {
                     List<List<String>> exampleData = new ArrayList<>();
                     Example[] exampleAnnotations = ctorElem.getAnnotationsByType(Example.class);
                     for (Example example : exampleAnnotations) {
+                        example.value();
                         exampleData.add(Arrays.asList(example.value()));
                     }
 
@@ -128,6 +133,44 @@ public class FunctionDocInfoProcessor extends AbstractProcessor {
         }
 
         return false;
+    }
+
+    private static Pattern inheritDocPattern = Pattern.compile("(?ms)(?<pre>.*)(?<inherit>\\{@inheritDoc})(?<post>.*)$");
+    private String inheritDocs(String classDoc, Element classElem) {
+        if (classDoc==null) {
+            return null;
+        }
+        Matcher matcher = inheritDocPattern.matcher(classDoc);
+        if (!matcher.matches()) {
+            return classDoc;
+        }
+        StringBuilder docData = new StringBuilder();
+        String pre = matcher.group("pre");
+        String post = matcher.group("post");
+
+        Optional<TypeElement> inheritFromElement = Optional.ofNullable(((TypeElement) classElem).getSuperclass())
+                .map(String::valueOf)
+                .map(elementUtils::getTypeElement);
+
+
+        if (!inheritFromElement.isPresent()) {
+            messenger.printMessage(Diagnostic.Kind.ERROR, "Element " + classElem.toString() + " has '{@inheritDoc}', but a superclass was not found.");
+            return pre + "UNABLE TO FIND ELEMENT TO INHERIT DOCS FROM for " + classElem.toString() + " " + post;
+        }
+        TypeElement inheritFromType = inheritFromElement.get();
+        String inheritedDocs = elementUtils.getDocComment(inheritFromType);
+        if (inheritedDocs==null) {
+            messenger.printMessage(Diagnostic.Kind.ERROR, "javadocs are missing on " + inheritFromElement.toString() + ", but "
+            + classElem.toString() + " is trying to inherit docs from it.");
+            return pre + "UNABLE TO FIND INHERITED DOCS for " + classElem.toString() + " " + post;
+        }
+
+        if (inheritDocPattern.matcher(inheritedDocs).matches()) {
+            return pre + inheritDocs(inheritedDocs,inheritFromType) + post;
+        } else {
+            return pre + inheritedDocs + post;
+        }
+
     }
 
     private String cleanJavadoc(String ctorDoc) {

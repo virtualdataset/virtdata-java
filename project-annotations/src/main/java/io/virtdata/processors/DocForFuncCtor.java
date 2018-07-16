@@ -1,9 +1,13 @@
 package io.virtdata.processors;
 
+import io.virtdata.annotations.Example;
+import io.virtdata.annotations.ExampleData;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class DocForFuncCtor implements DocCtorData {
 
@@ -16,8 +20,10 @@ public class DocForFuncCtor implements DocCtorData {
         this.className = className;
         this.ctorDoc = ctorDoc;
         this.args.putAll(args);
+        ExampleData.validateExamples(examples);
         this.examples.addAll(examples);
     }
+
 
     @Override
     public String getClassName() {

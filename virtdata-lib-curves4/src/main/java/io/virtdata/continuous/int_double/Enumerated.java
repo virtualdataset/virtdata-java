@@ -1,5 +1,6 @@
 package io.virtdata.continuous.int_double;
 
+import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 import org.apache.commons.math4.distribution.EnumeratedRealDistribution;
 
@@ -8,6 +9,10 @@ import org.apache.commons.math4.distribution.EnumeratedRealDistribution;
  */
 @ThreadSafeMapper
 public class Enumerated extends IntToDoubleContinuousCurve {
+
+    @Example({"Enumerated('1 2 3 4 5 6')", "a fair six-sided die roll",
+    "[1-10]/"})
+    @Example({"Enumerated('1:2.0 2 3 4 5 6')", "an unfair six-sided die roll, where 1 has probability mass 2.0, and everything else has only 1.0",})
     public Enumerated(String data, String... mods) {
         super(new EnumeratedRealDistribution(parseWeights(data)[0],parseWeights(data)[1]), mods);
     }
