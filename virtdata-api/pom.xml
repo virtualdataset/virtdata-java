@@ -7,7 +7,7 @@
     <parent>
         <artifactId>project-defaults</artifactId>
         <groupId>io.virtdata</groupId>
-        <version>1.2.23-SNAPSHOT</version>
+        <version>1.2.23</version>
         <relativePath>../project-defaults</relativePath>
     </parent>
 
@@ -18,17 +18,17 @@
         <dependency>
             <groupId>io.virtdata</groupId>
             <artifactId>project-processors</artifactId>
-            <version>1.2.23-SNAPSHOT</version>
+            <version>1.2.23</version>
         </dependency>
         <dependency>
             <groupId>io.virtdata</groupId>
             <artifactId>project-annotations</artifactId>
-            <version>1.2.23-SNAPSHOT</version>
+            <version>1.2.23</version>
         </dependency>
         <dependency>
             <groupId>io.virtdata</groupId>
             <artifactId>virtdata-lang</artifactId>
-            <version>1.2.23-SNAPSHOT</version>
+            <version>1.2.23</version>
         </dependency>
 
 
