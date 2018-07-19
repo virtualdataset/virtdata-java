@@ -4,7 +4,7 @@
     <parent>
         <artifactId>project-defaults</artifactId>
         <groupId>io.virtdata</groupId>
-        <version>1.2.23-SNAPSHOT</version>
+        <version>1.2.25-SNAPSHOT</version>
         <relativePath>../project-defaults</relativePath>
     </parent>
 
@@ -16,33 +16,43 @@
     <dependencies>
         <dependency>
             <groupId>io.virtdata</groupId>
+            <artifactId>project-annotations</artifactId>
+            <version>1.2.25-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>io.virtdata</groupId>
+            <artifactId>project-processors</artifactId>
+            <version>1.2.25-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>io.virtdata</groupId>
             <artifactId>virtdata-realdata</artifactId>
-            <version>1.2.23-SNAPSHOT</version>
+            <version>1.2.25-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.virtdata</groupId>
             <artifactId>virtdata-lib-realer</artifactId>
-            <version>1.2.23-SNAPSHOT</version>
+            <version>1.2.25-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.virtdata</groupId>
             <artifactId>virtdata-api</artifactId>
-            <version>1.2.23-SNAPSHOT</version>
+            <version>1.2.25-SNAPSHOT</version>
         </dependency>
         <dependency>
             <artifactId>virtdata-lib-random</artifactId>
             <groupId>io.virtdata</groupId>
-            <version>1.2.23-SNAPSHOT</version>
+            <version>1.2.25-SNAPSHOT</version>
         </dependency>
         <dependency>
             <artifactId>virtdata-lib-basics</artifactId>
             <groupId>io.virtdata</groupId>
-            <version>1.2.23-SNAPSHOT</version>
+            <version>1.2.25-SNAPSHOT</version>
         </dependency>
         <dependency>
             <artifactId>virtdata-lib-curves4</artifactId>
             <groupId>io.virtdata</groupId>
-            <version>1.2.23-SNAPSHOT</version>
+            <version>1.2.25-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
