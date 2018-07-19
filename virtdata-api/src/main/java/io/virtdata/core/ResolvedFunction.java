@@ -1,6 +1,5 @@
 package io.virtdata.core;
 
-import com.strobel.reflection.Type;
 import io.virtdata.api.FunctionType;
 import io.virtdata.api.ValueType;
 
@@ -58,14 +57,12 @@ public class ResolvedFunction {
 
     public Class<?> getResultClass() {
         Method applyMethod = getMethod();
-        Type<?> returnType = Type.of(functionObject.getClass()).getMethod(applyMethod.getName()).getReturnType();
-        return returnType.getErasedClass();
+        return applyMethod.getReturnType();
     }
 
     public Class<?> getInputClass() {
         Method applyMethod = getMethod();
-        Type<?> inputType = Type.of(functionObject.getClass()).getMethod(applyMethod.getName()).getParameters().get(0).getParameterType();
-        return inputType.getErasedClass();
+        return applyMethod.getParameterTypes()[0];
     }
 
     public Class<?> getArgType() {

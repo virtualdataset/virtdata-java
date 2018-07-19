@@ -42,17 +42,6 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.7</version>
         </dependency>
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>15.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.bitbucket.mstrobel</groupId>
-            <artifactId>procyon-reflection</artifactId>
-            <version>0.5.32</version>
-        </dependency>
 
         <dependency>
             <groupId>org.testng</groupId>
@@ -72,30 +61,5 @@
             <version>1.5</version>
         </dependency>
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>shade</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-shade-plugin</artifactId>
-                        <configuration>
-                            <relocations>
-                                <relocation>
-                                    <pattern>com.google.common</pattern>
-                                    <shadedPattern>com.google.shaded.common</shadedPattern>
-                                </relocation>
-                            </relocations>
-                            <minimizeJar>true</minimizeJar>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
 </project>

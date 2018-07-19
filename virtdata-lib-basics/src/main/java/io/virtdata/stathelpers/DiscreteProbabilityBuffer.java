@@ -1,7 +1,5 @@
 package io.virtdata.stathelpers;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.nio.ByteBuffer;
 import java.util.Iterator;
 
@@ -62,7 +60,6 @@ public class DiscreteProbabilityBuffer implements Iterable<DiscreteProbabilityBu
     }
 
 
-    @NotNull
     @Override
     public Iterator<Entry> iterator() {
         return new Iter(buffer.duplicate());

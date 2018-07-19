@@ -14,8 +14,6 @@
 */
 package io.virtdata.core;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.*;
 
 public class LazyValuesMap implements Map<String,Object> {
@@ -80,7 +78,6 @@ public class LazyValuesMap implements Map<String,Object> {
         bindingsCache.getCachedMap().clear();
     }
 
-    @NotNull
     @Override
     public Set<String> keySet() {
         return Collections.unmodifiableSet(new HashSet<String>()
@@ -89,13 +86,11 @@ public class LazyValuesMap implements Map<String,Object> {
         }});
     }
 
-    @NotNull
     @Override
     public Collection<Object> values() {
         return bindingsCache.getCachedMap().values();
     }
 
-    @NotNull
     @Override
     public Set<Entry<String, Object>> entrySet() {
         return bindingsCache.getCachedMap().entrySet();
