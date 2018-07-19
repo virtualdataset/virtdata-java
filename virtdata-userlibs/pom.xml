@@ -156,12 +156,6 @@
                     <plugin>
                         <artifactId>maven-shade-plugin</artifactId>
                         <configuration>
-                            <relocations>
-                                <relocation>
-                                    <pattern>com.google.common</pattern>
-                                    <shadedPattern>com.google.shaded.common</shadedPattern>
-                                </relocation>
-                            </relocations>
                             <transformers combine.children="append">
 \                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/functions</resource>

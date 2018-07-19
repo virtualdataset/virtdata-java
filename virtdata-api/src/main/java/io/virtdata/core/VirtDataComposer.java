@@ -1,6 +1,5 @@
 package io.virtdata.core;
 
-import com.google.common.collect.Sets;
 import io.virtdata.api.DataMapperLibrary;
 import io.virtdata.api.ValueType;
 import io.virtdata.api.VirtDataFunctionLibrary;
@@ -313,7 +312,9 @@ public class VirtDataComposer {
         // Rule 1: If there are direct type matches, remove extraneous next funcs
         Set<Class<?>> outputs = getOutputs(prevFuncs);
         Set<Class<?>> inputs = getInputs(nextFuncs);
-        Sets.SetView<Class<?>> directMatches = Sets.intersection(inputs, outputs);
+        Set<Class<?>> directMatches=
+                inputs.stream().filter(outputs::contains).collect(Collectors.toCollection(HashSet::new));
+
         if (directMatches.size() > 0) {
             List<ResolvedFunction> toremove = new ArrayList<>();
             for (ResolvedFunction nextFunc : nextFuncs) {

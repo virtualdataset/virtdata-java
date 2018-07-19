@@ -1,11 +1,11 @@
 package io.virtdata.basicsmappers.from_long.to_string;
 
-import com.google.common.base.Charsets;
 import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.LongFunction;
@@ -97,8 +97,8 @@ public class Combinations implements LongFunction<String> {
     }
 
     private List<Character> rangeFor(String startChar, String endChar) {
-        int start = startChar.getBytes(Charsets.US_ASCII)[0];
-        int end = endChar.getBytes(Charsets.US_ASCII)[0];
+        int start = startChar.getBytes(StandardCharsets.US_ASCII)[0];
+        int end = endChar.getBytes(StandardCharsets.US_ASCII)[0];
         assertPrintable(start);
         assertPrintable(end);
         assertOrder(start, end);
@@ -107,7 +107,7 @@ public class Combinations implements LongFunction<String> {
         for (int i = start; i <= end; i++) {
             bb.clear();
             bb.put(0, (byte) i);
-            CharBuffer decoded = Charsets.US_ASCII.decode(bb);
+            CharBuffer decoded = StandardCharsets.US_ASCII.decode(bb);
             chars.add(decoded.get(0));
         }
         return chars;

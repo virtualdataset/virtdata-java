@@ -1,12 +1,12 @@
 package io.virtdata.basicsmappers.from_long.to_long;
 
-import com.google.common.base.Charsets;
 import de.greenrobot.common.hash.Murmur3F;
 import io.virtdata.annotations.Example;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.LongUnaryOperator;
 
@@ -64,7 +64,7 @@ public class HostHash implements LongUnaryOperator {
             Murmur3F m3f = new Murmur3F(0);
             m3f.reset();
             distinctNames.forEach(
-                    s -> m3f.update(s.getBytes(Charsets.UTF_8))
+                    s -> m3f.update(s.getBytes(StandardCharsets.UTF_8))
             );
             return m3f.getValue();
         } catch (Exception e) {

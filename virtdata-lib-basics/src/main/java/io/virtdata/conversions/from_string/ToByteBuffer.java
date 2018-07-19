@@ -18,10 +18,10 @@
 
 package io.virtdata.conversions.from_string;
 
-import com.google.common.base.Charsets;
 import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.function.Function;
 
 @ThreadSafeMapper
@@ -29,7 +29,7 @@ public class ToByteBuffer implements Function<String,ByteBuffer> {
 
     @Override
     public ByteBuffer apply(String input) {
-        byte[] bytes = input.getBytes(Charsets.UTF_8);
+        byte[] bytes = input.getBytes(StandardCharsets.UTF_8);
         return ByteBuffer.wrap(bytes);
     }
 }
