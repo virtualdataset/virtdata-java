@@ -3,11 +3,6 @@ package io.virtdata.continuous.long_double;
 import io.virtdata.annotations.ThreadSafeMapper;
 import org.apache.commons.statistics.distribution.LogNormalDistribution;
 
-/**
- * {@inheritDoc}
- *
- * @see io.virtdata.continuous.long_double.LongToDoubleContinuousCurve
- */
 @ThreadSafeMapper
 public class LogNormal extends LongToDoubleContinuousCurve {
     public LogNormal(double scale, double shape, String... mods) {

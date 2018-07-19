@@ -5,6 +5,11 @@ import io.virtdata.annotations.ThreadSafeMapper;
 import org.apache.commons.math4.distribution.EnumeratedRealDistribution;
 
 /**
+ * Creates a probability density given the values and optional weights provided, in "value:weight value:weight ..." form.
+ * The weight can be elided for any value to use the default weight of 1.0d.
+ *
+ * @see <a href="http://commons.apache.org/proper/commons-math/apidocs/org/apache/commons/math4/distribution/EnumeratedRealDistribution.html">Commons JavaDoc: EnumeratedRealDistribution</a>
+ *
  * {@inheritDoc}
  */
 @ThreadSafeMapper
