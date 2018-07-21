@@ -36,6 +36,8 @@
 
 package io.virtdata.basicsmappers.from_long.to_time_types;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.DeprecatedFunction;
 import io.virtdata.annotations.ThreadSafeMapper;
 import org.joda.time.DateTime;
@@ -48,6 +50,7 @@ import java.util.function.LongFunction;
  */
 @ThreadSafeMapper
 @DeprecatedFunction("This will be replaced by the more aptly named toJodaDateTime(...)")
+@Categories({Category.datetime})
 public class ToDateTime implements LongFunction<DateTime> {
 
     private long spacing;

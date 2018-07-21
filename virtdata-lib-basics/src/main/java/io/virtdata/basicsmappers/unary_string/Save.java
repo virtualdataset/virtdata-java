@@ -1,5 +1,7 @@
 package io.virtdata.basicsmappers.unary_string;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.threadstate.ThreadLocalState;
@@ -7,6 +9,7 @@ import io.virtdata.threadstate.ThreadLocalState;
 import java.util.function.Function;
 
 @ThreadSafeMapper
+@Categories({Category.state})
 public class Save implements Function<String,String> {
 
     private final String name;

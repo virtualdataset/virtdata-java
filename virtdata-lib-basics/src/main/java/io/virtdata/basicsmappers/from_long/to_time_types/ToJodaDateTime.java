@@ -36,6 +36,8 @@
 
 package io.virtdata.basicsmappers.from_long.to_time_types;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.ThreadSafeMapper;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -46,6 +48,7 @@ import java.util.function.LongFunction;
  * Convert the input value to a {@code org.joda.time.DateTime}
  */
 @ThreadSafeMapper
+@Categories({Category.datetime})
 public class ToJodaDateTime implements LongFunction<DateTime> {
 
     private long spacing;

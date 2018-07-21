@@ -18,6 +18,8 @@
 
 package io.virtdata.basicsmappers.from_long.to_inetaddress;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.net.Inet4Address;
@@ -30,6 +32,7 @@ import java.util.function.LongFunction;
  * Convert the input value to a {@code java.net.InetAddress}
  */
 @ThreadSafeMapper
+@Categories({Category.conversion})
 public class ToInetAddress implements LongFunction<InetAddress> {
 
     @Override

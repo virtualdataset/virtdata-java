@@ -11,20 +11,18 @@ import java.util.List;
 import java.util.function.LongFunction;
 
 /**
- * <p>Convert a numeric value into a code according to ASCII printable
+ * Convert a numeric value into a code according to ASCII printable
  * characters. This is useful for creating various encodings using different
- * character ranges, etc.</p>
- * <p>
+ * character ranges, etc.
+ *
  * This mapper can map over the sequences of character ranges providing every unique
  * combination and then wrapping around to the beginning again.
  * It can convert between character bases with independent radix in each position.
  * Each position in the final string takes its values from a position-specific
  * character set, described by the shorthand in the examples below.
- * </p>
- * <p>
+ *
  * The constructor will throw an error if the number of combinations exceeds that
- * which can be represented in a long value. (This is a very high
- * number).
+ * which can be represented in a long value. (This is a very high number).
  */
 @ThreadSafeMapper
 public class Combinations implements LongFunction<String> {

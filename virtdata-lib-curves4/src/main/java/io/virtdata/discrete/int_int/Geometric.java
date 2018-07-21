@@ -1,5 +1,7 @@
 package io.virtdata.discrete.int_int;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.ThreadSafeMapper;
 import org.apache.commons.statistics.distribution.GeometricDistribution;
 
@@ -10,6 +12,7 @@ import org.apache.commons.statistics.distribution.GeometricDistribution;
  * {@inheritDoc}
  */
 @ThreadSafeMapper
+@Categories({Category.distributions})
 public class Geometric extends IntToIntDiscreteCurve {
     public Geometric(double p, String... modslist) {
         super(new GeometricDistribution(p), modslist);

@@ -1,5 +1,7 @@
 package io.virtdata.conversions.from_long;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongFunction;
@@ -8,6 +10,7 @@ import java.util.function.LongFunction;
  * Convert the input value to a short.
  */
 @ThreadSafeMapper
+@Categories({Category.conversion})
 public class ToShort implements LongFunction<Short> {
 
     private final int scale;

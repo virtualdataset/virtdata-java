@@ -36,6 +36,8 @@
 
 package io.virtdata.basicsmappers.from_long.to_time_types;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.Date;
@@ -45,6 +47,7 @@ import java.util.function.LongFunction;
  * Convert the input value to a {@code Date}
  */
 @ThreadSafeMapper
+@Categories({Category.datetime})
 public class ToDate implements LongFunction<Date> {
 
     private long spacing;

@@ -1,5 +1,7 @@
 package io.virtdata.datamappers;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.stathelpers.aliasmethod.WeightedStrings;
@@ -11,6 +13,7 @@ import java.util.function.LongFunction;
  * occurring more than 100 times.
  */
 @ThreadSafeMapper
+@Categories({Category.premade})
 public class LastNames extends WeightedStrings implements LongFunction<String> {
 
     @Example({"LastNames()","select a random last name based on the chance of seeing it in the census data"})

@@ -1,5 +1,7 @@
 package io.virtdata.basicsmappers.from_long.to_time_types;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.basicsmappers.DateTimeFormats;
@@ -39,6 +41,7 @@ import java.util.function.LongFunction;
  * </ol>
  */
 @ThreadSafeMapper
+@Categories({Category.datetime})
 public class ToEpochTimeUUID implements LongFunction<UUID> {
 
     private final long node;

@@ -18,12 +18,15 @@
 
 package io.virtdata.conversions.from_short;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.nio.ByteBuffer;
 import java.util.function.Function;
 
 @ThreadSafeMapper
+@Categories({Category.conversion})
 public class ToByteBuffer implements Function<Short,ByteBuffer> {
 
     @Override

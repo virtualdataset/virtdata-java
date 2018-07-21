@@ -1,5 +1,7 @@
 package io.virtdata.functionadapters;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.*;
@@ -17,6 +19,7 @@ import java.util.function.*;
  * described here in order to allow the inner and outer functions to work together.
  */
 @ThreadSafeMapper
+@Categories({Category.diagnostics})
 public class ToLongFunction implements LongFunction<Object> {
 
     private LongFunction<?> function;

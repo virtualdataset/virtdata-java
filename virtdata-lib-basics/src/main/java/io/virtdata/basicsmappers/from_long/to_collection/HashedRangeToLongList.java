@@ -1,11 +1,19 @@
 package io.virtdata.basicsmappers.from_long.to_collection;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
+import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.basicsmappers.from_long.to_long.HashRange;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.LongFunction;
 
+/**
+ * Create a list of longs.
+ */
+@ThreadSafeMapper
+@Categories({Category.collections})
 public class HashedRangeToLongList implements LongFunction<List<Long>> {
 
     private final HashRange valueRange;

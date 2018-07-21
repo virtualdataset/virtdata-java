@@ -1,10 +1,13 @@
 package io.virtdata.conversions.from_double;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.DoubleToIntFunction;
 
 @ThreadSafeMapper
+@Categories({Category.conversion})
 public class ToInt implements DoubleToIntFunction {
 
     private final int scale;

@@ -1,5 +1,7 @@
 package io.virtdata.discrete.int_int;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.ThreadSafeMapper;
 import org.apache.commons.statistics.distribution.HypergeometricDistribution;
 
@@ -10,6 +12,7 @@ import org.apache.commons.statistics.distribution.HypergeometricDistribution;
  * {@inheritDoc}
  */
 @ThreadSafeMapper
+@Categories({Category.distributions})
 public class Hypergeometric extends IntToIntDiscreteCurve {
     public Hypergeometric(int populationSize, int numberOfSuccesses, int sampleSize, String... modslist) {
         super(new HypergeometricDistribution(populationSize, numberOfSuccesses, sampleSize), modslist);

@@ -1,5 +1,7 @@
 package io.virtdata.continuous.int_double;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.ThreadSafeMapper;
 import org.apache.commons.statistics.distribution.ParetoDistribution;
 
@@ -10,6 +12,7 @@ import org.apache.commons.statistics.distribution.ParetoDistribution;
  * {@inheritDoc}
  */
 @ThreadSafeMapper
+@Categories({Category.distributions})
 public class Pareto extends IntToDoubleContinuousCurve {
     public Pareto(double scale, double shape, String... mods) {
         super(new ParetoDistribution(scale, shape), mods);

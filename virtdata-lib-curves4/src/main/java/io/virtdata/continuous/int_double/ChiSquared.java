@@ -1,5 +1,7 @@
 package io.virtdata.continuous.int_double;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.ThreadSafeMapper;
 import org.apache.commons.statistics.distribution.ChiSquaredDistribution;
 
@@ -10,6 +12,7 @@ import org.apache.commons.statistics.distribution.ChiSquaredDistribution;
  * {@inheritDoc}
  */
 @ThreadSafeMapper
+@Categories({Category.distributions})
 public class ChiSquared extends IntToDoubleContinuousCurve {
     public ChiSquared(double degreesOfFreedom, String... mods) {
         super(new ChiSquaredDistribution(degreesOfFreedom), mods);

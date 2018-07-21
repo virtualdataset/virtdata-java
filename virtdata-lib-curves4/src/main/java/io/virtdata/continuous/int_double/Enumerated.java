@@ -1,5 +1,7 @@
 package io.virtdata.continuous.int_double;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 import org.apache.commons.math4.distribution.EnumeratedRealDistribution;
@@ -13,6 +15,7 @@ import org.apache.commons.math4.distribution.EnumeratedRealDistribution;
  * {@inheritDoc}
  */
 @ThreadSafeMapper
+@Categories({Category.distributions})
 public class Enumerated extends IntToDoubleContinuousCurve {
 
     @Example({"Enumerated('1 2 3 4 5 6')", "a fair six-sided die roll",

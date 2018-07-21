@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.LongFunction;
 
 /**
- * This is equivalent to <pre>long -> Div(...) -> long</pre>, but returns
+ * This is equivalent to <pre>Div(...)</pre>, but returns
  * the result after String.valueOf(...). This function is also deprecated,
  * as it is easily replaced by other functions.
  */

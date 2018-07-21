@@ -18,6 +18,8 @@
 
 package io.virtdata.basicsmappers.from_long.to_boolean;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongFunction;
@@ -26,6 +28,7 @@ import java.util.function.LongFunction;
  * Convert the input value to a {@code boolean}
  */
 @ThreadSafeMapper
+@Categories({Category.conversion})
 public class ToBoolean implements LongFunction<Boolean> {
 
     @Override

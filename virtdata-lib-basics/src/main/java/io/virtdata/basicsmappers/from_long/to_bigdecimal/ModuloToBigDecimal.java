@@ -18,6 +18,8 @@
 
 package io.virtdata.basicsmappers.from_long.to_bigdecimal;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.ThreadSafeMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +31,7 @@ import java.util.function.LongFunction;
  * Return a {@code BigDecimal} value as the result of modulo division with the specified divisor.
  */
 @ThreadSafeMapper
+@Categories({Category.conversion})
 public class ModuloToBigDecimal implements LongFunction<BigDecimal> {
     private final static Logger logger = LoggerFactory.getLogger(ModuloToBigDecimal.class);
 

@@ -18,6 +18,8 @@
 
 package io.virtdata.basicsmappers.from_long.to_boolean;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongFunction;
@@ -26,6 +28,7 @@ import java.util.function.LongFunction;
  * Return a boolean value as the result of modulo division with the specified divisor.
  */
 @ThreadSafeMapper
+@Categories({Category.conversion})
 public class ModuloToBoolean implements LongFunction<Boolean> {
 
     @Override

@@ -1,5 +1,7 @@
 package io.virtdata.conversions.from_double;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.DoubleFunction;
@@ -8,6 +10,7 @@ import java.util.function.DoubleFunction;
  * Convert the input value into a float.
  */
 @ThreadSafeMapper
+@Categories({Category.conversion})
 public class ToFloat implements DoubleFunction<Float> {
     private final double scale;
 

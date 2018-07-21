@@ -1,5 +1,7 @@
 package io.virtdata.continuous.int_double;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.ThreadSafeMapper;
 import org.apache.commons.statistics.distribution.LevyDistribution;
 
@@ -10,6 +12,7 @@ import org.apache.commons.statistics.distribution.LevyDistribution;
  * {@inheritDoc}
  */
 @ThreadSafeMapper
+@Categories({Category.distributions})
 public class Levy extends IntToDoubleContinuousCurve { public Levy(double mu, double c, String... mods) { super(new LevyDistribution(mu,c), mods);
     }
 }

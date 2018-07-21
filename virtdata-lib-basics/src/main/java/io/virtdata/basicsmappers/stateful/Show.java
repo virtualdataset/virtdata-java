@@ -13,7 +13,7 @@ import java.util.function.Function;
  * Show diagnostic values for the thread-local variable map.
  */
 @ThreadSafeMapper
-@Categories({Category.state})
+@Categories({Category.state,Category.diagnostics})
 public class Show implements Function<Object,String> {
 
     private final String[] names;

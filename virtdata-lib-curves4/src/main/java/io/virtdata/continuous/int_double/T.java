@@ -1,5 +1,7 @@
 package io.virtdata.continuous.int_double;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.ThreadSafeMapper;
 import org.apache.commons.statistics.distribution.TDistribution;
 
@@ -10,6 +12,7 @@ import org.apache.commons.statistics.distribution.TDistribution;
  * {@inheritDoc}
  */
 @ThreadSafeMapper
+@Categories({Category.distributions})
 public class T extends IntToDoubleContinuousCurve {
     public T(double degreesOfFreedom, String... mods) {
         super(new TDistribution(degreesOfFreedom), mods);

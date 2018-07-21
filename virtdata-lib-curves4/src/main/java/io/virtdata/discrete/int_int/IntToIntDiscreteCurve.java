@@ -15,8 +15,8 @@ import java.util.function.IntUnaryOperator;
  *
  * The input value consists of a long between 0L and Long.MAX_VALUE.
  * This value is scaled to the unit interval (0.0, 1.0) as
- * an index into a sampling function. The method used is
- * inverse cumulative density sampling.
+ * an index into a sampling function based on inverse cumulative
+ * density sampling.
  *
  * <H3>Sampling Mode</H3>
  *

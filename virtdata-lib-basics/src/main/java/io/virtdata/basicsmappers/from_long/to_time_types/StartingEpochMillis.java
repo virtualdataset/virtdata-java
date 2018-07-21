@@ -1,5 +1,7 @@
 package io.virtdata.basicsmappers.from_long.to_time_types;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.basicsmappers.DateTimeFormats;
@@ -14,6 +16,7 @@ import java.util.function.LongUnaryOperator;
  * time specifier. It wraps any overflow within this range as well.
  */
 @ThreadSafeMapper
+@Categories({Category.datetime})
 public class StartingEpochMillis implements LongUnaryOperator {
 
     private final DateTime startingTime;

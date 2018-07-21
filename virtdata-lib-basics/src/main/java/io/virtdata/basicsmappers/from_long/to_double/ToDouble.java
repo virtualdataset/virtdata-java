@@ -1,5 +1,7 @@
 package io.virtdata.basicsmappers.from_long.to_double;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongToDoubleFunction;
@@ -8,6 +10,7 @@ import java.util.function.LongToDoubleFunction;
  * Convert the input value to a double.
  */
 @ThreadSafeMapper
+@Categories({Category.conversion})
 public class ToDouble implements LongToDoubleFunction {
 
     @Override

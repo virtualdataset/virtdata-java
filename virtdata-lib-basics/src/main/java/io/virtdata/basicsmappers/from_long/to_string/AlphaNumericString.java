@@ -1,10 +1,13 @@
 package io.virtdata.basicsmappers.from_long.to_string;
 
-import java.util.function.LongFunction;
-
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.basicsmappers.from_long.to_long.Hash;
 
+import java.util.function.LongFunction;
+
+/**
+ * Create an alpha-numeric string of the specified length, character-by-character.
+ */
 @ThreadSafeMapper
 public class AlphaNumericString implements LongFunction<String>
 {
