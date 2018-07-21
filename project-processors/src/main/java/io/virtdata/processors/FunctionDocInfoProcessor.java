@@ -1,8 +1,6 @@
 package io.virtdata.processors;
 
-import io.virtdata.annotations.Example;
-import io.virtdata.annotations.PerThreadMapper;
-import io.virtdata.annotations.ThreadSafeMapper;
+import io.virtdata.annotations.*;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -67,6 +65,8 @@ public class FunctionDocInfoProcessor extends AbstractProcessor {
                 throw new RuntimeException("Unexpected kind of element: " + classElem.getKind() + " for " + classElem.toString());
             }
 
+            // package and Class Name
+
             Name qualifiedName = ((TypeElement) classElem).getQualifiedName();
             Matcher pnm = packageNamePattern.matcher(qualifiedName);
             if (!pnm.matches()) {
@@ -74,29 +74,56 @@ public class FunctionDocInfoProcessor extends AbstractProcessor {
             }
             String packageName = pnm.group("packageName");
             String simpleClassName = pnm.group("className");
+
+            // Class JavaDoc
+
             String classDoc = elementUtils.getDocComment(classElem);
             classDoc = classDoc == null ? "" : cleanJavadoc(classDoc);
             classDoc = inheritDocs(classDoc,classElem);
 
-
             enumerator.onClass(packageName, simpleClassName, classDoc);
 
-            for (Element ctorElem : classElem.getEnclosedElements()) {
-                if (ctorElem.getKind() == ElementKind.METHOD) {
-                    if (ctorElem.getSimpleName().toString().startsWith("apply")) {
-                        VariableElement inParam = ((ExecutableElement) ctorElem).getParameters().get(0);
-                        String inType = inParam.asType().toString();
-                        String outType = ((ExecutableElement) ctorElem).getReturnType().toString();
-                        enumerator.onApplyTypes(inType, outType);
+            Categories categoryAnnotation = classElem.getAnnotation(Categories.class);
+            if (categoryAnnotation!=null) {
+                Category[] value = categoryAnnotation.value();
+                enumerator.onCategories(value);
+            }
+            // apply method types
+
+            boolean foundApply=false;
+            Element applyMethodElem = null;
+            Element applyInClassElem = classElem;
+            while (applyMethodElem==null && applyInClassElem!=null) {
+                for (Element candidateApplyElem : applyInClassElem.getEnclosedElements()) {
+                    if (candidateApplyElem.getKind() == ElementKind.METHOD) {
+                        if (candidateApplyElem.getSimpleName().toString().startsWith("apply")) {
+                            applyMethodElem = candidateApplyElem;
+                            break;
+                        }
+
                     }
                 }
+                if (applyMethodElem!=null) {
+                    break;
+                }
+                applyInClassElem = elementUtils.getTypeElement(((TypeElement) applyInClassElem).getSuperclass().toString());
             }
+            if (applyMethodElem==null) {
+                messenger.printMessage(Diagnostic.Kind.ERROR, "Unable to enumerate input and output types for " + simpleClassName);
+                return false;
+            }
+
+            VariableElement inParam = ((ExecutableElement) applyMethodElem).getParameters().get(0);
+            String inType = inParam.asType().toString();
+            String outType = ((ExecutableElement) applyMethodElem).getReturnType().toString();
+            enumerator.onApplyTypes(inType, outType);
+
+            // Ctors
 
             for (Element ctorElem : classElem.getEnclosedElements()) {
                 if (ctorElem.getKind() == ElementKind.CONSTRUCTOR) {
 
-
-                    // Args
+                    // Ctor Args
                     List<? extends VariableElement> parameters = ((ExecutableElement) ctorElem).getParameters();
                     LinkedHashMap<String, String> args = new LinkedHashMap<>();
                     boolean isVarArgs = ((ExecutableElement) ctorElem).isVarArgs();
@@ -107,17 +134,9 @@ public class FunctionDocInfoProcessor extends AbstractProcessor {
                         args.put(varName, varType);
                     }
 
-                    // Javadoc
+                    // Ctor Javadoc
                     String ctorDoc = elementUtils.getDocComment(ctorElem);
                     ctorDoc = ctorDoc == null ? "" : cleanJavadoc(ctorDoc);
-
-//                    // Examples
-//                    Examples[] examples = ctorElem.getAnnotationsByType(Examples.class);
-//                    for (Examples example : examples) {
-//                        Example[] exampleEntry= example.value();
-//                        String[] value = exampleEntry[0].value();
-//                        System.out.println(value.toString());
-//                    }
 
                     // Examples
                     List<List<String>> exampleData = new ArrayList<>();

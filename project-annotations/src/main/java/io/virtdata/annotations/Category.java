@@ -1,7 +1,12 @@
 package io.virtdata.annotations;
 
 public enum Category {
-    time,
+    datetime,
     state,
-    conversion
+    distributions,
+    diagnostics,
+    conversion,
+    collections,
+    premade,
+    general
 }

@@ -1,5 +1,7 @@
 package io.virtdata.processors;
 
+import io.virtdata.annotations.Category;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -9,6 +11,11 @@ public class ExampleDocData implements DocFuncData {
     @Override
     public String getPackageName() {
         return "packagename";
+    }
+
+    @Override
+    public Category[] getCategories() {
+        return new Category[] { Category.general };
     }
 
     @Override

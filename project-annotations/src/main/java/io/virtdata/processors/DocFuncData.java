@@ -1,5 +1,7 @@
 package io.virtdata.processors;
 
+import io.virtdata.annotations.Category;
+
 import java.util.List;
 
 /**
@@ -11,6 +13,11 @@ public interface DocFuncData {
      * @return the package name for the documented type
      */
     String getPackageName();
+
+    /**
+     * @return Return the categories for this function.
+     */
+    Category[] getCategories();
 
     /**
      * @return the the {@link Class#getSimpleName()} of the class element

@@ -1,5 +1,7 @@
 package io.virtdata.processors;
 
+import io.virtdata.annotations.Category;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -12,6 +14,7 @@ public class DocForFunc implements DocFuncData {
     private String inType;
     private String outType;
     private ArrayList<DocCtorData> ctors = new ArrayList<>();
+    private Category[] categories = new Category[] { Category.general };
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;
@@ -19,6 +22,11 @@ public class DocForFunc implements DocFuncData {
     @Override
     public String getPackageName() {
         return this.packageName;
+    }
+
+    @Override
+    public Category[] getCategories() {
+        return categories;
     }
 
     public void setClassName(String className) {
@@ -55,7 +63,7 @@ public class DocForFunc implements DocFuncData {
 
     public void addCtor(String ctorDoc, LinkedHashMap<String, String> args, List<List<String>> examples) {
         if (this.className==null || this.className.isEmpty()) {
-            throw new RuntimeException("Unable to documente ctor without known class name first.");
+            throw new RuntimeException("Unable to document ctor without known class name first.");
         }
         DocForFuncCtor ctor = new DocForFuncCtor(getClassName(), ctorDoc, args, examples);
         ctors.add(ctor);
@@ -78,4 +86,7 @@ public class DocForFunc implements DocFuncData {
                 '}';
     }
 
+    public void addCategories(Category[] categories) {
+        this.categories = categories;
+    }
 }

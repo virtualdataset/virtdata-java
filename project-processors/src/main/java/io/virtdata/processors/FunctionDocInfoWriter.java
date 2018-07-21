@@ -1,19 +1,14 @@
 package io.virtdata.processors;
 
 import com.squareup.javapoet.*;
+import io.virtdata.annotations.Category;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
 import javax.lang.model.element.Modifier;
 import javax.tools.Diagnostic;
-import javax.tools.FileObject;
-import javax.tools.JavaFileObject;
 import java.io.IOException;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class FunctionDocInfoWriter implements FuncEnumerator.Listener {
@@ -33,7 +28,7 @@ public class FunctionDocInfoWriter implements FuncEnumerator.Listener {
     public void onFunctionModel(DocForFunc functionDoc) {
 
         TypeSpec typeSpec = this.createInlineClassForDocFuncData(functionDoc,
-                functionDoc.getClassName()+suffix);
+                functionDoc.getClassName() + suffix);
 
         JavaFile javafile = JavaFile.builder(functionDoc.getPackageName(), typeSpec)
                 .addFileComment("This file is auto-generated.")
@@ -88,22 +83,21 @@ public class FunctionDocInfoWriter implements FuncEnumerator.Listener {
         methods.add(getOutType);
 
 
-
         CodeBlock ctorsHead = CodeBlock.builder().add("return new $T<$T>() {{$>\n", ArrayList.class, DocCtorData.class).build();
         CodeBlock ctorsTail = CodeBlock.builder().add("$<}}").build();
 
         CodeBlock.Builder ctors = CodeBlock.builder().add(ctorsHead);
         for (DocCtorData ctor : doc.getCtors()) {
-            ctors.add("add(new $T($S, $S, \n$>new $T<String, String>() {{\n$>", DocForFuncCtor.class,ctor.getClassName(), ctor.getCtorJavaDoc(), LinkedHashMap.class);
+            ctors.add("add(new $T($S, $S, \n$>new $T<String, String>() {{\n$>", DocForFuncCtor.class, ctor.getClassName(), ctor.getCtorJavaDoc(), LinkedHashMap.class);
             for (Map.Entry<String, String> arg : ctor.getArgs().entrySet()) {
                 ctors.add("put($S,$S);\n", arg.getKey(), arg.getValue());
             }
             ctors.add("$<}},\n");
-            ctors.add("new $T<$T<$T>>() {{\n$>", ArrayList.class, List.class,String.class);
+            ctors.add("new $T<$T<$T>>() {{\n$>", ArrayList.class, List.class, String.class);
             for (List<String> example : ctor.getExamples()) {
-                ctors.add("add(new $T<$T>() {{$>\n",ArrayList.class,String.class);
+                ctors.add("add(new $T<$T>() {{$>\n", ArrayList.class, String.class);
                 for (String s : example) {
-                    ctors.add("add(\""+s+"\");\n");
+                    ctors.add("add(\"" + s + "\");\n");
                 }
                 ctors.add("$<}});\n");
             }
@@ -112,9 +106,17 @@ public class FunctionDocInfoWriter implements FuncEnumerator.Listener {
         }
         ctors.add(ctorsTail);
 
+        MethodSpec getCategoriesMethod = MethodSpec.methodBuilder("getCategories")
+                .addModifiers(Modifier.PUBLIC)
+                .returns(ArrayTypeName.of(Category.class))
+                .addStatement("return new $T[] { " +
+                        Arrays.stream(doc.getCategories()).map(c -> "Category." + c)
+                                .collect(Collectors.joining(","))+" }",Category.class).build();
+        methods.add(getCategoriesMethod);
+
         MethodSpec getCtorsMethod = MethodSpec.methodBuilder("getCtors")
                 .addModifiers(Modifier.PUBLIC)
-                .returns(ParameterizedTypeName.get(List.class,DocCtorData.class))
+                .returns(ParameterizedTypeName.get(List.class, DocCtorData.class))
                 .addStatement(ctors.build())
                 .build();
         methods.add(getCtorsMethod);

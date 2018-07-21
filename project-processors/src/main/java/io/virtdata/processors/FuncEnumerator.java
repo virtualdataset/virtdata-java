@@ -1,5 +1,7 @@
 package io.virtdata.processors;
 
+import io.virtdata.annotations.Category;
+
 import javax.annotation.processing.Filer;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
@@ -54,6 +56,10 @@ public class FuncEnumerator {
     public void flush() {
         this.listeners.forEach(l -> l.onFunctionModel(model));
         model=null;
+    }
+
+    public void onCategories(Category[] categories) {
+        model.addCategories(categories);
     }
 
     /**
