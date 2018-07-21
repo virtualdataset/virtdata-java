@@ -1,25 +1,20 @@
 package io.virtdata.core;
 
 import io.virtdata.annotations.ThreadSafeMapper;
-import io.virtdata.api.EnhancedDocs;
-import io.virtdata.api.VirtDataFunctionLibrary;
-import io.virtdata.processors.DocFuncData;
-import io.virtdata.processors.VirtDataLibraryInfo;
 import org.apache.commons.lang3.ClassUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class VirtDataFunctionResolver {
     private final static Logger logger = LoggerFactory.getLogger(VirtDataFunctionResolver.class);
+    private final VirtDataFunctionFinder virtDataFunctionFinder = new VirtDataFunctionFinder();
 
     public List<ResolvedFunction> resolveFunctions(Class<?> returnType, Class<?> inputType, String functionName, Object... parameters) {
 
@@ -29,9 +24,9 @@ public class VirtDataFunctionResolver {
 
         List<ResolvedFunction> resolvedFunctions = new ArrayList<>();
 
-        List<Class<?>> matchingClasses = getFunctionNames()
+        List<Class<?>> matchingClasses = virtDataFunctionFinder.getFunctionNames()
                 .stream()
-                .filter(s -> s.endsWith(functionName))
+                .filter(s -> s.endsWith("."+functionName))
                 .map(this::maybeClassForName)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
@@ -203,39 +198,27 @@ public class VirtDataFunctionResolver {
     }
 
     public List<String> getFunctionNames() {
-        ClassLoader cl = VirtDataFunctionResolver.class.getClassLoader();
-        Enumeration<URL> resources;
-        try {
-            resources = ClassLoader.getSystemResources("META-INF/functions");
-            
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        List<URL> urls = new ArrayList<>();
-        while(resources.hasMoreElements()) {
-            urls.add(resources.nextElement());
-        }
-        InputStream funcstream = cl.getResourceAsStream("META-INF/functions");
-        if (funcstream==null) {
-            throw new RuntimeException("unable to find META-INF/functions.");
-        }
-        BufferedReader reader = new BufferedReader(new InputStreamReader(funcstream));
-        List<String> names = reader.lines().map(String::trim).collect(Collectors.toList());
-        return names;
+        return virtDataFunctionFinder.getFunctionNames();
     }
 
 
-    public List<DocFuncData> getDocModels() {
-        List<String> classes=getFunctionNames().stream().map(s -> s+"DocInfo").collect(Collectors.toList());
-        List<DocFuncData> docFuncData = new ArrayList<>(classes.size());
-        for (String aClass : classes) {
-            try {
-                Class<? extends DocFuncData> docClass = (Class<? extends DocFuncData>) Class.forName(aClass);
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return docFuncData;
-    }
+//    public List<DocFuncData> getDocModels() {
+//        List<String> classes= virtDataFunctionFinder.getFunctionNames().stream().map(s -> s+"DocInfo").collect(Collectors.toList());
+//        List<DocFuncData> docFuncData = new ArrayList<>(classes.size());
+//        for (String aClass : classes) {
+//            try {
+//                Class<?> docClass = Class.forName(aClass);
+//                if (DocFuncData.class.isAssignableFrom(docClass)) {
+//                    DocFuncData dfd = DocFuncData.class.cast(docClass);
+//                    docFuncData.add(dfd);
+//                } else {
+//                    throw new RuntimeException("Unable to cast " + docClass.getCanonicalName() + " to class DocFuncData");
+//                }
+//            } catch (ClassNotFoundException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
+//        return docFuncData;
+//    }
 
 }

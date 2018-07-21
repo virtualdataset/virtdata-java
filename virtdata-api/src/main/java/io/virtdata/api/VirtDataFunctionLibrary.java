@@ -51,12 +51,6 @@ public interface VirtDataFunctionLibrary extends Named {
             String functionName,
             Object... parameters);
 
-    /**
-     * Get a list of all data mappers supported by this library.
-     *
-     * @return A list of data mapping function names
-     */
-    List<String> getDataMapperNames();
 
     default List<ResolvedFunction> resolveFunctions(String spec) {
         List<ResolvedFunction> resolvedFunctions = new ArrayList<>();

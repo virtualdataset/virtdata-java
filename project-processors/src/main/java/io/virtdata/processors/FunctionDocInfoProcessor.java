@@ -1,11 +1,12 @@
 package io.virtdata.processors;
 
-import io.virtdata.annotations.*;
+import io.virtdata.annotations.Example;
+import io.virtdata.annotations.PerThreadMapper;
+import io.virtdata.annotations.ThreadSafeMapper;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
-import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
@@ -23,6 +24,8 @@ import java.util.regex.Pattern;
         "io.virtdata.annotations.ThreadSafeMapper",
         "io.virtdata.annotations.PerThreadMapper"})
 public class FunctionDocInfoProcessor extends AbstractProcessor {
+
+    public final static String AUTOSUFFIX = "AutoDocsInfo";
 
     private static Pattern packageNamePattern = Pattern.compile("(?<packageName>.+)?\\.(?<className>.+)");
     private Filer filer;
@@ -46,7 +49,7 @@ public class FunctionDocInfoProcessor extends AbstractProcessor {
         this.enumerator = new FuncEnumerator(this.typeUtils, this.elementUtils, this.filer);
 //        enumerator.addListener(new StdoutListener());
 //        enumerator.addListener(new YamlDocsEnumerator(this.filer, this.messenger));
-        enumerator.addListener(new FunctionDocInfoWriter(this.filer, this.messenger, "AutoDocsInfo"));
+        enumerator.addListener(new FunctionDocInfoWriter(this.filer, this.messenger, AUTOSUFFIX));
 
     }
 

@@ -6,7 +6,6 @@ import io.virtdata.ast.VirtDataFlow;
 import io.virtdata.parser.VirtDataDSL;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -60,10 +59,5 @@ public interface VirtDataLibrary {
     default <T> DataMapper<T> getDataMapper(String s, Class<? extends T> clazz) {
         Optional<DataMapper<T>> dataMapper = getDataMapper(s);
         return dataMapper.orElseThrow(() -> new RuntimeException("Unable to find mapper: " + s));
-    }
-
-
-    default List<String> getDataMapperNames() {
-        return getFunctionLibrary().getDataMapperNames();
     }
 }
