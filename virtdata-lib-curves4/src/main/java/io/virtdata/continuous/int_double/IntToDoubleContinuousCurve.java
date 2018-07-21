@@ -48,11 +48,17 @@ import java.util.function.IntToDoubleFunction;
  * At times, it might be useful to add 'hash', 'interpolate' to your
  * specifiers as a form of verbosity or explicit specification.
  */
-
 public class IntToDoubleContinuousCurve implements IntToDoubleFunction {
 
     private ContinuousDistribution distribution;
     private IntToDoubleFunction function;
+
+    private final static HashSet<String> validModifiers = new HashSet<String>() {{
+        add("compute");
+        add("interpolate");
+        add("map");
+        add("hash");
+    }};
 
     public IntToDoubleContinuousCurve(ContinuousDistribution distribution, String... modslist) {
         this.distribution = distribution;
@@ -65,6 +71,11 @@ public class IntToDoubleContinuousCurve implements IntToDoubleFunction {
         }
         if (mods.contains("interpolate") && mods.contains("compute")) {
             throw new RuntimeException("mods must not contain both interpolate and compute");
+        }
+        for (String s : modslist) {
+            if (!validModifiers.contains(s)) {
+                throw new RuntimeException("modifier '" + s + "' is not a valid modifier. Use one of " + validModifiers.toString() + " instead.");
+            }
         }
 
         boolean hash = ( mods.contains("hash") || !mods.contains("map"));

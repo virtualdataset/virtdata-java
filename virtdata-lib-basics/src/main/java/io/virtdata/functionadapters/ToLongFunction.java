@@ -5,9 +5,16 @@ import io.virtdata.annotations.ThreadSafeMapper;
 import java.util.function.*;
 
 /**
- * Adapts any {@link FunctionalInterface} type to a LongFunction,
+ * Adapts any compatible {@link FunctionalInterface} type to a LongFunction,
  * for use with higher-order functions, when they require a
- * LongFunction as an argument.
+ * LongFunction as an argument. Some of the higher-order functions within
+ * this library specifically require a LongFunction as an argument, while
+ * some of the other functions are provided in semantically equivalent
+ * forms with compatible types which can't be converted directly or
+ * automatically by Java.
+ *
+ * In such cases, those types of functions can be wrapped with the forms
+ * described here in order to allow the inner and outer functions to work together.
  */
 @ThreadSafeMapper
 public class ToLongFunction implements LongFunction<Object> {

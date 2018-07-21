@@ -4,6 +4,9 @@ import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongFunction;
 
+/**
+ * Convert the input value to a short.
+ */
 @ThreadSafeMapper
 public class ToShort implements LongFunction<Short> {
 
@@ -12,6 +15,11 @@ public class ToShort implements LongFunction<Short> {
     public ToShort() {
         this.scale = Short.MAX_VALUE;
     }
+
+    /**
+     * This form allows for limiting the short values at a lower limit than Short.MAX_VALUE.
+     * @param wrapat The maximum value to return.
+     */
     public ToShort(int wrapat) {
         this.scale = wrapat;
     }

@@ -25,6 +25,9 @@ import org.slf4j.LoggerFactory;
 import java.math.BigInteger;
 import java.util.function.LongFunction;
 
+/**
+ * Return a {@code BigInteger} value as the result of modulo division with the specified divisor.
+ */
 @ThreadSafeMapper
 public class ModuloToBigInt implements LongFunction<BigInteger> {
     private final static Logger logger = LoggerFactory.getLogger(ModuloToBigInt.class);

@@ -1,6 +1,7 @@
 package io.virtdata.libimpl.discrete;
 
-import io.virtdata.discrete.common.IntegerDistributions;
+import io.virtdata.api.DataMapper;
+import io.virtdata.core.VirtData;
 import org.apache.commons.statistics.distribution.BinomialDistribution;
 import org.assertj.core.data.Offset;
 import org.testng.annotations.Test;
@@ -12,11 +13,10 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.function.LongUnaryOperator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class IntegerDistributionsConcurrencyTest {
+public class IntegerDistributionsConcurrencyIntegratedTest {
 
     @Test
     public void testBinomialICDR() {
@@ -35,28 +35,28 @@ public class IntegerDistributionsConcurrencyTest {
 
     @Test
     public void testBinomialCurvePoints() {
-        LongUnaryOperator idc = IntegerDistributions.forSpec("mapto_binomial(8,0.5)");
+        DataMapper<Long> mapper = VirtData.getMapper("Binomial(8,0.5,'map') -> long", long.class);
 
         long half = Long.MAX_VALUE / 2;
-        long expected = idc.applyAsLong(half);
+        long expected = mapper.get(half);
         assertThat(expected).isEqualTo(4);
-        expected = idc.applyAsLong(1);
+        expected = mapper.get(1);
         assertThat(expected).isEqualTo(0);
 
         // threshold test against CDF
-        expected = idc.applyAsLong((long) (0.03515d * (double) Long.MAX_VALUE));
+        expected = mapper.get((long) (0.03515d * (double) Long.MAX_VALUE));
         assertThat(expected).isEqualTo(1);
-        expected = idc.applyAsLong((long) (0.03600d * (double) Long.MAX_VALUE));
+        expected = mapper.get((long) (0.03600d * (double) Long.MAX_VALUE));
         assertThat(expected).isEqualTo(2);
     }
 
     @Test
     public void testConcurrentBinomialHashValues() {
         testConcurrentIntegerHashDistValues(
-                "binomial(8,0.5)/100 threads/1000 iterations",
+                "Binomial(8,0.5)/100 threads/1000 iterations",
                 100,
                 1000,
-                "binomial(8,0.5)");
+                "Binomial(8,0.5) -> long");
     }
 
     private void testConcurrentIntegerHashDistValues(
@@ -65,10 +65,11 @@ public class IntegerDistributionsConcurrencyTest {
             int iterations,
             String mapperSpec) {
 
-        LongUnaryOperator mapper = IntegerDistributions.forSpec(mapperSpec);
+
+        DataMapper<Long> mapper = VirtData.getMapper(mapperSpec, long.class);
         long[] values = new long[iterations];
         for (int index = 0; index < iterations; index++) {
-            values[index] = mapper.applyAsLong(index);
+            values[index] = mapper.get(index);
         }
 
         ExecutorService pool = Executors.newFixedThreadPool(threads);
@@ -139,7 +140,7 @@ public class IntegerDistributionsConcurrencyTest {
         @Override
         public long[] call() throws Exception {
             long[] output = new long[size];
-            LongUnaryOperator mapper = IntegerDistributions.forSpec(mapperSpec);
+            DataMapper<Long> mapper = VirtData.getMapper(mapperSpec, long.class);
 //            System.out.println("resolved:" + mapper);
 //            System.out.flush();
 
@@ -148,7 +149,7 @@ public class IntegerDistributionsConcurrencyTest {
             }
 
             for (int i = 0; i < output.length; i++) {
-                output[i] = mapper.applyAsLong(i);
+                output[i] = mapper.get(i);
 //                if ((i % 100) == 0) {
 //                    System.out.println("wrote t:" + slot + ", iter:" + i + ", val:" + output[i]);
 //                }

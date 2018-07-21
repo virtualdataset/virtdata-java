@@ -4,6 +4,9 @@ import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.DoubleFunction;
 
+/**
+ * Convert the input value into a float.
+ */
 @ThreadSafeMapper
 public class ToFloat implements DoubleFunction<Float> {
     private final double scale;

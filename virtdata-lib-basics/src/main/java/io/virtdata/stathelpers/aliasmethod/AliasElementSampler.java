@@ -1,6 +1,5 @@
 package io.virtdata.stathelpers.aliasmethod;
 
-import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.stathelpers.ElemProbD;
 
 import java.util.ArrayList;
@@ -21,7 +20,6 @@ import java.util.stream.Collectors;
  * This sampler should be shared between threads, and will be by default, in order
  * to avoid many instances of a 32MB buffer on heap.
  */
-@ThreadSafeMapper
 public class AliasElementSampler<T> implements DoubleFunction<T> {
 
     private double[] biases;

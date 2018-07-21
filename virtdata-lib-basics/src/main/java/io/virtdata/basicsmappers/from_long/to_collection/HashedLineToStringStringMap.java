@@ -27,6 +27,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.LongFunction;
 
+/**
+ * Create a String-String map from the specified file, ranging in size
+ * from 0 to the specified maximum.
+ */
 @ThreadSafeMapper
 public class HashedLineToStringStringMap implements LongFunction<Map<String,String>> {
 

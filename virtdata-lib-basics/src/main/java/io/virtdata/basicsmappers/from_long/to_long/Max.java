@@ -1,13 +1,14 @@
 package io.virtdata.basicsmappers.from_long.to_long;
 
-import io.virtdata.annotations.Description;
 import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongUnaryOperator;
 
+/**
+ * Return the maximum of either the input value or the specified max.
+ */
 @ThreadSafeMapper
-@Description("Yields the maximum of either the input value or the 'max' parameter.")
 public class Max implements LongUnaryOperator {
 
     private final long max;

@@ -15,6 +15,7 @@ import java.util.Optional;
  */
 public class ResolvedFunction {
 
+    public static Comparator<ResolvedFunction> PREFERRED_TYPE_COMPARATOR = new PreferredTypeComparator();
     private final Class<?> inputType;
     private final Class<?> outputType;
     private Class<?>[] initializerSignature;
@@ -37,6 +38,10 @@ public class ResolvedFunction {
         this.initializerValues = initValues;
         this.inputType = inputType;
         this.outputType = outputType;
+    }
+
+    public static String getStringLegend() {
+        return "[<library name>::] input->class->output [initializer type->parameter type,...]";
     }
 
     public FunctionType getFunctionType() {
@@ -89,10 +94,37 @@ public class ResolvedFunction {
         );
     }
 
-    public static Comparator<ResolvedFunction> PREFERRED_TYPE_COMPARATOR = new PreferredTypeComparator();
-
     public boolean isThreadSafe() {
         return isThreadSafe;
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (libraryName != null) {
+            sb.append(libraryName).append("::");
+        }
+        sb.append(getArgType().getSimpleName()).append("->");
+        sb.append(getMethod().getDeclaringClass().getName());
+//        sb.append(getFunctionObject().getClass().getPackage().getLibname()).append(".").append(getMethod().getLibname());
+        sb.append("->").append(getResultClass().getName());
+
+        if (initializerValues != null && initializerValues.length > 0) {
+            sb.append(" [");
+            for (int i = 0; i < initializerValues.length; i++) {
+                Class<?> init = initializerValues[i].getClass();
+                sb.append(init.isPrimitive() ? init.getName() : init.getSimpleName());
+                sb.append("=>");
+                Class<?> isig = initializerSignature[i];
+                sb.append(isig.isPrimitive() ? isig.getName() : isig.getSimpleName());
+                if (i < initializerValues.length - 1) {
+                    sb.append(",");
+                }
+            }
+            sb.append("]");
+        }
+        return sb.toString();
+//        return "fn:" + functionObject.getClass().getCanonicalName() + ", type:" + functionType
+//                + ((libraryName ==null) ? "" : ", lib:" + this.libraryName);
     }
 
     /**
@@ -113,44 +145,6 @@ public class ResolvedFunction {
             return iv1.compareTo(iv2);
         }
     }
-
-    public static String getStringLegend() {
-        return "[<library name>::] input->class->output [initializer type->parameter type,...]";
-    }
-
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        if (libraryName!=null) {
-            sb.append(libraryName).append("::");
-        }
-        sb.append(getArgType().getSimpleName()).append("->");
-        sb.append(getMethod().getDeclaringClass().getName());
-//        sb.append(getFunctionObject().getClass().getPackage().getLibname()).append(".").append(getMethod().getLibname());
-        sb.append("->").append(getResultClass().getName());
-
-        if (initializerValues!=null && initializerValues.length>0) {
-            sb.append(" [");
-            for (int i = 0; i < initializerValues.length; i++) {
-                Class<?> init = initializerValues[i].getClass();
-                sb.append(init.isPrimitive() ? init.getName() : init.getSimpleName());
-                sb.append("=>");
-                if (i<initializerSignature.length) {
-                    Class<?> isig = initializerSignature[i];
-                    sb.append(isig.isPrimitive() ? isig.getName() : isig.getSimpleName());
-                } else {
-                    sb.append("init-signature-mismatch");
-                }
-                if (i<initializerValues.length-1) {
-                    sb.append(",");
-                }
-            }
-            sb.append("]");
-        }
-        return sb.toString();
-//        return "fn:" + functionObject.getClass().getCanonicalName() + ", type:" + functionType
-//                + ((libraryName ==null) ? "" : ", lib:" + this.libraryName);
-    }
-
 
 
 }

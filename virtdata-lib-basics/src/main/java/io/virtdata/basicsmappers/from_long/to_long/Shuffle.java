@@ -24,6 +24,14 @@ import io.virtdata.lfsrs.MetaShift;
  * elements into memory. It uses a bundled dataset of pre-computed
  * Galois LFSR shift register configurations, along with a down-sampling
  * method to provide amortized virtual shuffling with minimal memory usage.
+ *
+ * Essentially, this guarantees that every value in the specified range will
+ * be seen at least once before the cycle repeats. However, since the order
+ * of traversal of these values is dependent on the LFSR configuration, some
+ * orders will appear much more random than others depending on where you
+ * are in the traversal cycle.
+ *
+ * This function *does* yield values that are deterministic.
  */
 @ThreadSafeMapper
 @Description("Provides virtual shuffling extremely large numbers.")
@@ -32,16 +40,15 @@ public class Shuffle extends MetaShift.Func {
     private final long max;
     private final long min;
     private final long size;
-//    public int[] stats = new int[1];
 
     @Example({"Shuffle(11,99)","Provide all values between 11 and 98 inclusive, in some order, then repeat"})
     public Shuffle(long min, long maxPlusOne) {
         this(min, maxPlusOne, Integer.MAX_VALUE);
     }
 
-    public Shuffle(long min, long maxPlusOne, int moduloSelector) {
-        super(MetaShift.Masks.forPeriodAndBankModulo((maxPlusOne-min),moduloSelector));
-//        System.out.println("galois:" + MetaShift.Masks.forPeriodAndBankModulo((maxPlusOne-min),Integer.MAX_VALUE));
+    @Example({"Shuffle(11,99,3)","Provide all values between 11 and 98 inclusive, in some different (and repeatable) order, then repeat"})
+    public Shuffle(long min, long maxPlusOne, int bankSelector) {
+        super(MetaShift.Masks.forPeriodAndBankModulo((maxPlusOne-min),bankSelector));
         this.min = min;
         this.max = maxPlusOne;
         this.size = (max-min);
@@ -49,23 +56,12 @@ public class Shuffle extends MetaShift.Func {
 
     @Override
     public long applyAsLong(long register) {
-//        System.out.format("%4d ",register);
         register = (register % size) +1;
-//        System.out.format("%4d ",register);
         register = super.applyAsLong(register);
-//        System.out.format("%4d ",register);
-//        int resample=1;
         while (register>size) {
-//            resample++;
             register = super.applyAsLong(register);
-//            System.out.format("(%4d)",register);
         }
-//        if (stats.length<resample+1) {
-//            stats=Arrays.copyOf(stats,resample+1);
-//        }
-//        stats[resample]++;
         register+=min;
-//        System.out.println();
         return register;
     }
 

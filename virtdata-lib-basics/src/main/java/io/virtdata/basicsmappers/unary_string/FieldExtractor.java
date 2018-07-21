@@ -1,5 +1,6 @@
 package io.virtdata.basicsmappers.unary_string;
 
+import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,7 @@ import java.util.function.Function;
 /**
  * Extracts out a set of fields from a delimited string, returning
  * a string with the same delimiter containing only the specified fields.
+ * The
  */
 @ThreadSafeMapper
 public class FieldExtractor implements Function<String,String> {
@@ -18,11 +20,12 @@ public class FieldExtractor implements Function<String,String> {
 
     private final String fields;
     private final String splitDelim;
-    private final Object printDelim;
+    private final String printDelim;
     private final int maxIdx;
     private int[] indexes;
     private ThreadLocal<StringBuilder> tlsb = ThreadLocal.withInitial(StringBuilder::new);
 
+    @Example({"FieldExtractor('|,2,16')","extract fields 2 and 16 from the input data with '|' as the delimiter"})
     public FieldExtractor(String fields) {
         this.fields = fields;
 
@@ -52,7 +55,7 @@ public class FieldExtractor implements Function<String,String> {
         for(int index: indexes) {
             sb.append(words[index]).append(printDelim);
         }
-        sb.setLength(sb.length()-1);
+        sb.setLength(sb.length()-printDelim.length());
         return sb.toString();
     }
 }

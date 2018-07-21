@@ -4,6 +4,9 @@ import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongFunction;
 
+/**
+ * Return a byte value as the result of modulo division with the specified divisor.
+ */
 @ThreadSafeMapper
 public class ModuloToByte implements LongFunction<Byte> {
 

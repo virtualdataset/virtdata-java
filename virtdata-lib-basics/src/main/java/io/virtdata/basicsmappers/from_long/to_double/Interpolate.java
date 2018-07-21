@@ -4,18 +4,14 @@ import io.virtdata.annotations.*;
 
 import java.util.function.LongToDoubleFunction;
 
-@Description("Return an interpolated number along a ")
-@Input(Range.NonNegativeLongs)
-@Output(Range.Doubles)
 @ThreadSafeMapper
 public class Interpolate implements LongToDoubleFunction {
 
     private final int resolution;
     private final double[] lut;
 
-    @Example("Interpolate(0.0d,100.0d) // return a linear value, 0L -> 0.0D, Long.MAX_VALUE -> 100.0D")
-    @Example({"Interpolate(0.0d,90.0d,95.0d,98.0d,100.0d)","return a weighted value between 0.0D and 100.0D based on input in range 0L, Long.MAX_VALUE" +
-            ", where the first second and third quartiles map to 90.0D, 95.0D, and 98.0D"})
+    @Example({"Interpolate(0.0d,100.0d)","return a uniform double value between 0.0d and 100.0d"})
+    @Example({"Interpolate(0.0d,90.0d,95.0d,98.0d,100.0d)","return a weighted double value where the first second and third quartiles are 90.0D, 95.0D, and 98.0D"})
     public Interpolate(double... value) {
         this(value.length, value);
     }

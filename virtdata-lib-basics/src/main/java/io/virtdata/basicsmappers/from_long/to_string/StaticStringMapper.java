@@ -22,6 +22,9 @@ import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongFunction;
 
+/**
+ * Return a static String value.
+ */
 @ThreadSafeMapper
 public class StaticStringMapper implements LongFunction<String> {
 

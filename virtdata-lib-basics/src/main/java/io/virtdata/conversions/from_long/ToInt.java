@@ -4,6 +4,9 @@ import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongToIntFunction;
 
+/**
+ * Convert the input value to a long.
+ */
 @ThreadSafeMapper
 public class ToInt implements LongToIntFunction {
 

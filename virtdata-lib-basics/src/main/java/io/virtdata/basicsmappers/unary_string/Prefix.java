@@ -1,23 +1,21 @@
 package io.virtdata.basicsmappers.unary_string;
 
-import io.virtdata.annotations.Description;
+import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.Function;
 
 /**
- * Created by sebastianestevez on 8/28/17.
+ * Add the specified prefix String to the input value and return the result.
  */
-
-@Description("adds a String prefix to the input")
 @ThreadSafeMapper
 public class Prefix implements Function<String,String>{
     private String prefix;
 
+    @Example({"Prefix('PREFIX:')", "Prepend 'PREFIX:' to every input value"})
     public Prefix(String prefix){
         this.prefix = prefix;
     }
-
 
     @Override
     public String apply(String s) {

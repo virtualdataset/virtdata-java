@@ -28,6 +28,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.LongFunction;
 
+/**
+ * Return a pseudo-randomly selected String value from a single line of
+ * the specified file.
+ */
 @ThreadSafeMapper
 public class HashedLineToString implements LongFunction<String> {
     private final static Logger logger = LoggerFactory.getLogger(HashedLineToString.class);

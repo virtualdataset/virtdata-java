@@ -1,5 +1,6 @@
 package io.virtdata.basicsmappers.from_long.to_string;
 
+import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,16 @@ import java.util.*;
 import java.util.function.LongFunction;
 import java.util.regex.Pattern;
 
+/**
+ * Read each line in each matching file in a directory structure, providing one
+ * line for each time this function is called. The files are sorted at the time
+ * the function is initialized, and each line is read in order.
+ *
+ * This function does not produce the same result per cycle value. It is possible
+ * that different cycle inputs will return different inputs if the cycles are not
+ * applied in strict order. Still, this function is useful for consuming input
+ * from a set of files as input to a test or simulation.
+ */
 @ThreadSafeMapper
 public class DirectoryLines implements LongFunction<String> {
 
@@ -21,6 +32,7 @@ public class DirectoryLines implements LongFunction<String> {
     private Iterator<String> stringIterator;
     private Iterator<Path> pathIterator;
 
+    @Example({"DirectoryLines('/var/tmp/bardata', '.*')","load every line from every file in /var/tmp/bardata"})
     public DirectoryLines(String basepath, String namePattern) {
         this.basepath = basepath;
         this.namePattern = Pattern.compile(namePattern);

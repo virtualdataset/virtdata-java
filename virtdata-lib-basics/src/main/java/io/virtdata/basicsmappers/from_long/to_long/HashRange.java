@@ -4,6 +4,11 @@ import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongUnaryOperator;
 
+/**
+ * Return a value within a range, pseudo-randomly. This is equivalent to
+ * returning a value with in range between 0 and some maximum value, but
+ * with a minimum value added.
+ */
 @ThreadSafeMapper
 public class HashRange implements LongUnaryOperator {
 

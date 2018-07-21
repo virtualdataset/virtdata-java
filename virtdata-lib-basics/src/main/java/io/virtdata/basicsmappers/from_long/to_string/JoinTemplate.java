@@ -1,36 +1,30 @@
 package io.virtdata.basicsmappers.from_long.to_string;
 
+import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongFunction;
 import java.util.function.LongUnaryOperator;
 
+/**
+ * Combine the result of the specified functions together with the
+ * specified delimiter and optional prefix and suffix.
+ */
 @ThreadSafeMapper
 public class JoinTemplate extends Template implements LongFunction<String>  {
 
-    /**
-     * Creates a string template function which will concatenate the result of the
-     * provided functions together with the provided delimiter.
-     * @param delimiter the delimiter between values
-     * @param funcs functions which provide data to concatenate
-     */
+    @Example({"JoinTemplate('--',NumberNameToString(),NumberNameToString())","create values like `one--one`, `two-two`, ..."})
     public JoinTemplate(String delimiter, LongFunction<?>... funcs) {
         super(templateFor("",delimiter,"",funcs), funcs);
     }
 
-    /**
-     * Creates a string template function which will concatenate the result
-     * of the provided function together with the delimiter, but with the
-     * prifix prepended and the suffix appended to the final result.
-     * @param delimiter the string delimiter between values
-     * @param prefix the string to prefix
-     * @param suffix the string to suffix
-     * @param funcs functions which provide that data to concatenate
-     */
+    @Example({"JoinTemplate('{',',','}',NumberNameToString(),LastNames())", "create values like '{one,Farrel}', '{two,Haskell}', ..."})
     public JoinTemplate(String prefix, String delimiter, String suffix, LongFunction<?>... funcs) {
         super(templateFor(prefix,delimiter,suffix,funcs), funcs);
     }
 
+    @Example({"JoinTemplate(Add(3),'[',';',']',NumberNameToString(),NumberNameToString(),NumberNameToString())",
+    "create values like '[zero;three,six]', '[one;four,seven]', ..."})
     public JoinTemplate(LongUnaryOperator iterop, String prefix, String delimiter, String suffix, LongFunction<?>... funcs) {
         super(iterop, templateFor(prefix,delimiter,suffix,funcs), funcs);
 

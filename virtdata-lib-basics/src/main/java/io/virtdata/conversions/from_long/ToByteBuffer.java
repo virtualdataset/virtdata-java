@@ -23,6 +23,9 @@ import io.virtdata.annotations.ThreadSafeMapper;
 import java.nio.ByteBuffer;
 import java.util.function.LongFunction;
 
+/**
+ * Convert the input value to a {@code ByteBuffer}
+ */
 @ThreadSafeMapper
 public class ToByteBuffer implements LongFunction<ByteBuffer> {
 

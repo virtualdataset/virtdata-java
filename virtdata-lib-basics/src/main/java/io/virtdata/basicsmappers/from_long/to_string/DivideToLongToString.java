@@ -18,15 +18,19 @@
 
 package io.virtdata.basicsmappers.from_long.to_string;
 
+import io.virtdata.annotations.DeprecatedFunction;
 import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.LongFunction;
 
 /**
- * Integer devide the cycle, the other side of modulo.
+ * This is equivalent to <pre>long -> Div(...) -> long</pre>, but returns
+ * the result after String.valueOf(...). This function is also deprecated,
+ * as it is easily replaced by other functions.
  */
 @ThreadSafeMapper
+@DeprecatedFunction("This function is easily replace by simpler functions.")
 public class DivideToLongToString implements LongFunction<String> {
 
     private final long divisor;

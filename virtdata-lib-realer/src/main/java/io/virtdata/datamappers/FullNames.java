@@ -5,6 +5,11 @@ import io.virtdata.basicsmappers.from_long.to_string.Template;
 
 import java.util.function.LongFunction;
 
+/**
+ * Combines the FirstNames and LastNames functions into one that
+ * simply concatenates them with a space between.
+ * This function is a shorthand equivalent of <pre>Template('{} {}', FirstNames(), LastNames())</pre>
+ */
 @ThreadSafeMapper
 public class FullNames extends Template implements LongFunction<String> {
 

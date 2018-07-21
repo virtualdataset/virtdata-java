@@ -3,11 +3,12 @@ package io.virtdata.continuous.long_double;
 import io.virtdata.continuous.common.InterpolatingLongDoubleSampler;
 import io.virtdata.continuous.common.RealDistributionICDSource;
 import io.virtdata.continuous.common.RealLongDoubleSampler;
+import org.apache.commons.statistics.distribution.ContinuousDistribution;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.LongToDoubleFunction;
-import org.apache.commons.statistics.distribution.ContinuousDistribution;
 
 /**
  * Generate samples according to the specified probability density.
@@ -53,6 +54,14 @@ public class LongToDoubleContinuousCurve implements LongToDoubleFunction {
     private ContinuousDistribution distribution;
     private LongToDoubleFunction function;
 
+    private final static HashSet<String> validModifiers = new HashSet<String>() {{
+        add("compute");
+        add("interpolate");
+        add("map");
+        add("hash");
+    }};
+
+
     public LongToDoubleContinuousCurve(ContinuousDistribution distribution, String... modslist) {
         this.distribution = distribution;
         HashSet<String> mods = new HashSet<>(Arrays.asList(modslist));
@@ -65,6 +74,12 @@ public class LongToDoubleContinuousCurve implements LongToDoubleFunction {
         if (mods.contains("interpolate") && mods.contains("compute")) {
             throw new RuntimeException("mods must not contain both interpolate and compute");
         }
+        for (String s : modslist) {
+            if (!validModifiers.contains(s)) {
+                throw new RuntimeException("modifier '" + s + "' is not a valid modifier. Use one of " + validModifiers.toString() + " instead.");
+            }
+        }
+
 
         boolean hash = ( mods.contains("hash") || !mods.contains("map"));
         boolean interpolate = ( mods.contains("interpolate") || !mods.contains("compute"));

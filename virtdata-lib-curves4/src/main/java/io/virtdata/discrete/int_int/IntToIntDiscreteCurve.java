@@ -54,6 +54,14 @@ public class IntToIntDiscreteCurve implements IntUnaryOperator {
     private DiscreteDistribution distribution;
     private IntUnaryOperator function;
 
+    private final static HashSet<String> validModifiers = new HashSet<String>() {{
+        add("compute");
+        add("interpolate");
+        add("map");
+        add("hash");
+    }};
+
+
     public IntToIntDiscreteCurve(DiscreteDistribution distribution, String... modslist) {
         this.distribution = distribution;
         HashSet<String> mods = new HashSet<>(Arrays.asList(modslist));
@@ -65,6 +73,11 @@ public class IntToIntDiscreteCurve implements IntUnaryOperator {
         }
         if (mods.contains("interpolate") && mods.contains("compute")) {
             throw new RuntimeException("mods must not contain both interpolate and compute");
+        }
+        for (String s : modslist) {
+            if (!validModifiers.contains(s)) {
+                throw new RuntimeException("modifier '" + s + "' is not a valid modifier. Use one of " + validModifiers.toString() + " instead.");
+            }
         }
 
         boolean hash = ( mods.contains("hash") || !mods.contains("map"));

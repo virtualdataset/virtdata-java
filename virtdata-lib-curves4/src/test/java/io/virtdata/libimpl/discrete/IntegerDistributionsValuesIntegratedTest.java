@@ -1,7 +1,7 @@
 package io.virtdata.libimpl.discrete;
 
 import io.virtdata.api.DataMapper;
-import io.virtdata.discrete.common.IntegerDistributions;
+import io.virtdata.core.VirtData;
 import org.apache.commons.math4.stat.descriptive.DescriptiveStatistics;
 import org.assertj.core.data.Offset;
 import org.testng.annotations.Test;
@@ -12,12 +12,11 @@ import java.util.Locale;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Test
-public class IntegerDistributionsValuesTest {
+public class IntegerDistributionsValuesIntegratedTest {
 
     @Test(enabled=false)
     public void testComputedZipf() {
-        RunData runData = iterateMapper(new IntegerDistributions().<Long>getDataMapper(
-                "compute_zipf(10000,2.0)").orElse(null), 10000);
+        RunData runData = iterateMapper(VirtData.getMapper("Zipf(10000,2.0) -> long",Long.class), 10000);
         System.out.println(runData.toString());
         assertThat(runData.getFractionalPercentile(0.6D))
                 .isCloseTo(1.0D, Offset.offset(0.0001D));
@@ -31,8 +30,7 @@ public class IntegerDistributionsValuesTest {
 
     @Test
     public void testInterpolatedZipf() {
-        RunData runData = iterateMapper(new IntegerDistributions().<Long>getDataMapper(
-                "interpolate_zipf(10000,2.0)").orElse(null), 10000);
+        RunData runData = iterateMapper(VirtData.getMapper("Zipf(10000,2.0) -> long",Long.class), 10000);
         System.out.println(runData.toString());
         assertThat(runData.getFractionalPercentile(0.6D))
                 .isCloseTo(1.0D, Offset.offset(0.0001D));

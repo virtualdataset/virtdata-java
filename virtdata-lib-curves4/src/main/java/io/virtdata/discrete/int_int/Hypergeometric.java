@@ -10,8 +10,8 @@ import org.apache.commons.statistics.distribution.HypergeometricDistribution;
  * {@inheritDoc}
  */
 @ThreadSafeMapper
-public class Hypergeometrics extends IntToIntDiscreteCurve {
-    public Hypergeometrics(int populationSize, int numberOfSuccesses, int sampleSize, String... modslist) {
+public class Hypergeometric extends IntToIntDiscreteCurve {
+    public Hypergeometric(int populationSize, int numberOfSuccesses, int sampleSize, String... modslist) {
         super(new HypergeometricDistribution(populationSize, numberOfSuccesses, sampleSize), modslist);
     }
 }

@@ -41,6 +41,9 @@ import io.virtdata.annotations.ThreadSafeMapper;
 import java.util.Date;
 import java.util.function.LongFunction;
 
+/**
+ * Convert the input value to a {@code Date}
+ */
 @ThreadSafeMapper
 public class ToDate implements LongFunction<Date> {
 

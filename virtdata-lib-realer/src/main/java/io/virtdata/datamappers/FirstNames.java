@@ -7,16 +7,18 @@ import io.virtdata.stathelpers.aliasmethod.WeightedStrings;
 import java.util.function.LongFunction;
 
 /**
- * Returns a first name from all names that were seen more than 100 times in the last census,
- * according to the frequency that it was actually seen.
- * This function does *not* pre-hash its input. You need to provide a form of hashing using
- * any of the documented Hash functions first.
+ * Return a pseudo-randomly sampled first name from the last US census data on first names
+ * occurring more than 100 times. Both male and female names are combined in this function.
  */
 @ThreadSafeMapper
 public class FirstNames extends WeightedStrings implements LongFunction<String> {
 
-    @Example({"FirstNames()"})
+    @Example({"FirstNames()","select a random first name based on the chance of seeing it in the census data"})
     public FirstNames() {
         super("Name", "Weight", "data/female_firstnames", "data/male_firstnames");
+    }
+    @Example({"FirstNames('map')","select over the first names by probability as input varies from 1L to Long.MAX_VALUE"})
+    public FirstNames(String modifier) {
+        super("Name", "Weight", modifier, "data/female_firstnames", "data/male_firstnames");
     }
 }

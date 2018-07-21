@@ -22,6 +22,9 @@ import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongFunction;
 
+/**
+ * Return a boolean value as the result of modulo division with the specified divisor.
+ */
 @ThreadSafeMapper
 public class ModuloToBoolean implements LongFunction<Boolean> {
 

@@ -8,17 +8,22 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.function.LongToIntFunction;
 
+/**
+ * Return a pseudo-randomly selected integer value from a file of numeric values.
+ * Each line in the file must contain one parsable integer value.
+ */
 @ThreadSafeMapper
 public class HashedLineToInt implements LongToIntFunction {
     private final static Logger logger = LoggerFactory.getLogger(HashedLineToInt.class);
 
-    private final List<String> lines;
+    private int[] values;
     private final String filename;
     private final Hash intHash;
 
     public HashedLineToInt(String filename) {
         this.filename = filename;
-        this.lines = ResourceFinder.readDataFileLines(filename);
+        List<String> lines = ResourceFinder.readDataFileLines(filename);
+        this.values = lines.stream().mapToInt(Integer::parseInt).toArray();
         this.intHash = new Hash();
     }
 
@@ -28,9 +33,8 @@ public class HashedLineToInt implements LongToIntFunction {
 
     @Override
     public int applyAsInt(long value) {
-        int itemIdx = intHash.applyAsInt(value) % lines.size();
-        String item = lines.get(itemIdx);
-        return Integer.valueOf(item);
+        int itemIdx = intHash.applyAsInt(value) % values.length;
+        return values[itemIdx];
     }
 }
 

@@ -1,8 +1,6 @@
 package io.virtdata.apps.docsapp;
 
-import io.virtdata.api.EnhancedDocs;
-import io.virtdata.api.VirtDataFunctionLibrary;
-import io.virtdata.core.VirtDataLibraries;
+import io.virtdata.core.VirtDataDocs;
 import io.virtdata.processors.DocCtorData;
 import io.virtdata.processors.DocFuncData;
 import org.slf4j.Logger;
@@ -46,16 +44,14 @@ public class DocsApp {
             }
         }
 
-        StringBuilder sb = new StringBuilder();
-        VirtDataLibraries libs = VirtDataLibraries.get();
-        Map<String, VirtDataFunctionLibrary> libraries = libs.getLibraries();
-        for (VirtDataFunctionLibrary library : libraries.values()) {
-            if (library instanceof EnhancedDocs) {
-                saveEnhancedDocModel((EnhancedDocs)library);
-            } else {
-                writeBasicDocs(sb,library);
-            }
+        List<DocFuncData> docModels = VirtDataDocs.getAllDocs();
+        for (DocFuncData docModel : docModels) {
+            List<DocFuncData> group = this.groupedDocs.getOrDefault(docModel.getClassName(), new ArrayList<>());
+            group.add(docModel);
+            groupedDocs.put(docModel.getClassName(),group);
         }
+
+        StringBuilder sb = new StringBuilder();
         writeEnhancedDocs(sb);
         String docdata = sb.toString();
         docdata = docdata.replaceAll("java.lang.","");
@@ -84,26 +80,7 @@ public class DocsApp {
 
     }
 
-    private StringBuilder writeBasicDocs(StringBuilder sb, VirtDataFunctionLibrary library) {
-        List<String> dataMapperNames = library.getDataMapperNames();
-
-        for (String dataMapperName : dataMapperNames) {
-//            sb.append("## ").append(dataMapperName).append("\n");
-        }
-
-        return sb;
-
-    }
-
-    private void saveEnhancedDocModel(EnhancedDocs library) {
-        for (DocFuncData docm : library.getDocModels()) {
-            List<DocFuncData> group = this.groupedDocs.getOrDefault(docm.getClassName(), new ArrayList<>());
-            group.add(docm);
-            groupedDocs.put(docm.getClassName(),group);
-        }
-    }
-
-    private StringBuilder writeEnhancedDocs(StringBuilder sb) {
+    private void writeEnhancedDocs(StringBuilder sb) {
         ArrayList<String> names = new ArrayList<>(groupedDocs.keySet());
         Collections.sort(names);
 
@@ -158,7 +135,7 @@ public class DocsApp {
                         sb.append("  - *notes:* ").append(ctorDoc);
                     }
                     for (List<String> example : ctor.getExamples()) {
-                        sb.append("  - *ex:* `" + example.get(0) + "`");
+                        sb.append("  - *ex:* `").append(example.get(0)).append("`");
                         if (example.size()>1) {
                             sb.append(" - *").append(example.get(1)).append("*");
                         }
@@ -167,11 +144,8 @@ public class DocsApp {
                 }
             }
             sb.append("\n");
-
-
             sb.append("\n");
         }
-        return sb;
     }
 
 

@@ -24,6 +24,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.function.LongUnaryOperator;
 
+/**
+ * Return a long value as the result of modulo division with the specified divisor.
+ */
 @ThreadSafeMapper
 public class ModuloToLong implements LongUnaryOperator {
     private final static Logger logger = LoggerFactory.getLogger(ModuloToLong.class);

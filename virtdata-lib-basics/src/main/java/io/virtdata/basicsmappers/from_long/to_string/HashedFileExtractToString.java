@@ -18,6 +18,7 @@
 
 package io.virtdata.basicsmappers.from_long.to_string;
 
+import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.basicsmappers.from_long.to_int.HashRange;
 import io.virtdata.util.ResourceFinder;
@@ -27,6 +28,12 @@ import org.slf4j.LoggerFactory;
 import java.nio.CharBuffer;
 import java.util.function.LongFunction;
 
+/**
+ * Pseudo-randomly extract a section of a text file and return it according to some
+ * minimum and maximum extract size. The file is loaded into memory as a shared
+ * text image. It is then indexed into as a character buffer to find a pseudo-randomly
+ * sized fragment.
+ */
 @ThreadSafeMapper
 public class HashedFileExtractToString implements LongFunction<String> {
 
@@ -38,6 +45,7 @@ public class HashedFileExtractToString implements LongFunction<String> {
     private int minsize, maxsize;
     private final String fileName;
 
+    @Example({"HashedFileExtractToString('data/adventures.txt',100,200)","return a fragment from adventures.txt between 100 and 200 characters long"})
     public HashedFileExtractToString(String fileName, int minsize, int maxsize) {
         this.fileName = fileName;
         this.minsize = minsize;

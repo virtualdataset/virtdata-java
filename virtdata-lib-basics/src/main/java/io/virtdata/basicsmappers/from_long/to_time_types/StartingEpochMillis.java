@@ -20,7 +20,7 @@ public class StartingEpochMillis implements LongUnaryOperator {
     private final long startingUnixEpochMillis;
     private final long headroom;
 
-    @Example({"{StartingEpochMillis('2017-01-01 23:59:59')}","add the millisecond epoch time of 2017-01-01 23:59:59 to all input values"})
+    @Example({"StartingEpochMillis('2017-01-01 23:59:59')","add the millisecond epoch time of 2017-01-01 23:59:59 to all input values"})
     public StartingEpochMillis(String baseTimeSpec) {
         startingTime = DateTimeFormats.parseEpochTimeToDateTime(baseTimeSpec);
         startingUnixEpochMillis = startingTime.getMillis();

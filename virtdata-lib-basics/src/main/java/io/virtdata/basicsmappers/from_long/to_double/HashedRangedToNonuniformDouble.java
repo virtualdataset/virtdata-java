@@ -1,8 +1,9 @@
 package io.virtdata.basicsmappers.from_long.to_double;
 
-import io.virtdata.api.DataMapper;
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.basicsmappers.from_long.to_long.Hash;
+
+import java.util.function.LongToDoubleFunction;
 
 /**
  * This provides a random sample of a double in a range, without
@@ -13,18 +14,14 @@ import io.virtdata.basicsmappers.from_long.to_long.Hash;
  * stable for a given input value.
  */
 @ThreadSafeMapper
-public class HashedRangedToNonuniformDouble implements DataMapper<Double> {
+public class HashedRangedToNonuniformDouble implements LongToDoubleFunction {
 
     private final long min;
     private final long max;
     private final double length;
     private final Hash hash;
-
+    
     public HashedRangedToNonuniformDouble(long min, long max) {
-        this(min,max,System.nanoTime());
-    }
-
-    public HashedRangedToNonuniformDouble(long min, long max, long seed) {
         this.hash = new Hash();
         if (max<=min) {
             throw new RuntimeException("max must be >= min");
@@ -34,8 +31,12 @@ public class HashedRangedToNonuniformDouble implements DataMapper<Double> {
         this.length = (double) max - min;
     }
 
+    public String toString() {
+        return getClass().getSimpleName() + ":" + min + ":" + max;
+    }
+
     @Override
-    public Double get(long input) {
+    public double applyAsDouble(long input) {
         long bitImage = hash.applyAsLong(input);
         double value = Math.abs(Double.longBitsToDouble(bitImage));
         while (!Double.isFinite(value)) {
@@ -47,10 +48,5 @@ public class HashedRangedToNonuniformDouble implements DataMapper<Double> {
         value += min;
         return value;
     }
-
-    public String toString() {
-        return getClass().getSimpleName() + ":" + min + ":" + max;
-    }
-
 }
 

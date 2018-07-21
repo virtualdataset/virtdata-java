@@ -8,7 +8,7 @@ import java.util.function.LongFunction;
 
 /**
  * This function creates a non-random UUID in the type 4 version (Random).
- * It puts the same value in the MSB position of the UUID format.
+ * It always puts the same value in the MSB position of the UUID format.
  * The input value is put in the LSB position.
  * <pre>
  * xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx
@@ -19,6 +19,11 @@ import java.util.function.LongFunction;
  * a version identifier (position M) dividing the dynamic range of the data type.
  * For this reason, only the LSB side is used for this mapper, which allows
  * an effective range of Long.MAX_VALUE/8, given the loss of 3 digits of precision.
+ *
+ * This function is suitable for deterministic testing of scenarios which depend
+ * on type 4 UUIDs, but without the mandated randomness that makes testing difficult.
+ * Just be aware that the MSB will always contain value 0x0123456789ABCDEFL unless you
+ * specify a different long value to pre-fill it with.
  */
 @ThreadSafeMapper
 public class ToUUID implements LongFunction<UUID> {

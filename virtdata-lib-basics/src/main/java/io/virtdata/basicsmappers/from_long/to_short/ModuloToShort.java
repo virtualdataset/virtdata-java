@@ -5,6 +5,9 @@ import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongFunction;
 
+/**
+ * Return a boolean value as the result of modulo division with the specified divisor.
+ */
 @ThreadSafeMapper
 @DeprecatedFunction("This function is being replaced by ToShort(modulo) for naming consistency.")
 public class ModuloToShort implements LongFunction<Short> {

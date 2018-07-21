@@ -18,6 +18,7 @@
 
 package io.virtdata.basicsmappers.nondeterministic;
 
+import io.virtdata.annotations.DeprecatedFunction;
 import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongFunction;
@@ -31,6 +32,7 @@ import java.util.regex.Pattern;
  * you can't change the thread name and get an updated value.
  */
 @ThreadSafeMapper
+@DeprecatedFunction("This is being replaced by ThreadNum() for naming consistency.")
 public class ThreadNumToInteger implements LongFunction<Integer> {
 
     private static final Pattern pattern = Pattern.compile("^.*?(\\d+).*$");

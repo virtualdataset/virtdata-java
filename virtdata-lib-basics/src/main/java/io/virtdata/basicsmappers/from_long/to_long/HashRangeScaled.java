@@ -5,13 +5,13 @@ import io.virtdata.annotations.ThreadSafeMapper;
 import java.util.function.LongUnaryOperator;
 
 /**
- * Uses the input value as well to establish the upper bound of the
- * value produced from the hash.
+ * Return a pseudo-random value which can only be as large as the input.
  */
 @ThreadSafeMapper
 public class HashRangeScaled implements LongUnaryOperator {
 
     private Hash hash = new Hash();
+
     public HashRangeScaled() {
     }
 

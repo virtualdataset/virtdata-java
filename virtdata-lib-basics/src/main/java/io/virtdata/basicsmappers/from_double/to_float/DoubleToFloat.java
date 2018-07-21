@@ -4,6 +4,9 @@ import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.DoubleFunction;
 
+/**
+ * Convert the input double value to the closest float value.
+ */
 @ThreadSafeMapper
 public class DoubleToFloat implements DoubleFunction<Float> {
     @Override

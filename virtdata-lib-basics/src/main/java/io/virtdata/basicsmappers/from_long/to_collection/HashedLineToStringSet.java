@@ -1,5 +1,6 @@
 package io.virtdata.basicsmappers.from_long.to_collection;
 
+import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.basicsmappers.from_long.to_long.HashRange;
 import io.virtdata.basicsmappers.from_long.to_string.HashedLineToString;
@@ -8,12 +9,17 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.LongFunction;
 
+/**
+ * Return a pseudo-randomly created Set from the values in
+ * the specified file.
+ */
 @ThreadSafeMapper
 public class HashedLineToStringSet implements LongFunction<Set<String>> {
 
     private final HashedLineToString hashedLineToString;
     private final HashRange hashRange;
 
+    @Example({"HashedLineToStringSet('data/variable_words.txt',2,10)","Create a set of words sized between 2 and 10 elements"})
     public HashedLineToStringSet(String filename, int minSize, int maxSize) {
         this.hashedLineToString = new HashedLineToString(filename);
         this.hashRange = new HashRange(minSize,maxSize);

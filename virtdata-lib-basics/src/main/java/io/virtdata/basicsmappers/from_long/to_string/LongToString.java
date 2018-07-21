@@ -18,11 +18,16 @@
 
 package io.virtdata.basicsmappers.from_long.to_string;
 
+import io.virtdata.annotations.DeprecatedFunction;
 import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongFunction;
 
+/**
+ * Return the string representation of the provided long.
+ */
 @ThreadSafeMapper
+@DeprecatedFunction("This function is being replaced by ToString() for naming consistency.")
 public class LongToString implements LongFunction<String> {
 
     @Override

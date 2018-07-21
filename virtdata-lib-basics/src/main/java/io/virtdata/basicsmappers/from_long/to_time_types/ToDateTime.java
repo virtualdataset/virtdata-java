@@ -43,6 +43,9 @@ import org.joda.time.DateTimeZone;
 
 import java.util.function.LongFunction;
 
+/**
+ * Convert the input value to a {@code org.joda.time.DateTime}
+ */
 @ThreadSafeMapper
 @DeprecatedFunction("This will be replaced by the more aptly named toJodaDateTime(...)")
 public class ToDateTime implements LongFunction<DateTime> {

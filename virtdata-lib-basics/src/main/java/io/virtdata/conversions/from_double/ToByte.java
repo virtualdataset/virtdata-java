@@ -4,6 +4,9 @@ import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.DoubleFunction;
 
+/**
+ * Convert the input value to a {@code Byte}.
+ */
 @ThreadSafeMapper
 public class ToByte implements DoubleFunction<Byte> {
 

@@ -38,7 +38,7 @@ public class Template implements LongFunction<String> {
     }
 
     /**
-     * If an operator is provided, it is use to change the function input value in an additional way before each function.
+     * If an operator is provided, it is used to change the function input value in an additional way before each function.
      *
      * @param iterOp   A pre-generation value mapping function
      * @param template A string template containing <pre>{}</pre> anchors

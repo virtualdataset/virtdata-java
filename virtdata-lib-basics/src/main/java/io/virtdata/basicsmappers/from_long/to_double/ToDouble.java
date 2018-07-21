@@ -4,6 +4,9 @@ import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongToDoubleFunction;
 
+/**
+ * Convert the input value to a double.
+ */
 @ThreadSafeMapper
 public class ToDouble implements LongToDoubleFunction {
 

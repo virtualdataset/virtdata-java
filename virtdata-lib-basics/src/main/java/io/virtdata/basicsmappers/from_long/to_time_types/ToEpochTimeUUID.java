@@ -20,7 +20,7 @@ import java.util.function.LongFunction;
  * instead. This method is to support simple mapping to natural timestamps
  * as we often find in the real world.
  * <p>
- * For the variants that have an String argument in the constructor, this is
+ * For the variants that have a String argument in the constructor, this is
  * a parsable datetime that is used as the base time for all produced values.
  * Setting this allows you to set the start of the time range for all timeuuid
  * values produced. All times are parsed for UTC. All time use ISO date ordering,

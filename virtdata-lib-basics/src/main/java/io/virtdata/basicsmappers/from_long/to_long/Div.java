@@ -14,17 +14,20 @@
 */
 package io.virtdata.basicsmappers.from_long.to_long;
 
-import io.virtdata.annotations.Description;
+import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongUnaryOperator;
 
-@Description("divides the operand by an long and returns the whole part")
+/**
+ * Divide the operand by a fixed value and return the result.
+ */
 @ThreadSafeMapper
 public class Div implements LongUnaryOperator {
-    private int divisor;
+    private long divisor;
 
-    public Div(int divisor) {
+    @Example({"Div(42L)","divide all inputs by 42L"})
+    public Div(long divisor) {
         this.divisor = divisor;
     }
 

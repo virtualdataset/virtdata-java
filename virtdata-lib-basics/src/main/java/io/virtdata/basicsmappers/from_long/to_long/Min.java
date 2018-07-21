@@ -4,6 +4,9 @@ import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongUnaryOperator;
 
+/**
+ * Return the minimum of either the input value or the specified minimum.
+ */
 @ThreadSafeMapper
 public class Min implements LongUnaryOperator {
 

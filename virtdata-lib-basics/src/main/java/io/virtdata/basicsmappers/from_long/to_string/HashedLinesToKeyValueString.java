@@ -27,6 +27,10 @@ import java.util.Map;
 import java.util.function.LongFunction;
 import java.util.stream.Collectors;
 
+/**
+ * Generate a string in the format key1:value1;key2:value2;... from the words
+ * in the specified file, ranging in size between zero and the specified maximum.
+ */
 @ThreadSafeMapper
 public class HashedLinesToKeyValueString implements LongFunction<String> {
     private static final Logger logger = LoggerFactory.getLogger(HashedLinesToKeyValueString.class);

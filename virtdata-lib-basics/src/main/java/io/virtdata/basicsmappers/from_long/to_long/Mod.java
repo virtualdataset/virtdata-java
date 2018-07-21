@@ -18,6 +18,9 @@ import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongUnaryOperator;
 
+/**
+ * Return the result of modulo division by the specified divisor.
+ */
 @ThreadSafeMapper
 public class Mod implements LongUnaryOperator {
 

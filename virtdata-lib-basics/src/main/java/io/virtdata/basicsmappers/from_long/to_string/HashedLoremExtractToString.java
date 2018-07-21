@@ -22,6 +22,11 @@ import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongFunction;
 
+/**
+ * Provide a text extract from the full lorem ipsum text, between the specified
+ * minimum and maximum size.
+ *
+ */
 @ThreadSafeMapper
 public class HashedLoremExtractToString implements LongFunction<String> {
 

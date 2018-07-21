@@ -26,6 +26,9 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.function.LongFunction;
 
+/**
+ * Convert the input value to a {@code java.net.InetAddress}
+ */
 @ThreadSafeMapper
 public class ToInetAddress implements LongFunction<InetAddress> {
 

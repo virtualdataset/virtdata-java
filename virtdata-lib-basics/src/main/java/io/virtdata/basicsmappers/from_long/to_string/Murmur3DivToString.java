@@ -19,12 +19,18 @@
 package io.virtdata.basicsmappers.from_long.to_string;
 
 import de.greenrobot.common.hash.Murmur3F;
+import io.virtdata.annotations.DeprecatedFunction;
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.basicsmappers.from_long.to_long.DivideToLong;
 
 import java.util.function.LongFunction;
 
+/**
+ * Yield a String value which is the result of hashing and modulo division
+ * with the specified divisor to long and then converting the value to String.
+ */
 @ThreadSafeMapper
+@DeprecatedFunction("This function is easily replaced with other simpler functions.")
 public class Murmur3DivToString implements LongFunction<String> {
 
     private ThreadLocal<Murmur3F> murmur3F_TL = ThreadLocal.withInitial(Murmur3F::new);

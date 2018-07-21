@@ -16,9 +16,8 @@
  *
  */
 
-package io.virtdata.basicsmappers.nondeterministic;
+package io.virtdata.basicsmappers.nondeterministic.to_long;
 
-import io.virtdata.annotations.DeprecatedFunction;
 import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongUnaryOperator;
@@ -32,8 +31,7 @@ import java.util.regex.Pattern;
  * you can't change the thread name and get an updated value.
  */
 @ThreadSafeMapper
-@DeprecatedFunction("This is being replaced by ThreadNum() for naming consistency.")
-public class ThreadNumToLong implements LongUnaryOperator {
+public class ThreadNum implements LongUnaryOperator {
 
     private static final Pattern pattern = Pattern.compile("^.*?(\\d+).*$");
     private ThreadLocal<Long> threadLocalInt = new ThreadLocal<Long>() {

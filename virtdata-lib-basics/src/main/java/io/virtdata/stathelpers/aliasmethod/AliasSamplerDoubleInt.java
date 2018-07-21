@@ -1,10 +1,11 @@
 package io.virtdata.stathelpers.aliasmethod;
 
-import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.stathelpers.EvProbD;
 
 import java.nio.ByteBuffer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.DoubleToIntFunction;
 import java.util.stream.Collectors;
 
@@ -18,7 +19,6 @@ import java.util.stream.Collectors;
  * This sampler should be shared between threads, and will be by default, in order
  * to avoid many instances of a 32MB buffer on heap.
  */
-@ThreadSafeMapper
 public class AliasSamplerDoubleInt implements DoubleToIntFunction {
 
     private ByteBuffer stats; // tuples of double,int,int (unfair coin, direct pointers to referents)

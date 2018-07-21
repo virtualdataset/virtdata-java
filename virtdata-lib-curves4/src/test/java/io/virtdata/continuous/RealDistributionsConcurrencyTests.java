@@ -1,6 +1,7 @@
 package io.virtdata.continuous;
 
-import io.virtdata.continuous.common.RealDistributions;
+import io.virtdata.api.DataMapper;
+import io.virtdata.core.VirtData;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -9,7 +10,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.function.LongToDoubleFunction;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,10 +30,10 @@ public class RealDistributionsConcurrencyTests {
             int iterations,
             String mapperSpec) {
 
-        LongToDoubleFunction mapper = RealDistributions.forSpec(mapperSpec);
+        DataMapper<Double> mapper = VirtData.getMapper(mapperSpec, double.class);
         double[] values = new double[iterations];
         for (int index = 0; index < iterations; index++) {
-            values[index] = mapper.applyAsDouble(index);
+            values[index] = mapper.get(index);
         }
 
         ExecutorService pool = Executors.newFixedThreadPool(threads);
@@ -90,7 +90,7 @@ public class RealDistributionsConcurrencyTests {
         @Override
         public double[] call() throws Exception {
             double[] output = new double[size];
-            LongToDoubleFunction mapper = RealDistributions.forSpec(mapperSpec);
+            DataMapper<Double> mapper = VirtData.getMapper(mapperSpec, double.class);
 //            System.out.println("resolved:" + mapper);
 //            System.out.flush();
 
@@ -99,7 +99,7 @@ public class RealDistributionsConcurrencyTests {
             }
 
             for (int i = 0; i < output.length; i++) {
-                output[i] = mapper.applyAsDouble(i);
+                output[i] = mapper.get(i);
 //                if ((i % 100) == 0) {
 //                    System.out.println("wrote t:" + slot + ", iter:" + i + ", val:" + output[i]);
 //                }

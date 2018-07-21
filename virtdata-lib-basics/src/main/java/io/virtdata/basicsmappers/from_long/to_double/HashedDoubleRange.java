@@ -5,7 +5,7 @@ import io.virtdata.basicsmappers.from_long.to_long.Hash;
 
 import java.util.function.LongToDoubleFunction;
 
-/**
+/*
  * <p>This simulates a uniform sample from a range of double values
  * via long hashing. This function attempts to take a double
  * unit interval value from a long/long division over the whole
@@ -21,6 +21,13 @@ import java.util.function.LongToDoubleFunction;
  * <p>This should be consider the default double range sampling
  * function for most uses, when the exponent is not needed for
  * readability.</p>
+ */
+
+/**
+ * Return a double value within the specified range. This function
+ * uses an intermediate long to arrive at the sampled value before
+ * conversion to double, thus providing a more linear sample at the
+ * expense of some precision at extremely large values.
  */
 @ThreadSafeMapper
 public class HashedDoubleRange implements LongToDoubleFunction {

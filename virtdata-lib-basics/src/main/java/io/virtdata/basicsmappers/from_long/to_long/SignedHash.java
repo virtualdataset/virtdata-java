@@ -11,6 +11,9 @@ import java.util.function.LongUnaryOperator;
  * not as a checksum, but as a simple hash. It doesn't bother
  * pushing the high-64 bits of input, since it only uses the lower
  * 64 bits of output. This version returns the full signed result.
+ *
+ * Unlike the other hash functions, this one may return positive
+ * as well as negative values.
  */
 @ThreadSafeMapper
 public class SignedHash implements LongUnaryOperator {

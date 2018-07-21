@@ -27,6 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.LongFunction;
 
+/**
+ * Select a value from a text file line by modulo division against the number
+ * of lines in the file.
+ */
 @ThreadSafeMapper
 public class ModuloLineToString implements LongFunction<String> {
     private final static Logger logger = LoggerFactory.getLogger(ModuloLineToString.class);

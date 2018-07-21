@@ -22,6 +22,9 @@ import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongFunction;
 
+/**
+ * Convert the input value to a {@code boolean}
+ */
 @ThreadSafeMapper
 public class ToBoolean implements LongFunction<Boolean> {
 

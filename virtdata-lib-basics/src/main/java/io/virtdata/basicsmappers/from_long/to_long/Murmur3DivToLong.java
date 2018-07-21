@@ -19,11 +19,18 @@
 package io.virtdata.basicsmappers.from_long.to_long;
 
 import de.greenrobot.common.hash.Murmur3F;
+import io.virtdata.annotations.DeprecatedFunction;
 import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongUnaryOperator;
 
+
+/**
+ * Yield a long value which is the result of hashing and modulo division
+ * with the specified divisor.
+ */
 @ThreadSafeMapper
+@DeprecatedFunction("This function is easily replaced with other simpler functions.")
 public class Murmur3DivToLong implements LongUnaryOperator {
 
     private ThreadLocal<Murmur3F> murmur3f_TL = ThreadLocal.withInitial(Murmur3F::new);
