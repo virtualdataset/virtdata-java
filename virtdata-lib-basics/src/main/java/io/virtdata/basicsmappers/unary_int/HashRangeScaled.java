@@ -4,10 +4,6 @@ import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.IntUnaryOperator;
 
-/**
- * Uses the input value as well to establish the upper bound of the
- * value produced from the hash.
- */
 @ThreadSafeMapper
 public class HashRangeScaled implements IntUnaryOperator {
 

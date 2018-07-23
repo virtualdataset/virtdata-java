@@ -1,19 +1,12 @@
 package io.virtdata.basicsmappers.from_long.to_long;
 
-import io.virtdata.annotations.Categories;
-import io.virtdata.annotations.Category;
 import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.threadstate.ThreadLocalState;
 
 import java.util.function.LongUnaryOperator;
 
-/**
- * Load the named value from the per-thread variable map. The current input value
- * is discarded and replaced with the value.
- */
 @ThreadSafeMapper
-@Categories({Category.state})
 public class Load implements LongUnaryOperator {
 
     private final String name;

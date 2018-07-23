@@ -6,12 +6,6 @@ import io.virtdata.annotations.ThreadSafeMapper;
 import java.nio.ByteBuffer;
 import java.util.function.LongToIntFunction;
 
-/**
- * This uses the Murmur3F (64-bit optimized) version of Murmur3,
- * not as a checksum, but as a simple hash. It doesn't bother
- * pushing the high-64 bits of input, since it only uses the lower
- * 64 bits of output. This version returns the full signed result.
- */
 @ThreadSafeMapper
 public class SignedHash implements LongToIntFunction {
 

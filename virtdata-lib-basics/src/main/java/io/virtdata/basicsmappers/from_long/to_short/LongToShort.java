@@ -7,6 +7,9 @@ import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongFunction;
 
+/**
+ * Convert the input value from long to short.
+ */
 @ThreadSafeMapper
 @DeprecatedFunction("This function is being replaced by ToShort() for naming consistency.")
 @Categories({Category.conversion})

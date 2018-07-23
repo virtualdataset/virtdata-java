@@ -6,6 +6,9 @@ import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.DoubleToLongFunction;
 
+/**
+ * Convert the input value to a long.
+ */
 @ThreadSafeMapper
 @Categories({Category.conversion})
 public class ToLong implements DoubleToLongFunction {

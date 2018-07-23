@@ -10,7 +10,7 @@ import java.util.function.LongUnaryOperator;
  * This uses the Murmur3F (64-bit optimized) version of Murmur3,
  * not as a checksum, but as a simple hash. It doesn't bother
  * pushing the high-64 bits of input, since it only uses the lower
- * 64 bits of output. This version returns the full signed result.
+ * 64 bits of output.
  *
  * Unlike the other hash functions, this one may return positive
  * as well as negative values.

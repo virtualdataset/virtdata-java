@@ -14,7 +14,7 @@ public class DocForFunc implements DocFuncData {
     private String inType;
     private String outType;
     private ArrayList<DocCtorData> ctors = new ArrayList<>();
-    private Category[] categories = new Category[] { Category.general };
+    private Category[] categories = new Category[] { };
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;

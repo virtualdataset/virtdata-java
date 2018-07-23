@@ -30,7 +30,7 @@ public class MainRouting {
         } else if (appSelection.toLowerCase().equals(APP_GENDOCS)) {
             DocsApp.main(appArgs);
         } else {
-            System.err.print("Error in command line. The first argument must be " + APP_GENDOCS + " or " + APP_TESTMAPPER);
+            System.err.println("Error in command line. The first argument must be " + APP_GENDOCS + " or " + APP_TESTMAPPER);
         }
     }
 }
