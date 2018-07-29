@@ -133,9 +133,17 @@
                     </includes>
                 </configuration>
             </plugin>
-
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>META-INF/functions</include>
+                </includes>
+            </resource>
+        </resources>
     </build>
+
 
     <profiles>
         <profile>
@@ -156,7 +164,7 @@
                                     <mainClass>io.virtdata.apps.MainRouting</mainClass>
                                 </transformer>
                             </transformers>
-                            <finalName>${project.artifactId}</finalName>
+                            <minimizeJar>false</minimizeJar>
                         </configuration>
                     </plugin>
                 </plugins>
