@@ -110,17 +110,23 @@ public class ResolvedFunction {
 
         if (initializerValues != null && initializerValues.length > 0) {
             sb.append(" [");
-            for (int i = 0; i < initializerValues.length; i++) {
-                Class<?> init = initializerValues[i].getClass();
-                sb.append(init.isPrimitive() ? init.getName() : init.getSimpleName());
-                sb.append("=>");
+            for (int i = 0; i < initializerSignature.length; i++) {
                 Class<?> isig = initializerSignature[i];
-                sb.append(isig.isPrimitive() ? isig.getName() : isig.getSimpleName());
-                if (i < initializerValues.length - 1) {
+                String assignToType =isig.isPrimitive() ? isig.getName() : isig.getSimpleName();
+                Class<?> init = initializerValues[i].getClass();
+                String assignFromType=init.isPrimitive() ? init.getName() : init.getSimpleName();
+
+                if (initializerSignature.length!=initializerValues.length && i==initializerSignature.length-1) {
+                    assignToType=assignToType.replaceAll("\\[]","")+"...";
+                    assignFromType=assignFromType.replaceAll("\\[]","")+"...";
+                }
+                sb.append(assignFromType).append("=>").append(assignToType);
+                if (i<initializerSignature.length) {
                     sb.append(",");
                 }
             }
             sb.append("]");
+
         }
         return sb.toString();
 //        return "fn:" + functionObject.getClass().getCanonicalName() + ", type:" + functionType
