@@ -1,4 +1,4 @@
-package io.virtdata.libimpl.discrete;
+package io.virtdata.discrete;
 
 import io.virtdata.api.DataMapper;
 import io.virtdata.core.VirtData;
@@ -16,7 +16,7 @@ import java.util.concurrent.Future;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class IntegerDistributionsConcurrencyIntegratedTest {
+public class IntegerDistributionsConcurrencyTest {
 
     @Test
     public void testBinomialICDR() {

@@ -3,7 +3,8 @@ package io.virtdata.parser;
 import io.virtdata.ast.*;
 import io.virtdata.generated.VirtDataLexer;
 import io.virtdata.generated.VirtDataParser;
-import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CodePointCharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.testng.annotations.Test;
 
@@ -44,7 +45,7 @@ public class VirtdataBuilderTest {
     @Test
     private void testFullSyntax() {
         char[] chars = readFile("test-syntax.virtdata");
-        ANTLRInputStream ais = new ANTLRInputStream(chars, chars.length);
+        CodePointCharStream ais = CharStreams.fromString(new String(chars));
         String inputString = new String(chars);
         System.out.println("Parsing:\n" + inputString);
         VirtDataLexer lexer = new VirtDataLexer(ais);

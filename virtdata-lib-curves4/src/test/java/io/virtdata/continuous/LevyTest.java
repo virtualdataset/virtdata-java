@@ -1,4 +1,4 @@
-package io.virtdata.continuous.impl;
+package io.virtdata.continuous;
 
 import io.virtdata.continuous.long_double.Levy;
 import org.assertj.core.data.Offset;

@@ -1,4 +1,4 @@
-package io.virtdata.libimpl.discrete;
+package io.virtdata.discrete;
 
 import io.virtdata.discrete.common.DiscreteLongLongSampler;
 import io.virtdata.discrete.common.IntegerDistributionICDSource;
@@ -9,7 +9,9 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Test
 public class IntegerDistributionsBinomialSanity {
+
     private static double[] binomial85steps = new double[]{
             0.00390d, 0.03125d, 0.10937d, 0.21875d, 0.27343d, 0.21875d, 0.10937d, 0.03125d, 0.00390d,
     };

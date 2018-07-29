@@ -46,7 +46,7 @@ public class ValuesCheckerRunnable implements Runnable {
         this.goTime = goTime;
         this.lock = lock;
 
-        this.mapper = (dataMapper != null) ? dataMapper : VirtData.getMapper(mapperSpec)
+        this.mapper = (dataMapper != null) ? dataMapper : VirtData.getOptionalMapper(mapperSpec)
                 .orElseThrow(
                         () -> new RuntimeException("unable to resolve mapper for " + mapperSpec)
                 );

@@ -22,7 +22,7 @@ public class IntegratedComposerLogicTest {
 
 
     public void testSignatureMapping() {
-        Optional<DataMapper<Object>> dataMapper = VirtData.getMapper(
+        Optional<DataMapper<Object>> dataMapper = VirtData.getOptionalMapper(
                 "compose HashRange(1000000000,9999999999L); ToString() -> String"
         );
         assertThat(dataMapper).isNotNull();
@@ -32,7 +32,7 @@ public class IntegratedComposerLogicTest {
     }
 
     public void  testIntegratedComposer() {
-        Optional<DataMapper<Object>> dataMapper = VirtData.getMapper(
+        Optional<DataMapper<Object>> dataMapper = VirtData.getOptionalMapper(
                 "binomial(8,0.5); ToDate() -> java.util.Date"
         );
         assertThat(dataMapper).isNotNull();
@@ -41,7 +41,7 @@ public class IntegratedComposerLogicTest {
     }
 
     public void testComplexComposition() {
-        Optional<DataMapper<Object>> dataMapper = VirtData.getMapper(
+        Optional<DataMapper<Object>> dataMapper = VirtData.getOptionalMapper(
                 "Hash(); mapto_normal(50,10.0); Add(50); ToString(); Suffix('avgdays') -> String"
         );
         assertThat(dataMapper).isNotNull();
@@ -53,21 +53,21 @@ public class IntegratedComposerLogicTest {
     }
 
     public void testComposerOnly() {
-        Optional<DataMapper<Object>> dataMapper = VirtData.getMapper("Add(5)");
+        Optional<DataMapper<Object>> dataMapper = VirtData.getOptionalMapper("Add(5)");
         assertThat(dataMapper.isPresent()).isTrue();
     }
 
     public void testResourceLoader() {
-        Optional<DataMapper<Object>> dataMapper = VirtData.getMapper(" ModuloLineToString('data/variable_words.txt') -> String");
+        Optional<DataMapper<Object>> dataMapper = VirtData.getOptionalMapper(" ModuloLineToString('data/variable_words.txt') -> String");
         assertThat(dataMapper).isPresent();
         assertThat(dataMapper.get().get(1)).isEqualToComparingFieldByField("completion_count");
-        dataMapper = VirtData.getMapper("compose ModuloLineToString('variable_words.txt') -> String");
+        dataMapper = VirtData.getOptionalMapper("compose ModuloLineToString('variable_words.txt') -> String");
         assertThat(dataMapper).isPresent();
         assertThat(dataMapper.get().get(1)).isEqualToComparingFieldByField("completion_count");
     }
 
     public void testPOJOTypeSpecializer() {
-        Optional<DataMapper<Object>> dataMapper = VirtData.getMapper("compose LongToLongPOJO() -> io.virtdata.testing.ARandomPOJO");
+        Optional<DataMapper<Object>> dataMapper = VirtData.getOptionalMapper("compose LongToLongPOJO() -> io.virtdata.testing.ARandomPOJO");
         assertThat(dataMapper).isPresent();
         assertThat(dataMapper.get().get(1)).isOfAnyClassIn(ARandomPOJO.class);
     }
@@ -76,7 +76,7 @@ public class IntegratedComposerLogicTest {
         Template t = new Template("_{}_{}_", String::valueOf, String::valueOf);
         String r = t.apply(5);
         assertThat(r).isEqualTo("_5_6_");
-        Optional<DataMapper<String>> m2 = VirtData.getMapper("Template('_{}_',long->NumberNameToString()->java.lang.String)");
+        Optional<DataMapper<String>> m2 = VirtData.getOptionalMapper("Template('_{}_',long->NumberNameToString()->java.lang.String)");
         assertThat(m2).isPresent();
         DataMapper<String> dm2 = m2.get();
         Object r3 = dm2.get(42L);
@@ -84,7 +84,7 @@ public class IntegratedComposerLogicTest {
     }
 
     public void testBrokenTemplate() {
-        Optional<DataMapper<String>> m2 = VirtData.getMapper("Template('{\"alt1-{}\",\"alt2-{}\"}',ToLongFunction(Identity()),ToLongFunction(Identity()))");
+        Optional<DataMapper<String>> m2 = VirtData.getOptionalMapper("Template('{\"alt1-{}\",\"alt2-{}\"}',ToLongFunction(Identity()),ToLongFunction(Identity()))");
         assertThat(m2).isPresent();
         DataMapper<String> dm2 = m2.get();
         Object r3 = dm2.get(42L);
@@ -94,7 +94,7 @@ public class IntegratedComposerLogicTest {
     public void testMapTemplate() {
         MapTemplate mt = new MapTemplate(l -> (int)l,String::valueOf, String::valueOf);
         assertThat(mt.apply(3)).containsEntry("3","3");
-        Optional<DataMapper<Map>> optionalMapper =VirtData.getMapper(
+        Optional<DataMapper<Map>> optionalMapper =VirtData.getOptionalMapper(
                 "MapTemplate(long->Mod(5)->int,NumberNameToString(),NumberNameToString())"
         );
         assertThat(optionalMapper).isPresent();
@@ -105,7 +105,7 @@ public class IntegratedComposerLogicTest {
     }
 
     public void testNegativeLongs() {
-        Optional<DataMapper<Long>> mo = VirtData.getMapper("HashRange(-2147483648L,2147483647L) -> long");
+        Optional<DataMapper<Long>> mo = VirtData.getOptionalMapper("HashRange(-2147483648L,2147483647L) -> long");
         assertThat(mo).isPresent();
         DataMapper<Long> longDataMapper = mo.get();
         Long result = longDataMapper.get(5L);
@@ -114,20 +114,20 @@ public class IntegratedComposerLogicTest {
     }
 
     public void testBrokenFlow() {
-        Optional<DataMapper<String>> mo = VirtData.getMapper("HashRange(-2147483648L,2147483647L) -> long");
+        Optional<DataMapper<String>> mo = VirtData.getOptionalMapper("HashRange(-2147483648L,2147483647L) -> long");
         assertThat(mo).isPresent();
 
     }
 
     public void testConversionMatchingManual() {
-        Optional<DataMapper<String>> tm = VirtData.getMapper("ToEpochTimeUUID(); java.lang.Object -> ToString() -> String");
+        Optional<DataMapper<String>> tm = VirtData.getOptionalMapper("ToEpochTimeUUID(); java.lang.Object -> ToString() -> String");
         assertThat(tm).isPresent();
         String s = tm.get().get(55L);
         assertThat(s).isEqualTo("1389a470-1dd2-11b2-8000-000000000000");
     }
 
     public void testConversionMatchingAuto() {
-        Optional<DataMapper<String>> tm = VirtData.getMapper("ToEpochTimeUUID(); ToString()");
+        Optional<DataMapper<String>> tm = VirtData.getOptionalMapper("ToEpochTimeUUID(); ToString()");
         assertThat(tm).isPresent();
         String s = tm.get().get(55L);
         assertThat(s).isEqualTo("1389a470-1dd2-11b2-8000-000000000000");

@@ -54,11 +54,15 @@ public class LongToLongDiscreteCurve implements LongUnaryOperator {
     private DiscreteDistribution distribution;
     private LongUnaryOperator function;
 
+    public final static String COMPUTE="compute";
+    public final static String INTERPOLATE="interpolate";
+    public final static String MAP="map";
+    public final static String HASH="hash";
     private final static HashSet<String> validModifiers = new HashSet<String>() {{
-        add("compute");
-        add("interpolate");
-        add("map");
-        add("hash");
+        add(COMPUTE);
+        add(INTERPOLATE);
+        add(MAP);
+        add(HASH);
     }};
 
     public LongToLongDiscreteCurve(DiscreteDistribution distribution, String... modslist) {

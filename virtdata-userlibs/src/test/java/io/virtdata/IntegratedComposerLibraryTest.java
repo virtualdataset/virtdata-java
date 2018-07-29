@@ -118,7 +118,7 @@ public class IntegratedComposerLibraryTest {
     @Test
     public void testUUIDChain() {
         Optional<DataMapper<Object>> dm =
-                VirtData.getMapper("compose Mod(1000); ToHashedUUID() -> java.util.UUID");
+                VirtData.getOptionalMapper("compose Mod(1000); ToHashedUUID() -> java.util.UUID");
         assertThat(dm).isPresent();
         Object o = dm.get().get(5L);
         assertThat(o).isEqualTo(UUID.fromString("3df498b1-9568-4584-96fd-76f6081da01a"));
@@ -127,14 +127,14 @@ public class IntegratedComposerLibraryTest {
     @Test
     public void testNormalDoubleAdd() {
         Optional<DataMapper<String>> dm =
-                VirtData.getMapper("compose normal(0.0,5.0); Add(5.0) -> double");
+                VirtData.getOptionalMapper("compose normal(0.0,5.0); Add(5.0) -> double");
         assertThat(dm).isPresent();
     }
 
     @Test
     public void testDistInCompose() {
         Optional<DataMapper<String>> dm =
-                VirtData.getMapper("compose Hash(); uniform_integer(0,100); ToString() -> String");
+                VirtData.getOptionalMapper("compose Hash(); uniform_integer(0,100); ToString() -> String");
         assertThat(dm).isPresent();
         String s = dm.get().get(5L);
         assertThat(s).isNotEmpty();
@@ -144,14 +144,14 @@ public class IntegratedComposerLibraryTest {
     @Test
     public void testComposeSingleFuncTypeCoercion() {
         Optional<DataMapper<Object>> longMapper =
-                VirtData.getMapper("compose uniform_integer(1,10) -> long");
+                VirtData.getOptionalMapper("compose uniform_integer(1,10) -> long");
         assertThat(longMapper).isPresent();
         Object l = longMapper.get().get(23L);
         assertThat(l).isNotNull();
         assertThat(l.getClass()).isEqualTo(Long.class);
 
         Optional<DataMapper<Object>> intMapper =
-                VirtData.getMapper("compose uniform_integer(1,123) -> int");
+                VirtData.getOptionalMapper("compose uniform_integer(1,123) -> int");
         assertThat(intMapper).isPresent();
         Object i = intMapper.get().get(23L);
         assertThat(i).isNotNull();
@@ -160,7 +160,7 @@ public class IntegratedComposerLibraryTest {
 
     private static Object assertMapper(String def, long cycle)
     {
-        Optional<DataMapper<Object>> mapper = VirtData.getMapper(def);
+        Optional<DataMapper<Object>> mapper = VirtData.getOptionalMapper(def);
         assertThat(mapper).isPresent();
         Object o = mapper.get().get(cycle);
         assertThat(o).isNotNull();

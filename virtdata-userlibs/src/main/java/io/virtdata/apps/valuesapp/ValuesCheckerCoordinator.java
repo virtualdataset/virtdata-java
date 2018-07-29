@@ -68,7 +68,7 @@ public class ValuesCheckerCoordinator implements Callable<RunData> {
 
         // Generate reference values in single-threaded mode.
         DataMapper<Object> mapper =
-                VirtData.getMapper(specifier).orElseThrow(
+                VirtData.getOptionalMapper(specifier).orElseThrow(
                         () -> new RuntimeException("Unable to map function for specifier: " + specifier)
                 );
 
@@ -99,7 +99,7 @@ public class ValuesCheckerCoordinator implements Callable<RunData> {
                         readyQueue, goTime, lock, reference
                 );
             } else {
-                DataMapper<?> threadMapper = VirtData.getMapper(mapperSpec)
+                DataMapper<?> threadMapper = VirtData.getOptionalMapper(mapperSpec)
                         .orElseThrow(
                                 () -> new RuntimeException("Unable to map function for specifier: " + specifier)
                         );

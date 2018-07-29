@@ -1,13 +1,12 @@
-package io.virtdata.continuous.long_double;
+package io.virtdata.continuous;
 
-import org.assertj.core.internal.LongArrays;
+import io.virtdata.continuous.long_double.Enumerated;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
 import java.util.stream.LongStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.testng.Assert.*;
 
 @Test
 public class EnumeratedTest {

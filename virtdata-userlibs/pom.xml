@@ -118,7 +118,7 @@
                         <exclude>**/*Integrated*Test*.java</exclude>
                     </excludes>
                     <includes>
-                        <include>**/Test*.java</include>
+                        <include>**/*Test*.java</include>
                     </includes>
                 </configuration>
             </plugin>
@@ -135,14 +135,6 @@
             </plugin>
 
         </plugins>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>META-INF/functions</include>
-                </includes>
-            </resource>
-        </resources>
     </build>
 
     <profiles>

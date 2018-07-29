@@ -1,22 +1,24 @@
-package io.virtdata.libimpl.discrete;
+package io.virtdata.discrete;
 
-import io.virtdata.api.DataMapper;
-import io.virtdata.core.VirtData;
+import io.virtdata.continuous.long_double.Uniform;
+import io.virtdata.discrete.long_long.Zipf;
 import org.apache.commons.math4.stat.descriptive.DescriptiveStatistics;
 import org.assertj.core.data.Offset;
 import org.testng.annotations.Test;
 
 import java.util.Formatter;
 import java.util.Locale;
+import java.util.function.LongToDoubleFunction;
+import java.util.function.LongUnaryOperator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Test
-public class IntegerDistributionsValuesIntegratedTest {
+public class IntegerDistributionsValuesTest {
 
     @Test(enabled=false)
     public void testComputedZipf() {
-        RunData runData = iterateMapper(VirtData.getMapper("Zipf(10000,2.0) -> long",Long.class), 10000);
+        RunData runData = iterateMapperLong(new Zipf(10000,2.0), 10000);
         System.out.println(runData.toString());
         assertThat(runData.getFractionalPercentile(0.6D))
                 .isCloseTo(1.0D, Offset.offset(0.0001D));
@@ -30,7 +32,7 @@ public class IntegerDistributionsValuesIntegratedTest {
 
     @Test
     public void testInterpolatedZipf() {
-        RunData runData = iterateMapper(VirtData.getMapper("Zipf(10000,2.0) -> long",Long.class), 10000);
+        RunData runData = iterateMapperLong(new Zipf(10000,2.0), 10000);
         System.out.println(runData.toString());
         assertThat(runData.getFractionalPercentile(0.6D))
                 .isCloseTo(1.0D, Offset.offset(0.0001D));
@@ -42,50 +44,64 @@ public class IntegerDistributionsValuesIntegratedTest {
                 .isCloseTo(6.0D, Offset.offset(0.0001D));
     }
 
-//    @Test
-//    public void testComputedUniform() {
-//        RunData runData = iterateMapper(new IntegerDistributions().getIntegerDataMapper("compute_uniform_real(0.0,100.0)").orElse(null), 1000000);
-//        assertThat(runData.getFractionalPercentile(0.33D))
-//                .isCloseTo(33.33D, Offset.offset(1.0D));
-//        assertThat(runData.getFractionalPercentile(0.5D))
-//                .isCloseTo(50.0D, Offset.offset(1.0D));
-//        assertThat(runData.getFractionalPercentile(0.78D))
-//                .isCloseTo(78.0D, Offset.offset(1.0D));
-//        System.out.println(runData.toString());
-//    }
-//
-//    @Test
-//    public void testInterpolatedUniform() {
-//        RunData runData = iterateMapper(
-//                new IntegerDistributions().getIntegerDataMapper("interpolate_uniform_real(0.0,100.0)").orElse(null), 1000000);
-//        assertThat(runData.getFractionalPercentile(0.33D))
-//                .isCloseTo(33.33D, Offset.offset(1.0D));
-//        assertThat(runData.getFractionalPercentile(0.5D))
-//                .isCloseTo(50.0D, Offset.offset(1.0D));
-//        assertThat(runData.getFractionalPercentile(0.78D))
-//                .isCloseTo(78.0D, Offset.offset(1.0D));
-//        System.out.println(runData.toString());
-//    }
-//
-//    @Test
-//    public void testInterpolatedMappedUniform() {
-//        DataMapper<Integer> mapper = new IntegerDistributions().getIntegerDataMapper("interpolate_mapto_uniform_real(0.0,100.0)").orElse(null);
-//        RunData runData = iterateMapper(mapper,10000000);
-//        assertThat(runData.getFractionalPercentile(0.999D))
-//                .isCloseTo(0.0D, Offset.offset(1.0D));
-//
-//        assertThat(mapper.get(Long.MAX_VALUE)).isEqualTo(234);
-//
-//    }
-//
-    private RunData iterateMapper(DataMapper<Long> mapper, int iterations) {
+    @Test
+    public void testComputedUniform() {
+
+        RunData runData = iterateMapperDouble(new Uniform(0.0d, 100.0d, "compute"), 1000000);
+        assertThat(runData.getFractionalPercentile(0.33D))
+                .isCloseTo(33.33D, Offset.offset(1.0D));
+        assertThat(runData.getFractionalPercentile(0.5D))
+                .isCloseTo(50.0D, Offset.offset(1.0D));
+        assertThat(runData.getFractionalPercentile(0.78D))
+                .isCloseTo(78.0D, Offset.offset(1.0D));
+        System.out.println(runData.toString());
+    }
+
+    @Test
+    public void testInterpolatedUniform() {
+        RunData runData = iterateMapperDouble(new Uniform(0.0,100.0,"interpolate"),1000000);
+        assertThat(runData.getFractionalPercentile(0.33D))
+                .isCloseTo(33.33D, Offset.offset(1.0D));
+        assertThat(runData.getFractionalPercentile(0.5D))
+                .isCloseTo(50.0D, Offset.offset(1.0D));
+        assertThat(runData.getFractionalPercentile(0.78D))
+                .isCloseTo(78.0D, Offset.offset(1.0D));
+        System.out.println(runData.toString());
+    }
+
+    @Test
+    public void testInterpolatedMappedUniform() {
+        Uniform mapper = new Uniform(0.0d, 100.0d, "interpolate", "map");
+        RunData runData = iterateMapperDouble(mapper,10000000);
+        assertThat(runData.getFractionalPercentile(0.999D))
+                .isCloseTo(0.0D, Offset.offset(1.0D));
+        assertThat(mapper.applyAsDouble(Long.MAX_VALUE)).isCloseTo(100.0d,Offset.offset(0.0001D));
+
+    }
+
+    private RunData iterateMapperLong(LongUnaryOperator mapper, int iterations) {
         assertThat(mapper).isNotNull();
 
         double samples[] = new double[iterations];
 
         long time_generating = System.nanoTime();
         for (int i = 0; i < iterations; i++) {
-            samples[i] = mapper.get((long)i);
+            samples[i] = mapper.applyAsLong((long)i);
+        }
+        long time_generated = System.nanoTime();
+
+        double ms = (double) (time_generated - time_generating) / 1000000.0D;
+        return new RunData(iterations, samples, ms);
+    }
+
+    private RunData iterateMapperDouble(LongToDoubleFunction mapper, int iterations) {
+        assertThat(mapper).isNotNull();
+
+        double samples[] = new double[iterations];
+
+        long time_generating = System.nanoTime();
+        for (int i = 0; i < iterations; i++) {
+            samples[i] = mapper.applyAsDouble((long)i);
         }
         long time_generated = System.nanoTime();
 

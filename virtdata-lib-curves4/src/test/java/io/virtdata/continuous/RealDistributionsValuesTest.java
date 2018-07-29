@@ -1,24 +1,24 @@
 package io.virtdata.continuous;
 
-import io.virtdata.api.DataMapper;
-import io.virtdata.core.VirtData;
+import io.virtdata.continuous.long_double.Normal;
+import io.virtdata.continuous.long_double.Uniform;
 import org.apache.commons.math4.stat.descriptive.DescriptiveStatistics;
 import org.assertj.core.data.Offset;
 import org.testng.annotations.Test;
 
 import java.util.Formatter;
 import java.util.Locale;
+import java.util.function.LongToDoubleFunction;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Test
-public class RealDistributionsValuesIntegratedTest {
+public class RealDistributionsValuesTest {
 
 
     @Test
     public void testComputedNormal() {
-        RunData runData = iterateMapper(
-                VirtData.getMapper("Normal(10.0,2.0,'compute') -> double",double.class), 1000000);
+        RunData runData = iterateMapperDouble(new Normal(10.0,2.0,"compute"), 1000000);
         System.out.println(runData.toString());
         assertThat(runData.getFractionalPercentile(0.5D))
                 .isCloseTo(10.0D, Offset.offset(0.01D));
@@ -30,7 +30,7 @@ public class RealDistributionsValuesIntegratedTest {
 
     @Test
     public void testInterpolatedNormal() {
-        RunData runData = iterateMapper(VirtData.getMapper("Normal(10.0,2.0,'interpolate') -> double",double.class), 1000000);
+        RunData runData = iterateMapperDouble(new Normal(10.0,2.0,"interpolate"), 1000000);
         System.out.println(runData.toString());
         assertThat(runData.getFractionalPercentile(0.5D))
                 .isCloseTo(10.0D, Offset.offset(0.01D));
@@ -42,7 +42,7 @@ public class RealDistributionsValuesIntegratedTest {
 
     @Test
     public void testComputedUniform() {
-        RunData runData = iterateMapper(VirtData.getMapper("Uniform(0.0,100.0,'compute') -> double",double.class), 1000000);
+        RunData runData = iterateMapperDouble(new Uniform(0.0,100.0,"compute"), 1000000);
         assertThat(runData.getFractionalPercentile(0.33D))
                 .isCloseTo(33.33D, Offset.offset(1.0D));
         assertThat(runData.getFractionalPercentile(0.5D))
@@ -54,8 +54,7 @@ public class RealDistributionsValuesIntegratedTest {
 
     @Test
     public void testInterpolatedUniform() {
-        RunData runData = iterateMapper(
-                VirtData.getMapper("Uniform(0.0,100.0,'interpolate') -> double",double.class), 1000000);
+        RunData runData = iterateMapperDouble(new Uniform(0.0,100.0,"interpolate"), 1000000);
         assertThat(runData.getFractionalPercentile(0.33D))
                 .isCloseTo(33.33D, Offset.offset(1.0D));
         assertThat(runData.getFractionalPercentile(0.5D))
@@ -67,23 +66,23 @@ public class RealDistributionsValuesIntegratedTest {
 
     @Test
     public void testInterpolatedMappedUniform() {
-        DataMapper<Double> mapper = VirtData.getMapper("Uniform(0.0,100.0,'map','interpolate') -> double",double.class);
-        RunData runData = iterateMapper(mapper,10000000);
+        Uniform mapper = new Uniform(0.0, 100.0, "map", "interpolate");
+        RunData runData = iterateMapperDouble(mapper,10000000);
         assertThat(runData.getFractionalPercentile(0.999D))
                 .isCloseTo(0.0D, Offset.offset(1.0D));
 
-        assertThat(mapper.get(Long.MAX_VALUE)).isCloseTo(100.0D, Offset.offset(1.0D));
+        assertThat(mapper.applyAsDouble(Long.MAX_VALUE)).isCloseTo(100.0D, Offset.offset(1.0D));
 
     }
 
-    private RunData iterateMapper(DataMapper<Double> mapper, int iterations) {
+    private RunData iterateMapperDouble(LongToDoubleFunction mapper, int iterations) {
         assertThat(mapper).isNotNull();
 
         double samples[] = new double[iterations];
 
         long time_generating = System.nanoTime();
         for (int i = 0; i < iterations; i++) {
-            samples[i] = mapper.get(i);
+            samples[i] = mapper.applyAsDouble(i);
         }
         long time_generated = System.nanoTime();
 

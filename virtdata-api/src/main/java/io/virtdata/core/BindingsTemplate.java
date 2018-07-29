@@ -39,34 +39,14 @@ import java.util.Optional;
 public class BindingsTemplate {
     private final static Logger logger = LoggerFactory.getLogger(BindingsTemplate.class);
 
-    private List<String> bindPointNames = new ArrayList<String>();
-    private List<String> specifiers = new ArrayList<String>();
+    private List<String> bindPointNames = new ArrayList<>();
+    private List<String> specifiers = new ArrayList<>();
 
-    private VirtDataLibrary library =VirtData.get(); // by default
-
-    /**
-     * Create an empty bindings template with a user-provided VirtDataLibrary.
-     * @param library a user-provided instance of VirtDataLibrary
-     */
-    public BindingsTemplate(VirtDataLibrary library) {
-        this.library = library;
-    }
-
-    /**
-     * Create a bindings template with a user-provided VirtDataLibrary and a map of binding specs
-     * @param library a user-provided instance of a VirtDataLibrary
-     * @param specs an map of binding specs
-     */
-    public BindingsTemplate(VirtDataLibrary library, Map<String,String> specs) {
-        this(library);
+    public BindingsTemplate(Map<String,String> specs) {
         specs.forEach(this::addFieldBinding);
     }
 
-    /**
-     * Create a bindings template with the default VirtDataLibrary.
-     */
     public BindingsTemplate() {
-        this(VirtData.get());
     }
 
     /**
@@ -97,16 +77,15 @@ public class BindingsTemplate {
      * @return A set of bindings that can be used to yield mapped data values later.
      */
     public Bindings resolveBindings() {
-        List<DataMapper<?>> dataMappers = new ArrayList<DataMapper<?>>();
+        List<DataMapper<?>> dataMappers = new ArrayList<>();
         for (String specifier : specifiers) {
-            Optional<DataMapper<Object>> optionalDataMapper = library.getDataMapper(specifier);
+            Optional<DataMapper<Object>> optionalDataMapper = VirtData.getOptionalMapper(specifier);
             if (optionalDataMapper.isPresent()) {
                 dataMappers.add(optionalDataMapper.get());
             } else {
                 logAvailableDataMappers();
                 throw new RuntimeException(
                         "data mapper binding was unsuccessful for "
-                                + "lib:" + library.getLibname()
                                 + ", spec:" + specifier
                                 + ", see log for known data mapper names.");
             }

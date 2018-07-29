@@ -1,41 +1,19 @@
 package io.virtdata.core;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-/**
- * $_=~s/\blog_normal\(/LogNormal\(/g;
- * $_=~s/\bnormal\(/Normal\(/g;
- * $_=~s/\blevy\(/Levy\(/g;
- * $_=~s/\bnakagami\(/Nakagami\(/g;
- * $_=~s/\btriangular\(/Triangular\(/g;
- * $_=~s/\bexponential\(/Exponential\(/g;
- * $_=~s/\blogistic\(/Logistic\(/g;
- * $_=~s/\blaplace\(/Laplace\(/g;
- * $_=~s/\bcauchy\(/Cauchy\(/g;
- * $_=~s/\bf\(/F\(/g;
- * $_=~s/\bt\(/T\(/g;
- * $_=~s/\bweibull\(/Weibull\(/g;
- * $_=~s/\bchi_squared\(/ChiSquared\(/g;
- * $_=~s/\bgumbel\(/Gumbel\(/g;
- * $_=~s/\bbeta\(/Beta\(/g;
- * $_=~s/\bpareto\(/Pareto\(/g;
- * $_=~s/\bgamma\(/Gamma\(/g;
- * $_=~s/\buniform_real\(/UniformReal\(/g;
- * $_=~s/\bhypergeometric\(/Hypergeometric\(/g;
- * $_=~s/\buniform_integer\(/UniformInteger\(/g;
- * $_=~s/\bgeometric\(/Geometric\(/g;
- * $_=~s/\bpoisson\(/Poisson\(/g;
- * $_=~s/\bzipf\(/Zipf\(/g;
- * $_=~s/\bbinomial\(/Binomial\(/g;
- * $_=~s/\bpascal\(/Pascal\(/g;
- */
 public class CompatibilityFixups {
 
+    private final static Logger logger = LoggerFactory.getLogger(CompatibilityFixups.class);
 
+    // Not all of these are simple upper-case changes
     private final static Map<String,String> funcs = new HashMap<String,String>() {{
         put("log_normal","LogNormal");
         put("normal", "Normal");
@@ -72,7 +50,11 @@ public class CompatibilityFixups {
     private final static CompatibilityFixups instance = new CompatibilityFixups();
 
     public static String fixup(String spec) {
-        return instance.fix(spec);
+        String fixed = instance.fix(spec);
+        if (!fixed.equals(spec)) {
+            logger.warn(spec + "' was preprocessed to '" + fixed + "'. Please change to the new one to avoid this warning.");
+        }
+        return fixed;
     }
 
     public String fix(String spec) {
@@ -84,10 +66,10 @@ public class CompatibilityFixups {
         int start = 0;
 
         while (matcher.find()) {
-            out.append(spec.substring(start, matcher.regionStart()));
+            out.append(spec.substring(start, matcher.start()));
             String replacement = fixCurveCall(matcher.group("name"), matcher.group("args"));
             out.append(replacement);
-            start = matcher.regionEnd();
+            start = matcher.end();
         }
         out.append(spec.substring(start));
 
