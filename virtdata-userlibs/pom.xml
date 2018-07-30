@@ -127,7 +127,18 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.22.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
+                    <additionalClasspathElements>
+                        <additionalClasspathElement>${project.basedir}/target/virtdata-userlibs-${project.version}.jar</additionalClasspathElement>
+                    </additionalClasspathElements>
                     <includes>
                         <include>**/*Integrated*Test*.java</include>
                     </includes>
@@ -164,6 +175,7 @@
                                 </transformer>
                             </transformers>
                             <minimizeJar>false</minimizeJar>
+                            <finalName>${artifactId}</finalName>
                         </configuration>
                     </plugin>
                 </plugins>

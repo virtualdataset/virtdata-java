@@ -12,31 +12,19 @@ public class IntegratedRealerTests {
     public void testLastNames() {
         DataMapper mapper = VirtData.getOptionalMapper("LastNames()").orElse(null);
         assertThat(mapper).isNotNull();
-        assertThat(mapper.get(0L)).isEqualTo("Vanderploeg");
+        assertThat(mapper.get(0L)).isEqualTo("Miracle");
     }
 
     public void testFirstNames() {
         DataMapper mapper = VirtData.getOptionalMapper("FirstNames()").orElse(null);
         assertThat(mapper).isNotNull();
-        assertThat(mapper.get(0L)).isEqualTo("Leigh");
-    }
-
-    public void testFemaleNames() {
-        DataMapper mapper = VirtData.getOptionalMapper("FemaleFirstNames()").orElse(null);
-        assertThat(mapper).isNotNull();
-        assertThat(mapper.get(0L)).isEqualTo("Jewell");
-    }
-
-    public void testMaleNames() {
-        DataMapper mapper = VirtData.getOptionalMapper("MaleFirstNames()").orElse(null);
-        assertThat(mapper).isNotNull();
-        assertThat(mapper.get(0L)).isEqualTo("Brad");
+        assertThat(mapper.get(0L)).isEqualTo("Norman");
     }
 
     public void testFullNames() {
         DataMapper mapper = VirtData.getOptionalMapper("FullNames()").orElse(null);
         assertThat(mapper).isNotNull();
-        assertThat(mapper.get(0L)).isEqualTo("Leigh Vanderploeg");
+        assertThat(mapper.get(0L)).isEqualTo("Norman Wolf");
     }
 
 

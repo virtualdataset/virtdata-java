@@ -16,9 +16,16 @@ public class IntegratedCurvesTest {
 
     @Test
     public void testZipf() {
-        DataMapper<Long> mapper = VirtData.getMapper("Levy(0.0,0.5) -> long", long.class);
+        DataMapper<Long> mapper = VirtData.getMapper("Zipf(1000,2) -> long", long.class);
         RunData runData = iterateMapperLong(mapper, 10000);
-        assertThat(runData.stats.getPercentile(0.10d)).isCloseTo(234.34d, Offset.offset(0.1d));
+        System.out.println(runData);
+
+        assertThat(runData.getStats().getPercentile(0.1d)).isCloseTo(1.0, Offset.offset(0.01d));
+        assertThat(runData.getStats().getPercentile(1.0d)).isCloseTo(1.0, Offset.offset(0.01d));
+        assertThat(runData.getStats().getPercentile(10.0d)).isCloseTo(1.0, Offset.offset(0.01d));
+        assertThat(runData.getStats().getPercentile(90.0d)).isCloseTo(6.0, Offset.offset(0.01d));
+        assertThat(runData.getStats().getPercentile(99.0d)).isCloseTo(61.0, Offset.offset(0.01d));
+        assertThat(runData.getStats().getPercentile(99.9d)).isCloseTo(311.0, Offset.offset(0.01d));
 
     }
 
@@ -57,6 +64,7 @@ public class IntegratedCurvesTest {
         public int iterations;
         public double[] samples;
         public double ms;
+        private DescriptiveStatistics stats;
 
         public RunData(int iterations, double[] samples, double ms) {
 
@@ -64,15 +72,16 @@ public class IntegratedCurvesTest {
             this.samples = samples;
             this.ms = ms;
         }
-        private DescriptiveStatistics stats;
+
         private DescriptiveStatistics getStats() {
-            if (stats==null) {
+            if (stats == null) {
                 stats = new DescriptiveStatistics(samples);
             }
             return stats;
         }
+
         public double getFractionalPercentile(double point) {
-            return getStats().getPercentile(point*100.0D);
+            return getStats().getPercentile(point * 100.0D);
         }
 
         public String toString() {
@@ -81,7 +90,7 @@ public class IntegratedCurvesTest {
             Formatter f = new Formatter(sb, Locale.US);
             f.format("exec time %5fms\n", ms);
             f.format("iterations: %d\n", iterations);
-            f.format("iterations/ms: %5f\n", (iterations/ms));
+            f.format("iterations/ms: %5f\n", (iterations / ms));
             for (int i = 10; i < 100; i += 10) {
                 double pctile = (double) i;
                 f.format("pctile %4d  %4f\n", i, s1.getPercentile(pctile));

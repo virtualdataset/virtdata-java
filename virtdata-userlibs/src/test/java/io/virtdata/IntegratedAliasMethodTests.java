@@ -12,6 +12,6 @@ public class IntegratedAliasMethodTests {
     public void testCensusData() {
         WeightedStrings surnames = new WeightedStrings("Name", "prop100k", "data/surnames");
         String n = surnames.apply(2343);
-        assertThat(n).isEqualTo("Vanderploeg");
+        assertThat(n).isEqualTo("Conaway");
     }
 }

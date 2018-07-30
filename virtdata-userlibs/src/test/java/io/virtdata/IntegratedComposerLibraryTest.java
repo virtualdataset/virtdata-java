@@ -28,23 +28,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class IntegratedComposerLibraryTest {
 
-//    @Test
-//    public void testTypeConversionChain() {
-//        BindingsTemplate bt = new BindingsTemplate(AllDataMapperLibraries.getInverseCumulativeDensity());
-//        bt.addFieldBinding("mod_to_string", "compose Mod(3) ; Suffix('0000000000') -> String");
-//        Bindings bindings = bt.resolveBindings();
-//        Object[] all = bindings.getAll(5);
-//        assertThat(all).isNotNull();
-//        assertThat(all.length).isEqualTo(1);
-//        Object o = all[0];
-//        assertThat(o.getClass()).isEqualTo(String.class);
-//        assertThat((String) o).isEqualTo("20000000000");
-//        // RandomToByteBuffer(1048576) ; ToString()
-//    }
-//
-
-
-    @Test(enabled=true)
+    // The deprecated functions are not being included in the next release, so this test's purpose has been
+    // reversed.
+    @Test(expectedExceptions = {RuntimeException.class}, expectedExceptionsMessageRegExp = ".*Unable to find.*")
     public void testArgumentMatchingViaMainLib() {
         BindingsTemplate bt = new BindingsTemplate();
         bt.addFieldBinding("param","RandomLineToString('data/variable_words.txt')");
@@ -127,14 +113,14 @@ public class IntegratedComposerLibraryTest {
     @Test
     public void testNormalDoubleAdd() {
         Optional<DataMapper<String>> dm =
-                VirtData.getOptionalMapper("compose normal(0.0,5.0); Add(5.0) -> double");
+                VirtData.getOptionalMapper("compose Normal(0.0,5.0); Add(5.0) -> double");
         assertThat(dm).isPresent();
     }
 
     @Test
     public void testDistInCompose() {
         Optional<DataMapper<String>> dm =
-                VirtData.getOptionalMapper("compose Hash(); uniform_integer(0,100); ToString() -> String");
+                VirtData.getOptionalMapper("compose Hash(); Uniform(0,100); ToString() -> String");
         assertThat(dm).isPresent();
         String s = dm.get().get(5L);
         assertThat(s).isNotEmpty();
@@ -144,14 +130,14 @@ public class IntegratedComposerLibraryTest {
     @Test
     public void testComposeSingleFuncTypeCoercion() {
         Optional<DataMapper<Object>> longMapper =
-                VirtData.getOptionalMapper("compose uniform_integer(1,10) -> long");
+                VirtData.getOptionalMapper("compose Uniform(1,10) -> long");
         assertThat(longMapper).isPresent();
         Object l = longMapper.get().get(23L);
         assertThat(l).isNotNull();
         assertThat(l.getClass()).isEqualTo(Long.class);
 
         Optional<DataMapper<Object>> intMapper =
-                VirtData.getOptionalMapper("compose uniform_integer(1,123) -> int");
+                VirtData.getOptionalMapper("compose Uniform(1,123) -> int");
         assertThat(intMapper).isPresent();
         Object i = intMapper.get().get(23L);
         assertThat(i).isNotNull();

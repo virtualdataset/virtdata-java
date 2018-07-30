@@ -19,6 +19,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Test
 public class IntegratedComposerLogicTest {
 
+    @Test
+    public void testPreferredReturnType() {
+        DataMapper<Object> mapper = VirtData.getMapper("Mod(5)");
+        Object o = mapper.get(1L);
+        assertThat(o).isOfAnyClassIn(Long.class);
+    }
+
     public void testSignatureMapping() {
         Optional<DataMapper<Object>> dataMapper = VirtData.getOptionalMapper(
                 "compose HashRange(1000000000,9999999999L); ToString() -> String"
@@ -151,19 +158,14 @@ public class IntegratedComposerLogicTest {
     }
 
     @Test
-    public void testThatTestsAreRunning() {
-        throw new RuntimeException("If integration tests are running, then this will trigger.");
-    }
-
-    @Test
     public void testAPILevelQualifier() {
         DataMapper mapper1 = VirtData.getMapper("Uniform(0,100)");
         Object o1 = mapper1.get(5L);
-        assertThat(o1).isOfAnyClassIn(Double.class);
+        assertThat(o1).isOfAnyClassIn(Long.class);
 
-        DataMapper mapper2 = VirtData.getMapper("Uniform(0,100)", long.class);
+        DataMapper mapper2 = VirtData.getMapper("Uniform(0,100)", double.class);
         Object o2 = mapper2.get(5L);
-        assertThat(o2).isOfAnyClassIn(Long.class);
+        assertThat(o2).isOfAnyClassIn(Double.class);
     }
 
 }

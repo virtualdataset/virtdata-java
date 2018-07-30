@@ -154,12 +154,44 @@ public class Bindings {
         return suffixedMap;
     }
 
+    /**
+     * This is a version of the {@link #setIteratedSuffixMap(Map, long, int, String[])} which creates
+     * a new map for each call.
+     * @param input The base input value for which the values should be generated
+     * @param count The count of maps that should be added to the final map
+     * @param fieldNames The field names which are used to look up the functions in the binding
+     * @return A newly created map with the generated names and values.
+     */
     public Map<String,Object> getIteratedSuffixMap(long input, int count, String... fieldNames) {
         Map<String, Object> suffixedMap = new LinkedHashMap<>(count * fieldNames.length);
-        setIteratedSuffixMap(suffixedMap,input, count, fieldNames);
+        setIteratedSuffixMap(suffixedMap, input, count, fieldNames);
         return suffixedMap;
     }
 
+    /**
+     * Populate a map of values with a two-dimensional set of generated key and value names. This is a basic
+     * traversal over all the provided field names and a range of input values from input to input+count.
+     * The key names for the map are created by adding a numeric suffix to the field name.
+     *
+     * For example, with field names aleph and gamma, with input 53 and count 2, the key names will
+     * be created as aleph0, gamma0, aleph1, gamma1, and the input values which will be used to
+     * create the generated values for these keys will be 53, 53, and 54, 54, respectively.
+     *
+     * Symbolically, this does the same as the sketch below:
+     *
+     * <ol>
+     *     <li>map{aleph0}=funcFor("aleph")(53)</li>
+     *     <li>map{gamma0}=funcFor("gamma")(53)</li>
+     *     <li>map{aleph1}=funcFor("aleph")(54)</li>
+     *     <li>map{gamma1}=funcFor("gamma")(54)</li>
+     * </ol>
+     *
+     * @param suffixedMap A donor map which is to be populated. The values do not clear the map, but merely overwrite
+     *                    values of the same name.
+     * @param input The base input value for which the values should be generated
+     * @param count The count of maps that should be added to the final map
+     * @param fieldNames The field names which are used to look up the functions in the binding
+     */
     private void setIteratedSuffixMap(Map<String, Object> suffixedMap, long input, int count, String[] fieldNames) {
         for (int i = 0; i < count; i++) {
             for (String f : fieldNames) {
@@ -179,8 +211,14 @@ public class Bindings {
         return dataMappers.get(i).get(input);
     }
 
-    public Object get(String s, long input) {
-        DataMapper<?> dataMapper = nameCache.get().get(s);
+    /**
+     * Get a value for the cached mapper name, using the name to mapper index cache.
+     * @param name The field name in the data mapper
+     * @param input the long input value which the bound data mapper will use as an input
+     * @return a single object, the value yielded from the named and indexed data mapper in the bindings list.
+     */
+    public Object get(String name, long input) {
+        DataMapper<?> dataMapper = nameCache.get().get(name);
         return dataMapper.get(input);
     }
 

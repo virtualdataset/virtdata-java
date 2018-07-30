@@ -101,7 +101,7 @@ public class VirtDataComposer {
 
             List<ResolvedFunction> resolved = functionLibrary.resolveFunctions(outputType, inputType, funcName, args);
             if (resolved.size() == 0) {
-                throw new RuntimeException("Unable to find a even one function for " + call);
+                throw new RuntimeException("Unable to find even one function for " + call);
             }
             nodeFunctions.addAll(resolved);
             funcs.addFirst(nodeFunctions);
@@ -160,7 +160,7 @@ public class VirtDataComposer {
 
                 List<ResolvedFunction> resolved = functionLibrary.resolveFunctions(outputType, inputType, funcName, fargs);
                 if (resolved.size() == 0) {
-                    throw new RuntimeException("Unable to find a even one function for " + call);
+                    throw new RuntimeException("Unable to find even one function for " + call);
                 }
                 args[i]=resolved.get(0).getFunctionObject();
             }
@@ -243,6 +243,8 @@ public class VirtDataComposer {
                     prevFuncs = nextFuncs;
                 }
 
+            } else {
+                progress += reduceByPreferredResultTypes(funcs.get(0));
             }
         }
         List<ResolvedFunction> optimized = funcs.stream().map(l -> l.get(0)).collect(Collectors.toList());
@@ -265,11 +267,25 @@ public class VirtDataComposer {
         return progressed;
     }
 
+    private int reduceByPreferredResultTypes(List<ResolvedFunction> funcs) {
+        int progressed=0;
+        if (funcs.size()>1) {
+            progressed += funcs.size() - 1;
+            funcs.sort(ResolvedFunction.PREFERRED_TYPE_COMPARATOR);
+            while (funcs.size() > 1) {
+                logger.trace("removing func " + funcs.get(funcs.size() - 1)
+                        + " because " + funcs.get(0) + " has more preferred types.");
+                funcs.remove(funcs.size() - 1);
+            }
+
+        }
+        return progressed;
+    }
     private int reduceByPreferredTypes(List<ResolvedFunction> prevFuncs, List<ResolvedFunction> nextFuncs) {
         int progressed = 0;
         if (prevFuncs.size() > 1) {
             progressed += prevFuncs.size() - 1;
-            Collections.sort(prevFuncs, ResolvedFunction.PREFERRED_TYPE_COMPARATOR);
+            prevFuncs.sort(ResolvedFunction.PREFERRED_TYPE_COMPARATOR);
             while (prevFuncs.size() > 1) {
                 logger.trace("removing func " + prevFuncs.get(prevFuncs.size() - 1)
                         + " because " + prevFuncs.get(0) + " has more preferred types.");
@@ -277,7 +293,7 @@ public class VirtDataComposer {
             }
         } else if (nextFuncs.size() > 1) {
             progressed += nextFuncs.size() - 1;
-            Collections.sort(nextFuncs, ResolvedFunction.PREFERRED_TYPE_COMPARATOR);
+            nextFuncs.sort(ResolvedFunction.PREFERRED_TYPE_COMPARATOR);
             while (nextFuncs.size() > 1) {
                 logger.trace("removing func " + nextFuncs.get(nextFuncs.size() - 1)
                         + " because " + nextFuncs.get(0) + " has more preferred types.");
