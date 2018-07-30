@@ -4,6 +4,8 @@ import org.testng.annotations.Test;
 
 import java.util.function.LongUnaryOperator;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @Test
 public class ResolvedFunctionTest {
 
@@ -13,11 +15,22 @@ public class ResolvedFunctionTest {
             TestAdd testAdd = new TestAdd(1, 2, 3);
             Class<?>[] parameterTypes = TestAdd.class.getConstructor(int.class, int[].class).getParameterTypes();
             ResolvedFunction rf = new ResolvedFunction(testAdd, true, parameterTypes, new Object[]{1, 2, 3}, long.class, long.class);
-            System.out.println(rf.toString());
+            assertThat(rf.toString()).isEqualTo("long->io.virtdata.core.ResolvedFunctionTest$TestAdd->long [Integer=>int,Integer...=>int...]");
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    @Test
+    public void testToStringWithEmptyVarArgs() {
+        try {
+            TestAdd testAdd = new TestAdd(1);
+            Class<?>[] parameterTypes = TestAdd.class.getConstructor(int.class, int[].class).getParameterTypes();
+            ResolvedFunction rf = new ResolvedFunction(testAdd, true, parameterTypes, new Object[]{1, 2, 3}, long.class, long.class);
+            assertThat(rf.toString()).isEqualTo("long->io.virtdata.core.ResolvedFunctionTest$TestAdd->long [Integer=>int,Integer...=>int...]");
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private final static class TestAdd implements LongUnaryOperator {

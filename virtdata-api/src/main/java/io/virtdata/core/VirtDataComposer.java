@@ -86,17 +86,16 @@ public class VirtDataComposer {
                 Optional.ofNullable(flow.getLastExpression().getCall().getOutputType())
                         .map(ValueType::valueOfClassName).map(ValueType::getValueClass);
 
-        nextFunctionInputTypes.add(new HashSet<Class<?>>() {{
-            finalValueTypeOption.ifPresent(this::add);
-        }});
+        nextFunctionInputTypes.add(new HashSet<>());
+        finalValueTypeOption.ifPresent(t -> nextFunctionInputTypes.get(0).add(t));
 
         for (int i = flow.getExpressions().size() - 1; i >= 0; i--) {
             FunctionCall call = flow.getExpressions().get(i).getCall();
             List<ResolvedFunction> nodeFunctions = new LinkedList<>();
 
             String funcName = call.getFunctionName();
-            Class<?> inputType = classOf(call.getInputType());
-            Class<?> outputType = classOf(call.getOutputType());
+            Class<?> inputType = ValueType.classOfType(call.getInputType());
+            Class<?> outputType = ValueType.classOfType(call.getOutputType());
             Object[] args = call.getArguments();
             args = populateFunctions(args);
 
@@ -117,7 +116,7 @@ public class VirtDataComposer {
         }
         removeNonLongFunctions(funcs.getFirst());
 
-        List<ResolvedFunction> flattenedFuncs = optimizePath(funcs, classOf(flow.getLastExpression().getCall().getOutputType()));
+        List<ResolvedFunction> flattenedFuncs = optimizePath(funcs, ValueType.classOfType(flow.getLastExpression().getCall().getOutputType()));
 
         if (flattenedFuncs.size() == 1) {
             logger.trace("FUNCTION resolution succeeded (single): '" + flow.toString() + "'");
@@ -154,8 +153,8 @@ public class VirtDataComposer {
                 FunctionCall call = (FunctionCall) o;
 
                 String funcName = call.getFunctionName();
-                Class<?> inputType = classOf(call.getInputType());
-                Class<?> outputType = classOf(call.getOutputType());
+                Class<?> inputType = ValueType.classOfType(call.getInputType());
+                Class<?> outputType = ValueType.classOfType(call.getOutputType());
                 Object[] fargs = call.getArguments();
                 fargs = populateFunctions(fargs);
 
@@ -167,21 +166,6 @@ public class VirtDataComposer {
             }
         }
         return args;
-    }
-
-    private Class<?> classOf(String inputType) {
-        ValueType valueType = ValueType.valueOfClassName(inputType);
-        if (valueType == null) {
-            return null;
-        }
-        if (valueType == ValueType.OBJECT) {
-            try {
-                Class.forName(inputType);
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException("Unable to determine class for type " + inputType + ". Consider adding the full package to the name.");
-            }
-        }
-        return valueType.getValueClass();
     }
 
     private void removeNonLongFunctions(List<ResolvedFunction> funcs) {
@@ -247,7 +231,13 @@ public class VirtDataComposer {
                         progress += reduceByDirectTypes(prevFuncs, nextFuncs);
                         // attempt secondary strategy IFF higher precedence strategy failed
                         if (progress == 0) {
-                            progress += reduceByPreferredTypes(prevFuncs, nextFuncs);
+                            progress += reduceByCompatibleTypes(prevFuncs, nextFuncs, false);
+                            if (progress == 0) {
+                                progress += reduceByCompatibleTypes(prevFuncs, nextFuncs, true);
+                                if (progress == 0) {
+                                    progress += reduceByPreferredTypes(prevFuncs, nextFuncs);
+                                }
+                            }
                         }
                     } // else first pass, prime pointers
                     prevFuncs = nextFuncs;
@@ -327,6 +317,47 @@ public class VirtDataComposer {
             nextFuncs.removeAll(toremove);
         }
         return progressed;
+    }
+
+    /**
+     * Remove any functions in the second set which do not have an input type which is assignable
+     * from any of the output types of the functions in the first set.
+     * @param prevFuncs the functions that come before the nextFuncs
+     * @param nextFuncs the functions that come after prevFuncs
+     * @return the number of next funcs that have been removed
+     */
+    private int reduceByCompatibleTypes(List<ResolvedFunction> prevFuncs, List<ResolvedFunction> nextFuncs, boolean autoboxing) {
+
+        // Rule 1: If there are direct type matches, remove extraneous next funcs
+        Set<Class<?>> outputs = getOutputs(prevFuncs);
+        Set<Class<?>> inputs = getInputs(nextFuncs);
+        Set<Class<?>> compatibleInputs = new HashSet<>();
+
+        for (Class<?> input : inputs) {
+            for (Class<?> output : outputs) {
+                if (ClassUtils.isAssignable(output,input,autoboxing)) {
+                    compatibleInputs.add(input);
+                }
+            }
+        }
+        List<ResolvedFunction> toremove = new ArrayList<>();
+
+
+        for (ResolvedFunction nextfunc : nextFuncs) {
+            if (!compatibleInputs.contains(nextfunc.getInputClass())) {
+                logger.debug("removing next func: " + nextfunc + " because its input types are not assignable from any of the previous funcs");
+                toremove.add(nextfunc);
+            }
+        }
+
+        if (toremove.size()==nextFuncs.size()) {
+            logger.debug("Not removing next funcs " + (autoboxing ? "with autoboxing" : "") + " because no functions would be left.");
+            return 0;
+        } else {
+            nextFuncs.removeAll(toremove);
+            return toremove.size();
+        }
+
     }
 
     private Set<Class<?>> getOutputs(List<ResolvedFunction> prevFuncs) {

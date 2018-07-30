@@ -6,7 +6,6 @@ import io.virtdata.basicsmappers.from_long.to_string.MapTemplate;
 import io.virtdata.basicsmappers.from_long.to_string.NumberNameToString;
 import io.virtdata.basicsmappers.from_long.to_string.Template;
 import io.virtdata.core.VirtData;
-import io.virtdata.testing.ARandomPOJO;
 import org.apache.commons.lang3.ClassUtils;
 import org.testng.annotations.Test;
 
@@ -19,7 +18,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Test
 public class IntegratedComposerLogicTest {
-
 
     public void testSignatureMapping() {
         Optional<DataMapper<Object>> dataMapper = VirtData.getOptionalMapper(
@@ -42,7 +40,7 @@ public class IntegratedComposerLogicTest {
 
     public void testComplexComposition() {
         Optional<DataMapper<Object>> dataMapper = VirtData.getOptionalMapper(
-                "Hash(); mapto_normal(50,10.0); Add(50); ToString(); Suffix('avgdays') -> String"
+                "Hash(); Normal(50,10.0,'map'); Add(50); ToString(); Suffix('avgdays') -> String"
         );
         assertThat(dataMapper).isNotNull();
         assertThat(dataMapper.isPresent()).isTrue();
@@ -66,11 +64,11 @@ public class IntegratedComposerLogicTest {
         assertThat(dataMapper.get().get(1)).isEqualToComparingFieldByField("completion_count");
     }
 
-    public void testPOJOTypeSpecializer() {
-        Optional<DataMapper<Object>> dataMapper = VirtData.getOptionalMapper("compose LongToLongPOJO() -> io.virtdata.testing.ARandomPOJO");
-        assertThat(dataMapper).isPresent();
-        assertThat(dataMapper.get().get(1)).isOfAnyClassIn(ARandomPOJO.class);
-    }
+//    public void testPOJOTypeSpecializer() {
+//        Optional<DataMapper<Object>> dataMapper = VirtData.getOptionalMapper("compose LongToLongPOJO() -> io.virtdata.testing.ARandomPOJO");
+//        assertThat(dataMapper).isPresent();
+//        assertThat(dataMapper.get().get(1)).isOfAnyClassIn(ARandomPOJO.class);
+//    }
 
     public void testNestedFunction() {
         Template t = new Template("_{}_{}_", String::valueOf, String::valueOf);
@@ -146,4 +144,26 @@ public class IntegratedComposerLogicTest {
         f = new Identity();
 
     }
+
+    @Test(expectedExceptions = {RuntimeException.class}, expectedExceptionsMessageRegExp = ".*but this type is not assignable.*")
+    public void testVirtDataTypeVarianceError() {
+        DataMapper mapper = VirtData.getMapper("Uniform(0.0D,1.0D) -> java.lang.String", long.class);
+    }
+
+    @Test
+    public void testThatTestsAreRunning() {
+        throw new RuntimeException("If integration tests are running, then this will trigger.");
+    }
+
+    @Test
+    public void testAPILevelQualifier() {
+        DataMapper mapper1 = VirtData.getMapper("Uniform(0,100)");
+        Object o1 = mapper1.get(5L);
+        assertThat(o1).isOfAnyClassIn(Double.class);
+
+        DataMapper mapper2 = VirtData.getMapper("Uniform(0,100)", long.class);
+        Object o2 = mapper2.get(5L);
+        assertThat(o2).isOfAnyClassIn(Long.class);
+    }
+
 }

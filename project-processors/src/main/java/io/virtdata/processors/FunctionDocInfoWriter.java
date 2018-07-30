@@ -2,6 +2,7 @@ package io.virtdata.processors;
 
 import com.squareup.javapoet.*;
 import io.virtdata.annotations.Category;
+import io.virtdata.annotations.Service;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
@@ -16,7 +17,6 @@ public class FunctionDocInfoWriter implements FuncEnumerator.Listener {
     private final String suffix;
     private Filer filer;
     private Messager messenger;
-    private List<DocForFunc> docs = new ArrayList<>();
 
     public FunctionDocInfoWriter(Filer filer, Messager messenger, String suffix) {
         this.filer = filer;
@@ -122,7 +122,12 @@ public class FunctionDocInfoWriter implements FuncEnumerator.Listener {
         methods.add(getCtorsMethod);
 
 
+        AnnotationSpec serviceAnnotation = AnnotationSpec.builder(Service.class)
+                .addMember("value","$T.class",DocFuncData.class)
+                .build();
+
         TypeSpec manifestType = TypeSpec.classBuilder(newClassName)
+                .addAnnotation(serviceAnnotation)
                 .addModifiers(Modifier.PUBLIC)
                 .addMethods(methods)
                 .addSuperinterface(DocFuncData.class)

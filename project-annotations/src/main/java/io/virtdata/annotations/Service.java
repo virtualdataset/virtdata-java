@@ -21,9 +21,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation is used to mark the input type for a functional interface which
- * uses generics, like LongFunction, IntFunction, or Function.
- * It is only used when then input type of a function can't be found via reflection.
+ * A Service annotation will cause a class to be added to META-INF/services/
+ * under the specified class name.
+ *
+ * At least, this simple thing won't require the use of g u a v a. Yay!
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

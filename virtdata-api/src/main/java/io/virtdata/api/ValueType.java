@@ -52,6 +52,25 @@ public enum ValueType implements Comparator<ValueType> {
 //        throw new RuntimeException("Unable to find a matching value type for " + typeName);
     }
 
+    public static Class<?> classOfType(String inputType) {
+        if (inputType==null) {
+            return null;
+        }
+        ValueType valueType = ValueType.valueOfClassName(inputType);
+        if (valueType == null) {
+            return null;
+        }
+        if (valueType == ValueType.OBJECT) {
+            try {
+                return Class.forName(inputType);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException("Unable to determine class for type " + inputType + ". Consider adding the full package to the name.");
+            }
+        }
+        return valueType.getValueClass();
+    }
+
+
     public static ValueType valueOfAssignableClass(Class<?> clazz) {
         for (ValueType valueType : ValueType.values()) {
             if (valueType.clazz.isAssignableFrom(clazz)) {

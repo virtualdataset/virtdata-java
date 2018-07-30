@@ -17,7 +17,7 @@ public class VirtDataTest {
 
         BindingsTemplate bt = VirtData.getTemplate(specs);
         assertThat(bt).isNotNull();
-
     }
+
 
 }

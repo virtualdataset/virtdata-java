@@ -2,10 +2,8 @@ package io.virtdata.processors;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.AnnotationValue;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.*;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
@@ -15,6 +13,7 @@ import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * This annotation processor is responsible for adding services to the
@@ -22,8 +21,15 @@ import java.util.regex.Pattern;
  * implemented and annotated service name.
  */
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
-@SupportedAnnotationTypes({"io.virtdata.annotations.Service"})
 public class ServiceProcessor extends AbstractProcessor {
+
+
+    @Override
+    public Set<String> getSupportedAnnotationTypes() {
+        Set<String> supportedAnnotations = new HashSet<>();
+        supportedAnnotations.add("io.virtdata.annotations.Service");
+        return supportedAnnotations;
+    }
 
     private static Pattern packageNamePattern = Pattern.compile("(?<packageName>.+)?\\.(?<className>.+)");
     private Filer filer;
@@ -45,9 +51,8 @@ public class ServiceProcessor extends AbstractProcessor {
         this.typeUtils = processingEnv.getTypeUtils();
     }
 
-    private Writer getWriterForClass(Class<?> clazz, Element... elements) {
-        String serviceName = clazz.getCanonicalName();
-        return writers.computeIfAbsent(serviceName, s -> {
+    private Writer getWriterForClass(String className, Element... elements) {
+        return writers.computeIfAbsent(className, s -> {
             try {
                 return filer.createResource(StandardLocation.CLASS_OUTPUT, "", "META-INF/services/" + s, elements)
                         .openWriter();
@@ -70,25 +75,29 @@ public class ServiceProcessor extends AbstractProcessor {
                         (Class<? extends Annotation>) Class.forName(annotationType);
                 Set<? extends Element> tsms = roundEnv.getElementsAnnotatedWith(annotationClass);
 
-
                 for (Element element : tsms) {
+                    String serviceClass = null;
                     for (AnnotationMirror am : element.getAnnotationMirrors()) {
-                        if (am.getAnnotationType().toString().equals("io.virtdata.annotations.Service")) {
-                            if(am.getElementValues().size()==1) {
-                                AnnotationValue av = am.getElementValues().get("0");
-                            } else {
-                                messenger.printMessage(Diagnostic.Kind.ERROR, element.toString() + " should have one service interface name");
-                            }
+                        DeclaredType atype = am.getAnnotationType();
+                        if (!annotationType.equals(atype.toString())) {
+                            continue;
                         }
-                    }
-                }
 
-                if (tsms.size() > 0) {
-
-                    Writer w = getWriterForClass(annotationClass, tsms.toArray(new Element[0]));
-                    for (Element e : tsms) {
-                        w.write(((TypeElement) e).getQualifiedName() + "\n");
+                        List<? extends ExecutableElement> valueKeys = am.getElementValues().keySet().stream()
+                                .filter(k -> k.toString().equals("value()")).collect(Collectors.toList());
+                        if (valueKeys.size()==0) {
+                            messenger.printMessage(Diagnostic.Kind.ERROR, "Annotation missing required value");
+                            return false;
+                        }
+                        AnnotationValue annotationValue = am.getElementValues().get(valueKeys.get(0));
+                        serviceClass = annotationValue.getValue().toString();
                     }
+
+                    Writer w = getWriterForClass(serviceClass, tsms.toArray(new Element[0]));
+
+                    Name name = ((TypeElement) element).getQualifiedName();
+                    w.write(name + "\n");
+
                 }
             }
 

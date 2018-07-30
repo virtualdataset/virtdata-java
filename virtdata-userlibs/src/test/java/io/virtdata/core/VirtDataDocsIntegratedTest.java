@@ -5,8 +5,6 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
-import static org.testng.Assert.*;
-
 @Test
 public class VirtDataDocsIntegratedTest {
 

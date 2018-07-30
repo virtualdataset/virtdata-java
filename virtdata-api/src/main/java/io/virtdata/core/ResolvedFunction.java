@@ -112,25 +112,26 @@ public class ResolvedFunction {
             sb.append(" [");
             for (int i = 0; i < initializerSignature.length; i++) {
                 Class<?> isig = initializerSignature[i];
-                String assignToType =isig.isPrimitive() ? isig.getName() : isig.getSimpleName();
-                Class<?> init = initializerValues[i].getClass();
-                String assignFromType=init.isPrimitive() ? init.getName() : init.getSimpleName();
+                String assignToType = isig.isPrimitive() ? isig.getName() : isig.getSimpleName();
 
-                if (initializerSignature.length!=initializerValues.length && i==initializerSignature.length-1) {
-                    assignToType=assignToType.replaceAll("\\[]","")+"...";
-                    assignFromType=assignFromType.replaceAll("\\[]","")+"...";
+                String assignFromType = "[]";
+                if (i < initializerValues.length) {
+                    Class<?> init = initializerValues[i].getClass();
+                    assignFromType = init.isPrimitive() ? init.getName() : init.getSimpleName();
+                }
+
+                if (initializerSignature.length != initializerValues.length && i == initializerSignature.length - 1) {
+                    assignToType = assignToType.replaceAll("\\[]", "") + "...";
+                    assignFromType = assignFromType.replaceAll("\\[]", "") + "...";
                 }
                 sb.append(assignFromType).append("=>").append(assignToType);
-                if (i<initializerSignature.length) {
-                    sb.append(",");
-                }
+                sb.append(",");
             }
+            sb.setLength(sb.length() - 1);
             sb.append("]");
 
         }
         return sb.toString();
-//        return "fn:" + functionObject.getClass().getCanonicalName() + ", type:" + functionType
-//                + ((libraryName ==null) ? "" : ", lib:" + this.libraryName);
     }
 
     /**
