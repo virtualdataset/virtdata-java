@@ -8,6 +8,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CompatibilityFixupsTest {
 
     @Test
+    public void testInlineChange() {
+        assertThat(CompatibilityFixups.fixup("Hash(); uniform_integer(0,1000000000); ToString() -> String"))
+        .isEqualTo("Hash(); Uniform(0,1000000000,'hash','interpolate'); ToString() -> String");
+    }
+
+    @Test
     public void testFixupModifiers() {
         assertThat(CompatibilityFixups.fixup("compute_levy(ASDF)")).isEqualTo("Levy(ASDF,'hash','compute')");
         assertThat(CompatibilityFixups.fixup("interpolate_levy(ASDF)")).isEqualTo("Levy(ASDF,'hash','interpolate')");
