@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class ServiceProcessor extends AbstractProcessor {
 
-
     @Override
     public Set<String> getSupportedAnnotationTypes() {
         Set<String> supportedAnnotations = new HashSet<>();
@@ -96,6 +95,7 @@ public class ServiceProcessor extends AbstractProcessor {
                     Writer w = getWriterForClass(serviceClass, tsms.toArray(new Element[0]));
 
                     Name name = ((TypeElement) element).getQualifiedName();
+                    messenger.printMessage(Diagnostic.Kind.NOTE,"Adding service entry for implementation of " + serviceClass + ": " + name);
                     w.write(name + "\n");
 
                 }
