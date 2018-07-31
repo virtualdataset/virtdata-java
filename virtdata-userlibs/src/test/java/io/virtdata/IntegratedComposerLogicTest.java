@@ -168,4 +168,12 @@ public class IntegratedComposerLogicTest {
         assertThat(o2).isOfAnyClassIn(Double.class);
     }
 
+    @Test
+    public void testTypeCoersionWorksForSimpleCases() {
+        Optional<DataMapper<Object>> om = VirtData.getOptionalMapper("Add(200000); Div(10); ToEpochTimeUUID()->java.util.UUID; ToString();");
+        assertThat(om).isPresent();
+        DataMapper<Object> m = om.get();
+        Object o = m.get(5L);
+        assertThat(o).isOfAnyClassIn(String.class);
+    }
 }

@@ -68,7 +68,7 @@ public class VirtDataComposer {
 
         String strictSpec = flowspec.startsWith("compose ") ? flowspec.substring(8) : flowspec;
         VirtDataDSL.ParseResult parseResult = VirtDataDSL.parse(strictSpec);
-        if (parseResult.throwable!=null) {
+        if (parseResult.throwable != null) {
             throw new RuntimeException(parseResult.throwable);
         }
         VirtDataFlow flow = parseResult.flow;
@@ -112,7 +112,7 @@ public class VirtDataComposer {
 
         if (!nextFunctionInputTypes.peekFirst().contains(Long.TYPE)) {
             throw new RuntimeException("There is no initial function which accepts a long input. Function chain, after type filtering: \n" +
-                    summarize(funcs));
+                    summarizeBulk(funcs));
         }
         removeNonLongFunctions(funcs.getFirst());
 
@@ -125,8 +125,8 @@ public class VirtDataComposer {
 
         FunctionAssembly assembly = new FunctionAssembly();
         logger.trace("composed summary: " + summarize(flattenedFuncs));
-        boolean isThreadSafe = true;
 
+        boolean isThreadSafe = true;
         logger.trace("FUNCTION chain selected: (multi) '" + this.summarize(flattenedFuncs) + "'");
         for (ResolvedFunction resolvedFunction : flattenedFuncs) {
             try {
@@ -162,7 +162,7 @@ public class VirtDataComposer {
                 if (resolved.size() == 0) {
                     throw new RuntimeException("Unable to find even one function for " + call);
                 }
-                args[i]=resolved.get(0).getFunctionObject();
+                args[i] = resolved.get(0).getFunctionObject();
             }
         }
         return args;
@@ -186,15 +186,19 @@ public class VirtDataComposer {
                 .map(String::valueOf).collect(Collectors.joining("|"));
     }
 
-    private String summarize(LinkedList<List<ResolvedFunction>> funcs) {
+    private String summarizeBulk(List<List<ResolvedFunction>> funcs) {
+
         List<List<String>> spans = new LinkedList<>();
         funcs.forEach(l -> spans.add(l.stream().map(String::valueOf).collect(Collectors.toList())));
         List<Optional<Integer>> widths = spans.stream().map(
                 l -> l.stream().map(String::length).max(Integer::compare)).collect(Collectors.toList());
-        String summary = spans.stream().map(
+        String funcsdata = spans.stream().map(
                 l -> l.stream().map(String::valueOf).collect(Collectors.joining("|\n"))
         ).collect(Collectors.joining("\n\n"));
-        return summary;
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("---\\\\\n").append(funcsdata).append("\n---////\n");
+        return sb.toString();
     }
 
     /**
@@ -220,60 +224,69 @@ public class VirtDataComposer {
         List<ResolvedFunction> nextFuncs = null;
         int progress = -1;
 
+        int pass = 0;
         while (progress != 0) {
+            pass++;
             progress = 0;
-            progress += reduceByResultType(funcs.get(funcs.size() - 1), type);
+            progress += reduceByRequiredResultsType(funcs.get(funcs.size() - 1), type);
             if (funcs.size() > 1) {
+                int stage = 0;
                 for (List<ResolvedFunction> funcList : funcs) {
+                    stage++;
                     nextFuncs = funcList;
-                    if (prevFuncs != null) {
-
-                        progress += reduceByDirectTypes(prevFuncs, nextFuncs);
-                        // attempt secondary strategy IFF higher precedence strategy failed
+                    if (prevFuncs != null && nextFuncs != null) {
                         if (progress == 0) {
-                            progress += reduceByCompatibleTypes(prevFuncs, nextFuncs, false);
+                            progress += reduceByDirectTypes(prevFuncs, nextFuncs);
                             if (progress == 0) {
-                                progress += reduceByCompatibleTypes(prevFuncs, nextFuncs, true);
+                                progress += reduceByAssignableTypes(prevFuncs, nextFuncs, false);
                                 if (progress == 0) {
-                                    progress += reduceByPreferredTypes(prevFuncs, nextFuncs);
+                                    progress += reduceByAssignableTypes(prevFuncs, nextFuncs, true);
+                                    if (progress == 0) {
+                                        progress += reduceByPreferredTypes(prevFuncs, nextFuncs);
+                                    }
                                 }
                             }
                         }
+
                     } // else first pass, prime pointers
                     prevFuncs = nextFuncs;
                 }
+                nextFuncs = null;
+                prevFuncs = null;
 
             } else {
                 progress += reduceByPreferredResultTypes(funcs.get(0));
             }
         }
         List<ResolvedFunction> optimized = funcs.stream().map(l -> l.get(0)).collect(Collectors.toList());
+
         return optimized;
     }
 
-    private int reduceByResultType(List<ResolvedFunction> endFuncs, Class<?> resultType) {
+    private int reduceByRequiredResultsType(List<ResolvedFunction> endFuncs, Class<?> resultType) {
         int progressed = 0;
         LinkedList<ResolvedFunction> tmpList = new LinkedList<>(endFuncs);
         for (ResolvedFunction endFunc : tmpList) {
             if (resultType != null && !ClassUtils.isAssignable(endFunc.getResultClass(), resultType, true)) {
                 endFuncs.remove(endFunc);
-                logger.trace("removed function '" + endFunc + "' because is not assignable to " + resultType);
+                String logmsg = "BY-REQUIRED-RESULT-TYPE removed function '" + endFunc + "' because is not assignable to " + resultType;
+                logger.trace(logmsg);
                 progressed++;
             }
         }
         if (endFuncs.size() == 0) {
-            throw new RuntimeException("No end funcs were found which are assignable to " + resultType);
+            throw new RuntimeException("BY-REQUIRED-RESULT-TYPE No end funcs were found which are assignable to " + resultType);
         }
         return progressed;
     }
 
     private int reduceByPreferredResultTypes(List<ResolvedFunction> funcs) {
-        int progressed=0;
-        if (funcs.size()>1) {
+        int progressed = 0;
+        if (funcs.size() > 1) {
             progressed += funcs.size() - 1;
             funcs.sort(ResolvedFunction.PREFERRED_TYPE_COMPARATOR);
             while (funcs.size() > 1) {
-                logger.trace("removing func " + funcs.get(funcs.size() - 1)
+                logger.trace("BY-SINGLE-PREFERRED-TYPE removing func " + funcs.get(funcs.size() - 1)
                         + " because " + funcs.get(0) + " has more preferred types.");
                 funcs.remove(funcs.size() - 1);
             }
@@ -281,22 +294,25 @@ public class VirtDataComposer {
         }
         return progressed;
     }
+
     private int reduceByPreferredTypes(List<ResolvedFunction> prevFuncs, List<ResolvedFunction> nextFuncs) {
         int progressed = 0;
         if (prevFuncs.size() > 1) {
             progressed += prevFuncs.size() - 1;
             prevFuncs.sort(ResolvedFunction.PREFERRED_TYPE_COMPARATOR);
             while (prevFuncs.size() > 1) {
-                logger.trace("removing func " + prevFuncs.get(prevFuncs.size() - 1)
-                        + " because " + prevFuncs.get(0) + " has more preferred types.");
+                String logmsg = "BY-PREV-PREFERRED-TYPE removing func " + prevFuncs.get(prevFuncs.size() - 1)
+                        + " because " + prevFuncs.get(0) + " has more preferred types.";
+                logger.trace(logmsg);
                 prevFuncs.remove(prevFuncs.size() - 1);
             }
         } else if (nextFuncs.size() > 1) {
             progressed += nextFuncs.size() - 1;
             nextFuncs.sort(ResolvedFunction.PREFERRED_TYPE_COMPARATOR);
             while (nextFuncs.size() > 1) {
-                logger.trace("removing func " + nextFuncs.get(nextFuncs.size() - 1)
-                        + " because " + nextFuncs.get(0) + " has more preferred types.");
+                String logmsg = "BY-NEXT-PREFERRED-TYPE removing func " + nextFuncs.get(nextFuncs.size() - 1)
+                        + " because " + nextFuncs.get(0) + " has more preferred types.";
+                logger.trace(logmsg);
                 nextFuncs.remove(nextFuncs.size() - 1);
             }
         }
@@ -318,14 +334,15 @@ public class VirtDataComposer {
         // Rule 1: If there are direct type matches, remove extraneous next funcs
         Set<Class<?>> outputs = getOutputs(prevFuncs);
         Set<Class<?>> inputs = getInputs(nextFuncs);
-        Set<Class<?>> directMatches=
+        Set<Class<?>> directMatches =
                 inputs.stream().filter(outputs::contains).collect(Collectors.toCollection(HashSet::new));
 
         if (directMatches.size() > 0) {
             List<ResolvedFunction> toremove = new ArrayList<>();
             for (ResolvedFunction nextFunc : nextFuncs) {
                 if (!directMatches.contains(nextFunc.getArgType())) {
-                    logger.debug("removing next func: " + nextFunc + " because its input types are not satisfied by an previous func");
+                    String logmsg = "BY-DIRECT-TYPE removing next func: " + nextFunc + " because its input types are not satisfied by any previous func";
+                    logger.trace(logmsg);
                     toremove.add(nextFunc);
                     progressed++;
                 }
@@ -338,11 +355,12 @@ public class VirtDataComposer {
     /**
      * Remove any functions in the second set which do not have an input type which is assignable
      * from any of the output types of the functions in the first set.
+     *
      * @param prevFuncs the functions that come before the nextFuncs
      * @param nextFuncs the functions that come after prevFuncs
      * @return the number of next funcs that have been removed
      */
-    private int reduceByCompatibleTypes(List<ResolvedFunction> prevFuncs, List<ResolvedFunction> nextFuncs, boolean autoboxing) {
+    private int reduceByAssignableTypes(List<ResolvedFunction> prevFuncs, List<ResolvedFunction> nextFuncs, boolean autoboxing) {
 
         // Rule 1: If there are direct type matches, remove extraneous next funcs
         Set<Class<?>> outputs = getOutputs(prevFuncs);
@@ -351,7 +369,7 @@ public class VirtDataComposer {
 
         for (Class<?> input : inputs) {
             for (Class<?> output : outputs) {
-                if (ClassUtils.isAssignable(output,input,autoboxing)) {
+                if (ClassUtils.isAssignable(output, input, autoboxing)) {
                     compatibleInputs.add(input);
                 }
             }
@@ -361,15 +379,21 @@ public class VirtDataComposer {
 
         for (ResolvedFunction nextfunc : nextFuncs) {
             if (!compatibleInputs.contains(nextfunc.getInputClass())) {
-                logger.debug("removing next func: " + nextfunc + " because its input types are not assignable from any of the previous funcs");
                 toremove.add(nextfunc);
             }
         }
 
-        if (toremove.size()==nextFuncs.size()) {
-            logger.debug("Not removing next funcs " + (autoboxing ? "with autoboxing" : "") + " because no functions would be left.");
+        if (toremove.size() == nextFuncs.size()) {
+            String logmsg = "BY-ASSIGNABLE-TYPE Not removing remaining " + nextFuncs.size() + " next funcs " + (autoboxing ? "with autoboxing " : "") + "because no functions would be left.";
+            logger.trace(logmsg);
             return 0;
         } else {
+            toremove.forEach(nextfunc -> {
+                        String logmsg = "BY-ASSIGNABLE-TYPE removing next func: " + nextfunc + " because its input types are not assignable from any of the previous funcs";
+                        logger.trace(logmsg);
+                    }
+            );
+
             nextFuncs.removeAll(toremove);
             return toremove.size();
         }
