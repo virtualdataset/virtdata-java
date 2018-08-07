@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 
-/**
+/*
  * Generate samples according to the specified probability density.
  *
  * The input value consists of a long between 0L and Long.MAX_VALUE.
@@ -47,6 +47,9 @@ import java.util.function.IntToDoubleFunction;
  *
  * At times, it might be useful to add 'hash', 'interpolate' to your
  * specifiers as a form of verbosity or explicit specification.
+ */
+
+/**
  */
 public class IntToDoubleContinuousCurve implements IntToDoubleFunction {
 

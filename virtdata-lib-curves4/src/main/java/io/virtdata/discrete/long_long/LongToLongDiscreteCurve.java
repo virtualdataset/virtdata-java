@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.function.DoubleToIntFunction;
 import java.util.function.LongUnaryOperator;
 
-/**
+/*
  * Generate samples according to the specified probability density.
  *
  * The input value consists of a long between 0L and Long.MAX_VALUE.
@@ -49,6 +49,8 @@ import java.util.function.LongUnaryOperator;
  * specifiers as a form of verbosity or explicit specification.
  */
 
+/**
+ */
 public class LongToLongDiscreteCurve implements LongUnaryOperator {
 
     private DiscreteDistribution distribution;

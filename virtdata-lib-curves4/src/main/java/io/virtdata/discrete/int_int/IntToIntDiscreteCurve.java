@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.function.DoubleToIntFunction;
 import java.util.function.IntUnaryOperator;
 
-/**
+/*
  * Generate samples according to the specified probability density.
  *
  * The input value consists of a long between 0L and Long.MAX_VALUE.
@@ -49,6 +49,8 @@ import java.util.function.IntUnaryOperator;
  * specifiers as a form of verbosity or explicit specification.
  */
 
+/**
+ */
 public class IntToIntDiscreteCurve implements IntUnaryOperator {
 
     private DiscreteDistribution distribution;

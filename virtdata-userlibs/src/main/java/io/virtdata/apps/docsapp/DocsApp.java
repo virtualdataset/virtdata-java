@@ -149,6 +149,8 @@ public class DocsApp {
         docdata = docdata.replaceAll("\\{@link (.+?)}", "$1");
         docdata = docdata.replaceAll("(?m)@param .*\n", "");
         docdata = docdata.replaceAll("(?m)\n\n+", "\n\n");
+        docdata = docdata.replaceAll("(?m)\\[]...:","...");
+        docdata = docdata.replaceAll("(?m)@see ","See ");
         return docdata;
     }
 

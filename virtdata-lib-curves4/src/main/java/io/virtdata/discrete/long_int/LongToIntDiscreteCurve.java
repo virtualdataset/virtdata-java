@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.function.DoubleToIntFunction;
 import java.util.function.LongToIntFunction;
 
-/**
+/*
  * Generate samples according to the specified probability density.
  *
  * The input value consists of a long between 0L and Long.MAX_VALUE.
@@ -49,6 +49,8 @@ import java.util.function.LongToIntFunction;
  * specifiers as a form of verbosity or explicit specification.
  */
 
+/**
+ */
 public class LongToIntDiscreteCurve implements LongToIntFunction {
 
     private DiscreteDistribution distribution;

@@ -7,6 +7,7 @@ import org.apache.commons.statistics.distribution.ZipfDistribution;
 
 /**
  * @see <a href="https://en.wikipedia.org/wiki/Zipf's_law">Wikipedia: Zipf's Law</a>
+ *
  * @see <a href="https://commons.apache.org/proper/commons-statistics/commons-statistics-distribution/apidocs/org/apache/commons/statistics/distribution/ZipfDistribution.html">Commons JavaDoc: ZipfDistribution</a>
  *
  * {@inheritDoc}
