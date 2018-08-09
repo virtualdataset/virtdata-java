@@ -7,6 +7,7 @@ import org.apache.commons.statistics.distribution.TriangularDistribution;
 
 /**
  * @see <a href="https://en.wikipedia.org/wiki/Triangular_distribution">Wikipedia: Triangular distribution</a>
+ *
  * @see <a href="https://commons.apache.org/proper/commons-statistics/commons-statistics-distribution/apidocs/org/apache/commons/statistics/distribution/TriangularDistribution.html">Commons JavaDoc: TriangularDistribution</a>
  *
  * {@inheritDoc}
