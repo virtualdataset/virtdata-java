@@ -8,9 +8,14 @@ public class ValuesCheckerApp {
     private final static Logger logger = LoggerFactory.getLogger(ValuesCheckerApp.class);
 
     public static void main(String[] args) {
-        if (args.length<6) {
-            System.out.println("ARGS: 'specifier' threads bufsize start end isolated");
-            System.out.println("example: 'timeuuid()' 100 1000 0 10000 true");
+        if (args.length<5) {
+            System.out.println("ARGS: 'specifier' threads bufsize start end");
+            System.out.println("example: 'timeuuid()' 100 1000 0 10000");
+            System.out.println(" specifier: A VirtData function specifier.");
+            System.out.println(" threads: The number of concurrent threads to run.");
+            System.out.println(" bufsize: The number of cycles to give each thread at a time.");
+            System.out.println(" start: The start cycle for the test, inclusive.");
+            System.out.println(" end: The end cycle for the test, exclusive.");
             System.exit(2);
         }
         String spec = args[0];
@@ -19,7 +24,8 @@ public class ValuesCheckerApp {
         long start = Long.valueOf(args[3]);
         long end = Long.valueOf(args[4]);
 
-        boolean isolated = true;
+        boolean isolated = false;
+
         if (args.length==6) {
             isolated=args[5].toLowerCase().equals("isolated") || args[5].toLowerCase().equals("true");
         }
