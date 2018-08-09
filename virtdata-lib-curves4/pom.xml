@@ -4,7 +4,7 @@
     <parent>
         <artifactId>project-defaults</artifactId>
         <groupId>io.virtdata</groupId>
-        <version>1.2.34-SNAPSHOT</version>
+        <version>1.2.34</version>
         <relativePath>../project-defaults</relativePath>
     </parent>
 
@@ -20,7 +20,7 @@
         <dependency>
             <groupId>io.virtdata</groupId>
             <artifactId>virtdata-api</artifactId>
-            <version>1.2.34-SNAPSHOT</version>
+            <version>1.2.34</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
