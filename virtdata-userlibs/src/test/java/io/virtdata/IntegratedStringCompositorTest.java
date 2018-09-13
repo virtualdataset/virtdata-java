@@ -6,6 +6,8 @@ import io.virtdata.templates.StringCompositor;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.util.function.Function;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Test
@@ -46,5 +48,14 @@ public class IntegratedStringCompositorTest {
         c = new StringCompositor("A{.mod5}C");
         s = c.bindValues(c, bindings, 8L);
         assertThat(s).isEqualTo("A3C");
+    }
+
+    @Test
+    public void testBindCustomTransform() {
+        Function<Object,String> f = (o) -> "'" + o.toString() + "'";
+        StringCompositor c = new StringCompositor("A{mod5}C", f);
+        String s = c.bindValues(c, bindings, 13L);
+        assertThat(s).isEqualTo("A'3'C");
+
     }
 }

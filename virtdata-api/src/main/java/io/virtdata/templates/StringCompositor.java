@@ -6,6 +6,7 @@ import io.virtdata.core.Bindings;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,6 +23,7 @@ public class StringCompositor implements ValuesBinder<StringCompositor, String> 
 //    private static Pattern tokenPattern = Pattern.compile("(?<!\\\\)\\{([^}]*)\\}(.*?)?",Pattern.DOTALL);
     private static Pattern tokenPattern = Pattern.compile("(?<section>(?<literal>[^{}]+)?(?<anchor>\\{(?<token>[a-zA-Z0-9-_.]+)?\\})?)");
     private String[] templateSegments;
+    private Function<Object,String> stringfunc = String::valueOf;
 
     /**
      * Create a string template which has positional tokens, in "{}" form.
@@ -29,6 +31,11 @@ public class StringCompositor implements ValuesBinder<StringCompositor, String> 
      */
     public StringCompositor(String template) {
         templateSegments =parseTemplate(template);
+    }
+
+    public StringCompositor(String template, Function<Object,String> stringfunc) {
+        this(template);
+        this.stringfunc=stringfunc;
     }
 
     /**
@@ -68,7 +75,8 @@ public class StringCompositor implements ValuesBinder<StringCompositor, String> 
             } else {
                 String key = templateSegments[i];
                 Object value = bindings.get(key,cycle);
-                sb.append(value.toString());
+                String valueString = stringfunc.apply(value);
+                sb.append(valueString);
             }
         }
         return sb.toString();

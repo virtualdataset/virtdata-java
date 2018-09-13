@@ -8,7 +8,7 @@ import java.util.Arrays;
 /**
  * This just routes the user to the correct sub-app depending on the leading verb, stripping it off in the process.
  */
-public class MainRouting {
+public class MainApp {
 
     private final static String APP_TESTMAPPER = "testmapper";
     private final static String APP_GENDOCS = "gendocs";
