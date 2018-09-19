@@ -12,7 +12,7 @@
     </parent>
 
     <name>virtdata-api</name>
-    <url>http://maven.apache.org</url>
+    <url>http://virtdata.io/</url>
 
     <dependencies>
         <dependency>
