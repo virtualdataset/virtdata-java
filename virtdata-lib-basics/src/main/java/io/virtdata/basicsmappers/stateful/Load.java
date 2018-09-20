@@ -20,7 +20,7 @@ public class Load implements Function<Object,Object> {
 
     private final String name;
 
-    @Example({"Load('foo')","load a Object value from the named variable for this thread"})
+    @Example({"Load('foo')","load an Object value from the named variable for this thread"})
     public Load(String name) {
         this.name = name;
     }
