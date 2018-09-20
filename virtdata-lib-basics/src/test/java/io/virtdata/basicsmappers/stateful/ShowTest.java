@@ -8,8 +8,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Test
 public class ShowTest {
 
-    @Test
+    @Test(singleThreaded = true)
     public void testBasicStateSupport() {
+        new Clear().applyAsLong(0L);
         io.virtdata.basicsmappers.from_long.to_long.Save saveFoo = new io.virtdata.basicsmappers.from_long.to_long.Save("foo");
         saveFoo.applyAsLong(23);
         new Save("cycle").applyAsLong(-1L);

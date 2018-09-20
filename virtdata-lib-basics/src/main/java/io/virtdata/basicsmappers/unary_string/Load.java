@@ -1,7 +1,5 @@
 package io.virtdata.basicsmappers.unary_string;
 
-import io.virtdata.annotations.Categories;
-import io.virtdata.annotations.Category;
 import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.threadstate.ThreadLocalState;
@@ -13,7 +11,7 @@ public class Load implements Function<String,String> {
 
     private final String name;
 
-    @Example({"Load('foo')","load a String value from the named variable for this thread"})
+    @Example({"Load('foo')","for the current thread, load a String value from the named variable"})
     public Load(String name) {
         this.name = name;
     }
