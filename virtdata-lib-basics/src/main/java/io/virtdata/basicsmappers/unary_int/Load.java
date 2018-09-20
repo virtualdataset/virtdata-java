@@ -11,7 +11,7 @@ public class Load implements IntUnaryOperator {
 
     private final String name;
 
-    @Example({"Load('foo')","load an int value from the named variable for this thread"})
+    @Example({"Load('foo')","for the current thread, load an int value from the named variable"})
     public Load(String name) {
         this.name = name;
     }

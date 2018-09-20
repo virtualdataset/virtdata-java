@@ -19,17 +19,25 @@ import java.util.function.Function;
 public class Load implements Function<Object,Object> {
 
     private final String name;
+    private final Function<Object,Object> nameFunc;
 
-    @Example({"Load('foo')","load an Object value from the named variable for this thread"})
+    @Example({"Load('foo')","for the current thread, load an Object value from the named variable"})
     public Load(String name) {
         this.name = name;
+        this.nameFunc=null;
+    }
+
+    @Example({"Load('foo')","for the current thread, load an Object value from the named variable, where the variable name is returned by the provided function"})
+    public Load(Function<Object,Object> nameFunc) {
+        this.name = null;
+        this.nameFunc = nameFunc;
     }
 
     @Override
     public Object apply(Object o) {
-
+        String varname = (nameFunc!=null) ? String.valueOf(nameFunc.apply(o)) : name;
         HashMap<String, Object> map = ThreadLocalState.tl_ObjectMap.get();
-        return map.get(name);
+        return map.get(varname);
     }
 
 }

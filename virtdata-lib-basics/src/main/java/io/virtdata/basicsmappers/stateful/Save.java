@@ -18,17 +18,26 @@ import java.util.function.Function;
 public class Save implements Function<Object,Object> {
 
     private final String name;
+    private final Function<Object,Object> nameFunc;
 
-    @Example({"Save('foo')","save the current input object value to the name 'foo' in this thread"})
+    @Example({"Save('foo')","for the current thread, save the input object value to the named variable"})
     public Save(String name) {
         this.name = name;
+        this.nameFunc=null;
+    }
+
+    @Example({"Save('foo')","for the current thread, save the current input object value to the named variable"})
+    public Save(Function<Object,Object> nameFunc) {
+        this.name = null;
+        this.nameFunc = nameFunc;
     }
 
     @Override
     public Object apply(Object o) {
 
         HashMap<String, Object> map = ThreadLocalState.tl_ObjectMap.get();
-        map.put(name,o);
+        String varname = (nameFunc!=null) ? String.valueOf(nameFunc.apply(o)) : name;
+        map.put(varname,o);
         return o;
     }
 
