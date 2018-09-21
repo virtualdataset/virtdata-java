@@ -39,14 +39,24 @@ import java.util.function.LongToDoubleFunction;
  * instead, simply provide "compute" as one of the modifiers as explained
  * below.
  *
+ * <H3>Clamping</H3>
+ *
+ * Some of the provided distributions may yield extreme values which
+ * are out of the useful range for many tests. If you want these values
+ * to be clamped to be within 2^63 as a maximum, then the default
+ * clamping behavior will do this. If you want to have higher values
+ * up to and including IEEE Infinity, then use the 'noclamp' option.
+ *
  * You can add optional modifiers after the distribution parameters.
  * You can add one of 'hash' or 'map' but not both. If neither of these is
  * added, 'hash' is implied as a default.
  * You can add one of 'interpolate' or 'compute' but not both. If neither
  * of these is added, 'interpolate' is implied as a default.
+ * You can add one of 'clamp' or 'noclamp' but not both. if neither of
+ * these is added, 'clamp' is implied as a default.
  *
- * At times, it might be useful to add 'hash', 'interpolate' to your
- * specifiers as a form of verbosity or explicit specification.
+ * At times, it might be useful to add 'hash', 'interpolate', or 'clamp'
+ * to your specifiers as a form of verbosity or explicit specification.
  */
 
 /**
@@ -60,11 +70,16 @@ public class LongToDoubleContinuousCurve implements LongToDoubleFunction {
     public final static String INTERPOLATE="interpolate";
     public final static String MAP="map";
     public final static String HASH="hash";
+    public final static String CLAMP="clamp";
+    public final static String NOCLAMP="noclamp";
+
     private final static HashSet<String> validModifiers = new HashSet<String>() {{
         add(COMPUTE);
         add(INTERPOLATE);
         add(MAP);
         add(HASH);
+        add(CLAMP);
+        add(NOCLAMP);
     }};
 
 
@@ -74,26 +89,31 @@ public class LongToDoubleContinuousCurve implements LongToDoubleFunction {
 
         DoubleUnaryOperator icdSource = new RealDistributionICDSource(distribution);
 
-        if (mods.contains("hash") && mods.contains("map")) {
-            throw new RuntimeException("mods must not contain both hash and map.");
+        if (mods.contains(HASH) && mods.contains(MAP)) {
+            throw new RuntimeException("mods must not contain both "+HASH+" and "+MAP+".");
         }
-        if (mods.contains("interpolate") && mods.contains("compute")) {
-            throw new RuntimeException("mods must not contain both interpolate and compute");
+        if (mods.contains(INTERPOLATE) && mods.contains(COMPUTE)) {
+            throw new RuntimeException("mods must not contain both "+INTERPOLATE+" and "+COMPUTE+".");
         }
+        if (mods.contains(CLAMP) && mods.contains(NOCLAMP)) {
+            throw new RuntimeException("mods must not contain both "+CLAMP+" and "+NOCLAMP+".");
+        }
+
         for (String s : modslist) {
             if (!validModifiers.contains(s)) {
                 throw new RuntimeException("modifier '" + s + "' is not a valid modifier. Use one of " + validModifiers.toString() + " instead.");
             }
         }
 
-
-        boolean hash = ( mods.contains("hash") || !mods.contains("map"));
-        boolean interpolate = ( mods.contains("interpolate") || !mods.contains("compute"));
+        boolean hash = ( mods.contains(HASH) || !mods.contains(MAP));
+        boolean interpolate = ( mods.contains(INTERPOLATE) || !mods.contains(COMPUTE));
+        boolean clamp = ( mods.contains(CLAMP) || !mods.contains(NOCLAMP));
 
         function = interpolate ?
-                new InterpolatingLongDoubleSampler(icdSource, 1000, hash)
+                new InterpolatingLongDoubleSampler(icdSource, 1000, hash, clamp, (double) Long.MAX_VALUE)
                 :
-                new RealLongDoubleSampler(icdSource, hash);
+                new RealLongDoubleSampler(icdSource, hash, clamp, (double) Long.MAX_VALUE);
+
     }
 
     @Override

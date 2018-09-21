@@ -4,7 +4,7 @@ import io.virtdata.annotations.Categories;
 import io.virtdata.annotations.Category;
 import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
-import io.virtdata.threadstate.ThreadLocalState;
+import io.virtdata.threadstate.SharedState;
 
 import java.util.HashMap;
 import java.util.function.Function;
@@ -32,7 +32,7 @@ public class Show implements Function<Object,String> {
 
     @Override
     public String apply(Object o) {
-        HashMap<String, Object> map = ThreadLocalState.tl_ObjectMap.get();
+        HashMap<String, Object> map = SharedState.tl_ObjectMap.get();
         if (names==null) {
             return map.toString();
         }

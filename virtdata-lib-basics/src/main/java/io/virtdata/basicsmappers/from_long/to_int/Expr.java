@@ -2,7 +2,7 @@ package io.virtdata.basicsmappers.from_long.to_int;
 
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.basicsmappers.MVELExpr;
-import io.virtdata.threadstate.ThreadLocalState;
+import io.virtdata.threadstate.SharedState;
 import org.mvel2.MVEL;
 
 import java.io.Serializable;
@@ -33,7 +33,7 @@ public class Expr implements LongToIntFunction {
 
     @Override
     public int applyAsInt(long value) {
-        HashMap<String, Object> map = ThreadLocalState.tl_ObjectMap.get();
+        HashMap<String, Object> map = SharedState.tl_ObjectMap.get();
         map.put("cycle",value);
         int result = MVEL.executeExpression(compiledExpr, map, int.class);
         return result;

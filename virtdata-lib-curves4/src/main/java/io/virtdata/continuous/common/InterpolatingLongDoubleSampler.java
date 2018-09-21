@@ -10,14 +10,18 @@ public class InterpolatingLongDoubleSampler implements LongToDoubleFunction {
     private final double[] lut;
     private final DoubleUnaryOperator f;
     private int resolution;
+    private final boolean clamp;
+    private final double clampMax;
     private ThreadSafeHash hash;
 
-    public InterpolatingLongDoubleSampler(DoubleUnaryOperator icdSource, int resolution, boolean hash) {
+    public InterpolatingLongDoubleSampler(DoubleUnaryOperator icdSource, int resolution, boolean hash, boolean clamp, double clampMax) {
         this.f = icdSource;
         this.resolution = resolution;
         if (hash) {
             this.hash = new ThreadSafeHash();
         }
+        this.clamp=clamp;
+        this.clampMax=clampMax;
         this.lut = precompute();
     }
 
@@ -25,7 +29,7 @@ public class InterpolatingLongDoubleSampler implements LongToDoubleFunction {
         double[] precomputed = new double[resolution+2];
         for (int s = 0; s <= resolution; s++) { // not a ranging error
             double rangedToUnit = (double) s / (double) resolution;
-            double sampleValue = f.applyAsDouble(rangedToUnit);
+            double sampleValue = clamp ? Double.min(clampMax,f.applyAsDouble(rangedToUnit)) : f.applyAsDouble(rangedToUnit);
             precomputed[s] =  sampleValue;
         }
         precomputed[precomputed.length-1]=0.0D; // only for right of max, when S==Max in the rare case
