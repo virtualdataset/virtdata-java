@@ -19,7 +19,6 @@ public class SwapTest {
         long justloaded = new Load("shazzbot").applyAsLong(4444444);
         assertThat(justloaded).isEqualTo(444L);
 
-
     }
 
 }
