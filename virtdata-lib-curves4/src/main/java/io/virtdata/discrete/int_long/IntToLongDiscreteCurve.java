@@ -74,11 +74,11 @@ public class IntToLongDiscreteCurve implements IntToLongFunction {
 
         DoubleToIntFunction icdSource = new IntegerDistributionICDSource(distribution);
 
-        if (mods.contains("hash") && mods.contains("map")) {
-            throw new RuntimeException("mods must not contain both hash and map.");
+        if (mods.contains(HASH) && mods.contains(MAP)) {
+            throw new RuntimeException("mods must not contain both "+HASH+" and "+MAP+".");
         }
-        if (mods.contains("interpolate") && mods.contains("compute")) {
-            throw new RuntimeException("mods must not contain both interpolate and compute");
+        if (mods.contains(INTERPOLATE) && mods.contains(COMPUTE)) {
+            throw new RuntimeException("mods must not contain both "+INTERPOLATE+" and "+COMPUTE+".");
         }
         for (String s : modslist) {
             if (!validModifiers.contains(s)) {
@@ -86,8 +86,8 @@ public class IntToLongDiscreteCurve implements IntToLongFunction {
             }
         }
 
-        boolean hash = ( mods.contains("hash") || !mods.contains("map"));
-        boolean interpolate = ( mods.contains("interpolate") || !mods.contains("compute"));
+        boolean hash = ( mods.contains(HASH) || !mods.contains(MAP));
+        boolean interpolate = ( mods.contains(INTERPOLATE) || !mods.contains(COMPUTE));
 
         function = interpolate ?
                 new InterpolatingIntLongSampler(icdSource, 1000, hash)

@@ -4,7 +4,7 @@ import io.virtdata.annotations.Categories;
 import io.virtdata.annotations.Category;
 import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
-import io.virtdata.threadstate.ThreadLocalState;
+import io.virtdata.threadstate.SharedState;
 
 import java.util.HashMap;
 import java.util.function.Function;
@@ -26,7 +26,8 @@ public class Save implements Function<Object,Object> {
         this.nameFunc=null;
     }
 
-    @Example({"Save('foo')","for the current thread, save the current input object value to the named variable"})
+    @Example({"Save(NumberNameToString())","for the current thread, save the current input object value to the named variable," +
+            "where the variable name is provided by a function."})
     public Save(Function<Object,Object> nameFunc) {
         this.name = null;
         this.nameFunc = nameFunc;
@@ -35,7 +36,7 @@ public class Save implements Function<Object,Object> {
     @Override
     public Object apply(Object o) {
 
-        HashMap<String, Object> map = ThreadLocalState.tl_ObjectMap.get();
+        HashMap<String, Object> map = SharedState.tl_ObjectMap.get();
         String varname = (nameFunc!=null) ? String.valueOf(nameFunc.apply(o)) : name;
         map.put(varname,o);
         return o;

@@ -8,13 +8,17 @@ import java.util.function.IntToDoubleFunction;
 public class RealIntDoubleSampler implements IntToDoubleFunction {
 
     private final DoubleUnaryOperator f;
+    private final boolean clamp;
+    private final double clampMax;
     private ThreadSafeHash hash;
 
-    public RealIntDoubleSampler(DoubleUnaryOperator parentFunc, boolean hash) {
+    public RealIntDoubleSampler(DoubleUnaryOperator parentFunc, boolean hash, boolean clamp, double clampMax) {
         this.f = parentFunc;
         if (hash) {
             this.hash = new ThreadSafeHash();
         }
+        this.clamp = clamp;
+        this.clampMax = clampMax;
     }
 
     @Override
@@ -24,7 +28,7 @@ public class RealIntDoubleSampler implements IntToDoubleFunction {
             value = hash.applyAsLong(value);
         }
         double unit = (double) value / (double) Long.MAX_VALUE;
-        double sample =f.applyAsDouble(unit);
+        double sample =clamp ? Double.min(clampMax,f.applyAsDouble(unit)) : f.applyAsDouble(unit);
         return sample;
     }
 }
