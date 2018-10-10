@@ -51,11 +51,18 @@ public class IntegratedStringCompositorTest {
     }
 
     @Test
+    public void testBindEscapedAnchor() {
+        StringCompositor c = new StringCompositor("A\\{{mod-5}C");
+        String s = c.bindValues(c, bindings, 6L);
+        assertThat(s).isEqualTo("A{1C");
+    }
+
+    @Test
     public void testBindCustomTransform() {
         Function<Object,String> f = (o) -> "'" + o.toString() + "'";
         StringCompositor c = new StringCompositor("A{mod5}C", f);
         String s = c.bindValues(c, bindings, 13L);
         assertThat(s).isEqualTo("A'3'C");
-
     }
+
 }

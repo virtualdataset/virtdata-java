@@ -5,10 +5,7 @@ import io.virtdata.core.Bindings;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * StringCompositor provides a way to build strings from a string template and provided values.
@@ -20,22 +17,58 @@ import java.util.regex.Pattern;
  */
 public class StringCompositor implements ValuesBinder<StringCompositor, String> {
 
-//    private static Pattern tokenPattern = Pattern.compile("(?<!\\\\)\\{([^}]*)\\}(.*?)?",Pattern.DOTALL);
-    private static Pattern tokenPattern = Pattern.compile("(?<section>(?<literal>[^{}]+)?(?<anchor>\\{(?<token>[a-zA-Z0-9-_.]+)?\\})?)");
+//    protected static Pattern tokenPattern = Pattern.compile("(?<section>(?<literal>([^{])+)?(?<anchor>\\{(?<token>[a-zA-Z0-9-_.]+)?\\})?)");
     private String[] templateSegments;
-    private Function<Object,String> stringfunc = String::valueOf;
+    private Function<Object, String> stringfunc = String::valueOf;
 
     /**
      * Create a string template which has positional tokens, in "{}" form.
+     *
      * @param template The string template
      */
     public StringCompositor(String template) {
-        templateSegments =parseTemplate(template);
+        templateSegments = parseTemplate(template);
     }
 
-    public StringCompositor(String template, Function<Object,String> stringfunc) {
+    public StringCompositor(String template, Function<Object, String> stringfunc) {
         this(template);
-        this.stringfunc=stringfunc;
+        this.stringfunc = stringfunc;
+    }
+
+    // for testing
+    protected String[] parseSection(String template) {
+        StringBuilder literalBuf = new StringBuilder();
+        int i = 0;
+        for (; i < template.length(); i++) {
+            char c = template.charAt(i);
+            if (c == '\\') {
+                i++;
+                c = template.charAt(i);
+                literalBuf.append(c);
+            } else if (c != '{') {
+                literalBuf.append(c);
+            } else  {
+                i++;
+                break;
+            }
+        }
+        StringBuilder tokenBuf = new StringBuilder();
+        for (; i < template.length(); i++) {
+            char c = template.charAt(i);
+            if (c != '}') {
+                tokenBuf.append(c);
+            } else {
+                i++;
+                break;
+            }
+        }
+        String literal=literalBuf.toString();
+        String token = tokenBuf.toString();
+        if (token.length()>0) {
+            return new String[] { literalBuf.toString(), tokenBuf.toString(), template.substring(i)};
+        } else {
+            return new String[] { literalBuf.toString() };
+        }
     }
 
     /**
@@ -44,23 +77,18 @@ public class StringCompositor implements ValuesBinder<StringCompositor, String> 
      * @param template A string template.
      * @return A template array.
      */
-    private String[] parseTemplate(String template) {
-        Matcher matcher = tokenPattern.matcher(template);
+    protected String[] parseTemplate(String template) {
         List<String> sections = new ArrayList<>();
-        int counter=0;
-        while (matcher.find()) {
-            String literal = matcher.group("literal");
-            String anchor = matcher.group("anchor");
-            String token = matcher.group("token");
-            if (anchor==null && literal==null) {
-                break;
+
+        String[] parts = parseSection(template);
+        while (parts.length>0) {
+            sections.add(parts[0]);
+            if (parts.length>1) {
+                sections.add(parts[1]);
             }
-            sections.add(Optional.ofNullable(literal).orElse(""));
-            if (anchor!=null) {
-                sections.add(Optional.ofNullable(token).orElse(String.valueOf(counter++)));
-            }
+            parts = parts.length>=2 ? parseSection(parts[2]) : new String[0];
         }
-        if ((sections.size()%2)==0) {
+        if ((sections.size() % 2) == 0) {
             sections.add("");
         }
         return sections.toArray(new String[0]);
@@ -74,7 +102,7 @@ public class StringCompositor implements ValuesBinder<StringCompositor, String> 
                 sb.append(templateSegments[i]);
             } else {
                 String key = templateSegments[i];
-                Object value = bindings.get(key,cycle);
+                Object value = bindings.get(key, cycle);
                 String valueString = stringfunc.apply(value);
                 sb.append(valueString);
             }
@@ -84,8 +112,8 @@ public class StringCompositor implements ValuesBinder<StringCompositor, String> 
 
     public List<String> getBindPointNames() {
         List<String> tokens = new ArrayList<>();
-        for (int i = 0; i <templateSegments.length; i++) {
-            if (i%2==1) {
+        for (int i = 0; i < templateSegments.length; i++) {
+            if (i % 2 == 1) {
                 tokens.add(templateSegments[i]);
             }
         }
