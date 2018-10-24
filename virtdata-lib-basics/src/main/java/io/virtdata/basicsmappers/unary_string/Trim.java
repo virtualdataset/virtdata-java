@@ -11,10 +11,6 @@ import java.util.function.Function;
 @ThreadSafeMapper
 public class Trim implements Function<String, String>{
 
-    @Example({"Trim('HashedLineToString('foo')')", "Trims the input value of surrounding whitespace"})
-    public Trim(){
-    }
-
     @Override
     public String apply(String s) {
         return s.trim();
