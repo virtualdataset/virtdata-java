@@ -18,13 +18,21 @@
 
 package io.virtdata.basicsmappers.from_long.to_string;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.ThreadSafeMapper;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.function.LongFunction;
 
+/**
+ * This function wraps an epoch time in milliseconds into a String
+ * as specified in the format. The valid formatters are documented
+ * in at {@see https://www.joda.org/joda-time/apidocs/org/joda/time/format/DateTimeFormat.html}
+ */
 @ThreadSafeMapper
+@Categories({Category.datetime,Category.conversion})
 public class StringDateWrapper implements LongFunction<String> {
 
     private DateTimeFormatter formatter;
