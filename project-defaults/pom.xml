@@ -3,7 +3,7 @@
 
     <groupId>io.virtdata</groupId>
     <artifactId>project-defaults</artifactId>
-    <version>1.2.39</version>
+    <version>1.2.39-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
@@ -31,7 +31,7 @@
 
     <scm>
         <url>scm:git:https://github.com/virtualdataset/virtdata-java.git</url>
-        <tag>virtdata-1.2.39</tag>
+        <tag>virtdata-1.2.39-SNAPSHOT</tag>
     </scm>
 
     <build>
@@ -45,7 +45,7 @@
                     <!--<release>11</release>-->
                     <source>11</source>
                     <target>11</target>
-                    <compilerArgument>-Xdoclint:all</compilerArgument>
+                    <!--<compilerArgument>-Xdoclint:all</compilerArgument>-->
                     <compilerArgument>-Xlint:all</compilerArgument>
 
                 </configuration>
@@ -62,6 +62,8 @@
                     <includes>
                         <include>**/*Test*.java</include>
                     </includes>
+                    <useSystemClassLoader>false</useSystemClassLoader> <!-- fixes reflection tests -->
+
                 </configuration>
             </plugin>
 
