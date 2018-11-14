@@ -26,7 +26,8 @@ public class VirtDataDocs {
             for (String n : functionNames) {
                 String s = n + FunctionDocInfoProcessor.AUTOSUFFIX;
                 Class<?> aClass = Class.forName(s);
-                Object o = aClass.newInstance();
+
+                Object o = aClass.getConstructor().newInstance();
                 if (DocFuncData.class.isAssignableFrom(o.getClass())) {
                     docs.add(DocFuncData.class.cast(o));
                 } else {

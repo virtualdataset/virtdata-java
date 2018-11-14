@@ -29,7 +29,7 @@ import java.util.function.LongFunction;
 /**
  * This function wraps an epoch time in milliseconds into a String
  * as specified in the format. The valid formatters are documented
- * in at {@see https://www.joda.org/joda-time/apidocs/org/joda/time/format/DateTimeFormat.html}
+ * at @see <a href="https://www.joda.org/joda-time/apidocs/org/joda/time/format/DateTimeFormat.html">DateTimeFormat API Docs</a>
  */
 @ThreadSafeMapper
 @Categories({Category.datetime,Category.conversion})

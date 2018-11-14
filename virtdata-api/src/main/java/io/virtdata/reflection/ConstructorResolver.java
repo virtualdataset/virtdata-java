@@ -100,6 +100,7 @@ public class ConstructorResolver {
         };
     }
 
+    @SuppressWarnings("unchecked")
     private static <T> Optional<? extends DeferredConstructor<T>>
     createOptionalDeferredConstructor(String... classAndArgs) {
         Class<T> ctorClass = null;

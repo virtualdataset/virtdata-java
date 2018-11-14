@@ -41,6 +41,7 @@ public interface DataMapperLibrary {
         return Optional.ofNullable(getDataMapper(spec, clazz));
     }
 
+    @SuppressWarnings("unchecked")
     default <T> DataMapper<T> getDataMapper(String spec, Class<? extends T> clazz) {
         if (!canParseSpec(spec)) {
             return null;

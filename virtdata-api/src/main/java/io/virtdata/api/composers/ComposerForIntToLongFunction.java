@@ -17,6 +17,7 @@ public class ComposerForIntToLongFunction implements FunctionComposer<IntToLongF
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public FunctionComposer andThen(Object outer) {
         FunctionType functionType = FunctionType.valueOf(outer);
         switch(functionType) {

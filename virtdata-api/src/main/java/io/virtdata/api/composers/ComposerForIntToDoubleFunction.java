@@ -18,6 +18,7 @@ public class ComposerForIntToDoubleFunction implements FunctionComposer<IntToDou
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public FunctionComposer<?> andThen(Object outer) {
         FunctionType functionType = FunctionType.valueOf(outer);
         switch(functionType) {
