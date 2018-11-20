@@ -130,7 +130,8 @@ public class VirtDataComposer {
         logger.trace("FUNCTION chain selected: (multi) '" + this.summarize(flattenedFuncs) + "'");
         for (ResolvedFunction resolvedFunction : flattenedFuncs) {
             try {
-                assembly.andThen(resolvedFunction.getFunctionObject());
+                Object functionObject = resolvedFunction.getFunctionObject();
+                assembly.andThen(functionObject);
                 if (!resolvedFunction.isThreadSafe()) {
                     isThreadSafe = false;
                 }

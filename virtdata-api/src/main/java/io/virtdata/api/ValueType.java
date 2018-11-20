@@ -19,8 +19,8 @@ import java.util.Comparator;
  * Capture preference for types, favoring more efficient types for generation over others.
  */
 public enum ValueType implements Comparator<ValueType> {
-    LONG(long.class, 1),
     INT(int.class, 2),
+    LONG(long.class, 1),
     FLOAT(float.class, 3),
     DOUBLE(double.class, 4),
     BOOLEAN(boolean.class, 5),
