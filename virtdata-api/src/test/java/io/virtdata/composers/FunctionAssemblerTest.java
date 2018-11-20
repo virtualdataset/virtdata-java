@@ -72,15 +72,15 @@ public class FunctionAssemblerTest {
         assertThat(s).isEqualTo("5");
     }
 
-    @Test
-    public void testFunctionFunctionProper() {
-        FunctionComposer fass = new FunctionAssembly();
-        fass.andThen(new GenericLongToString());
-        fass.andThen(new GenericStringCat());
-        DataMapper<String> dataMapper = fass.getDataMapper();
-        String s = dataMapper.get(5);
-        assertThat(s).isEqualTo("Cat5");
-    }
+//    @Test
+//    public void testFunctionFunctionProper() {
+//        FunctionComposer fass = new FunctionAssembly();
+//        fass.andThen(new GenericLongToString());
+//        fass.andThen(new GenericStringCat());
+//        DataMapper<String> dataMapper = fass.getDataMapper();
+//        String s = dataMapper.get(5);
+//        assertThat(s).isEqualTo("Cat5");
+//    }
 
     @Test(expectedExceptions = {ClassCastException.class})
     public void testFunctionFunctionMistyped() {

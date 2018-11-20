@@ -19,8 +19,8 @@ public class ComposerForLongToIntFunction implements FunctionComposer<LongToIntF
 
     @Override
     public FunctionComposer andThen(Object outer) {
-        FunctionType functionType = FunctionType.valueOf(outer);
-        switch (functionType) {
+        FunctionType outerFunctionType = FunctionType.valueOf(outer);
+        switch (outerFunctionType) {
             case long_long:
                 final LongUnaryOperator f1 =
                         (long l) ->
@@ -44,7 +44,8 @@ public class ComposerForLongToIntFunction implements FunctionComposer<LongToIntF
             case R_T:
                 final LongFunction<?> f5 =
                         (long l) ->
-                                ((LongFunction<?>) outer).apply((int) inner.applyAsInt(l));
+                                ((Function<Integer,?>) outer).apply((int) inner.applyAsInt(l));
+                return new ComposerForLongFunction(f5);
             case int_int:
                 final LongToIntFunction f6 =
                         (long l) ->
@@ -83,7 +84,7 @@ public class ComposerForLongToIntFunction implements FunctionComposer<LongToIntF
                 return new ComposerForLongFunction(f13);
 
             default:
-                throw new RuntimeException(functionType + " is not recognized");
+                throw new RuntimeException(outerFunctionType + " is not recognized");
 
         }
     }

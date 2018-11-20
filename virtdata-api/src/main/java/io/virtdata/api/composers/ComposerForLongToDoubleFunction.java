@@ -17,6 +17,7 @@ public class ComposerForLongToDoubleFunction implements FunctionComposer<LongToD
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public FunctionComposer andThen(Object outer) {
         FunctionType functionType = FunctionType.valueOf(outer);
         switch (functionType) {

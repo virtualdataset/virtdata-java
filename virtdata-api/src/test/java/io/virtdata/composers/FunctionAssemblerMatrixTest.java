@@ -7,6 +7,9 @@ import io.virtdata.api.composers.FunctionComposer;
 import io.virtdata.core.DataMapperFunctionMapper;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.*;
 
 @Test
@@ -15,24 +18,35 @@ public class FunctionAssemblerMatrixTest {
     @Test
     public void testFullPrimitiveMatrix() {
 
-        // TODO: Enable full functional introspection and remove the generic skips below
-        for (FunctionType ft1 : FunctionType.values()) {
-            if (ft1 == FunctionType.R_T
-                    || ft1 == FunctionType.long_T
-                    || ft1 == FunctionType.int_T
-                    || ft1 == FunctionType.double_T) {
-                continue;
-            }
-            for (FunctionType ft2 : FunctionType.values()) {
-                if (ft2 == FunctionType.R_T
-                        || ft2 == FunctionType.long_T
-                        || ft2 == FunctionType.int_T
-                        || ft2 == FunctionType.double_T) {
-                    continue;
-                }
-                Object f1 = genFunction(ft1);
-                Object f2 = genFunction(ft2);
-                System.out.print("testing: ft1:" + ft1 + ", ft2:" + ft2 + ", f1:" + f1 + ", f2:" + f2);
+        int iteration=0;
+
+        List<Object> funcs = new ArrayList<>();
+        for (FunctionType functionType : FunctionType.values()) {
+            Object[] objects = genFunctions(functionType);
+            funcs.addAll(Arrays.asList(objects));
+        }
+
+        long totalIterations = funcs.size() * funcs.size();
+
+        for (Object f1 : funcs) {
+//            if (ft1 == FunctionType.R_T
+//                    || ft1 == FunctionType.long_T
+//                    || ft1 == FunctionType.int_T
+//                    || ft1 == FunctionType.double_T) {
+//                continue;
+//            }
+            for (Object f2 : funcs) {
+//                if (ft2 == FunctionType.R_T
+//                        || ft2 == FunctionType.long_T
+//                        || ft2 == FunctionType.int_T
+//                        || ft2 == FunctionType.double_T) {
+//                    continue;
+//                }
+                iteration++;
+                double pctDone = 100.0 * ((double) iteration / totalIterations);
+
+                String testingSignature = "testing: f1:" + f1 + ", f2:" + f2;
+                System.out.format("%3d/%3d %s",iteration,totalIterations, testingSignature);
                 FunctionComposer assy = new FunctionAssembly();
 
                 assy = assy.andThen(f1);
@@ -46,126 +60,223 @@ public class FunctionAssemblerMatrixTest {
         }
     }
 
-    private Object genFunction(FunctionType ftype) {
+    private Object[] genFunctions(FunctionType ftype) {
         switch (ftype) {
             case long_double:
-                return new F_long_double();
+                return new Object[]{ new F_long_double() };
             case long_int:
-                return new F_long_int();
+                return new Object[]{  new F_long_int() };
             case long_long:
-                return new F_long_long();
+                return new Object[]{  new F_long_long() };
             case long_T:
-                return new F_long_T();
+                return new Object[]{  new F_long_T_Object(), new F_long_T_DOUBLE(), new F_long_T_LONG(), new F_long_T_INT() };
             case int_int:
-                return new F_int_int();
+                return new Object[]{  new F_int_int() };
             case R_T:
-                return new F_R_T();
+                return new Object[]{  new F_R_T_Object(), new F_R_T_LONG(), new F_R_T_DOUBLE(), new F_R_T_INT() };
             case int_long:
-                return new F_int_long();
+                return new Object[]{  new F_int_long() };
             case int_double:
-                return new F_int_double();
+                return new Object[]{  new F_int_double() };
             case int_T:
-                return new F_int_T();
+                return new Object[]{  new F_int_T_Object(), new F_int_T_LONG(), new F_int_T_DOUBLE(), new F_int_T_INT() };
             case double_double:
-                return new F_double_double();
+                return new Object[]{  new F_double_double() };
             case double_int:
-                return new F_double_int();
+                return new Object[]{  new F_double_int() };
             case double_long:
-                return new F_double_long();
+                return new Object[]{  new F_double_long() };
             case double_T:
-                return new F_double_T();
+                return new Object[]{  new F_double_T_Object(), new F_double_T_LONG(), new F_double_T_DOUBLE(), new F_double_T_INT() };
             default:
                 throw new RuntimeException("unrecognized function type: " + ftype);
         }
 
     }
 
-    private static class F_double_T implements DoubleFunction<Long> {
+    private static class SimpleNamer {
         @Override
-        public Long apply(double value) {
-            return (long) value;
-        }
-    }
-    private static class F_double_int implements DoubleToIntFunction {
-        @Override
-        public int applyAsInt(double value) {
-            return (int) value;
+        public String toString() {
+            return this.getClass().getSimpleName();
         }
     }
 
-    private static class F_double_long implements DoubleToLongFunction {
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
+
+    private static class F_double_T_LONG extends SimpleNamer implements DoubleToLongFunction {
         @Override
         public long applyAsLong(double value) {
             return (long) value;
         }
     }
-    private static class F_long_double implements LongToDoubleFunction {
-        @Override
-        public double applyAsDouble(long value) {
-            return (double) value;
-        }
-    }
 
-    private static class F_long_int implements LongToIntFunction {
-        @Override
-        public int applyAsInt(long value) {
-            return (int) value;
-        }
-    }
-
-    private static class F_long_long implements LongUnaryOperator {
-        @Override
-        public long applyAsLong(long operand) {
-            return operand;
-        }
-    }
-
-    private static class F_double_double implements DoubleUnaryOperator {
+    private static class F_double_T_DOUBLE extends SimpleNamer implements DoubleUnaryOperator {
         @Override
         public double applyAsDouble(double operand) {
             return operand;
         }
     }
 
-    private static class F_long_T implements LongFunction<Long> {
+    private static class F_double_T_INT extends SimpleNamer implements DoubleToIntFunction {
+        @Override
+        public int applyAsInt(double value) {
+            return (int) value;
+        }
+    }
+
+    private static class F_double_T_Object extends SimpleNamer implements DoubleFunction<Object>{
+        @Override
+        public Object apply(double value) {
+            return (long) value;
+        }
+    }
+
+    private static class F_double_int extends SimpleNamer implements DoubleToIntFunction {
+        @Override
+        public int applyAsInt(double value) {
+            return (int) value;
+        }
+    }
+
+    private static class F_double_long extends SimpleNamer implements DoubleToLongFunction {
+        @Override
+        public long applyAsLong(double value) {
+            return (long) value;
+        }
+    }
+    private static class F_long_double extends SimpleNamer implements LongToDoubleFunction {
+        @Override
+        public double applyAsDouble(long value) {
+            return (double) value;
+        }
+    }
+
+    private static class F_long_int extends SimpleNamer implements LongToIntFunction {
+        @Override
+        public int applyAsInt(long value) {
+            return (int) value;
+        }
+    }
+
+    private static class F_long_long extends SimpleNamer implements LongUnaryOperator {
+        @Override
+        public long applyAsLong(long operand) {
+            return operand;
+        }
+    }
+
+    private static class F_double_double extends SimpleNamer implements DoubleUnaryOperator {
+        @Override
+        public double applyAsDouble(double operand) {
+            return operand;
+        }
+    }
+
+    private static class F_long_T_Object extends SimpleNamer implements LongFunction<Object> {
+        @Override
+        public Object apply(long value) {
+            return value;
+        }
+    }
+
+    private static class F_long_T_LONG extends SimpleNamer implements LongFunction<Long> {
         @Override
         public Long apply(long value) {
             return value;
         }
     }
 
-    private static class F_R_T implements Function<Long, Long> {
+    private static class F_long_T_INT extends SimpleNamer implements LongFunction<Integer> {
         @Override
-        public Long apply(Long aLong) {
-            return aLong;
+        public Integer apply(long value) {
+            return (int) value;
+        }
+    }
+
+    private static class F_long_T_DOUBLE extends SimpleNamer implements LongFunction<Double> {
+        @Override
+        public Double apply(long value) {
+            return (double) value;
         }
     }
 
 
-    private static class F_int_int implements IntUnaryOperator {
+    private static class F_R_T_Object extends SimpleNamer implements Function<Object, Object> {
+        @Override
+        public String apply(Object object) {
+            return String.valueOf(object);
+        }
+    }
+
+    private static class F_R_T_LONG extends SimpleNamer implements Function<Object, Long> {
+        @Override
+        public Long apply(Object object) {
+            return Double.valueOf(String.valueOf(object)).longValue();
+        }
+    }
+
+    private static class F_R_T_DOUBLE extends SimpleNamer implements Function<Object, Double> {
+        @Override
+        public Double apply(Object object) {
+            return Double.valueOf(String.valueOf(object));
+        }
+    }
+
+    private static class F_R_T_INT extends SimpleNamer implements Function<Object, Integer> {
+        @Override
+        public Integer apply(Object object) {
+            return Double.valueOf(String.valueOf(object)).intValue();
+        }
+    }
+
+
+    private static class F_int_int extends SimpleNamer implements IntUnaryOperator {
         @Override
         public int applyAsInt(int operand) {
             return operand;
         }
     }
 
-    private static class F_int_long implements IntToLongFunction {
+    private static class F_int_long extends SimpleNamer implements IntToLongFunction {
         @Override
         public long applyAsLong(int value) {
             return value;
         }
     }
 
-    private static class F_int_double implements IntToDoubleFunction {
+    private static class F_int_double extends SimpleNamer implements IntToDoubleFunction {
         @Override
         public double applyAsDouble(int value) {
             return value;
         }
     }
 
-    private static class F_int_T implements IntFunction<Long> {
+    private static class F_int_T_LONG extends SimpleNamer implements IntFunction<Long> {
         @Override
         public Long apply(int value) {
+            return (long) value;
+        }
+    }
+
+    private static class F_int_T_DOUBLE extends SimpleNamer implements IntFunction<Double> {
+        @Override
+        public Double apply(int value) {
+            return (double) value;
+        }
+    }
+
+    private static class F_int_T_INT extends SimpleNamer implements IntUnaryOperator {
+        @Override
+        public int applyAsInt(int operand) {
+            return operand;
+        }
+    }
+    private static class F_int_T_Object extends SimpleNamer implements IntFunction<Object> {
+        @Override
+        public Object apply(int value) {
             return (long) value;
         }
     }

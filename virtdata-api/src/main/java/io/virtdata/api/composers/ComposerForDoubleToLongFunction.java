@@ -18,6 +18,7 @@ public class ComposerForDoubleToLongFunction implements FunctionComposer<DoubleT
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public FunctionComposer andThen(Object outer) {
         FunctionType functionType = FunctionType.valueOf(outer);
         switch (functionType) {

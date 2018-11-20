@@ -9,8 +9,7 @@ import java.util.function.LongFunction;
  * Create an alpha-numeric string of the specified length, character-by-character.
  */
 @ThreadSafeMapper
-public class AlphaNumericString implements LongFunction<String>
-{
+public class AlphaNumericString implements LongFunction<String> {
     private static final String AVAILABLE_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private final ThreadLocal<StringBuilder> threadStringBuilder = ThreadLocal.withInitial(StringBuilder::new);
     private final Hash hash = new Hash();

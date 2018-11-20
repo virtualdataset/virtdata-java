@@ -41,6 +41,7 @@ public class AliasElementSampler<T> implements DoubleFunction<T> {
         this(elements.stream().map(e -> new ElemProbD<>(e,weightFunction.apply(e))).collect(Collectors.toList()));
     }
 
+    @SuppressWarnings("unchecked")
     public AliasElementSampler(List<ElemProbD<T>> events) {
         int size = events.size();
 

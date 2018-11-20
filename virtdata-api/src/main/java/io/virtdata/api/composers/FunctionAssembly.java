@@ -79,4 +79,8 @@ public class FunctionAssembly implements FunctionComposer {
         }
     }
 
+    @Override
+    public String toString() {
+        return "composer:" + this.composer;
+    }
 }
