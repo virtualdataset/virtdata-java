@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
   <groupId>org.apache.commons</groupId>
-  <artifactId>commons-math4</artifactId>
+  <artifactId>commons-numbers-fraction</artifactId>
   <versioning>
     <versions>
-      <version>4.0-SNAPSHOT</version>
+      <version>1.0-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20181121034650</lastUpdated>
+    <lastUpdated>20181121035257</lastUpdated>
   </versioning>
 </metadata>

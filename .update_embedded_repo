@@ -1,2 +1,39 @@
-mvn install:install-file -Dfile=/home/jshook/.m2/repository/org/apache/commons/commons-statistics-distribution/0.1-SNAPSHOT/commons-statistics-distribution-0.1-SNAPSHOT.jar -DgroupId=org.apache.commons -DartifactId=commons-statistics-distribution -Dversion=0.1-SNAPSHOT -Dpackaging=jar -DlocalRepositoryPath=virtdata-lib-curves4/src/main/resources/repo
-mvn install:install-file -Dfile=/home/jshook/.m2/repository/org/apache/commons/commons-math4/4.0-SNAPSHOT/commons-math4-4.0-SNAPSHOT.jar -DgroupId=org.apache.commons -DartifactId=commons-math4 -Dversion=4.0-SNAPSHOT -Dpackaging=jar -DlocalRepositoryPath=virtdata-lib-curves4/src/main/resources/repo
+#mvn install:install-file -Dfile=$HOME/.m2/repository/org/apache/commons/commons-statistics-distribution/0.1-SNAPSHOT/commons-statistics-distribution-0.1-SNAPSHOT.jar \
+# -DgroupId=org.apache.commons -DartifactId=commons-statistics-distribution -Dversion=0.1-SNAPSHOT -Dpackaging=jar \
+# -DlocalRepositoryPath=virtdata-lib-curves4/src/main/resources/repo
+#
+#mvn install:install-file -Dfile=$HOME/.m2/repository/org/apache/commons/commons-math4/4.0-SNAPSHOT/commons-math4-4.0-SNAPSHOT.jar \
+# -DgroupId=org.apache.commons -DartifactId=commons-math4 -Dversion=4.0-SNAPSHOT -Dpackaging=jar \
+# -DlocalRepositoryPath=virtdata-lib-curves4/src/main/resources/repo
+#
+#mvn install:install-file -Dfile=$HOME/.m2/repository/org/apache/commons/commons-numbers-core/1.0-SNAPSHOT/commons-numbers-core-1.0-SNAPSHOT.jar \
+# -DgroupId=org.apache.commons -DartifactId=commons-numbers-core -Dpackaging=jar -Dversion=1.0-SNAPSHOT \
+# -DlocalRepositoryPath=virtdata-lib-curves4/src/main/resources/repo
+#
+#mvn install:install-file -Dfile=$HOME/.m2/repository/org/apache/commons/commons-numbers-complex/1.0-SNAPSHOT/commons-numbers-complex-1.0-SNAPSHOT.jar \
+# -DgroupId=org.apache.commons -DartifactId=commons-numbers-complex -Dpackaging=jar -Dversion=1.0-SNAPSHOT \
+# -DlocalRepositoryPath=virtdata-lib-curves4/src/main/resources/repo
+#
+#mvn install:install-file -Dfile=$HOME/.m2/repository/org/apache/commons/commons-numbers-complex-streams/1.0-SNAPSHOT/commons-numbers-complex-streams-1.0-SNAPSHOT.jar \
+# -DgroupId=org.apache.commons -DartifactId=commons-numbers-complex-streams -Dpackaging=jar -Dversion=1.0-SNAPSHOT \
+# -DlocalRepositoryPath=virtdata-lib-curves4/src/main/resources/repo
+#
+#mvn install:install-file -Dfile=$HOME/.m2/repository/org/apache/commons/commons-numbers-gamma/1.0-SNAPSHOT/commons-numbers-gamma-1.0-SNAPSHOT.jar \
+# -DgroupId=org.apache.commons -DartifactId=commons-numbers-gamma -Dpackaging=jar -Dversion=1.0-SNAPSHOT \
+# -DlocalRepositoryPath=virtdata-lib-curves4/src/main/resources/repo
+#
+#mvn install:install-file -Dfile=$HOME/.m2/repository/org/apache/commons/commons-numbers-fraction/1.0-SNAPSHOT/commons-numbers-fraction-1.0-SNAPSHOT.jar \
+# -DgroupId=org.apache.commons -DartifactId=commons-numbers-fraction -Dpackaging=jar -Dversion=1.0-SNAPSHOT \
+# -DlocalRepositoryPath=virtdata-lib-curves4/src/main/resources/repo
+#
+#mvn install:install-file -Dfile=$HOME/.m2/repository/org/apache/commons/commons-numbers-combinatorics/1.0-SNAPSHOT/commons-numbers-combinatorics-1.0-SNAPSHOT.jar \
+# -DgroupId=org.apache.commons -DartifactId=commons-numbers-combinatorics -Dpackaging=jar -Dversion=1.0-SNAPSHOT \
+# -DlocalRepositoryPath=virtdata-lib-curves4/src/main/resources/repo
+#
+#mvn install:install-file -Dfile=$HOME/.m2/repository/org/apache/commons/commons-numbers-arrays/1.0-SNAPSHOT/commons-numbers-arrays-1.0-SNAPSHOT.jar \
+# -DgroupId=org.apache.commons -DartifactId=commons-numbers-arrays -Dpackaging=jar -Dversion=1.0-SNAPSHOT \
+# -DlocalRepositoryPath=virtdata-lib-curves4/src/main/resources/repo
+#
+#mvn install:install-file -Dfile=$HOME/.m2/repository/org/apache/commons/commons-numbers-angle/1.0-SNAPSHOT/commons-numbers-angle-1.0-SNAPSHOT.jar \
+# -DgroupId=org.apache.commons -DartifactId=commons-numbers-angle -Dpackaging=jar -Dversion=1.0-SNAPSHOT \
+# -DlocalRepositoryPath=virtdata-lib-curves4/src/main/resources/repo
