@@ -113,18 +113,18 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>embedded-repo</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <repositories>
-                <repository>
-                    <id>embedded</id>
-                    <url>file://${project.basedir}/src/main/resources/repo</url>
-                </repository>
-            </repositories>
-        </profile>
+        <!--<profile>-->
+            <!--<id>embedded-repo</id>-->
+            <!--<activation>-->
+                <!--<activeByDefault>true</activeByDefault>-->
+            <!--</activation>-->
+            <!--<repositories>-->
+                <!--<repository>-->
+                    <!--<id>embedded</id>-->
+                    <!--<url>file://${project.basedir}/src/main/resources/repo</url>-->
+                <!--</repository>-->
+            <!--</repositories>-->
+        <!--</profile>-->
     </profiles>
 
     <repositories>
