@@ -23,7 +23,7 @@ import java.util.Set;
  * enumerate candidate functions without requiring them to have a no-args constructor.
  */
 @SupportedOptions({"title"})
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedSourceVersion(SourceVersion.RELEASE_11)
 @SupportedAnnotationTypes({
         "io.virtdata.annotations.ThreadSafeMapper",
         "io.virtdata.annotations.PerThreadMapper"})
