@@ -8,7 +8,7 @@ public class LoadThreadLocalTests {
 
     @Test(singleThreaded = true)
     public void testSaveLoadDouble() {
-        new Clear().applyAsLong(0L);
+        new Clear().apply(0L);
         SaveDouble saver = new SaveDouble("doublename");
         LoadDouble loader = new LoadDouble("doublename");
         double passiveOutput = saver.applyAsDouble(123L);
@@ -19,7 +19,7 @@ public class LoadThreadLocalTests {
 
     @Test(singleThreaded = true)
     public void testSaveLoadInteger() {
-        new Clear().applyAsLong(0L);
+        new Clear().apply(0L);
         SaveInteger saver = new SaveInteger("intname");
         LoadInteger loader = new LoadInteger("intname");
         int passiveOutput = saver.applyAsInt(123);
@@ -30,7 +30,7 @@ public class LoadThreadLocalTests {
 
     @Test(singleThreaded = true)
     public void testSaveLoadFloat() {
-        new Clear().applyAsLong(0L);
+        new Clear().apply(0L);
         SaveFloat saver = new SaveFloat("floatname");
         LoadFloat loader = new LoadFloat("floatname");
         float passiveOutput = saver.apply(123f);
@@ -41,7 +41,7 @@ public class LoadThreadLocalTests {
 
     @Test(singleThreaded = true)
     public void testSaveLoadLong() {
-        new Clear().applyAsLong(0L);
+        new Clear().apply(0L);
         SaveLong saver = new SaveLong("longname");
         LoadLong loader = new LoadLong("longname");
         long passiveOutput = saver.applyAsLong(123L);
@@ -52,7 +52,7 @@ public class LoadThreadLocalTests {
 
     @Test(singleThreaded = true)
     public void testSaveLoadString() {
-        new Clear().applyAsLong(0L);
+        new Clear().apply(0L);
         SaveString saver = new SaveString("longname");
         LoadString loader = new LoadString("longname");
         String passiveOutput = saver.apply("stringval");

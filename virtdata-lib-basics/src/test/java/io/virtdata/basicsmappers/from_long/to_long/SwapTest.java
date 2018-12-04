@@ -10,7 +10,7 @@ public class SwapTest {
 
     @Test(singleThreaded = true)
     public void swapValues() {
-        new Clear().applyAsLong(0L);
+        new Clear().apply(0L);
         Swap shazzbot = new Swap("shazzbot", 1001L);
         long l = shazzbot.applyAsLong(234L);
         assertThat(l).isEqualTo(1001L);

@@ -13,7 +13,7 @@ public class SaveTest {
 
     @Test(singleThreaded = true)
     public void testSaveAndLoadByGeneratedName() {
-        new Clear().applyAsLong(0L);
+        new Clear().apply(0L);
         long l1=234L;
         long l2=123L;
 
@@ -40,7 +40,7 @@ public class SaveTest {
 
     @Test(singleThreaded = true)
     public void testSaveUnaryString() {
-        new Clear().applyAsLong(0L);
+        new Clear().apply(0L);
         io.virtdata.basicsmappers.unary_string.Save saver = new io.virtdata.basicsmappers.unary_string.Save("stringname");
         String passiveOutput = saver.apply("string1");
         assertThat(passiveOutput).isEqualTo("string1");
@@ -55,7 +55,7 @@ public class SaveTest {
 
     @Test(singleThreaded = true)
     public void testSaveUnaryDouble() {
-        new Clear().applyAsLong(0L);
+        new Clear().apply(0L);
         io.virtdata.basicsmappers.from_double.to_double.Save saver = new io.virtdata.basicsmappers.from_double.to_double.Save("doublename");
         double v = saver.applyAsDouble(2345.678D);
         assertThat(v).isCloseTo(2345.678D, Offset.offset(0.0003D));

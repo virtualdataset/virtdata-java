@@ -10,7 +10,7 @@ public class ShowTest {
 
     @Test(singleThreaded = true)
     public void testBasicStateSupport() {
-        new Clear().applyAsLong(0L);
+        new Clear().apply(0L);
         io.virtdata.basicsmappers.from_long.to_long.Save saveFoo = new io.virtdata.basicsmappers.from_long.to_long.Save("foo");
         saveFoo.applyAsLong(23);
         new Save("cycle").applyAsLong(-1L);
@@ -23,7 +23,7 @@ public class ShowTest {
         Show showBar = new Show("bar");
         assertThat(showFoo.apply(2342343L)).isEqualTo("{foo=23}");
         assertThat(showBar.apply(23423L)).isEqualTo("{bar=Bar}");
-        new Clear().applyAsLong(234);
+        new Clear().apply(234);
         assertThat(showAll.apply("234").isEmpty());
     }
 
