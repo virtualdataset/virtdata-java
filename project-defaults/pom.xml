@@ -3,7 +3,7 @@
 
     <groupId>io.virtdata</groupId>
     <artifactId>project-defaults</artifactId>
-    <version>2.11.09-SNAPSHOT</version>
+    <version>2.11.09</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
@@ -32,7 +32,7 @@
 
     <scm>
         <url>scm:git:https://github.com/virtualdataset/virtdata-java.git</url>
-        <tag>virtdata-1.2.39-SNAPSHOT</tag>
+        <tag>virtdata-2.11.09</tag>
     </scm>
 
     <build>
