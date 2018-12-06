@@ -1,5 +1,7 @@
 package io.virtdata.basicsmappers.from_long.to_time_types.joda;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 import org.joda.time.DateTime;
@@ -13,6 +15,7 @@ import java.util.function.LongUnaryOperator;
  * that falls on the given weekday for the given
  * epoch milliseconds, including the current day if valid.
  */
+@Categories({Category.datetime})
 @ThreadSafeMapper
 public class ToMillisAtStartOfNamedWeekDay implements LongUnaryOperator {
     private final DateTimeZone tz;
