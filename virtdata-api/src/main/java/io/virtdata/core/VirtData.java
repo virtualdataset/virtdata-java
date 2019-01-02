@@ -109,6 +109,7 @@ public class VirtData {
             logger.debug("Auto-assigning output type qualifier '->" + clazz.getCanonicalName() + "' to specifier '" + flowSpec + "'");
             flow.getLastExpression().getCall().setOutputType(clazz.getCanonicalName());
         }
+
         VirtDataComposer composer = new VirtDataComposer();
         Optional<ResolvedFunction> resolvedFunction = composer.resolveFunctionFlow(flow);
         Optional<DataMapper<T>> mapper = resolvedFunction.map(ResolvedFunction::getFunctionObject).map(DataMapperFunctionMapper::map);
@@ -122,6 +123,63 @@ public class VirtData {
             }
         }
         return mapper;
+    }
+
+    public static <T> T getFunction(String flowSpec, Class<? extends T> functionType) {
+        Optional<? extends T> optionalFunction = getOptionalFunction(flowSpec, functionType);
+        return optionalFunction.orElseThrow();
+    }
+
+    public static <T> Optional<T> getOptionalFunction(String flowSpec, Class<? extends T> functionType) {
+        flowSpec = CompatibilityFixups.fixup(flowSpec);
+
+        Class<?> requiredInputType = FunctionTyper.getInputClass(functionType);
+        Class<?> requiredOutputType = FunctionTyper.getResultClass(functionType);
+
+        FunctionalInterface annotation = functionType.getAnnotation(FunctionalInterface.class);
+        if (annotation==null) {
+            throw new RuntimeException("You can only use function types that are tagged as @FunctionInterface");
+        }
+
+        VirtDataDSL.ParseResult parseResult = VirtDataDSL.parse(flowSpec);
+        if (parseResult.throwable != null) {
+            throw new RuntimeException(parseResult.throwable);
+        }
+        VirtDataFlow flow = parseResult.flow;
+
+        String specifiedInputClassName = flow.getFirstExpression().getCall().getInputType();
+        Class<?> specifiedInputClass = ValueType.classOfType(specifiedInputClassName);
+        if (specifiedInputClass!=null) {
+            if (!ClassUtils.isAssignable(specifiedInputClass,requiredInputType,true)) {
+                throw new RuntimeException("The flow specifier '" + flowSpec + "' wants an input type of '" + specifiedInputClassName +"', but this" +
+                        " type is not assignable to the input class required by the functional type requested '" + functionType.getCanonicalName() + "'. (type "+requiredInputType.getCanonicalName()+")" +
+                        " Either remove the input type qualifier at the first function in the flow spec, or change it to something that can" +
+                        " reliably be cast to type '" + requiredInputType.getCanonicalName() +"'");
+
+            }
+        } else {
+            logger.debug("Auto-assigning input type qualifier '" + requiredInputType.getCanonicalName()  + "->' to specifier '" + flowSpec + "'");
+            flow.getFirstExpression().getCall().setInputType(requiredInputType.getCanonicalName());
+        }
+
+        String specifiedOutputClassName = flow.getLastExpression().getCall().getOutputType();
+        Class<?> specifiedOutputClass = ValueType.classOfType(specifiedOutputClassName);
+        if (specifiedOutputClass != null) {
+            if (!ClassUtils.isAssignable(specifiedOutputClass,requiredOutputType,true)) {
+                throw new RuntimeException("The flow specifier '" + flowSpec + "' wants an output type of '" + specifiedOutputClass +"', but this" +
+                        " type is not assignable to the output class required by functional type '" + functionType.getCanonicalName() + "'. (type "+requiredOutputType.getCanonicalName()+")" +
+                        " Either remove the output type qualifier at the last function in the flow spec, or change it to something that can" +
+                        " reliably be cast to type '" + requiredOutputType.getCanonicalName() +"'");
+            }
+        } else {
+            logger.debug("Auto-assigning output type qualifier '->" + requiredOutputType.getCanonicalName() + "' to specifier '" + flowSpec + "'");
+            flow.getLastExpression().getCall().setOutputType(requiredOutputType.getCanonicalName());
+        }
+
+        VirtDataComposer composer = new VirtDataComposer();
+        Optional<ResolvedFunction> resolvedFunction = composer.resolveFunctionFlow(flow);
+
+        return resolvedFunction.map(ResolvedFunction::getFunctionObject).map(functionType::cast);
     }
 
     /**

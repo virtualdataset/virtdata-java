@@ -106,30 +106,4 @@ public class FunctionCall implements ArgType {
         return args.toArray();
     }
 
-    public String getInputClass() {
-        return inputClass;
-    }
-
-//    public Optional<Class<?>> getInputClass() {
-//        return classForFreeformTypeName(getInputType());
-//    }
-//    public Optional<Class<?>> getReturnClass() {
-//        return classForFreeformTypeName(getOutputType());
-//    }
-//
-//    private static Optional<Class<?>> classForFreeformTypeName(String basicTypeName) {
-//        ValueType.
-////        ValueType.valueOf
-////        if (basicTypeName==null) {
-////            return Optional.empty();
-////        }
-////        String canonicalType = basicTypeName;
-//////        String canonicalType = basicTypeName.contains(".") ? basicTypeName : "java.lang." + basicTypeName;
-////        try {
-////            return Optional.of(Class.forName(canonicalType));
-////        } catch (ClassNotFoundException e) {
-////            throw new RuntimeException("Unable to resolve class named '" + canonicalType +"', (originally just '" + basicTypeName +"'");
-////        }
-//    }
-
 }

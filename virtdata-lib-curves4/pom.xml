@@ -10,7 +10,7 @@
 
     <artifactId>virtdata-lib-curves4</artifactId>
     <packaging>jar</packaging>
-    <name>virtdata-lib-curves</name>
+    <name>virtdata-lib-curves4</name>
     <url>http://virtdata.io/</url>
     <description>
         Statistical sampling library for use in virtualdataset libraries, based on apache commons math 4

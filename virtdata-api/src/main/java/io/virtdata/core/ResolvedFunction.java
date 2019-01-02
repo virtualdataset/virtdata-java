@@ -74,7 +74,7 @@ public class ResolvedFunction {
         Method applyMethod = getMethod();
         if (applyMethod.getParameterCount() != 1) {
             throw new RuntimeException(
-                    "The parameter cound is supposed to be 1, but it was" + applyMethod.getParameterCount()
+                    "The parameter found is supposed to be 1, but it was" + applyMethod.getParameterCount()
             );
         }
         return applyMethod.getParameterTypes()[0];

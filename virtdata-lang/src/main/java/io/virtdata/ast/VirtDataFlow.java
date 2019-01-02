@@ -16,8 +16,15 @@ public class VirtDataFlow {
 
     public Expression getLastExpression() {
         if (expressions.size()==0) {
-            throw new RuntimeException("expressions not initialized, last expression 'undefined'");
+            throw new RuntimeException("expressions not initialized, last expression undefined");
         }
         return expressions.get(expressions.size()-1);
+    }
+
+    public Expression getFirstExpression() {
+        if (expressions.size()==0) {
+            throw new RuntimeException("expressions not initialized, first expression undefined.");
+        }
+        return expressions.get(0);
     }
 }

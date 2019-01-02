@@ -22,6 +22,7 @@ import org.testng.annotations.Test;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.LongUnaryOperator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -209,5 +210,12 @@ public class IntegratedBindingsTest {
         assertThat(sb.toString()).isEqualTo("mod5=2;mod7=5;");
     }
 
+
+    @Test
+    public void testDirectFunctionalInterfaceLongUnary() {
+        LongUnaryOperator f = VirtData.getFunction("Add(5L)", LongUnaryOperator.class);
+        assertThat(f).isNotNull();
+        assertThat(f.getClass()==LongUnaryOperator.class);
+    }
 
 }
