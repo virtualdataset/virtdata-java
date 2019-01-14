@@ -1,7 +1,7 @@
 package io.virtdata.basicsmappers.from_long.to_long;
 
-import de.greenrobot.common.hash.Murmur3F;
 import io.virtdata.annotations.Example;
+import org.greenrobot.essentials.hash.Murmur3F;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;

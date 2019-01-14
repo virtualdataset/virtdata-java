@@ -18,9 +18,9 @@
 
 package io.virtdata.basicsmappers.from_long.to_long;
 
-import de.greenrobot.common.hash.Murmur3F;
 import io.virtdata.annotations.DeprecatedFunction;
 import io.virtdata.annotations.ThreadSafeMapper;
+import org.greenrobot.essentials.hash.Murmur3F;
 
 import java.util.function.LongUnaryOperator;
 

@@ -1,6 +1,6 @@
 package io.virtdata.discrete.common;
 
-import de.greenrobot.common.hash.Murmur3F;
+import org.greenrobot.essentials.hash.Murmur3F;
 
 import java.nio.ByteBuffer;
 import java.util.function.LongUnaryOperator;

@@ -1,6 +1,6 @@
 package io.virtdata.basicsmappers.unary_int;
 
-import de.greenrobot.common.hash.Murmur3F;
+import org.greenrobot.essentials.hash.Murmur3F;
 import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.nio.ByteBuffer;

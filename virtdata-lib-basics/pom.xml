@@ -55,9 +55,9 @@
             <version>3.6.1</version>
         </dependency>
         <dependency>
-            <groupId>de.greenrobot</groupId>
-            <artifactId>java-common</artifactId>
-            <version>2.3.1</version>
+            <groupId>org.greenrobot</groupId>
+            <artifactId>essentials</artifactId>
+            <version>3.0.0-RC1</version>
         </dependency>
         <dependency>
             <groupId>com.elega9t</groupId>

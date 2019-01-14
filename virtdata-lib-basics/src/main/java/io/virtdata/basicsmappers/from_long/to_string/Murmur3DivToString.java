@@ -18,7 +18,7 @@
 
 package io.virtdata.basicsmappers.from_long.to_string;
 
-import de.greenrobot.common.hash.Murmur3F;
+import org.greenrobot.essentials.hash.Murmur3F;
 import io.virtdata.annotations.DeprecatedFunction;
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.basicsmappers.from_long.to_long.DivideToLong;
