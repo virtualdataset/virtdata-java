@@ -129,8 +129,53 @@ public class ShuffleTest {
         }
     }
 
+    @Test
+    public void trueShuffleTest() {
+        long[] one = testRangeSeed(100,10, 1);
+        long[] two = testRangeSeed(100, 10, 2);
+        System.out.format("one: %s\n", Arrays.toString(one));
+        System.out.format("two: %s\n", Arrays.toString(two));
+        double counter = 0;
+        for (int i = 0; i < one.length; i++) {
+           if(one[i] == two[i]){
+               counter++;
+           }
+        }
+        System.out.println(String.format("%s percent of the cards matched",counter/one.length*100));
+
+        one = testRangeSeedTrue(100,10, 1);
+        two = testRangeSeedTrue(100, 10, 2);
+        System.out.format("one: %s\n", Arrays.toString(one));
+        System.out.format("two: %s\n", Arrays.toString(two));
+        counter = 0;
+        for (int i = 0; i < one.length; i++) {
+           if(one[i] == two[i]){
+               counter++;
+           }
+        }
+        System.out.println(String.format("%s percent of the cards matched",counter/one.length*100));
+    }
+
+    private long[] testRangeSeed(int count, int max, int seed) {
+        Shuffle shuffle = new Shuffle(0,max, seed);
+        long[] r=new long[count];
+        for (int i = 1; i <= r.length; i++) {
+            r[i-1]=shuffle.applyAsLong(i);
+        }
+        return r;
+    }
+
+    private long[] testRangeSeedTrue(int count, int max, int seed) {
+        TrueShuffle shuffle = new TrueShuffle(0,max, seed);
+        long[] r=new long[count];
+        for (int i = 1; i <= r.length; i++) {
+            r[i-1]=shuffle.applyAsLong(i);
+        }
+        return r;
+    }
+
     private int[] testRange(int max) {
-        Shuffle shuffle = new Shuffle(0,max);
+        TrueShuffle shuffle = new TrueShuffle(0,max);
         long[] r=new long[max];
         for (int i = 1; i <= r.length; i++) {
             r[i-1]=shuffle.applyAsLong(i);
@@ -146,7 +191,7 @@ public class ShuffleTest {
 
     public void test16() {
         int max=16;
-        Shuffle shuffle = new Shuffle(0,max);
+        TrueShuffle shuffle = new TrueShuffle(0,max);
         long[] r=new long[max];
         for (int i = 1; i <= r.length; i++) {
             r[i-1]=shuffle.applyAsLong(i);
@@ -164,7 +209,7 @@ public class ShuffleTest {
 
     public void test97() {
         int max=97;
-        Shuffle shuffle = new Shuffle(0,max);
+        TrueShuffle shuffle = new TrueShuffle(0,max);
         long[] r=new long[max];
         for (int i = 1; i <= r.length; i++) {
             r[i-1]=shuffle.applyAsLong(i);
@@ -182,7 +227,7 @@ public class ShuffleTest {
     public void test1000000() {
         int max=1000000;
 
-        Shuffle shuffle = new Shuffle(0,max);
+        TrueShuffle shuffle = new TrueShuffle(0,max);
         long[] r=new long[max];
         for (int i = 1; i <= r.length; i++) {
             r[i-1]=shuffle.applyAsLong(i);

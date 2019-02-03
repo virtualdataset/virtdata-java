@@ -66,11 +66,20 @@ public class MetaShift {
         public final long mask;
         public final int actualPeriod;
 
+        /*
+          feedback        one of the values in longs
+          resamplePeriod  number of values to be shuffled
+          width           bits needed to represent period i.e. 7 bits
+                          to represent the number 100
+          mask            max value representable by this number of bits
+        */
+
         public GaloisData(long feedback, long resamplePeriod, long width, long mask) {
             this.feedback = feedback;
             this.resamplePeriod = resamplePeriod;
             this.width = width;
             this.mask = mask;
+            //Is actual period always equal to mask?
             this.actualPeriod = (1<<(width))-1;
         }
 
@@ -101,9 +110,16 @@ public class MetaShift {
 
         @Override
         public long applyAsLong(long register) {
+            // lsb is 1 if odd, 0 if even
             long lsb = (register) & 1;
+            // divide by 2 round down
             register >>= 1;
+            //flip sign then if odd subtract 1 if even leave it
+            //then transform (and compare with feedback)
             register ^= (-lsb) & feedback;
+
+            //if even, return register >> 1
+            //otherwise transform
             return register;
         }
 
@@ -131,9 +147,16 @@ public class MetaShift {
          * @param bankModulo A deterministic selector which will always select the same pseudo random bank
          * @return A valid Galois LFSR feedback register
          */
+        // max - min == period / seed
         public static GaloisData forPeriodAndBankModulo(long period, int bankModulo) {
+            // number of bits needed for binary representation of the period
             int registerWidth = getMsbPosition(period);
             long[] longs = Masks.masksForBitWidth(registerWidth);
+            // GaloisData(long feedback, long resamplePeriod, long width, long mask) {
+            // feedback = one of the values in longs
+            // period = 100
+            // registerWidth = bits needed for representing period i.e. 7 for 100
+            // max value representable by this number of bits
             return new GaloisData(longs[bankModulo % longs.length],period,registerWidth,MetaShift.maskForMsb(period));
         }
 
