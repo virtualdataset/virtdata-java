@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import java.security.InvalidParameterException;
 import java.util.*;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -291,13 +292,14 @@ public class ParsedTemplate {
      * This uses the anchor token as provided to yield a version of the statement
      * which contains positional anchors, but no named bindings.
      *
-     * @param anchorToken The token which is to be used as a positional place holder
+     * @param tokenFormatter The mapping from a token name to a place holder
      * @return A driver or usage-specific format of the statement, with anchors
      */
-    public String getPositionalStatement(String anchorToken) {
+    public String getPositionalStatement(Function<String,String> tokenFormatter) {
         StringBuilder sb = new StringBuilder(spans[0]);
-        for (int i = 1; i < spans.length; i++) {
-            sb.append(anchorToken).append(spans[i]);
+        for (int i = 1; i < spans.length; i+=2) {
+            sb.append(tokenFormatter.apply(spans[i]));
+            sb.append(spans[i+1]);
         }
         return sb.toString();
     }

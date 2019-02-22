@@ -89,4 +89,16 @@ public class ParsedTemplateTest {
         ParsedTemplate pt = new ParsedTemplate(wontuse, bindings, p);
     }
 
+    public void testPositionalExpansionShouldBeValid() {
+        String multi = "A {bindname1} of {bindname2} sort.";
+        ParsedTemplate pt = new ParsedTemplate(multi,bindings);
+        assertThat(pt.getSpans()).containsExactly("A ","bindname1", " of ", "bindname2", " sort.");
+        assertThat(pt.getSpecificBindings()).containsOnlyKeys("bindname1", "bindname2");
+        assertThat(pt.getMissingBindings()).isEmpty();
+        assertThat(pt.getExtraBindings()).isEmpty();
+        assertThat(pt.getPositionalStatement(s -> "##")).isEqualTo("A ## of ## sort.");
+        assertThat(pt.getPositionalStatement(s -> "[[" + s + "]]")).isEqualTo("A [[bindname1]] of [[bindname2]] sort.");
+    }
+
+
 }
