@@ -34,7 +34,7 @@ import java.util.Optional;
  * Allows for easy construction of DataMapperBindings when in the proper thread scope.
  * <p>
  * The user is required to call @{link resolveBindings} when in the scope that the resulting
- * bindings will be used.
+ * bindings will be used in.
  */
 public class BindingsTemplate {
     private final static Logger logger = LoggerFactory.getLogger(BindingsTemplate.class);

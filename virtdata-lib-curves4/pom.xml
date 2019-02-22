@@ -122,6 +122,14 @@
                                     <pattern>org.apache.commons.statistics</pattern>
                                     <shadedPattern>io.virtdata.shaded.oac.statistics</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>org.apache.commons.math4.stat</pattern>
+                                    <shadedPattern>io.virtdata.shaded.oac.statistics</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.apache.commons.statistics.distribution</pattern>
+                                    <shadedPattern>io.virtdata.shaded.oac.statistics.distribution</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </plugin>

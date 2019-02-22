@@ -7,16 +7,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class StringCompositorTest {
 
     @Test
-    public void testBasicSegment() {
+    public void testShouldMatchSpanOnly() {
         StringCompositor c = new StringCompositor("A");
-        assertThat(c.parseSection("A")).containsExactly("A");
-        assertThat(c.parseSection("A{B}C")).containsExactly("A","B","C");
+        String[] spans = c.parseTemplate("A\\{ {one}two");
+        assertThat(spans).containsExactly("A\\{ ", "one", "two");
+
     }
 
     @Test
-    public void testBasicSegmentEscape() {
+    public void testShouldNotMatchEscaped() {
         StringCompositor c = new StringCompositor("A");
-        assertThat(c.parseSection("A\\{{B}C")).containsExactly("A{","B","C");
+        String[] spans = c.parseTemplate("A\\{{B}C");
+        assertThat(spans).containsExactly("A\\{","B","C");
     }
+
+//    @Test
+//    public void testShoulsIgnoreExplicitExcapes() {
+//        StringCompositor c = new StringCompositor("A");
+//        String[] spans = c.parseTemplate("A\\{B}C");
+//        assertThat(spans).containsExactly("A\\{B}C");
+//    }
 
 }
