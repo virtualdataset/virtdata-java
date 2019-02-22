@@ -45,17 +45,17 @@ public class IntegratedStringCompositorTest {
         s = c.bindValues(c, bindings, 7L);
         assertThat(s).isEqualTo("A2C");
 
-        c = new StringCompositor("A{.mod5}C");
-        s = c.bindValues(c, bindings, 8L);
-        assertThat(s).isEqualTo("A3C");
+//        c = new StringCompositor("A{.mod5}C");
+//        s = c.bindValues(c, bindings, 8L);
+//        assertThat(s).isEqualTo("A3C");
     }
 
-    @Test
-    public void testBindEscapedAnchor() {
-        StringCompositor c = new StringCompositor("A\\{{mod-5}C");
-        String s = c.bindValues(c, bindings, 6L);
-        assertThat(s).isEqualTo("A{1C");
-    }
+//    @Test
+//    public void testBindEscapedAnchor() {
+//        StringCompositor c = new StringCompositor("A\\{{mod-5}C");
+//        String s = c.bindValues(c, bindings, 6L);
+//        assertThat(s).isEqualTo("A{1C");
+//    }
 
     @Test
     public void testBindCustomTransform() {
