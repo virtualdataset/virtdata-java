@@ -4,13 +4,12 @@ import io.virtdata.api.DataMapper;
 import io.virtdata.api.ValueType;
 import io.virtdata.ast.VirtDataFlow;
 import io.virtdata.parser.VirtDataDSL;
+import io.virtdata.templates.BindPoint;
 import org.apache.commons.lang3.ClassUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class VirtData {
     private final static Logger logger = LoggerFactory.getLogger(VirtData.class);
@@ -29,29 +28,47 @@ public class VirtData {
                     "args must be in 'name','spec', pairs. " +
                             "This can't be true for " + namesAndSpecs.length + "elements.");
         }
-        Map<String, String> specmap = new HashMap<>();
+        List<BindPoint> bindPoints = new ArrayList<>();
         for (int i = 0; i < namesAndSpecs.length; i += 2) {
-            specmap.put(namesAndSpecs[i], namesAndSpecs[i + 1]);
+            bindPoints.add(new BindPoint(namesAndSpecs[i],namesAndSpecs[i+1]));
         }
-        return getTemplate(specmap);
+        return getTemplate(bindPoints);
     }
 
-    /**
-     * Create a bindings template from the provided map, ensuring that
-     * the syntax of the bindings specs is parsable first.
-     *
-     * @param namedBindings The named bindings map
-     * @return a bindings template
-     */
-    public static BindingsTemplate getTemplate(Map<String, String> namedBindings) {
+//    /**
+//     * Create a bindings template from the provided map, ensuring that
+//     * the syntax of the bindings specs is parsable first.
+//     *
+//     * @param namedBindings The named bindings map
+//     * @return a bindings template
+//     */
+//    public static BindingsTemplate getTemplate(Map<String, String> namedBindings) {
+//
+//        for (String bindingSpec : namedBindings.values()) {
+//            VirtDataDSL.ParseResult parseResult = VirtDataDSL.parse(bindingSpec);
+//            if (parseResult.throwable != null) {
+//                throw new RuntimeException(parseResult.throwable);
+//            }
+//        }
+//        return new BindingsTemplate(namedBindings);
+//    }
 
-        for (String bindingSpec : namedBindings.values()) {
-            VirtDataDSL.ParseResult parseResult = VirtDataDSL.parse(bindingSpec);
-            if (parseResult.throwable != null) {
+    /**
+     * Create a bindings template from a provided list of {@link BindPoint}s,
+     * ensuring that the syntax of the bindings specs is parsable first.
+     *
+     * @param bindPoints A list of {@link BindPoint}s
+     * @return A BindingsTemplate
+     */
+    public static BindingsTemplate getTemplate(List<BindPoint> bindPoints) {
+        for (BindPoint bindPoint : bindPoints) {
+            String bindspec = bindPoint.getBindspec();
+            VirtDataDSL.ParseResult parseResult = VirtDataDSL.parse(bindspec);
+            if (parseResult.throwable!=null) {
                 throw new RuntimeException(parseResult.throwable);
             }
         }
-        return new BindingsTemplate(namedBindings);
+        return new BindingsTemplate(bindPoints);
     }
 
     /**

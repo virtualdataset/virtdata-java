@@ -21,9 +21,11 @@ package io.virtdata.core;
 //
 
 import io.virtdata.api.DataMapper;
+import io.virtdata.templates.BindPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,11 +44,30 @@ public class BindingsTemplate {
     private List<String> bindPointNames = new ArrayList<>();
     private List<String> specifiers = new ArrayList<>();
 
-    public BindingsTemplate(Map<String,String> specs) {
-        specs.forEach(this::addFieldBinding);
+//    public BindingsTemplate(Map<String,String> specs) {
+//        specs.forEach(this::addFieldBinding);
+//    }
+
+    public BindingsTemplate(List<String> anchors, List<String> specs) {
+        if (anchors.size()!=specs.size()) {
+            throw new InvalidParameterException("Anchors and Specifiers must be matched pair-wise.");
+        }
+        for (int i = 0; i < anchors.size(); i++) {
+            addFieldBinding(anchors.get(i),specs.get(i));
+        }
+    }
+
+    public BindingsTemplate(List<BindPoint> bindpoints) {
+        addFieldBindings(bindpoints);
     }
 
     public BindingsTemplate() {
+    }
+
+    public void addFieldBindings(List<BindPoint> bindPoints) {
+        for (BindPoint bindPoint : bindPoints) {
+            addFieldBinding(bindPoint.getAnchor(),bindPoint.getBindspec());
+        }
     }
 
     /**

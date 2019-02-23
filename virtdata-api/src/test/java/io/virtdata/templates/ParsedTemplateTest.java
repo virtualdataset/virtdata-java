@@ -100,8 +100,8 @@ public class ParsedTemplateTest {
         assertThat(pt.getPositionalStatement(s -> "[[" + s + "]]")).isEqualTo("A [[bindname1]] of [[bindname2]] sort.");
 
         assertThat(pt.getBindPoints()).containsExactly(
-                new ParsedTemplate.BindPoint("bindname1", "bindspec1"),
-                new ParsedTemplate.BindPoint("bindname2", "bindspec2")
+                new BindPoint("bindname1", "bindspec1"),
+                new BindPoint("bindname2", "bindspec2")
         );
     }
 
