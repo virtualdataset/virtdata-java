@@ -279,12 +279,49 @@ public class ParsedTemplate {
      * Return a map of bindings which were referenced in the statement.
      * This is an easy way to get the list of effective bindings for
      * a statement for diagnostic purposes without including a potentially
-     * long list of library bindings.
+     * long list of library bindings. This method does <em>not</em>
+     * represent all of the binding points, as when anchor names are
+     * used more than once.
      *
      * @return a bindings map of referenced bindings in the statement
      */
     public Map<String, String> getSpecificBindings() {
         return specificBindings;
+    }
+
+    /**
+     * Return the list of anchors as found in the raw template.
+     *
+     * @return
+     */
+    public List<String> getAnchors() {
+        List<String> anchors = new ArrayList<>();
+
+        for (int i = 1; i < spans.length; i += 2) {
+            anchors.add(spans[i]);
+        }
+        return anchors;
+
+    }
+
+    /**
+     * Get the named anchors and their associated binding specifiers as found
+     * in the raw template.
+     *
+     * @return A list of bind points
+     * @throws InvalidParameterException if the template has an error,
+     *                                   such as an anchor which has no provided binding.
+     */
+    public List<BindPoint> getBindPoints() {
+        List<BindPoint> bindpoints = new ArrayList<>();
+        for (int i = 1; i < spans.length; i += 2) {
+            if (!bindings.containsKey(spans[i])) {
+                throw new InvalidParameterException("Binding named '" + spans[i] + "' is not provided for template '" + rawtemplate + "'");
+            }
+            bindpoints.add(new BindPoint(spans[i], bindings.get(spans[i])));
+        }
+
+        return bindpoints;
     }
 
     /**
@@ -295,15 +332,20 @@ public class ParsedTemplate {
      * @param tokenFormatter The mapping from a token name to a place holder
      * @return A driver or usage-specific format of the statement, with anchors
      */
-    public String getPositionalStatement(Function<String,String> tokenFormatter) {
+    public String getPositionalStatement(Function<String, String> tokenFormatter) {
         StringBuilder sb = new StringBuilder(spans[0]);
-        for (int i = 1; i < spans.length; i+=2) {
+        for (int i = 1; i < spans.length; i += 2) {
             sb.append(tokenFormatter.apply(spans[i]));
-            sb.append(spans[i+1]);
+            sb.append(spans[i + 1]);
         }
         return sb.toString();
     }
 
+    /**
+     * Return the parsed template in (<em>literal, variable, ..., ..., literal</em>) form.
+     *
+     * @return
+     */
     public String[] getSpans() {
         return spans;
     }
@@ -312,12 +354,10 @@ public class ParsedTemplate {
     public static class BindPoint {
         String anchor;
         String bindspec;
-        ParsedTemplate template;
 
-        public BindPoint(String anchor, String bindspec, ParsedTemplate template) {
+        public BindPoint(String anchor, String bindspec) {
             this.anchor = anchor;
             this.bindspec = bindspec;
-            this.template = template;
         }
 
         public String getAnchor() {
@@ -328,10 +368,24 @@ public class ParsedTemplate {
             return bindspec;
         }
 
-        public ParsedTemplate getTemplate() {
-            return template;
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            BindPoint bindPoint = (BindPoint) o;
+
+            if (!Objects.equals(anchor, bindPoint.anchor)) return false;
+            return Objects.equals(bindspec, bindPoint.bindspec);
         }
 
+        @Override
+        public String toString() {
+            return "BindPoint{" +
+                    "anchor='" + anchor + '\'' +
+                    ", bindspec='" + bindspec + '\'' +
+                    '}';
+        }
     }
 
 }

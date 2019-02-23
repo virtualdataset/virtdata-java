@@ -56,7 +56,7 @@ public class ParsedTemplateTest {
     public void testShouldMatchLiteralVariableOnly() {
         String literalVariableOnly = "literal {bindname1}";
         ParsedTemplate pt = new ParsedTemplate(literalVariableOnly, bindings);
-        assertThat(pt.getSpans()).containsExactly("literal ","bindname1", "");
+        assertThat(pt.getSpans()).containsExactly("literal ", "bindname1", "");
         assertThat(pt.getSpecificBindings()).containsOnlyKeys("bindname1");
         assertThat(pt.getMissingBindings()).isEmpty();
         assertThat(pt.getExtraBindings()).containsExactly("bindname2");
@@ -66,7 +66,7 @@ public class ParsedTemplateTest {
     public void testShouldMatchVariableLiteralOnly() {
         String variableLiteralOnly = "{bindname2} literal";
         ParsedTemplate pt = new ParsedTemplate(variableLiteralOnly, bindings);
-        assertThat(pt.getSpans()).containsExactly("", "bindname2"," literal");
+        assertThat(pt.getSpans()).containsExactly("", "bindname2", " literal");
         assertThat(pt.getSpecificBindings()).containsOnlyKeys("bindname2");
         assertThat(pt.getMissingBindings()).isEmpty();
         assertThat(pt.getExtraBindings()).containsExactly("bindname1");
@@ -91,13 +91,18 @@ public class ParsedTemplateTest {
 
     public void testPositionalExpansionShouldBeValid() {
         String multi = "A {bindname1} of {bindname2} sort.";
-        ParsedTemplate pt = new ParsedTemplate(multi,bindings);
-        assertThat(pt.getSpans()).containsExactly("A ","bindname1", " of ", "bindname2", " sort.");
+        ParsedTemplate pt = new ParsedTemplate(multi, bindings);
+        assertThat(pt.getSpans()).containsExactly("A ", "bindname1", " of ", "bindname2", " sort.");
         assertThat(pt.getSpecificBindings()).containsOnlyKeys("bindname1", "bindname2");
         assertThat(pt.getMissingBindings()).isEmpty();
         assertThat(pt.getExtraBindings()).isEmpty();
         assertThat(pt.getPositionalStatement(s -> "##")).isEqualTo("A ## of ## sort.");
         assertThat(pt.getPositionalStatement(s -> "[[" + s + "]]")).isEqualTo("A [[bindname1]] of [[bindname2]] sort.");
+
+        assertThat(pt.getBindPoints()).containsExactly(
+                new ParsedTemplate.BindPoint("bindname1", "bindspec1"),
+                new ParsedTemplate.BindPoint("bindname2", "bindspec2")
+        );
     }
 
 
