@@ -99,11 +99,47 @@ public class VirtdataBuilderTest {
 
     }
 
+    public void testEscapedDoubleQuotedLiteralISEscaped() {
+        VirtDataDSL.ParseResult r = VirtDataDSL.parse(
+                "Template(\"A \\value\")"
+        );
+        assertThat(r.throwable).isNull();
+        assertThat(r.flow).isNotNull();
+        assertThat(r.flow.getExpressions()).hasSize(1);
+        assertThat(r.flow.getExpressions().get(0)).isNotNull();
+        Expression expr = r.flow.getExpressions().get(0);
+        assertThat(expr.getCall().getArgs()).hasSize(1);
+        ArgType argType = expr.getCall().getArgs().get(0);
+        ArgType.TypeName typeName = ArgType.TypeName.valueOf(argType);
+        assertThat(typeName).isEqualTo(ArgType.TypeName.StringArg);
+        assertThat(argType.toString()).isEqualTo("'A value'");
+
+    }
+
+    public void testEscapedSingleQuotedLiteralIsNotEscaped() {
+        VirtDataDSL.ParseResult r = VirtDataDSL.parse(
+                "Template('{\"q\":\"*:*\", \"fq\":\"point:\\\"IsWithin(BUFFER(POINT(40.71 74.3), 50.0))}');"
+        );
+        assertThat(r.throwable).isNull();
+        assertThat(r.flow).isNotNull();
+        assertThat(r.flow.getExpressions()).hasSize(1);
+        assertThat(r.flow.getExpressions().get(0)).isNotNull();
+        Expression expr = r.flow.getExpressions().get(0);
+        assertThat(expr.getCall().getArgs()).hasSize(1);
+        ArgType argType = expr.getCall().getArgs().get(0);
+        ArgType.TypeName typeName = ArgType.TypeName.valueOf(argType);
+        assertThat(typeName).isEqualTo(ArgType.TypeName.StringArg);
+        assertThat(argType.toString()).isEqualTo("'{\"q\":\"*:*\", \"fq\":\"point:\\\"IsWithin(BUFFER(POINT(40.71 74.3), 50.0))}'");
+
+
+
+    }
 
     @Test
     public void testLambdaChains() {
         Path path=null;
         try {
+
             URI uri = ClassLoader.getSystemResource("test-syntax-lambda.virtdata").toURI();
             path = Paths.get(uri);
             byte[] bytes = Files.readAllBytes(path);

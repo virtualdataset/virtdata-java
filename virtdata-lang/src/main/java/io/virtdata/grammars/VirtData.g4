@@ -46,8 +46,8 @@ NEWLINE   : '\r' '\n' | '\n' | '\r';
 COMPOSE: 'compose' ;
 TYPEARROW: '->' ;
 ASSIGN: '=';
-SSTRING_LITERAL : '\'' (~('\'' | '\\' | '\r' | '\n') | '\\' ('\'' | '\\'))* '\'';
-DSTRING_LITERAL : '"' (~('"' | '\\' | '\r' | '\n') | '\\' ('"' | '\\'))* '"';
+SSTRING_LITERAL : '\'' (~('\'' | '\\' | '\r' | '\n') | '\\' ('\'' | '\\' | . ))* '\'';
+DSTRING_LITERAL : '"' (~('"' | '\\' | '\r' | '\n') | '\\' ('"' | '\\' | .))* '"';
 
 // IDs can start with letters, contain numbers, dashes, and
 // underscores, but not end with a dash

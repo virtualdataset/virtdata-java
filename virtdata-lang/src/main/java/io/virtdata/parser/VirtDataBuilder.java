@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
+import java.util.regex.Pattern;
 
 public class VirtDataBuilder extends VirtDataBaseListener {
     private final static Logger logger = LoggerFactory.getLogger(VirtDataBuilder.class);
@@ -125,9 +126,12 @@ public class VirtDataBuilder extends VirtDataBaseListener {
         calls.peek().addFunctionArg(new FloatArg(Float.valueOf(ctx.getText())));
     }
 
+    private static Pattern escapePattern = Pattern.compile("\\.");
+
     @Override
     public void exitStringValue(VirtDataParser.StringValueContext ctx) {
-        calls.peek().addFunctionArg(new StringArg(ctx.getText().substring(1, ctx.getText().length() - 1)));
+        StringArg stringArg = new StringArg(ctx.getText());
+        calls.peek().addFunctionArg(stringArg);
     }
 
     @Override
