@@ -78,7 +78,7 @@ public class IntegratedComposerLogicTest {
 //    }
 
     public void testNestedFunction() {
-        Template t = new Template("_{}_{}_", String::valueOf, String::valueOf);
+        Template t = new Template("_{}_{}_", String::valueOf, (LongFunction<?>) String::valueOf);
         String r = t.apply(5);
         assertThat(r).isEqualTo("_5_6_");
         Optional<DataMapper<String>> m2 = VirtData.getOptionalMapper("Template('_{}_',long->NumberNameToString()->java.lang.String)");

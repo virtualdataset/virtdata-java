@@ -3,6 +3,9 @@ package io.virtdata.core;
 import io.virtdata.processors.DocFuncData;
 import io.virtdata.processors.FunctionDocInfoProcessor;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +15,8 @@ import java.util.List;
  * {@link io.virtdata.annotations.PerThreadMapper} instances in the runtime.
  */
 public class VirtDataDocs {
+
+    private final static MethodHandles.Lookup lookup = MethodHandles.publicLookup();
 
     public static List<String> getAllNames() {
         VirtDataFunctionFinder finder = new VirtDataFunctionFinder();
@@ -26,15 +31,15 @@ public class VirtDataDocs {
             for (String n : functionNames) {
                 String s = n + FunctionDocInfoProcessor.AUTOSUFFIX;
                 Class<?> aClass = Class.forName(s);
-
-                Object o = aClass.getConstructor().newInstance();
+                MethodHandle constructor = lookup.findConstructor(aClass, MethodType.methodType(Void.TYPE));
+                Object o = constructor.invoke();
                 if (DocFuncData.class.isAssignableFrom(o.getClass())) {
                     docs.add(DocFuncData.class.cast(o));
                 } else {
                     throw new RuntimeException("class " + o.getClass() + " could not be assigned to " + DocFuncData.class.getSimpleName());
                 }
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new RuntimeException("Error while loading doc models:" + e.toString());
         }
         return docs;

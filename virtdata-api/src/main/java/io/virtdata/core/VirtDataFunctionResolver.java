@@ -5,7 +5,9 @@ import org.apache.commons.lang3.ClassUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Array;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -14,6 +16,7 @@ import java.util.stream.Collectors;
 
 public class VirtDataFunctionResolver {
     private final static Logger logger = LoggerFactory.getLogger(VirtDataFunctionResolver.class);
+    private final static MethodHandles.Lookup lookup = MethodHandles.publicLookup();
     private final VirtDataFunctionFinder virtDataFunctionFinder = new VirtDataFunctionFinder();
 
     public List<ResolvedFunction> resolveFunctions(Class<?> returnType, Class<?> inputType, String functionName, Object... parameters) {
@@ -22,29 +25,59 @@ public class VirtDataFunctionResolver {
         // TODO: return assignment compatible matches when there are none exact matching.
         // TODO: Further, make lambda construction honor exact matches first as well.
 
+        Class<?>[] parameterTypes = new Class<?>[parameters.length];
+        for (int i = 0; i < parameters.length; i++) {
+            parameterTypes[i] = parameters[i].getClass();
+        }
+
         List<ResolvedFunction> resolvedFunctions = new ArrayList<>();
 
         List<Class<?>> matchingClasses = virtDataFunctionFinder.getFunctionNames()
                 .stream()
-                .filter(s -> s.endsWith("."+functionName))
+                .filter(s -> s.endsWith("." + functionName))
                 .map(this::maybeClassForName)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        List<Constructor<?>> matchingConstructors = matchingClasses.stream()
+        List<Constructor<?>> matchingConstructors = null;
+        matchingConstructors = matchingClasses.stream()
                 .filter(c -> {
                     // This form for debugging
                     boolean isFunctional = isFunctionalInterface(c);
-                    boolean canAssignInput = inputType==null || canAssignInputType(c, inputType);
-                    boolean canAssignReturn = returnType==null ||canAssignReturnType(c, returnType);
+                    boolean canAssignInput = inputType == null || canAssignInputType(c, inputType);
+                    boolean canAssignReturn = returnType == null || canAssignReturnType(c, returnType);
                     boolean matchesSignature = isFunctional && canAssignInput && canAssignReturn;
                     return matchesSignature;
                 })
                 .flatMap(c -> Arrays.stream(c.getDeclaredConstructors()))
                 .filter(c -> {
-                    boolean canAssignArgv = canAssignArguments(c, parameters);
-                    return canAssignArgv;
+                    Class<?>[] ctypes = c.getParameterTypes();
+                    if (c.isVarArgs()) {
+                        if (!ClassUtils.isAssignable(
+                                Arrays.copyOfRange(parameterTypes, 0, ctypes.length - 1),
+                                Arrays.copyOfRange(ctypes, 0, ctypes.length - 1),
+                                true)) {
+                            return false;
+                        }
+                        Class<?> componentType = ctypes[ctypes.length - 1].getComponentType();
+                        if (parameterTypes.length >= ctypes.length && !ClassUtils.isAssignable(parameterTypes[ctypes.length - 1], componentType, true)) {
+                            return false;
+                        }
+                        return true;
+                    } else {
+                        if (parameterTypes.length!=ctypes.length) {
+                            return false;
+                        }
+                        return ClassUtils.isAssignable(parameterTypes, ctypes, true);
+                    }
                 })
+//                .map(c -> {
+//                    try {
+//                        return lookup.findConstructor(c, MethodType.methodType(void.class, parameterTypes));
+//                    } catch (NoSuchMethodException | IllegalAccessException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                })
                 .collect(Collectors.toList());
 
         if (returnType != null && inputType != null && matchingConstructors.size() > 1) {
@@ -59,38 +92,26 @@ public class VirtDataFunctionResolver {
         }
 
         for (Constructor<?> ctor : matchingConstructors) {
-            Object[] args=parameters;
-            if (ctor.isVarArgs()) {
-                args = new Object[ctor.getParameterCount()];
-                int varArgsCount = (parameters.length - ctor.getParameterCount())+1;
-                Class<?> varargArrayType = ctor.getParameterTypes()[ctor.getParameterTypes().length - 1];
-                Class<?> varArgType = varargArrayType.getComponentType();
-                Object varArgs = Array.newInstance(varArgType, varArgsCount);
-                for (int i = 0; i < parameters.length; i++) {
-                    if (i<args.length-1) {
-                        args[i] = parameters[i];
-                    } else {
-                        ((Object[])varArgs)[(i-args.length)+1]=varArgType.cast(parameters[i]);
-                    }
-                }
-                args[args.length-1]=varArgs;
-            }
-
             try {
-                Object func = ctor.newInstance((Object[])args);
-                boolean threadSafe = ctor.getClass().getAnnotation(ThreadSafeMapper.class) != null;
+                Class<?> ctorDClass = ctor.getDeclaringClass();
+                MethodType ctorMethodType = MethodType.methodType(void.class, ctor.getParameterTypes());
+                MethodHandle constructor = lookup.findConstructor(ctorDClass, ctorMethodType);
+                Object functionalInstance = constructor.invokeWithArguments(parameters);
+                boolean threadSafe = functionalInstance.getClass().getAnnotation(ThreadSafeMapper.class) != null;
                 resolvedFunctions.add(
                         new ResolvedFunction(
-                                func, threadSafe, ctor.getParameterTypes(), parameters,
-                                getInputClass(ctor.getDeclaringClass()),
-                                getOutputClas(ctor.getDeclaringClass()),
-                                "defaultimpl")
+                                functionalInstance,
+                                threadSafe,
+                                parameterTypes,
+                                parameters,
+                                getInputClass(functionalInstance.getClass()),
+                                getOutputClas(functionalInstance.getClass())
+                        )
                 );
-            } catch (Exception e) {
-                throw new RuntimeException("Error while calling constructor '" + ctor.toString() + "': " + e, e);
+            } catch (Throwable throwable) {
+                throw new RuntimeException(throwable);
             }
         }
-
         return resolvedFunctions;
     }
 
@@ -100,7 +121,7 @@ public class VirtDataFunctionResolver {
                     boolean isNotDefault = !m.isDefault();
                     boolean isNotBridge = !m.isBridge();
                     boolean isNotSynthetic = !m.isSynthetic();
-                    boolean isPublic = (m.getModifiers()&Modifier.PUBLIC)>0;
+                    boolean isPublic = (m.getModifiers() & Modifier.PUBLIC) > 0;
                     boolean isNotString = !m.getName().equals("toString");
                     boolean isApplyMethod = m.getName().startsWith("apply");
                     boolean isFunctional = isNotDefault && isNotBridge && isNotSynthetic && isPublic && isNotString && isApplyMethod;
@@ -110,44 +131,44 @@ public class VirtDataFunctionResolver {
         return applyMethods.isPresent();
     }
 
-    private boolean canAssignArguments(Constructor<?> targetConstructor, Object[] sourceParameters) {
-        boolean isAssignable=true;
-        Class<?>[] targetTypes = targetConstructor.getParameterTypes();
+    private boolean canAssignArguments(Constructor<?> targetCtor, Object[] sourceParameters) {
+        boolean isAssignable = true;
+        Class<?>[] targetTypes = targetCtor.getParameterTypes();
 
-        if (targetConstructor.isVarArgs()) {
-            if (sourceParameters.length< (targetTypes.length-1)) {
-                logger.trace(targetConstructor.toString() + " (varargs) does not match, not enough source parameters: " + Arrays.toString(sourceParameters));
+        if (targetCtor.isVarArgs()) {
+            if (sourceParameters.length < (targetTypes.length - 1)) {
+                logger.trace(targetCtor.toString() + " (varargs) does not match, not enough source parameters: " + Arrays.toString(sourceParameters));
                 return false;
             }
         } else if (sourceParameters.length != targetTypes.length) {
-            logger.trace(targetConstructor.toString() + " (varargs) does not match source parameters (size): " + Arrays.toString(sourceParameters));
+            logger.trace(targetCtor.toString() + " (varargs) does not match source parameters (size): " + Arrays.toString(sourceParameters));
             return false;
         }
 
         Class<?>[] sourceTypes = new Class<?>[sourceParameters.length];
         for (int i = 0; i < sourceTypes.length; i++) {
-            sourceTypes[i]=sourceParameters[i].getClass();
+            sourceTypes[i] = sourceParameters[i].getClass();
         }
 
-        if (targetConstructor.isVarArgs()) {
-            for (int i = 0; i < targetTypes.length-1; i++) {
-                if (!ClassUtils.isAssignable(sourceTypes[i],targetTypes[i])) {
-                    isAssignable=false;
+        if (targetCtor.isVarArgs()) {
+            for (int i = 0; i < targetTypes.length - 1; i++) {
+                if (!ClassUtils.isAssignable(sourceTypes[i], targetTypes[i])) {
+                    isAssignable = false;
                     break;
                 }
             }
-            Class<?> componentType = targetTypes[targetTypes.length-1].getComponentType();
-            for (int i = targetTypes.length-1; i < sourceTypes.length; i++) {
-                if (!ClassUtils.isAssignable(sourceTypes[i],componentType,true)) {
+            Class<?> componentType = targetTypes[targetTypes.length - 1].getComponentType();
+            for (int i = targetTypes.length - 1; i < sourceTypes.length; i++) {
+                if (!ClassUtils.isAssignable(sourceTypes[i], componentType, true)) {
 
-                    isAssignable=false;
+                    isAssignable = false;
                     break;
                 }
             }
         } else {
             for (int i = 0; i < targetTypes.length; i++) {
-                if (!ClassUtils.isAssignable(sourceTypes[i],targetTypes[i])) {
-                    isAssignable=false;
+                if (!ClassUtils.isAssignable(sourceTypes[i], targetTypes[i])) {
+                    isAssignable = false;
                     break;
                 }
             }
@@ -166,6 +187,7 @@ public class VirtDataFunctionResolver {
     private Class<?> getInputClass(Class<?> functionalClass) {
         return toFunctionalMethod(functionalClass).getParameterTypes()[0];
     }
+
     private Class<?> getOutputClas(Class<?> functionClass) {
         return toFunctionalMethod(functionClass).getReturnType();
     }
