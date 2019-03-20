@@ -3,6 +3,7 @@ package io.virtdata.core;
 import io.virtdata.api.FunctionType;
 import io.virtdata.api.ValueType;
 
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -24,6 +25,8 @@ public class ResolvedFunction {
     private Object functionObject;
     private String libraryName;
     private boolean isThreadSafe;
+    private static MethodHandles.Lookup methodLookup = MethodHandles.lookup();
+
 
     public ResolvedFunction(Object g, boolean isThreadSafe, Class<?>[] initializerSignature, Object[] initValues, Class<?> inputType, Class<?> outputType, String libraryName) {
         this(g, isThreadSafe, initializerSignature, initValues, inputType, outputType);
