@@ -5,8 +5,7 @@ import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.LongFunction;
-import java.util.function.LongUnaryOperator;
+import java.util.function.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,13 +27,74 @@ public class Template implements LongFunction<String> {
     private final String rawTemplate;
     private LongUnaryOperator iterOp;
     private String[] literals;
-    private LongFunction<?>[] funcs;
+    private LongFunction<?>[] adaptedFuncs;
 
     @Example({"Template('{}-{}',Add(10),Hash())","concatenate input+10, '-', and a pseudo-random long"})
     public Template(String template, LongFunction<?>... funcs) {
-        this.funcs = funcs;
+        this.adaptedFuncs = funcs;
         this.rawTemplate = template;
         this.literals = parseTemplate(template, funcs);
+    }
+
+    public Template(String template, Function<Long,?>... funcs) {
+        this.adaptedFuncs = new LongFunction[funcs.length];
+        for (int i = 0; i < funcs.length; i++) {
+            int finalI = i;
+            adaptedFuncs[i]=(l) -> funcs[finalI].apply(l);
+        }
+        this.rawTemplate = template;
+        this.literals = parseTemplate(template,adaptedFuncs);
+    }
+
+    public Template(String template, LongUnaryOperator... funcs) {
+        this.adaptedFuncs = new LongFunction[funcs.length];
+        for (int i = 0; i < funcs.length; i++) {
+            int finalI = i;
+            adaptedFuncs[i]=(l) -> funcs[finalI].applyAsLong(l);
+        }
+        this.rawTemplate = template;
+        this.literals = parseTemplate(template,adaptedFuncs);
+    }
+
+    public Template(String template, IntUnaryOperator... funcs) {
+        this.adaptedFuncs = new LongFunction[funcs.length];
+        for (int i = 0; i < funcs.length; i++) {
+            int finalI = i;
+            adaptedFuncs[i]=(l) -> funcs[finalI].applyAsInt(Long.valueOf(l).intValue());
+        }
+        this.rawTemplate = template;
+        this.literals = parseTemplate(template,adaptedFuncs);
+    }
+
+    public Template(String template, DoubleUnaryOperator... funcs) {
+        this.adaptedFuncs = new LongFunction[funcs.length];
+        for (int i = 0; i < funcs.length; i++) {
+            int finalI = i;
+            adaptedFuncs[i]=(l) -> funcs[finalI].applyAsDouble(l);
+        }
+        this.rawTemplate = template;
+        this.literals = parseTemplate(template,adaptedFuncs);
+    }
+
+    public Template(String template, LongToDoubleFunction... funcs) {
+        this.adaptedFuncs = new LongFunction[funcs.length];
+        for (int i = 0; i < funcs.length; i++) {
+            int finalI = i;
+            adaptedFuncs[i]=(l) -> funcs[finalI].applyAsDouble(l);
+        }
+        this.rawTemplate = template;
+        this.literals = parseTemplate(template,adaptedFuncs);
+    }
+
+    public Template(String template, LongToIntFunction... funcs) {
+        this.adaptedFuncs = new LongFunction[funcs.length];
+        for (int i = 0; i < funcs.length; i++) {
+            int finalI = i;
+            adaptedFuncs[i]=(l) -> funcs[finalI].applyAsInt(l);
+        }
+        this.rawTemplate = template;
+        this.literals = parseTemplate(template,adaptedFuncs);
+
     }
 
     /**
@@ -76,9 +136,9 @@ public class Template implements LongFunction<String> {
         buffer.setLength(0);
         buffer.append(literals[0]);
         if (literals.length > 1) {
-            for (int i = 0; i < funcs.length; i++) {
+            for (int i = 0; i < adaptedFuncs.length; i++) {
                 long input = iterOp != null ? iterOp.applyAsLong(value + i) : value + i;
-                String genString = String.valueOf(funcs[i].apply(input));
+                String genString = String.valueOf(adaptedFuncs[i].apply(input));
                 buffer.append(genString);
                 buffer.append(literals[i + 1]);
             }
