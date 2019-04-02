@@ -25,7 +25,7 @@ public class ResolvedFunction {
     private Object functionObject;
     private String libraryName;
     private boolean isThreadSafe;
-    private static MethodHandles.Lookup methodLookup = MethodHandles.lookup();
+    private static MethodHandles.Lookup methodLookup = MethodHandles.publicLookup();
 
 
     public ResolvedFunction(Object g, boolean isThreadSafe, Class<?>[] initializerSignature, Object[] initValues, Class<?> inputType, Class<?> outputType, String libraryName) {

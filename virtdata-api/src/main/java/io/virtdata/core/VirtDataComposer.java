@@ -55,7 +55,7 @@ public class VirtDataComposer {
     private final static String PREAMBLE = "compose ";
     private final static Logger logger = LoggerFactory.getLogger(DataMapperLibrary.class);
     private final VirtDataFunctionLibrary functionLibrary;
-    private final static MethodHandles.Lookup lookup = MethodHandles.lookup();
+    private final static MethodHandles.Lookup lookup = MethodHandles.publicLookup();
 
     public VirtDataComposer(VirtDataFunctionLibrary functionLibrary) {
         this.functionLibrary = functionLibrary;
@@ -77,8 +77,20 @@ public class VirtDataComposer {
         return resolveFunctionFlow(flow);
     }
 
+    public ResolverDiagnostics resolveDiagnosticFunctionFlow(String flowspec) {
+        String strictSpec = flowspec.startsWith("compose ") ? flowspec.substring(8) : flowspec;
+        VirtDataDSL.ParseResult parseResult = VirtDataDSL.parse(strictSpec);
+        if (parseResult.throwable != null) {
+            throw new RuntimeException(parseResult.throwable);
+        }
+        VirtDataFlow flow = parseResult.flow;
 
-    public Optional<ResolvedFunction> resolveFunctionFlow(VirtDataFlow flow) {
+        return resolveDiagnosticFunctionFlow(flow);
+    }
+
+    public ResolverDiagnostics resolveDiagnosticFunctionFlow(VirtDataFlow flow) {
+        ResolverDiagnostics diagnostics = new ResolverDiagnostics();
+        diagnostics.trace("processing flow " + flow.toString() + " from output to input");
 
         LinkedList<List<ResolvedFunction>> funcs = new LinkedList<>();
 
@@ -90,20 +102,36 @@ public class VirtDataComposer {
         nextFunctionInputTypes.add(new HashSet<>());
         finalValueTypeOption.ifPresent(t -> nextFunctionInputTypes.get(0).add(t));
 
+        diagnostics.trace("working backwards from " + (flow.getExpressions().size()-1));
+
         for (int i = flow.getExpressions().size() - 1; i >= 0; i--) {
             FunctionCall call = flow.getExpressions().get(i).getCall();
+            diagnostics.trace("resolving args for " + call.toString());
+
             List<ResolvedFunction> nodeFunctions = new LinkedList<>();
 
             String funcName = call.getFunctionName();
             Class<?> inputType = ValueType.classOfType(call.getInputType());
             Class<?> outputType = ValueType.classOfType(call.getOutputType());
             Object[] args = call.getArguments();
-            args = populateFunctions(args);
+            try {
+                args = populateFunctions(diagnostics, args);
+            } catch (Exception e) {
+                return diagnostics.error(e);
+            }
+
+            diagnostics.trace("resolved args: ");
+            for (Object arg : args) {
+                diagnostics.trace(" " + arg.getClass().getSimpleName() + ": " + arg.toString());
+            }
 
             List<ResolvedFunction> resolved = functionLibrary.resolveFunctions(outputType, inputType, funcName, args);
             if (resolved.size() == 0) {
-                throw new RuntimeException("Unable to find even one function for " + call);
+                return diagnostics.error(new RuntimeException("Unable to find even one function for " + call));
             }
+            diagnostics.trace(" resolved functions:");
+            diagnostics.trace(summarize(resolved));
+
             nodeFunctions.addAll(resolved);
             funcs.addFirst(nodeFunctions);
 
@@ -112,23 +140,22 @@ public class VirtDataComposer {
         }
 
         if (!nextFunctionInputTypes.peekFirst().contains(Long.TYPE)) {
-            throw new RuntimeException("There is no initial function which accepts a long input. Function chain, after type filtering: \n" +
-                    summarizeBulk(funcs));
+            return diagnostics.error(new RuntimeException("There is no initial function which accepts a long input. Function chain, after type filtering: \n" + summarizeBulk(funcs)));
         }
         removeNonLongFunctions(funcs.getFirst());
 
         List<ResolvedFunction> flattenedFuncs = optimizePath(funcs, ValueType.classOfType(flow.getLastExpression().getCall().getOutputType()));
 
         if (flattenedFuncs.size() == 1) {
-            logger.trace("FUNCTION resolution succeeded (single): '" + flow.toString() + "'");
-            return Optional.of(flattenedFuncs.get(0));
+            diagnostics.trace("FUNCTION resolution succeeded (single): '" + flow.toString() + "'");
+            return diagnostics.setResolvedFunction(flattenedFuncs.get(0));
         }
 
         FunctionAssembly assembly = new FunctionAssembly();
-        logger.trace("composed summary: " + summarize(flattenedFuncs));
+        diagnostics.trace("composed summary: " + summarize(flattenedFuncs));
 
         boolean isThreadSafe = true;
-        logger.trace("FUNCTION chain selected: (multi) '" + this.summarize(flattenedFuncs) + "'");
+        diagnostics.trace("FUNCTION chain selected: (multi) '" + this.summarize(flattenedFuncs) + "'");
         for (ResolvedFunction resolvedFunction : flattenedFuncs) {
             try {
                 Object functionObject = resolvedFunction.getFunctionObject();
@@ -137,18 +164,20 @@ public class VirtDataComposer {
                     isThreadSafe = false;
                 }
             } catch (Exception e) {
-                logger.error("FUNCTION resolution failed: '" + flow.toString() + "': " + e.toString());
-                throw e;
+                return diagnostics.error(new RuntimeException("FUNCTION resolution failed: '" + flow.toString() + "': " + e.toString()));
             }
         }
-        logger.trace("FUNCTION resolution succeeded: (multi) '" + flow.toString() + "'");
-
         ResolvedFunction composedFunction = assembly.getResolvedFunction(isThreadSafe);
-
-        return Optional.of(composedFunction);
+        diagnostics.trace("FUNCTION resolution succeeded (lambda): '" + flow.toString() + "'");
+        return diagnostics.setResolvedFunction(composedFunction);
     }
 
-    private Object[] populateFunctions(Object[] args) {
+    public Optional<ResolvedFunction> resolveFunctionFlow(VirtDataFlow flow) {
+        ResolverDiagnostics resolverDiagnostics = resolveDiagnosticFunctionFlow(flow);
+        return resolverDiagnostics.getResolvedFunction();
+    }
+
+    private Object[] populateFunctions(ResolverDiagnostics diagnostics, Object[] args) {
         for (int i = 0; i < args.length; i++) {
             Object o = args[i];
             if (o instanceof FunctionCall) {
@@ -158,11 +187,12 @@ public class VirtDataComposer {
                 Class<?> inputType = ValueType.classOfType(call.getInputType());
                 Class<?> outputType = ValueType.classOfType(call.getOutputType());
                 Object[] fargs = call.getArguments();
-                fargs = populateFunctions(fargs);
+                diagnostics.trace("resolving argument as function '" + call.toString() + "'");
+                fargs = populateFunctions(diagnostics, fargs);
 
                 List<ResolvedFunction> resolved = functionLibrary.resolveFunctions(outputType, inputType, funcName, fargs);
                 if (resolved.size() == 0) {
-                    throw new RuntimeException("Unable to find even one function for " + call);
+                    throw new RuntimeException("Unable to resolve even one function for argument: " + call);
                 }
                 args[i] = resolved.get(0).getFunctionObject();
             }

@@ -90,6 +90,18 @@ public class VirtData {
         return resolvedFunction.map(ResolvedFunction::getFunctionObject).map(DataMapperFunctionMapper::map);
     }
 
+    public static ResolverDiagnostics getMapperDiagnostics(String flowSpec) {
+        flowSpec = CompatibilityFixups.fixup(flowSpec);
+        VirtDataDSL.ParseResult parseResult = VirtDataDSL.parse(flowSpec);
+        if (parseResult.throwable != null) {
+            throw new RuntimeException(parseResult.throwable);
+        }
+        VirtDataFlow flow = parseResult.flow;
+        VirtDataComposer composer = new VirtDataComposer();
+        ResolverDiagnostics resolverDiagnostics = composer.resolveDiagnosticFunctionFlow(flow);
+        return resolverDiagnostics;
+    }
+
     /**
      * Instantiate an optional data mapping function if possible, with type awareness. This version
      * of {@link #getOptionalMapper(String)} will use the additional type information in the clazz

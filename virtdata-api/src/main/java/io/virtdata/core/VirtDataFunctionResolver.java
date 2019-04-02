@@ -200,7 +200,7 @@ public class VirtDataFunctionResolver {
     private Class<?> maybeClassForName(String className) {
         try {
             return Class.forName(className);
-        } catch (ClassNotFoundException e) {
+        } catch (Exception e) {
             return null;
         }
     }

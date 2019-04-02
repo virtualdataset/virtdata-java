@@ -18,6 +18,7 @@ package io.virtdata;
 import io.virtdata.api.DataMapper;
 import io.virtdata.core.Bindings;
 import io.virtdata.core.BindingsTemplate;
+import io.virtdata.core.ResolverDiagnostics;
 import io.virtdata.core.VirtData;
 import org.testng.annotations.Test;
 
@@ -26,6 +27,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Test
 public class IntegratedComposerLibraryTest {
 
     // The deprecated functions are not being included in the next release, so this test's purpose has been
@@ -101,7 +103,6 @@ public class IntegratedComposerLibraryTest {
         Bindings bindings = bt.resolveBindings();
     }
 
-    @Test
     public void testUUIDChain() {
         Optional<DataMapper<Object>> dm =
                 VirtData.getOptionalMapper("compose Mod(1000); ToHashedUUID() -> java.util.UUID");
@@ -110,14 +111,12 @@ public class IntegratedComposerLibraryTest {
         assertThat(o).isEqualTo(UUID.fromString("3df498b1-9568-4584-96fd-76f6081da01a"));
     }
 
-    @Test
     public void testNormalDoubleAdd() {
         Optional<DataMapper<String>> dm =
                 VirtData.getOptionalMapper("compose Normal(0.0,5.0); Add(5.0) -> double");
         assertThat(dm).isPresent();
     }
 
-    @Test
     public void testDistInCompose() {
         Optional<DataMapper<String>> dm =
                 VirtData.getOptionalMapper("compose Hash(); Uniform(0,100); ToString() -> String");
@@ -127,7 +126,6 @@ public class IntegratedComposerLibraryTest {
         assertThat(s).isEqualTo("78");
     }
 
-    @Test
     public void testComposeSingleFuncTypeCoercion() {
         Optional<DataMapper<Object>> longMapper =
                 VirtData.getOptionalMapper("compose Uniform(1,10) -> long");
@@ -159,9 +157,7 @@ public class IntegratedComposerLibraryTest {
         assertThat(o).isEqualTo(expected);
     }
 
-    @Test
-    public void testChainedHashRanges()
-    {
+    public void testChainedHashRanges() {
         final int initialCycle = 0;
         final int intermediateCycle = 39;
         final int finalCycle = 81;
@@ -176,7 +172,6 @@ public class IntegratedComposerLibraryTest {
         assertInteger(finalChainedValue, finalCycle);
     }
 
-    @Test
     public void testLeadingIdentityDoesNotImpactTypes()
     {
         final int initialCycle = 0;
@@ -188,4 +183,14 @@ public class IntegratedComposerLibraryTest {
         Object o2 = assertMapper("compose Identity(); HashRange(0,1000); HashRange(0,1000) -> int", initialCycle);
         assertInteger(o2, finalCycle);
     }
+
+    public void testTemplateBindingConversion() {
+        ResolverDiagnostics diag;
+        diag = VirtData.getMapperDiagnostics("Uniform(0.0,1.0)");
+        System.out.println(diag.toString());
+
+        diag = VirtData.getMapperDiagnostics("Template('{}', long->Uniform(0.0D,1.0D))->double");
+        System.out.println(diag.toString());
+    }
+
 }
