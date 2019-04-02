@@ -1,6 +1,7 @@
 package io.virtdata.processors;
 
 import io.virtdata.annotations.*;
+import io.virtdata.processors.types.DocForFunc;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;

@@ -5,10 +5,10 @@
     <packaging>jar</packaging>
 
     <parent>
-        <artifactId>project-defaults</artifactId>
+        <artifactId>virtdata-defaults</artifactId>
         <groupId>io.virtdata</groupId>
         <version>2.11.19-SNAPSHOT</version>
-        <relativePath>../project-defaults</relativePath>
+        <relativePath>../virtdata-defaults</relativePath>
     </parent>
 
     <name>virtdata-api</name>
@@ -17,12 +17,12 @@
     <dependencies>
         <dependency>
             <groupId>io.virtdata</groupId>
-            <artifactId>project-processors</artifactId>
+            <artifactId>virtdata-processors</artifactId>
             <version>2.11.19-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.virtdata</groupId>
-            <artifactId>project-annotations</artifactId>
+            <artifactId>virtdata-annotations</artifactId>
             <version>2.11.19-SNAPSHOT</version>
         </dependency>
         <dependency>

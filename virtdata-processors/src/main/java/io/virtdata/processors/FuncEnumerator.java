@@ -1,6 +1,7 @@
 package io.virtdata.processors;
 
 import io.virtdata.annotations.Category;
+import io.virtdata.processors.types.DocForFunc;
 
 import javax.annotation.processing.Filer;
 import javax.lang.model.util.Elements;

@@ -5,10 +5,10 @@
     <packaging>jar</packaging>
 
     <parent>
-        <artifactId>project-defaults</artifactId>
+        <artifactId>virtdata-defaults</artifactId>
         <groupId>io.virtdata</groupId>
         <version>2.11.19-SNAPSHOT</version>
-        <relativePath>../project-defaults</relativePath>
+        <relativePath>../virtdata-defaults</relativePath>
     </parent>
 
 

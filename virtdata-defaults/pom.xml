@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.virtdata</groupId>
-    <artifactId>project-defaults</artifactId>
+    <artifactId>virtdata-defaults</artifactId>
     <version>2.11.19-SNAPSHOT</version>
     <packaging>pom</packaging>
 
@@ -64,6 +64,7 @@
                         <include>**/*Test*.java</include>
                     </includes>
                     <useSystemClassLoader>false</useSystemClassLoader> <!-- fixes reflection tests -->
+                    <forkMode>never</forkMode>
 
                 </configuration>
             </plugin>

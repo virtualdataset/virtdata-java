@@ -3,6 +3,10 @@ package io.virtdata.processors;
 import com.squareup.javapoet.*;
 import io.virtdata.annotations.Category;
 import io.virtdata.annotations.Service;
+import io.virtdata.processors.types.DocCtorData;
+import io.virtdata.processors.types.DocForFunc;
+import io.virtdata.processors.types.DocForFuncCtor;
+import io.virtdata.processors.types.DocFuncData;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
@@ -123,7 +127,7 @@ public class FunctionDocInfoWriter implements FuncEnumerator.Listener {
 
 
         AnnotationSpec serviceAnnotation = AnnotationSpec.builder(Service.class)
-                .addMember("value","$T.class",DocFuncData.class)
+                .addMember("value","$T.class", DocFuncData.class)
                 .build();
 
         TypeSpec manifestType = TypeSpec.classBuilder(newClassName)

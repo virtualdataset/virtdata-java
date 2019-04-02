@@ -1,4 +1,4 @@
-package io.virtdata.processors;
+package io.virtdata.processors.types;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
