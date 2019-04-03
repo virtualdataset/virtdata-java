@@ -1,4 +1,4 @@
-package io.virtdata.processors;
+package io.virtdata.processors.logic;
 
 import io.virtdata.annotations.Category;
 import io.virtdata.processors.types.DocForFunc;

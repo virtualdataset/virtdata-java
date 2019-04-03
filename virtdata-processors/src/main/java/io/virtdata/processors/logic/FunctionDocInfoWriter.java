@@ -1,8 +1,9 @@
-package io.virtdata.processors;
+package io.virtdata.processors.logic;
 
 import com.squareup.javapoet.*;
 import io.virtdata.annotations.Category;
 import io.virtdata.annotations.Service;
+import io.virtdata.processors.logic.FuncEnumerator;
 import io.virtdata.processors.types.DocCtorData;
 import io.virtdata.processors.types.DocForFunc;
 import io.virtdata.processors.types.DocForFuncCtor;

@@ -6,6 +6,5 @@ module virtdata.processors {
     requires virtdata.annotations;
     provides javax.annotation.processing.Processor with
             io.virtdata.processors.FunctionDocInfoProcessor,
-            io.virtdata.processors.ServiceProcessor,
-            io.virtdata.processors.FunctionManifestProcessor;
+            io.virtdata.processors.ServiceProcessor;
 }

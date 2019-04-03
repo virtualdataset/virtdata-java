@@ -35,19 +35,41 @@
         <tag>virtdata-1.2.39-SNAPSHOT</tag>
     </scm>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.8.0-beta4</version>
+            </dependency>
+            <dependency>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-runtime</artifactId>
+                <version>4.7.2</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.0</version>
                 <configuration>
-                    <!--<release>11</release>-->
-                    <source>11</source>
-                    <target>11</target>
+                    <release>12</release>
                     <!--<compilerArgument>-Xdoclint:all</compilerArgument>-->
                     <compilerArgument>-Xlint:all</compilerArgument>
+<!--                    <fork>true</fork>-->
+<!--                    <verbose>true</verbose>-->
+<!--                    <annotationProcessorPaths>-->
+<!--                        <path>-->
+<!--                            <groupId>io.virtdata</groupId>-->
+<!--                            <artifactId>virtdata-processors</artifactId>-->
+<!--                            <version>2.11.19-SNAPSHOT</version>-->
+<!--                        </path>-->
+<!--                    </annotationProcessorPaths>-->
+<!--                    <compilerArgument></compilerArgument>-->
 
                 </configuration>
             </plugin>
@@ -64,7 +86,6 @@
                         <include>**/*Test*.java</include>
                     </includes>
                     <useSystemClassLoader>false</useSystemClassLoader> <!-- fixes reflection tests -->
-                    <forkMode>never</forkMode>
 
                 </configuration>
             </plugin>
@@ -83,7 +104,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.0</version>
                 <configuration>
                     <doctitle>VirtualDataSet API</doctitle>
                     <windowtitle>VirtualDataSet API</windowtitle>

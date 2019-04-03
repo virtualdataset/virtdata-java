@@ -1,6 +1,8 @@
 package io.virtdata.processors;
 
 import io.virtdata.annotations.*;
+import io.virtdata.processors.logic.FuncEnumerator;
+import io.virtdata.processors.logic.FunctionDocInfoWriter;
 import io.virtdata.processors.types.DocForFunc;
 
 import javax.annotation.processing.*;
@@ -17,8 +19,8 @@ import java.util.regex.Pattern;
  * This documentation processor is responsible for finding all the enumerated that feed documentation
  * manifests. It simply calls listener interfaces to do the rest of the work.
  */
-@SupportedOptions({"title"})
-@SupportedSourceVersion(SourceVersion.RELEASE_11)
+//@SupportedOptions({"title"})
+//@SupportedSourceVersion(SourceVersion.RELEASE_11)
 @SupportedAnnotationTypes({
         "io.virtdata.annotations.ThreadSafeMapper",
         "io.virtdata.annotations.PerThreadMapper"})

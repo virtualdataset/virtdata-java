@@ -1,6 +1,6 @@
 module virtdata.lang {
-    requires antlr4.runtime;
-    requires slf4j.api;
+    requires org.slf4j;
+    requires org.antlr.antlr4.runtime;
     opens io.virtdata.parser;
     exports io.virtdata.parser;
     exports io.virtdata.ast;
