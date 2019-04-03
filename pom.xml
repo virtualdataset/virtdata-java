@@ -16,7 +16,7 @@
 
     <modules>
         <module>project-defaults</module>
-        <module>project-annotations</module>
+        <module>virtdata-annotations</module>
         <module>project-processors</module>
 
         <module>virtdata-api</module>
