@@ -1,4 +1,7 @@
+import io.virtdata.processors.types.ExampleDocData;
+
 module virtdata.lib.basics {
+
     requires joda.time;
     requires essentials;
     requires slf4j.api;
@@ -7,8 +10,12 @@ module virtdata.lib.basics {
     requires commons.csv;
     requires virtdata.api;
 
-    requires virtdata.annotations;
-    requires virtdata.processors;
+    requires io.virtdata.annotations;
     requires java.compiler;
+
+    requires virtdata.processors;
     uses javax.annotation.processing.Processor;
+
+    //provides io.virtdata.processors.types.DocFuncData with ExampleDocData;
+
 }
