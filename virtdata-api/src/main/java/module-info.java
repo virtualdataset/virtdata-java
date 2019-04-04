@@ -11,12 +11,12 @@ module virtdata.api {
 
     requires virtdata.lang;
     requires transitive virtdata.annotations;
-    requires virtdata.processors;
+    requires transitive virtdata.processors;
 
     // auto-modules
     requires org.apache.commons.lang3;
     requires commons.csv;
-    requires org.slf4j;
+    requires transitive org.slf4j;
 
     uses DocFuncData;
 }
