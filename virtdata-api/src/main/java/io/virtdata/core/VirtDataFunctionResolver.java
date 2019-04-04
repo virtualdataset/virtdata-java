@@ -32,7 +32,8 @@ public class VirtDataFunctionResolver {
 
         List<ResolvedFunction> resolvedFunctions = new ArrayList<>();
 
-        List<Class<?>> matchingClasses = virtDataFunctionFinder.getFunctionNames()
+        List<String> functionNames = virtDataFunctionFinder.getFunctionNames();
+        List<Class<?>> matchingClasses = functionNames
                 .stream()
                 .filter(s -> s.endsWith("." + functionName))
                 .map(this::maybeClassForName)

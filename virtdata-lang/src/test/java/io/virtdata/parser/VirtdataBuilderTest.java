@@ -140,7 +140,8 @@ public class VirtdataBuilderTest {
         Path path=null;
         try {
 
-            URI uri = ClassLoader.getSystemResource("test-syntax-lambda.virtdata").toURI();
+            URI uri = this.getClass().getClassLoader().getResource("test-syntax-lambda.virtdata").toURI();
+
             path = Paths.get(uri);
             byte[] bytes = Files.readAllBytes(path);
             VirtDataDSL.ParseResult parseResult = VirtDataDSL.parse(new String(bytes));

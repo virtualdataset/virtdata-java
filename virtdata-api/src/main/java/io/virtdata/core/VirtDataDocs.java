@@ -1,7 +1,7 @@
 package io.virtdata.core;
 
-import io.virtdata.processors.DocFuncData;
 import io.virtdata.processors.FunctionDocInfoProcessor;
+import io.virtdata.processors.types.DocFuncData;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;

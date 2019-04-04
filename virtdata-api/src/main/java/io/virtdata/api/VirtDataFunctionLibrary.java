@@ -87,6 +87,7 @@ public interface VirtDataFunctionLibrary extends Named {
      * Provide a way to promote a long function into a data mapper.
      *
      * @param spec a binding spec
+     * @param <T> The data mapper parameter type
      * @return An optional data mapper
      */
     default <T> Optional<DataMapper<T>> getDataMapper(String spec) {

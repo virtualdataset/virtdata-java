@@ -16,6 +16,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+        </dependency>
+        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.2.3</version>
@@ -23,7 +27,6 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.25</version>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
@@ -37,30 +40,14 @@
             <version>1.0.0m1</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr4</artifactId>
-            <version>4.7.1</version>
-        </dependency>
     </dependencies>
 
     <build>
         <plugins>
-
-            <!--<plugin>-->
-                <!--<artifactId>maven-compiler-plugin</artifactId>-->
-                <!--<version>3.8.0</version>-->
-                <!--<configuration>-->
-                    <!--<release>11</release>-->
-                    <!--<source>11</source>-->
-                    <!--<target>1.8</target>-->
-                <!--</configuration>-->
-            <!--</plugin>-->
-
             <plugin>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>
-                <version>4.7.1</version>
+                <version>4.7.2</version>
                 <configuration>
                     <sourceDirectory>src/main/java/io/virtdata/grammars</sourceDirectory>
                     <arguments>

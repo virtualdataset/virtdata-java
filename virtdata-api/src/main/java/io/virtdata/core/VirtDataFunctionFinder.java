@@ -1,6 +1,6 @@
 package io.virtdata.core;
 
-import io.virtdata.processors.DocFuncData;
+import io.virtdata.processors.types.DocFuncData;
 
 import java.util.ArrayList;
 import java.util.List;

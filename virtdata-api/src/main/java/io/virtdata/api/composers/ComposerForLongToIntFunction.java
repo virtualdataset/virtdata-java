@@ -44,7 +44,7 @@ public class ComposerForLongToIntFunction implements FunctionComposer<LongToIntF
             case R_T:
                 final LongFunction<?> f5 =
                         (long l) ->
-                                ((Function<Integer,?>) outer).apply((int) inner.applyAsInt(l));
+                                ((Function<Integer,?>) outer).apply(inner.applyAsInt(l));
                 return new ComposerForLongFunction(f5);
             case int_int:
                 final LongToIntFunction f6 =

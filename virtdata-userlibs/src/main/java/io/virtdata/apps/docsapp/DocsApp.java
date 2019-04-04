@@ -2,8 +2,8 @@ package io.virtdata.apps.docsapp;
 
 import io.virtdata.annotations.Category;
 import io.virtdata.core.VirtDataDocs;
-import io.virtdata.processors.DocCtorData;
-import io.virtdata.processors.DocFuncData;
+import io.virtdata.processors.types.DocCtorData;
+import io.virtdata.processors.types.DocFuncData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
