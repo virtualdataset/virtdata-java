@@ -1,4 +1,4 @@
-package io.virtdata.processors;
+package io.virtdata.processors.attic;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;

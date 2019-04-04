@@ -1,13 +1,16 @@
 package io.virtdata.apps.docsapp;
 
 import io.virtdata.annotations.Category;
+import io.virtdata.autodoctypes.DocCtorData;
+import io.virtdata.autodoctypes.DocFuncData;
 import io.virtdata.core.VirtDataDocs;
-import io.virtdata.processors.types.DocCtorData;
-import io.virtdata.processors.types.DocFuncData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.stream.Collectors;

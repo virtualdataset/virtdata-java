@@ -1,6 +1,6 @@
 package io.virtdata.core;
 
-import io.virtdata.processors.types.DocFuncData;
+import io.virtdata.autodoctypes.DocFuncData;
 import org.testng.annotations.Test;
 
 import java.util.List;

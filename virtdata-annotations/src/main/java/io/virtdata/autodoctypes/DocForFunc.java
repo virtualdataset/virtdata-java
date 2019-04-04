@@ -1,4 +1,4 @@
-package io.virtdata.processors;
+package io.virtdata.autodoctypes;
 
 import io.virtdata.annotations.Category;
 

@@ -1,7 +1,5 @@
 package io.virtdata.processors;
 
-import io.virtdata.annotations.Service;
-
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;

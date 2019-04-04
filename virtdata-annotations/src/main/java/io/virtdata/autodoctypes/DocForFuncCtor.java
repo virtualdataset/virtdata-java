@@ -1,13 +1,11 @@
-package io.virtdata.processors;
+package io.virtdata.autodoctypes;
 
-import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ExampleData;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 public class DocForFuncCtor implements DocCtorData {
 

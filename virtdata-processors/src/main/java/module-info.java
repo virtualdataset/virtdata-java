@@ -1,5 +1,4 @@
 module virtdata.processors {
-    exports io.virtdata.processors.types;
     exports io.virtdata.processors;
     requires java.compiler;
     requires com.squareup.javapoet;

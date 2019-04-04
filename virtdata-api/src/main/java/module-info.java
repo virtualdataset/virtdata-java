@@ -1,3 +1,5 @@
+import io.virtdata.autodoctypes.DocFuncData;
+
 module virtdata.api {
 //    requires transitive virtdata.annotations;
 //    requires transitive virtdata.processors;
@@ -16,5 +18,5 @@ module virtdata.api {
     requires commons.csv;
     requires org.slf4j;
 
-    uses io.virtdata.processors.types.DocFuncData;
+    uses DocFuncData;
 }

@@ -1,9 +1,9 @@
 package io.virtdata.processors;
 
 import io.virtdata.annotations.*;
-import io.virtdata.processors.logic.FuncEnumerator;
-import io.virtdata.processors.logic.FunctionDocInfoWriter;
-import io.virtdata.processors.types.DocForFunc;
+import io.virtdata.autodoctypes.DocForFunc;
+import io.virtdata.processors.internals.FuncEnumerator;
+import io.virtdata.processors.internals.FunctionDocInfoWriter;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
