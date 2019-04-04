@@ -90,16 +90,6 @@
                 </configuration>
             </plugin>
 
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-surefire-plugin</artifactId>-->
-                <!--<version>2.22.0</version>-->
-                <!--&lt;!&ndash;<configuration>&ndash;&gt;-->
-                <!--&lt;!&ndash;<useSystemClassLoader>false</useSystemClassLoader> &lt;!&ndash; fixes reflection tests &ndash;&gt;&ndash;&gt;-->
-                <!--&lt;!&ndash;</configuration>&ndash;&gt;-->
-            <!--</plugin>-->
-
-
             <!-- Javadoc -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -108,6 +98,7 @@
                 <configuration>
                     <doctitle>VirtualDataSet API</doctitle>
                     <windowtitle>VirtualDataSet API</windowtitle>
+                    <source>8</source>
                 </configuration>
                 <executions>
                     <execution>

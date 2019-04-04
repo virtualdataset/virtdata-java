@@ -15,4 +15,6 @@ module virtdata.api {
     requires org.apache.commons.lang3;
     requires commons.csv;
     requires org.slf4j;
+
+    uses io.virtdata.processors.types.DocFuncData;
 }
