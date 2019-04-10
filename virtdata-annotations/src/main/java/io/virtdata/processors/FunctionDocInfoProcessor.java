@@ -1,9 +1,13 @@
 package io.virtdata.processors;
 
+//import io.virtdata.annotations.*;
+
 import io.virtdata.annotations.*;
 import io.virtdata.autodoctypes.DocForFunc;
+import io.virtdata.processors.internals.ClassNameListener;
 import io.virtdata.processors.internals.FuncEnumerator;
 import io.virtdata.processors.internals.FunctionDocInfoWriter;
+import io.virtdata.processors.internals.ProcessorFileUtils;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -14,6 +18,7 @@ import javax.tools.Diagnostic;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * This documentation processor is responsible for finding all the enumerated that feed documentation
@@ -27,8 +32,10 @@ import java.util.regex.Pattern;
 public class FunctionDocInfoProcessor extends AbstractProcessor {
 
     public final static String AUTOSUFFIX = "AutoDocsInfo";
+    public static final String FUNCTIONS_FILE = "functiondata/functions.txt";
 
     private static Pattern packageNamePattern = Pattern.compile("(?<packageName>.+)?\\.(?<className>.+)");
+    private static Pattern inheritDocPattern = Pattern.compile("(?ms)(?<pre>.*)(?<inherit>\\{@inheritDoc})(?<post>.*)$");
     private Filer filer;
     private Map<String, String> options;
     private Elements elementUtils;
@@ -36,6 +43,9 @@ public class FunctionDocInfoProcessor extends AbstractProcessor {
     private SourceVersion sourceVersion;
     private Types typeUtils;
     private FuncEnumerator enumerator;
+    private ClassNameListener classNameListener;
+    private List<String> functionNames = new ArrayList<String>();
+    private Set<ModuleElement> moduleElements = new HashSet<>();
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -48,8 +58,8 @@ public class FunctionDocInfoProcessor extends AbstractProcessor {
         this.typeUtils = processingEnv.getTypeUtils();
 
         this.enumerator = new FuncEnumerator(this.typeUtils, this.elementUtils, this.filer);
-//        enumerator.addListener(new StdoutListener());
-//        enumerator.addListener(new YamlDocsEnumerator(this.filer, this.messenger));
+        classNameListener = new ClassNameListener();
+        enumerator.addListener(classNameListener);
         enumerator.addListener(new FunctionDocInfoWriter(this.filer, this.messenger, AUTOSUFFIX));
 
     }
@@ -57,10 +67,15 @@ public class FunctionDocInfoProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 
+        messenger.printMessage(Diagnostic.Kind.NOTE, "last round of annotation processing? " + roundEnv.processingOver());
+
         List<Element> ts = new ArrayList<>();
 
-        ts.addAll(roundEnv.getElementsAnnotatedWith(ThreadSafeMapper.class));
-        ts.addAll(roundEnv.getElementsAnnotatedWith(PerThreadMapper.class));
+
+        Class<ThreadSafeMapper> tsmc = ThreadSafeMapper.class;
+        Class<PerThreadMapper> ptmc = PerThreadMapper.class;
+        ts.addAll(roundEnv.getElementsAnnotatedWith(tsmc));
+        ts.addAll(roundEnv.getElementsAnnotatedWith(ptmc));
 
         for (Element classElem : ts) {
 
@@ -71,6 +86,15 @@ public class FunctionDocInfoProcessor extends AbstractProcessor {
             // package and Class Name
 
             Name qualifiedName = ((TypeElement) classElem).getQualifiedName();
+            try {
+                ModuleElement me = ((ModuleElement) classElem.getEnclosingElement().getEnclosingElement());
+                moduleElements.add(me);
+            } catch (Exception e) {
+                messenger.printMessage(Diagnostic.Kind.ERROR, "class " + qualifiedName + " must be contained in a JPMS module.");
+                throw new RuntimeException("class " + qualifiedName + " must be contained in a JPMS module.");
+            }
+
+
             Matcher pnm = packageNamePattern.matcher(qualifiedName);
             if (!pnm.matches()) {
                 throw new RuntimeException("Unable to match qualified name for package and name: " + qualifiedName);
@@ -82,21 +106,22 @@ public class FunctionDocInfoProcessor extends AbstractProcessor {
 
             String classDoc = elementUtils.getDocComment(classElem);
             classDoc = classDoc == null ? "" : cleanJavadoc(classDoc);
-            classDoc = inheritDocs(classDoc,classElem);
+            classDoc = inheritDocs(classDoc, classElem);
 
             enumerator.onClass(packageName, simpleClassName, classDoc);
+            functionNames.add(packageName + "." + simpleClassName);
 
             Categories categoryAnnotation = classElem.getAnnotation(Categories.class);
-            if (categoryAnnotation!=null) {
+            if (categoryAnnotation != null) {
                 Category[] value = categoryAnnotation.value();
                 enumerator.onCategories(value);
             }
             // apply method types
 
-            boolean foundApply=false;
+            boolean foundApply = false;
             Element applyMethodElem = null;
             Element applyInClassElem = classElem;
-            while (applyMethodElem==null && applyInClassElem!=null) {
+            while (applyMethodElem == null && applyInClassElem != null) {
                 for (Element candidateApplyElem : applyInClassElem.getEnclosedElements()) {
                     if (candidateApplyElem.getKind() == ElementKind.METHOD) {
                         if (candidateApplyElem.getSimpleName().toString().startsWith("apply")) {
@@ -106,12 +131,12 @@ public class FunctionDocInfoProcessor extends AbstractProcessor {
 
                     }
                 }
-                if (applyMethodElem!=null) {
+                if (applyMethodElem != null) {
                     break;
                 }
                 applyInClassElem = elementUtils.getTypeElement(((TypeElement) applyInClassElem).getSuperclass().toString());
             }
-            if (applyMethodElem==null) {
+            if (applyMethodElem == null) {
                 messenger.printMessage(Diagnostic.Kind.ERROR, "Unable to enumerate input and output types for " + simpleClassName);
                 return false;
             }
@@ -157,12 +182,32 @@ public class FunctionDocInfoProcessor extends AbstractProcessor {
             enumerator.flush();
         }
 
+        if (roundEnv.processingOver()) {
+            String classNames = classNameListener.getClassNames().stream().collect(Collectors.joining(","));
+            this.messenger.printMessage(Diagnostic.Kind.MANDATORY_WARNING, "found classes: " + classNames);
+
+            if (moduleElements.size() != 1) {
+                messenger.printMessage(Diagnostic.Kind.ERROR, "Must have exactly one module in this annotation processor," +
+                        " found " +
+                        moduleElements.stream()
+                                .map(ModuleElement::getQualifiedName)
+                                .map(String::valueOf)
+                                .collect(Collectors.joining(",")));
+            }
+
+            String moduleName = moduleElements.stream().findFirst().map(ModuleElement::getQualifiedName).map(String::valueOf).orElseThrow();
+            String moduleList = functionNames.stream().collect(Collectors.joining("\n"));
+            ProcessorFileUtils.writeGeneratedFileOrThrow(filer, "", FUNCTIONS_FILE, moduleList);
+
+            moduleElements.clear();
+            functionNames.clear();
+        }
+
         return false;
     }
 
-    private static Pattern inheritDocPattern = Pattern.compile("(?ms)(?<pre>.*)(?<inherit>\\{@inheritDoc})(?<post>.*)$");
     private String inheritDocs(String classDoc, Element classElem) {
-        if (classDoc==null) {
+        if (classDoc == null) {
             return null;
         }
         Matcher matcher = inheritDocPattern.matcher(classDoc);
@@ -184,14 +229,14 @@ public class FunctionDocInfoProcessor extends AbstractProcessor {
         }
         TypeElement inheritFromType = inheritFromElement.get();
         String inheritedDocs = elementUtils.getDocComment(inheritFromType);
-        if (inheritedDocs==null) {
+        if (inheritedDocs == null) {
             messenger.printMessage(Diagnostic.Kind.ERROR, "javadocs are missing on " + inheritFromElement.toString() + ", but "
-            + classElem.toString() + " is trying to inherit docs from it.");
+                    + classElem.toString() + " is trying to inherit docs from it.");
             return pre + "UNABLE TO FIND INHERITED DOCS for " + classElem.toString() + " " + post;
         }
 
         if (inheritDocPattern.matcher(inheritedDocs).matches()) {
-            return pre + inheritDocs(inheritedDocs,inheritFromType) + post;
+            return pre + inheritDocs(inheritedDocs, inheritFromType) + post;
         } else {
             return pre + inheritedDocs + post;
         }

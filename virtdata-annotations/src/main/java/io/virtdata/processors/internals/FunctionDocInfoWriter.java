@@ -7,7 +7,6 @@ import io.virtdata.autodoctypes.DocCtorData;
 import io.virtdata.autodoctypes.DocForFunc;
 import io.virtdata.autodoctypes.DocForFuncCtor;
 import io.virtdata.autodoctypes.DocFuncData;
-import io.virtdata.processors.internals.FuncEnumerator;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
@@ -127,12 +126,12 @@ public class FunctionDocInfoWriter implements FuncEnumerator.Listener {
         methods.add(getCtorsMethod);
 
 
-        AnnotationSpec serviceAnnotation = AnnotationSpec.builder(Service.class)
-                .addMember("value","$T.class", DocFuncData.class)
-                .build();
+//        AnnotationSpec serviceAnnotation = AnnotationSpec.builder(Service.class)
+//                .addMember("value","$T.class", DocFuncData.class)
+//                .build();
 
         TypeSpec manifestType = TypeSpec.classBuilder(newClassName)
-                .addAnnotation(serviceAnnotation)
+//                .addAnnotation(serviceAnnotation)
                 .addModifiers(Modifier.PUBLIC)
                 .addMethods(methods)
                 .addSuperinterface(DocFuncData.class)
