@@ -1,3 +1,3 @@
-module virtdata.realdata {
+module io.virtdata.realdata {
     opens data;
 }
