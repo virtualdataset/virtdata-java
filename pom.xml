@@ -4,6 +4,9 @@
     <artifactId>virtdata</artifactId>
     <packaging>pom</packaging>
 
+<!--    <groupId>io.virtdata</groupId>-->
+<!--    <version>2.12.04-SNAPSHOT</version>-->
+
     <parent>
         <artifactId>virtdata-defaults</artifactId>
         <groupId>io.virtdata</groupId>
@@ -17,17 +20,18 @@
     <modules>
         <module>virtdata-defaults</module>
         <module>virtdata-annotations</module>
-        <module>virtdata-processors</module>
 
-        <module>virtdata-api</module>
-        <module>virtdata-userlibs</module>
         <module>virtdata-lang</module>
+        <module>virtdata-api</module>
 
         <module>virtdata-realdata</module>
         <module>virtdata-lib-basics</module>
-        <module>virtdata-lib-random</module>
+        <!--<module>virtdata-lib-random</module>-->
         <module>virtdata-lib-curves4</module>
         <module>virtdata-lib-realer</module>
+
+        <module>virtdata-userlibs</module>
+
     </modules>
 
     <scm>

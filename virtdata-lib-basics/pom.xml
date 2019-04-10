@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>virtdata-lib-basics</artifactId>
@@ -22,13 +23,6 @@
             <artifactId>virtdata-api</artifactId>
             <version>2.12.04-SNAPSHOT</version>
         </dependency>
-
-        <dependency>
-            <groupId>io.virtdata</groupId>
-            <artifactId>virtdata-processors</artifactId>
-            <version>2.12.04-SNAPSHOT</version>
-        </dependency>
-
         <dependency>
             <groupId>io.virtdata</groupId>
             <artifactId>virtdata-annotations</artifactId>
@@ -82,9 +76,33 @@
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
-            <artifactId>assertj-core-java8</artifactId>
+            <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <release>12</release>
+<!--                    <verbose>true</verbose>-->
+                    <fork>false</fork>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>io.virtdata</groupId>
+                            <artifactId>virtdata-annotations</artifactId>
+                            <version>${project.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
+        </plugins>
+
+    </build>
+
 
 </project>
