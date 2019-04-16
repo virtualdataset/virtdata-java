@@ -2,11 +2,10 @@ package io.virtdata.basicsmappers.from_long.to_time_types.joda;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Test
 public class ToMillisAtStartOfTimeframeTests {
 
     private final static DateTime all3s = new DateTime(
@@ -17,6 +16,7 @@ public class ToMillisAtStartOfTimeframeTests {
     );
 
 
+    @Test
     public void testToMillisAtStartOfDay() {
         DateTime expectedDateTime = new DateTime(2018,3,3,0,0,0,0, DateTimeZone.UTC);
 
@@ -26,6 +26,7 @@ public class ToMillisAtStartOfTimeframeTests {
         assertThat(actualDateTime).isEqualTo(expectedDateTime);
     }
 
+    @Test
     public void testToMillisAtStartOfHour() {
         DateTime expectedDateTime = new DateTime(2018,3,3,3,0,0,0, DateTimeZone.UTC);
 
@@ -35,6 +36,7 @@ public class ToMillisAtStartOfTimeframeTests {
         assertThat(actualDateTime).isEqualTo(expectedDateTime);
     }
 
+    @Test
     public void testToMillisAtStartOfMinute() {
         DateTime expectedDateTime = new DateTime(2018,3,3,3,3,0,0, DateTimeZone.UTC);
 
@@ -44,6 +46,7 @@ public class ToMillisAtStartOfTimeframeTests {
         assertThat(actualDateTime).isEqualTo(expectedDateTime);
     }
 
+    @Test
     public void testToMillisAtStartOfMonth() {
         DateTime expectedDateTime = new DateTime(2018,3,1,0,0,0,0, DateTimeZone.UTC);
 
@@ -53,6 +56,7 @@ public class ToMillisAtStartOfTimeframeTests {
         assertThat(actualDateTime).isEqualTo(expectedDateTime);
     }
 
+    @Test
     public void testToMillisAtStartOfNamedWeekDay() {
         DateTime expectedDateTime = new DateTime(2018,12,4,0,0,0,0,DateTimeZone.UTC);
 
@@ -62,6 +66,7 @@ public class ToMillisAtStartOfTimeframeTests {
         assertThat(actualDateTime).isEqualTo(expectedDateTime);
     }
 
+    @Test
     public void testToMillisAtStartOfNextDay() {
         DateTime expectedDateTime = new DateTime(2018,3,4,0,0,0,0, DateTimeZone.UTC);
 
@@ -71,6 +76,7 @@ public class ToMillisAtStartOfTimeframeTests {
         assertThat(actualDateTime).isEqualTo(expectedDateTime);
     }
 
+    @Test
     public void testToMillisAtStartOfNextNamedWeekDay() {
         DateTime expectedDateTime = new DateTime(2018,12,11,0,0,0,0,DateTimeZone.UTC);
 
@@ -80,6 +86,7 @@ public class ToMillisAtStartOfTimeframeTests {
         assertThat(actualDateTime).isEqualTo(expectedDateTime);
     }
 
+    @Test
     public void testToMillisAtStartOfSecond() {
         DateTime expectedDateTime = new DateTime(2018,3,3,3,3,3,0, DateTimeZone.UTC);
 
@@ -89,6 +96,7 @@ public class ToMillisAtStartOfTimeframeTests {
         assertThat(actualDateTime).isEqualTo(expectedDateTime);
     }
 
+    @Test
     public void testToMillisAtStartOfYear() {
         DateTime expectedDateTime = new DateTime(2018,1,1,0,0,0,0, DateTimeZone.UTC);
 

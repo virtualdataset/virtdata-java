@@ -1,12 +1,12 @@
 package io.virtdata.basicsmappers.stateful;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class LoadThreadLocalTests {
 
-    @Test(singleThreaded = true)
+    @Test
     public void testSaveLoadDouble() {
         new Clear().apply(0L);
         SaveDouble saver = new SaveDouble("doublename");
@@ -17,7 +17,7 @@ public class LoadThreadLocalTests {
         assertThat(loadedValue).isEqualTo(123L);
     }
 
-    @Test(singleThreaded = true)
+    @Test
     public void testSaveLoadInteger() {
         new Clear().apply(0L);
         SaveInteger saver = new SaveInteger("intname");
@@ -28,7 +28,7 @@ public class LoadThreadLocalTests {
         assertThat(loadedValue).isEqualTo(123);
     }
 
-    @Test(singleThreaded = true)
+    @Test
     public void testSaveLoadFloat() {
         new Clear().apply(0L);
         SaveFloat saver = new SaveFloat("floatname");
@@ -39,7 +39,7 @@ public class LoadThreadLocalTests {
         assertThat(loadedValue).isEqualTo(123f);
     }
 
-    @Test(singleThreaded = true)
+    @Test
     public void testSaveLoadLong() {
         new Clear().apply(0L);
         SaveLong saver = new SaveLong("longname");
@@ -50,7 +50,7 @@ public class LoadThreadLocalTests {
         assertThat(loadedValue).isEqualTo(123L);
     }
 
-    @Test(singleThreaded = true)
+    @Test
     public void testSaveLoadString() {
         new Clear().apply(0L);
         SaveString saver = new SaveString("longname");

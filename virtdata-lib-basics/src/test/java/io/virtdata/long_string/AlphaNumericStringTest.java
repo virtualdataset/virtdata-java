@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import io.virtdata.basicsmappers.from_long.to_string.AlphaNumericString;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -3,7 +3,7 @@ package io.virtdata.basicsmappers.from_long.to_long;
 import io.virtdata.basicsmappers.from_long.to_string.NumberNameToString;
 import io.virtdata.basicsmappers.stateful.Clear;
 import org.assertj.core.data.Offset;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.util.function.Function;
 
@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SaveTest {
 
-    @Test(singleThreaded = true)
+    @Test
     public void testSaveAndLoadByGeneratedName() {
         new Clear().apply(0L);
         long l1=234L;
@@ -38,7 +38,7 @@ public class SaveTest {
         assertThat(lv4).isEqualTo(l2);
     }
 
-    @Test(singleThreaded = true)
+    @Test
     public void testSaveUnaryString() {
         new Clear().apply(0L);
         io.virtdata.basicsmappers.unary_string.Save saver = new io.virtdata.basicsmappers.unary_string.Save("stringname");
@@ -53,7 +53,7 @@ public class SaveTest {
         assertThat(defaulted).isEqualTo("e");
     }
 
-    @Test(singleThreaded = true)
+    @Test
     public void testSaveUnaryDouble() {
         new Clear().apply(0L);
         io.virtdata.basicsmappers.from_double.to_double.Save saver = new io.virtdata.basicsmappers.from_double.to_double.Save("doublename");

@@ -2,7 +2,7 @@ package io.virtdata.libraryimpl;
 
 import io.virtdata.api.DataMapper;
 import io.virtdata.core.VirtData;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.util.Date;
 import java.util.Optional;

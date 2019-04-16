@@ -1,7 +1,8 @@
 package io.virtdata.stathelpers.aliasmethod;
 
 import io.virtdata.stathelpers.EvProbD;
-import org.testng.annotations.Test;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,7 +58,8 @@ public class AliasSamplerDoubleIntTest {
 
     // Single threaded performance: 100000000 ops in 1366334133 nanos for 73188539.746449 ops/s
     // yes, that is >70M discrete probability samples per second, but hey, it's only 3 discrete probabilities in this test
-    @Test(enabled=false)
+    @Test
+    @Ignore("intensive - dev only")
     public void testAliasMicroBenchSmallMany() {
         List<EvProbD> events = new ArrayList<>();
         events.add(new EvProbD(1,1D));
@@ -80,7 +82,8 @@ public class AliasSamplerDoubleIntTest {
 
     // Single threaded performance: 100000000 ops in 1346200937 nanos for 74283115.730739 ops/s
     // yes, that is >70M discrete probability samples per second, but hey, it's only 1M discrete probabilities in this test,
-    @Test(enabled=true)
+    @Test
+    @Ignore("intensive - dev only")
     public void testAliasMicroBenchLargeMany() {
         List<EvProbD> events = new ArrayList<>();
         int evt_count=1_000_000;

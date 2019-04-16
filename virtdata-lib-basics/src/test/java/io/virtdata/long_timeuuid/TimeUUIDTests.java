@@ -6,7 +6,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.util.UUID;
 

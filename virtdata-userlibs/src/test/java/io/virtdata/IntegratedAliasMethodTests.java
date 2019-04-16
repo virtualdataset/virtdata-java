@@ -1,11 +1,10 @@
 package io.virtdata;
 
 import io.virtdata.stathelpers.aliasmethod.WeightedStrings;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Test
 public class IntegratedAliasMethodTests {
 
     @Test

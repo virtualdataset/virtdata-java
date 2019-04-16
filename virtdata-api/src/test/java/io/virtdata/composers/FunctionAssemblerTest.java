@@ -3,7 +3,7 @@ package io.virtdata.composers;
 import io.virtdata.api.DataMapper;
 import io.virtdata.api.composers.FunctionAssembly;
 import io.virtdata.api.composers.FunctionComposer;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.util.function.Function;
 import java.util.function.LongFunction;
@@ -11,7 +11,8 @@ import java.util.function.LongUnaryOperator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Test
+//import org.junit.Test;
+
 public class FunctionAssemblerTest {
 
     @Test
@@ -54,7 +55,7 @@ public class FunctionAssemblerTest {
         assertThat(aLong).isEqualTo(15);
     }
 
-    @Test(expectedExceptions = {ClassCastException.class})
+    @Test(expected = ClassCastException.class)
     public void testLongFunctionLongFunctionMistyped() throws Exception {
         FunctionComposer fass = new FunctionAssembly();
         fass.andThen(new LongAddFiveFunction());
@@ -82,7 +83,7 @@ public class FunctionAssemblerTest {
 //        assertThat(s).isEqualTo("Cat5");
 //    }
 
-    @Test(expectedExceptions = {ClassCastException.class})
+    @Test(expected = ClassCastException.class)
     public void testFunctionFunctionMistyped() {
         FunctionComposer fass = new FunctionAssembly();
         fass.andThen(new GenericStringCat());

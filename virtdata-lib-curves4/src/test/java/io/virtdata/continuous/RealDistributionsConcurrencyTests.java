@@ -2,7 +2,7 @@ package io.virtdata.continuous;
 
 import io.virtdata.api.DataMapper;
 import io.virtdata.core.VirtData;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -4,7 +4,7 @@ import io.virtdata.continuous.long_double.Normal;
 import io.virtdata.continuous.long_double.Uniform;
 import org.apache.commons.math4.stat.descriptive.DescriptiveStatistics;
 import org.assertj.core.data.Offset;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.util.Formatter;
 import java.util.Locale;
@@ -12,7 +12,6 @@ import java.util.function.LongToDoubleFunction;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Test
 public class RealDistributionsValuesTest {
 
 

@@ -1,11 +1,10 @@
 package io.virtdata.long_string;
 
 import io.virtdata.basicsmappers.from_long.to_string.HashedFileExtractToString;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Test
 public class HashedFileExtractToStringTest {
 
     @Test

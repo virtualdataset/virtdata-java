@@ -1,6 +1,6 @@
 package io.virtdata.templates;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.security.InvalidParameterException;
 import java.util.HashMap;
@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Test
 public class ParsedTemplateTest {
 
     private final Map<String, String> bindings = new HashMap<>() {{
@@ -21,6 +20,7 @@ public class ParsedTemplateTest {
     private final String oneQuestion = " A ?question anchor.";
     private final String oneExtraneous = "An {this is an extraneous form} invalid anchor.";
 
+    @Test
     public void testShouldMatchRawLiteral() {
         ParsedTemplate pt = new ParsedTemplate(rawNothing, bindings);
         assertThat(pt.getSpans()).containsExactly("This has no anchors");
@@ -29,7 +29,8 @@ public class ParsedTemplateTest {
         assertThat(pt.getMissingBindings()).isEmpty();
     }
 
-    public void testShoudlMatchCurlyBraces() {
+    @Test
+    public void testShouldMatchCurlyBraces() {
         ParsedTemplate pt = new ParsedTemplate(oneCurly, bindings);
         assertThat(pt.getSpans()).containsExactly("A ", "curly", " brace.");
         assertThat(pt.getSpecificBindings().isEmpty());
@@ -37,6 +38,7 @@ public class ParsedTemplateTest {
         assertThat(pt.getExtraBindings()).hasSameElementsAs(bindings.keySet());
     }
 
+    @Test
     public void testShouldMatchQuestionMark() {
         ParsedTemplate pt = new ParsedTemplate(oneQuestion, bindings);
         assertThat(pt.getSpans()).containsExactly(" A ", "question", " anchor.");
@@ -45,6 +47,7 @@ public class ParsedTemplateTest {
         assertThat(pt.getExtraBindings()).hasSameElementsAs(bindings.keySet());
     }
 
+    @Test
     public void testShouldIgnoreExtraneousAnchors() {
         ParsedTemplate pt = new ParsedTemplate(oneExtraneous, bindings);
         assertThat(pt.getSpans()).containsExactly("An {this is an extraneous form} invalid anchor.");
@@ -53,6 +56,7 @@ public class ParsedTemplateTest {
         assertThat(pt.getExtraBindings()).hasSameElementsAs(bindings.keySet());
     }
 
+    @Test
     public void testShouldMatchLiteralVariableOnly() {
         String literalVariableOnly = "literal {bindname1}";
         ParsedTemplate pt = new ParsedTemplate(literalVariableOnly, bindings);
@@ -63,6 +67,7 @@ public class ParsedTemplateTest {
 
     }
 
+    @Test
     public void testShouldMatchVariableLiteralOnly() {
         String variableLiteralOnly = "{bindname2} literal";
         ParsedTemplate pt = new ParsedTemplate(variableLiteralOnly, bindings);
@@ -72,6 +77,7 @@ public class ParsedTemplateTest {
         assertThat(pt.getExtraBindings()).containsExactly("bindname1");
     }
 
+    @Test
     public void testShouldMatchProvidedValidPattern() {
         String basic = "A [provided] pattern.";
         Pattern p = Pattern.compile("\\[(?<anchor>\\w[_a-zA-Z]+)]");
@@ -82,13 +88,15 @@ public class ParsedTemplateTest {
         assertThat(pt.getExtraBindings()).containsAll(bindings.keySet());
     }
 
-    @Test(expectedExceptions = InvalidParameterException.class, expectedExceptionsMessageRegExp = ".*must contain a named group called anchor.*")
+    @Test(expected= InvalidParameterException.class)
+    //expectedExceptionsMessageRegExp = ".*must contain a named group called anchor.*"
     public void testShouldErrorOnInvalidPattern() {
         String wontuse = "This won't get used.";
         Pattern p = Pattern.compile("\\[(\\w[_a-zA-Z]+)]");
         ParsedTemplate pt = new ParsedTemplate(wontuse, bindings, p);
     }
 
+    @Test
     public void testPositionalExpansionShouldBeValid() {
         String multi = "A {bindname1} of {bindname2} sort.";
         ParsedTemplate pt = new ParsedTemplate(multi, bindings);

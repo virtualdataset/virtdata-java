@@ -2,13 +2,12 @@ package io.virtdata.basicsmappers.from_long.to_string;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Test
 public class DirectoryLinesTest {
     private final static Logger logger = LoggerFactory.getLogger(DirectoryLinesTest.class);
 

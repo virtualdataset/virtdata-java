@@ -3,13 +3,13 @@ package io.virtdata.discrete;
 import io.virtdata.discrete.common.DiscreteLongLongSampler;
 import io.virtdata.discrete.common.IntegerDistributionICDSource;
 import org.apache.commons.statistics.distribution.BinomialDistribution;
-import org.testng.annotations.Test;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Test
 public class IntegerDistributionsBinomialSanity {
 
     private static double[] binomial85steps = new double[]{
@@ -56,7 +56,8 @@ public class IntegerDistributionsBinomialSanity {
 
     }
 
-    @Test(enabled=false)
+    @Test
+    @Ignore("dev only")
     public void showBinomialICDF() {
         DiscreteLongLongSampler b85 = new DiscreteLongLongSampler(new IntegerDistributionICDSource(
                 new BinomialDistribution(8,0.5D)),false);

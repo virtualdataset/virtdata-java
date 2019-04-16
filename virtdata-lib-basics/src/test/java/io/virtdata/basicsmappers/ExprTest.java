@@ -1,11 +1,10 @@
 package io.virtdata.basicsmappers;
 
 import org.assertj.core.data.Offset;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Test
 public class ExprTest {
 
     @Test

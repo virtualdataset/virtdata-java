@@ -17,7 +17,7 @@ package io.virtdata;
 
 import io.virtdata.core.Bindings;
 import io.virtdata.core.VirtData;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -26,7 +26,6 @@ import java.util.function.LongUnaryOperator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Test
 public class IntegratedBindingsTest {
 
     @Test

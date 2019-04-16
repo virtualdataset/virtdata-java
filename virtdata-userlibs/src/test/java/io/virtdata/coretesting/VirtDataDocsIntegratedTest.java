@@ -1,16 +1,17 @@
-package io.virtdata.core;
+package io.virtdata.coretesting;
 
 import io.virtdata.autodoctypes.DocFuncData;
-import org.testng.annotations.Test;
+import io.virtdata.core.VirtDataDocs;
+import io.virtdata.finders.FunctionFinderService;
+import org.junit.Test;
 
 import java.util.List;
 
-@Test
 public class VirtDataDocsIntegratedTest {
 
     @Test
     public void testGetAllNames() {
-        List<String> allNames = VirtDataDocs.getAllNames();
+        List<FunctionFinderService.Path> allNames = VirtDataDocs.getAllNames();
         System.out.println("Found " + allNames.size() + " documented function names.");
     }
 

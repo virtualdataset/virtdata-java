@@ -3,20 +3,19 @@ package io.virtdata;
 import io.virtdata.core.Bindings;
 import io.virtdata.core.BindingsTemplate;
 import io.virtdata.templates.StringCompositor;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Test
 public class IntegratedStringCompositorTest {
 
     private BindingsTemplate template;
     private Bindings bindings;
 
-    @BeforeClass
+    @Before
     public void setupTemplate() {
         BindingsTemplate bindingsTemplate = new BindingsTemplate();
         bindingsTemplate.addFieldBinding("ident","Identity()");

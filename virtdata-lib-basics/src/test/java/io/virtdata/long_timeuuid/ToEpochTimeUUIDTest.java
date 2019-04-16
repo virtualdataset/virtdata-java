@@ -4,12 +4,11 @@ import io.virtdata.basicsmappers.DateTimeFormats;
 import io.virtdata.basicsmappers.from_long.to_time_types.ToEpochTimeUUID;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Test
 public class ToEpochTimeUUIDTest {
 
     @Test

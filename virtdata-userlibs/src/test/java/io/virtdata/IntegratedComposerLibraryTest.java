@@ -20,19 +20,20 @@ import io.virtdata.core.Bindings;
 import io.virtdata.core.BindingsTemplate;
 import io.virtdata.core.ResolverDiagnostics;
 import io.virtdata.core.VirtData;
-import org.testng.annotations.Test;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Test
 public class IntegratedComposerLibraryTest {
 
     // The deprecated functions are not being included in the next release, so this test's purpose has been
     // reversed.
-    @Test(expectedExceptions = {RuntimeException.class}, expectedExceptionsMessageRegExp = ".*Unable to find.*")
+    @Test(expected = RuntimeException.class)
+    //, expectedExceptionsMessageRegExp = ".*Unable to find.*")
     public void testArgumentMatchingViaMainLib() {
         BindingsTemplate bt = new BindingsTemplate();
         bt.addFieldBinding("param","RandomLineToString('data/variable_words.txt')");
@@ -44,14 +45,15 @@ public class IntegratedComposerLibraryTest {
         assertThat(o.getClass()).isEqualTo(String.class);
     }
 
-    @Test(enabled=true)
+    @Test
+    @Ignore("//TODO: Find out why this was ignored")
     public void testChainedTypeResolutionForLong() {
         BindingsTemplate bt = new BindingsTemplate();
         bt.addFieldBinding("longchain", "compose CycleRange(123456789) ; Div(3); Mod(7) -> long");
         Bindings bindings = bt.resolveBindings();
     }
 
-    @Test(enabled=true)
+    @Test
     public void testChainedTypeResolutionForWithInternalLong() {
         BindingsTemplate bt = new BindingsTemplate();
         bt.addFieldBinding("longchain", "compose HashRange(1234,6789) -> long; Mod(3) -> int;");
@@ -60,7 +62,7 @@ public class IntegratedComposerLibraryTest {
         assertThat(n1).isOfAnyClassIn(Integer.class);
     }
 
-    @Test(enabled=true)
+    @Test
     public void testChainedTypeResolutionForInt() {
         BindingsTemplate bt = new BindingsTemplate();
         bt.addFieldBinding("intchain", "compose ToInt() ; CycleRange(123456789) ; Div(3) ; Mod(7) -> int");
@@ -82,7 +84,7 @@ public class IntegratedComposerLibraryTest {
     }
 
     // TODO: Fix this test
-    @Test(enabled=false)
+    @Test
     public void testTypeCoercionWhenNeeded() {
         BindingsTemplate bt = new BindingsTemplate();
         bt.addFieldBinding("mod_to_string", "compose Mod(3) ; Suffix('0000000000') -> String");
@@ -96,7 +98,7 @@ public class IntegratedComposerLibraryTest {
     }
 
     // TODO: Fix this test
-    @Test(enabled=false)
+    @Test
     public void testBasicRange() {
         BindingsTemplate bt = new BindingsTemplate();
         bt.addFieldBinding("phone","HashRange(1000000000, 9999999999)");

@@ -1,7 +1,7 @@
 package io.virtdata.stathelpers.aliasmethod;
 
 import io.virtdata.stathelpers.ElemProbD;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;

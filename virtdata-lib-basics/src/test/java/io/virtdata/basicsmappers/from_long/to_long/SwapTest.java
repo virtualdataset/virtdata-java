@@ -1,14 +1,13 @@
 package io.virtdata.basicsmappers.from_long.to_long;
 
 import io.virtdata.basicsmappers.stateful.Clear;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Test
 public class SwapTest {
 
-    @Test(singleThreaded = true)
+    @Test
     public void swapValues() {
         new Clear().apply(0L);
         Swap shazzbot = new Swap("shazzbot", 1001L);

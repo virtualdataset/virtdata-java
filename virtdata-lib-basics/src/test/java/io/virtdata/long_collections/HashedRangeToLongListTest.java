@@ -1,13 +1,12 @@
 package io.virtdata.long_collections;
 
 import io.virtdata.basicsmappers.from_long.to_collection.HashedRangeToLongList;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Test
 public class HashedRangeToLongListTest {
 
     @Test
