@@ -1,8 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>virtdata-realdata</artifactId>
+    <artifactId>virtdata-lib-realdata</artifactId>
     <packaging>jar</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>io.virtdata</groupId>
+            <artifactId>virtdata-annotations</artifactId>
+            <version>2.12.04-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
     <parent>
         <artifactId>virtdata-defaults</artifactId>
@@ -12,7 +20,7 @@
     </parent>
 
 
-    <name>virtdata-realdata</name>
+    <name>virtdata-lib-realdata</name>
     <url>http://virtdata.io/</url>
 
     <properties>
@@ -24,7 +32,7 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <includes>
-                    <include>data/**</include>
+                    <include>MODULE-DATA/**</include>
                 </includes>
             </resource>
         </resources>

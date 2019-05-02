@@ -21,6 +21,51 @@
             <artifactId>virtdata-lib-basics</artifactId>
             <version>2.12.04-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>io.virtdata</groupId>
+            <artifactId>virtdata-lib-realdata</artifactId>
+            <version>2.12.04-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <release>12</release>
+                    <fork>false</fork>
+<!--                    <debug>true</debug>-->
+                    <!--                    <verbose>true</verbose>-->
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>io.virtdata</groupId>
+                            <artifactId>virtdata-annotations</artifactId>
+                            <version>${project.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>process-sources</phase>
+                        <goals><goal>copy-dependencies</goal></goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+
+    </build>
+
 
 </project>

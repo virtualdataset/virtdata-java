@@ -21,7 +21,7 @@
     <licenses>
         <license>
             <name>The Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <url>http://www.org.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
 
@@ -111,18 +111,25 @@
             </dependency>
 
 
-            <dependency>
-                <groupId>org.testng</groupId>
-                <artifactId>testng</artifactId>
-                <version>7.0.0-beta3</version>
-                <scope>test</scope>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>org.testng</groupId>-->
+<!--                <artifactId>testng</artifactId>-->
+<!--                <version>7.0.0-beta3</version>-->
+<!--                <scope>test</scope>-->
+<!--            </dependency>-->
             <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
                 <version>3.12.2</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.12</version>
+                <scope>test</scope>
+            </dependency>
+
 
         </dependencies>
     </dependencyManagement>
@@ -135,6 +142,8 @@
                 <version>3.8.0</version>
                 <configuration>
                     <release>12</release>
+                    <debug>true</debug>
+                    <verbose>true</verbose>
                     <!--<compilerArgument>-Xdoclint:all</compilerArgument>-->
                     <compilerArgument>-Xlint:all</compilerArgument>
                     <!--                    <fork>true</fork>-->
@@ -162,8 +171,10 @@
                     <includes>
                         <include>**/*Test*.java</include>
                     </includes>
-                    <!--                    <useSystemClassLoader>false</useSystemClassLoader> &lt;!&ndash; fixes reflection tests &ndash;&gt;-->
+                        <useModulePath>true</useModulePath>
+<!--                    <useSystemClassLoader>true</useSystemClassLoader>-->
 <!--                    <forkCount>0</forkCount>-->
+<!--                    <debugForkedProcess>true</debugForkedProcess>-->
                 </configuration>
             </plugin>
 
@@ -175,7 +186,8 @@
                 <configuration>
                     <doctitle>VirtualDataSet API</doctitle>
                     <windowtitle>VirtualDataSet API</windowtitle>
-                    <source>8</source>
+                    <source>11</source>
+                    <useStandardDocletOptions>false</useStandardDocletOptions>
                 </configuration>
                 <executions>
                     <execution>
@@ -222,6 +234,11 @@
             <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.0.0-M3</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <version>3.0.0-M3</version>
                 </plugin>
@@ -251,7 +268,7 @@
                     <configuration>
                         <transformers>
                             <transformer
-                                    implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                    implementation="org.org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                         </transformers>
                         <createSourcesJar>true</createSourcesJar>
                         <createDependencyReducedPom>false</createDependencyReducedPom>
