@@ -16,7 +16,7 @@
     <dependencies>
         <dependency>
             <groupId>io.virtdata</groupId>
-            <artifactId>virtdata-realdata</artifactId>
+            <artifactId>virtdata-lib-realdata</artifactId>
             <version>2.12.04-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -51,13 +51,20 @@
         </dependency>
 
         <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>org.apache.maven.plugins</groupId>-->
+<!--            <artifactId>maven-failsafe-plugin</artifactId>-->
+<!--            <version>3.0.0-M3</version>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>
@@ -72,16 +79,16 @@
                             <goal>integration-test</goal>
                             <goal>verify</goal>
                         </goals>
+                        <configuration>
+<!--                            <debugForkedProcess>true</debugForkedProcess>-->
+                            <argLine>
+                                --module-path ${project.basedir}/../virtdata-lib-basics/target/virtdata-lib-basics-${project.version}.jar:${project.basedir}/../virtdata-lib-basics/target/dependencies:${project.basedir}/../virtdata-lib-curves4/target/virtdata-lib-curves4-${project.version}.jar:${project.basedir}/../virtdata-lib-curves4/target/dependencies:${project.basedir}/../virtdata-lib-realer/target/virtdata-lib-realer-${project.version}.jar:${project.basedir}/../virtdata-lib-realer/target/dependencies
+                                --add-modules ALL-MODULE-PATH
+                            </argLine>
+                        </configuration>
+
                     </execution>
                 </executions>
-                <configuration>
-                    <additionalClasspathElements>
-                        <additionalClasspathElement>${project.basedir}/target/virtdata-userlibs-${project.version}.jar</additionalClasspathElement>
-                    </additionalClasspathElements>
-                    <includes>
-                        <include>**/*Integrated*Test*.java</include>
-                    </includes>
-                </configuration>
             </plugin>
         </plugins>
 
@@ -94,32 +101,5 @@
             </resource>
         </resources>
     </build>
-
-
-    <profiles>
-        <profile>
-            <id>shade</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-shade-plugin</artifactId>
-                        <configuration>
-                            <transformers combine.children="append">
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>io.virtdata.apps.MainApp</mainClass>
-                                </transformer>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-                            </transformers>
-                            <minimizeJar>false</minimizeJar>
-                            <finalName>${project.artifactId}</finalName>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
 </project>
