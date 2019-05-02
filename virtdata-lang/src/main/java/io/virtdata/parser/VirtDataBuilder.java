@@ -17,17 +17,14 @@ import java.util.regex.Pattern;
 
 public class VirtDataBuilder extends VirtDataBaseListener {
     private final static Logger logger = LoggerFactory.getLogger(VirtDataBuilder.class);
-
+    private static Pattern escapePattern = Pattern.compile("\\.");
     private VirtDataAST model = new VirtDataAST();
     private List<ErrorNode> errorNodes = new ArrayList<>();
-
     private Stack<VirtDataParser.VirtdataFlowContext> flowContexts = new Stack<>();
     private Stack<VirtDataParser.ExpressionContext> expressionContexts = new Stack<>();
     private Stack<VirtDataParser.VirtdataCallContext> callContexts = new Stack<>();
-
     private LinkedList<VirtDataFlow> flows = new LinkedList<>();
     private Stack<FunctionCall> calls = new Stack<FunctionCall>();
-
 
     @Override
     public void enterVirtdataRecipe(VirtDataParser.VirtdataRecipeContext ctx) {
@@ -50,7 +47,7 @@ public class VirtDataBuilder extends VirtDataBaseListener {
         flowContexts.push(ctx);
         flows.push(new VirtDataFlow());
         calls.clear();
-        if (ctx.COMPOSE()!=null) {
+        if (ctx.COMPOSE() != null) {
             logger.warn("The 'compose' keyword is no longer needed in lambda construction. It will be deprecated in the future.");
         }
     }
@@ -118,15 +115,21 @@ public class VirtDataBuilder extends VirtDataBaseListener {
 
     @Override
     public void exitIntegerValue(VirtDataParser.IntegerValueContext ctx) {
-        calls.peek().addFunctionArg(new IntegerArg(Integer.valueOf(ctx.getText())));
+        try {
+            Integer integer = Integer.valueOf(ctx.getText());
+            calls.peek().addFunctionArg(new IntegerArg(integer));
+        } catch (NumberFormatException nfe) {
+            throw new VirtDataParseException(
+                    "The value '" + ctx.getText() + "' could not be parsed as a Java integer." +
+                            " If you meant for it to be a Java long, " +
+                            "then add 'L' to it, like '" + ctx.getText() + "L'", nfe);
+        }
     }
 
     @Override
     public void exitFloatValue(VirtDataParser.FloatValueContext ctx) {
         calls.peek().addFunctionArg(new FloatArg(Float.valueOf(ctx.getText())));
     }
-
-    private static Pattern escapePattern = Pattern.compile("\\.");
 
     @Override
     public void exitStringValue(VirtDataParser.StringValueContext ctx) {
@@ -136,12 +139,12 @@ public class VirtDataBuilder extends VirtDataBaseListener {
 
     @Override
     public void exitDoubleValue(VirtDataParser.DoubleValueContext ctx) {
-        calls.peek().addFunctionArg(new DoubleArg(Double.valueOf(ctx.getText().substring(0,ctx.getText().length()-1))));
+        calls.peek().addFunctionArg(new DoubleArg(Double.valueOf(ctx.getText().substring(0, ctx.getText().length() - 1))));
     }
 
     @Override
     public void exitLongValue(VirtDataParser.LongValueContext ctx) {
-        calls.peek().addFunctionArg(new LongArg(Long.valueOf(ctx.getText().substring(0,ctx.getText().length()-1))));
+        calls.peek().addFunctionArg(new LongArg(Long.valueOf(ctx.getText().substring(0, ctx.getText().length() - 1))));
     }
 
     @Override

@@ -27,4 +27,9 @@ public class Expression {
     public void setCall(FunctionCall call) {
         this.call = call;
     }
+
+    public String toString() {
+        return ((this.assignment!=null) ? this.assignment+"=" : "") +
+        this.call.toString();
+    }
 }
