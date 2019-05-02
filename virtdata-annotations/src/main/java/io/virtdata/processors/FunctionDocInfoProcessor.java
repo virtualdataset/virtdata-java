@@ -25,14 +25,14 @@ import java.util.stream.Collectors;
  * manifests. It simply calls listener interfaces to do the rest of the work.
  */
 //@SupportedOptions({"title"})
-//@SupportedSourceVersion(SourceVersion.RELEASE_11)
+@SupportedSourceVersion(SourceVersion.RELEASE_11)
 @SupportedAnnotationTypes({
         "io.virtdata.annotations.ThreadSafeMapper",
         "io.virtdata.annotations.PerThreadMapper"})
 public class FunctionDocInfoProcessor extends AbstractProcessor {
 
     public final static String AUTOSUFFIX = "AutoDocsInfo";
-    public static final String FUNCTIONS_FILE = "functiondata/functions.txt";
+    public static final String FUNCTIONS_FILE = "FUNCTION-DATA/functions.txt";
 
     private static Pattern packageNamePattern = Pattern.compile("(?<packageName>.+)?\\.(?<className>.+)");
     private static Pattern inheritDocPattern = Pattern.compile("(?ms)(?<pre>.*)(?<inherit>\\{@inheritDoc})(?<post>.*)$");
@@ -184,7 +184,7 @@ public class FunctionDocInfoProcessor extends AbstractProcessor {
 
         if (roundEnv.processingOver()) {
             String classNames = classNameListener.getClassNames().stream().collect(Collectors.joining(","));
-            this.messenger.printMessage(Diagnostic.Kind.MANDATORY_WARNING, "found classes: " + classNames);
+            this.messenger.printMessage(Diagnostic.Kind.NOTE, "found " + classNameListener.getClassNames().size() + " classes.");
 
             if (moduleElements.size() != 1) {
                 messenger.printMessage(Diagnostic.Kind.ERROR, "Must have exactly one module in this annotation processor," +
