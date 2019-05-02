@@ -2,8 +2,10 @@ package io.virtdata;
 
 import io.virtdata.api.DataMapper;
 import io.virtdata.core.VirtData;
+import io.virtdata.util.ModuleInfo;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.assertj.core.data.Offset;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Formatter;
@@ -13,7 +15,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 //import org.apache.commons.math4.stat.descriptive.DescriptiveStatistics;
 
-public class IntegratedCurvesTest {
+public class CurvesIntegratedTestIT {
+
+    @BeforeClass
+    public static void showModuleInfo() {
+        ModuleInfo.logModuleNamesDebug(CurvesIntegratedTestIT.class);
+    }
 
     @Test
     public void testZipf() {

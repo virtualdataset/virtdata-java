@@ -2,11 +2,18 @@ package io.virtdata;
 
 import io.virtdata.api.DataMapper;
 import io.virtdata.core.VirtData;
+import io.virtdata.util.ModuleInfo;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class IntegratedRealerTests {
+public class RealerIntegratedTestIT {
+
+    @BeforeClass
+    public static void showModuleInfo() {
+        ModuleInfo.logModuleNamesDebug(RealerIntegratedTestIT.class);
+    }
 
     @Test
     public void testLastNames() {

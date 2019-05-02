@@ -1,4 +1,4 @@
-package io.virtdata.basicsmappers.from_long.to_string;
+package io.virtdata.libbasics.shared.from_long.to_string;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

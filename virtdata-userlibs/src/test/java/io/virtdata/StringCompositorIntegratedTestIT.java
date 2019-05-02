@@ -3,20 +3,29 @@ package io.virtdata;
 import io.virtdata.core.Bindings;
 import io.virtdata.core.BindingsTemplate;
 import io.virtdata.templates.StringCompositor;
+import io.virtdata.util.ModuleInfo;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class IntegratedStringCompositorTest {
+public class StringCompositorIntegratedTestIT {
 
     private BindingsTemplate template;
     private Bindings bindings;
 
+    @BeforeClass
+    public static void showModuleInfo() {
+        ModuleInfo.logModuleNamesDebug(StringCompositorIntegratedTestIT.class);
+    }
+
     @Before
     public void setupTemplate() {
+
+
         BindingsTemplate bindingsTemplate = new BindingsTemplate();
         bindingsTemplate.addFieldBinding("ident","Identity()");
         bindingsTemplate.addFieldBinding("mod5", "Mod(5)");

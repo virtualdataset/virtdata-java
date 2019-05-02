@@ -1,12 +1,14 @@
 package io.virtdata;
 
 import io.virtdata.api.DataMapper;
-import io.virtdata.basicsmappers.from_long.to_long.Identity;
-import io.virtdata.basicsmappers.from_long.to_string.MapTemplate;
-import io.virtdata.basicsmappers.from_long.to_string.NumberNameToString;
-import io.virtdata.basicsmappers.from_long.to_string.Template;
 import io.virtdata.core.VirtData;
+import io.virtdata.libbasics.shared.from_long.to_long.Identity;
+import io.virtdata.libbasics.shared.from_long.to_string.MapTemplate;
+import io.virtdata.libbasics.shared.from_long.to_string.NumberNameToString;
+import io.virtdata.libbasics.shared.from_long.to_string.Template;
+import io.virtdata.util.ModuleInfo;
 import org.apache.commons.lang3.ClassUtils;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Map;
@@ -16,7 +18,12 @@ import java.util.function.LongUnaryOperator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class IntegratedComposerLogicTest {
+public class ComposeLogicIntegratedTestIT {
+
+    @BeforeClass
+    public static void showModuleInfo() {
+        ModuleInfo.logModuleNamesDebug(ComposeLogicIntegratedTestIT.class);
+    }
 
     @Test
     public void testPreferredReturnType() {
@@ -67,12 +74,13 @@ public class IntegratedComposerLogicTest {
 
     @Test
     public void testResourceLoader() {
-        Optional<DataMapper<Object>> dataMapper = VirtData.getOptionalMapper(" ModuloLineToString('data/variable_words.txt') -> String");
+        Optional<DataMapper<Object>> dataMapper = VirtData.getOptionalMapper(" ModuloLineToString('variable_words.txt') -> String");
         assertThat(dataMapper).isPresent();
-        assertThat(dataMapper.get().get(1)).isEqualToComparingFieldByField("completion_count");
+        Object completionCount = dataMapper.get().get(1);
+        assertThat(completionCount).isEqualTo("completion_count");
         dataMapper = VirtData.getOptionalMapper("compose ModuloLineToString('variable_words.txt') -> String");
         assertThat(dataMapper).isPresent();
-        assertThat(dataMapper.get().get(1)).isEqualToComparingFieldByField("completion_count");
+        assertThat(dataMapper.get().get(1)).isEqualTo("completion_count");
     }
 
 //    public void testPOJOTypeSpecializer() {
@@ -106,12 +114,12 @@ public class IntegratedComposerLogicTest {
     public void testMapTemplate() {
         MapTemplate mt = new MapTemplate(l -> (int)l,String::valueOf, String::valueOf);
         assertThat(mt.apply(3)).containsEntry("3","3");
-        Optional<DataMapper<Map>> optionalMapper =VirtData.getOptionalMapper(
+        Optional<DataMapper<Map<Object,Object>>> optionalMapper =VirtData.getOptionalMapper(
                 "MapTemplate(long->Mod(5)->int,NumberNameToString(),NumberNameToString())"
         );
         assertThat(optionalMapper).isPresent();
-        DataMapper<Map> mapper = optionalMapper.get();
-        Map o = mapper.get(6L);
+        DataMapper<Map<Object,Object>> mapper = optionalMapper.get();
+        Map<Object,Object> o = mapper.get(6L);
         assertThat(o).isNotNull();
         assertThat(o.get("six")).isEqualTo("six");
     }

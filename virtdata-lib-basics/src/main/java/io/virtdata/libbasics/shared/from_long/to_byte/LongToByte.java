@@ -1,4 +1,4 @@
-package io.virtdata.basicsmappers.from_long.to_byte;
+package io.virtdata.libbasics.shared.from_long.to_byte;
 
 import io.virtdata.annotations.Categories;
 import io.virtdata.annotations.Category;

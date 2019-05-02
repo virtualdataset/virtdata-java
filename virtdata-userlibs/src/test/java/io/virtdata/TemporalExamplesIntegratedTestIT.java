@@ -2,8 +2,10 @@ package io.virtdata;
 
 import io.virtdata.api.DataMapper;
 import io.virtdata.core.VirtData;
+import io.virtdata.util.ModuleInfo;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Date;
@@ -17,7 +19,12 @@ import static org.assertj.core.api.Assertions.assertThat;
  * values. This demonstrates that the functions act as idempotent operations.
  * They are pure functions, even though not always one-to-one functions.
  */
-public class IntegratedTemporalExamplesTest {
+public class TemporalExamplesIntegratedTestIT {
+
+    @BeforeClass
+    public static void showModuleInfo() {
+        ModuleInfo.logModuleNamesDebug(TemporalExamplesIntegratedTestIT.class);
+    }
 
     /**
      * Generate a random selection of values in timeuuid format,
@@ -50,7 +57,7 @@ public class IntegratedTemporalExamplesTest {
     @Test
     public void timeuuidSkewExample() {
         DataMapper<UUID> uuidgen = VirtData.getMapper(
-                "compose zipf(10,2); ToEpochTimeUUID('2017-01-01 23:59:59') -> java.util.UUID;",
+                "Zipf(10,2); ToEpochTimeUUID('2017-01-01 23:59:59') -> java.util.UUID;",
                 UUID.class
         );
         UUID uuid1 = uuidgen.get(1L);

@@ -17,6 +17,8 @@ package io.virtdata;
 
 import io.virtdata.core.Bindings;
 import io.virtdata.core.VirtData;
+import io.virtdata.util.ModuleInfo;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.LinkedHashMap;
@@ -26,7 +28,12 @@ import java.util.function.LongUnaryOperator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class IntegratedBindingsTest {
+public class BindingsIntegratedTestIT {
+
+    @BeforeClass
+    public static void showModuleInfo() {
+        ModuleInfo.logModuleNamesDebug(BindingsIntegratedTestIT.class);
+    }
 
     @Test
     public void testGetNamedIteratedSuffixMap() {
