@@ -17,6 +17,7 @@
 
 package io.virtdata.util;
 
+import io.virtdata.services.ModuleDataService;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.slf4j.Logger;
@@ -25,13 +26,31 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.net.URL;
 import java.nio.CharBuffer;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * The ResourceFinder class is the central file IO control point for all VirtData functions. VirtData mapping
+ * functions may ask for access to some content to use as seed or reference data. Centralizing the
+ * mechanisms used to access any of this data allows for access to the following:
+ * <OL>
+ * <LI>URL provided content - If the path is a well-formed URI, then it is read as such. If it is not,
+ * then this resource finder is skipped.</LI>
+ * <LI>Filesystem content - Files in the relative path of users are searched, using the default search
+ * path prefixes.</LI>
+ * <LI>Module content - JPMS modules may contain content within a MODULE-DATA directory. This
+ * is enabled via a service hook and SPI, since modules must own their own content. The default search
+ * path prefixes are also used here.</LI>
+ * <LI>Classpath content - Resources in the classpath are searched, using the default search path prefixes.</LI>
+ * </OL>
+ *
+ * These are in a priority order which is not configurable.
+ */
 public class ResourceFinder {
-    private final static Logger logger = LoggerFactory.getLogger(ResourceFinder.class);
 
     public final static String DATA_DIR = "data";
+    private final static Logger logger = LoggerFactory.getLogger(ResourceFinder.class);
 
     public static CharBuffer readDataFileToCharBuffer(String basename) {
         return loadFileToCharBuffer(basename, DATA_DIR);
@@ -45,13 +64,21 @@ public class ResourceFinder {
         return readFileString(basename, DATA_DIR);
     }
 
+    public static CSVParser readFileCSV(String basename, String... searchPaths) {
+        Reader reader = findRequiredReader(basename, "csv", searchPaths);
+        CSVFormat format = CSVFormat.newFormat(',').withFirstRecordAsHeader();
+        try {
+            CSVParser parser = new CSVParser(reader, format);
+            return parser;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-    public static InputStream findRequiredStreamOrFile(String basename, String extension, String... searchPaths) {
-        Optional<InputStream> optionalStreamOrFile = findOptionalStreamOrFile(basename, extension, searchPaths);
-        return optionalStreamOrFile.orElseThrow(() -> new RuntimeException(
-                "Unable to find " + basename + " with extension " + extension + " in file system or in classpath, with"
-                        + " search paths: " + Arrays.stream(searchPaths).collect(Collectors.joining(","))
-        ));
+    public static Optional<Reader> findOptionalReader(String basename, String extenion, String... searchPaths) {
+        return findOptionalStream(basename, extenion, searchPaths)
+                .map(InputStreamReader::new)
+                .map(BufferedReader::new);
     }
 
     public static Reader findRequiredReader(String basename, String extension, String... searchPaths) {
@@ -62,13 +89,53 @@ public class ResourceFinder {
         ));
     }
 
-    public static Optional<Reader> findOptionalReader(String basename, String extenion, String... searchPaths) {
-        return findOptionalStreamOrFile(basename, extenion, searchPaths)
-                .map(InputStreamReader::new)
-                .map(BufferedReader::new);
+    public static List<String> readFileLines(String basename, String... searchPaths) {
+        InputStream requiredStreamOrFile = findRequiredStream(basename, "", DATA_DIR);
+        try (BufferedReader buffer = new BufferedReader((new InputStreamReader(requiredStreamOrFile)))) {
+            List<String> collected = buffer.lines().collect(Collectors.toList());
+            return collected;
+        } catch (IOException ioe) {
+            throw new RuntimeException("Error while reading required file to string", ioe);
+        }
     }
 
-    public static Optional<InputStream> findOptionalStreamOrFile(String basename, String extension, String... searchPaths) {
+    public static String readFileString(String basename, String... searchPaths) {
+        InputStream requiredStreamOrFile = findRequiredStream(basename, "", searchPaths);
+        try (BufferedReader buffer = new BufferedReader((new InputStreamReader(requiredStreamOrFile)))) {
+            String filedata = buffer.lines().collect(Collectors.joining("\n"));
+            return filedata;
+        } catch (IOException ioe) {
+            throw new RuntimeException("Error while reading required file to string", ioe);
+        }
+    }
+
+    public static CharBuffer loadFileToCharBuffer(String filename, String... searchPaths) {
+        InputStream stream = findRequiredStream(filename, "", searchPaths);
+
+        CharBuffer linesImage;
+        try {
+            InputStreamReader isr = new InputStreamReader(stream);
+            linesImage = CharBuffer.allocate(1024 * 1024);
+            while (isr.read(linesImage) > 0) {
+            }
+            isr.close();
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+            throw new RuntimeException(e);
+        }
+        linesImage.flip();
+        return linesImage.asReadOnlyBuffer();
+    }
+
+    public static InputStream findRequiredStream(String basename, String extension, String... searchPaths) {
+        Optional<InputStream> optionalStreamOrFile = findOptionalStream(basename, extension, searchPaths);
+        return optionalStreamOrFile.orElseThrow(() -> new RuntimeException(
+                "Unable to find " + basename + " with extension " + extension + " in file system or in classpath, with"
+                        + " search paths: " + Arrays.stream(searchPaths).collect(Collectors.joining(","))
+        ));
+    }
+
+    public static Optional<InputStream> findOptionalStream(String basename, String extension, String... searchPaths) {
 
         boolean needsExtension = (extension != null && !extension.isEmpty() && !basename.endsWith("." + extension));
         String filename = basename + (needsExtension ? "." + extension : "");
@@ -91,11 +158,6 @@ public class ResourceFinder {
         return Optional.empty();
     }
 
-    private static boolean isRemote(String path) {
-        return (path.toLowerCase().startsWith("http:")
-                || path.toLowerCase().startsWith("https:"));
-    }
-
     public static Optional<InputStream> getInputStream(String path) {
 
         // URLs, if http: or https:
@@ -104,7 +166,7 @@ public class ResourceFinder {
             try {
                 url = new URL(path);
                 InputStream inputStream = url.openStream();
-                if (inputStream!=null) {
+                if (inputStream != null) {
                     return Optional.of(inputStream);
                 }
             } catch (Exception e) {
@@ -119,6 +181,21 @@ public class ResourceFinder {
         } catch (FileNotFoundException ignored) {
         }
 
+        // module data services
+        try {
+            ServiceLoader<ModuleDataService> dataLoaders = ServiceLoader.load(ModuleDataService.class);
+            for (ModuleDataService dataLoader : dataLoaders) {
+                Path candidatePath = Path.of(path);
+                InputStream inputStream = dataLoader.getInputStream(candidatePath);
+                if (inputStream != null) {
+                    Optional<InputStream> optionalStream = Optional.of(inputStream);
+                    return optionalStream;
+                }
+            }
+        } catch (Exception ignored) {
+            logger.trace("error using module data service for " + path.toString() + ": " + ignored.getMessage(), ignored);
+        }
+
         // Classpath
         ClassLoader classLoader = ResourceFinder.class.getClassLoader();
         InputStream stream = classLoader.getResourceAsStream(path);
@@ -129,54 +206,9 @@ public class ResourceFinder {
         return Optional.empty();
     }
 
-    public static List<String> readFileLines(String basename, String... searchPaths) {
-        InputStream requiredStreamOrFile = findRequiredStreamOrFile(basename, "", DATA_DIR);
-        try (BufferedReader buffer = new BufferedReader((new InputStreamReader(requiredStreamOrFile)))) {
-            List<String> collected = buffer.lines().collect(Collectors.toList());
-            return collected;
-        } catch (IOException ioe) {
-            throw new RuntimeException("Error while reading required file to string", ioe);
-        }
-    }
-
-    public static String readFileString(String basename, String... searchPaths) {
-        InputStream requiredStreamOrFile = findRequiredStreamOrFile(basename, "", searchPaths);
-        try (BufferedReader buffer = new BufferedReader((new InputStreamReader(requiredStreamOrFile)))) {
-            String filedata = buffer.lines().collect(Collectors.joining("\n"));
-            return filedata;
-        } catch (IOException ioe) {
-            throw new RuntimeException("Error while reading required file to string", ioe);
-        }
-    }
-
-    public static CSVParser readFileCSV(String basename, String... searchPaths) {
-        Reader reader = findRequiredReader(basename, "csv", searchPaths);
-        CSVFormat format = CSVFormat.newFormat(',').withFirstRecordAsHeader();
-        try {
-            CSVParser parser = new CSVParser(reader, format);
-            return parser;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
-    public static CharBuffer loadFileToCharBuffer(String filename, String... searchPaths) {
-        InputStream stream = findRequiredStreamOrFile(filename, "", searchPaths);
-
-        CharBuffer linesImage;
-        try {
-            InputStreamReader isr = new InputStreamReader(stream);
-            linesImage = CharBuffer.allocate(1024 * 1024);
-            while (isr.read(linesImage)>0) {
-            }
-            isr.close();
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-            throw new RuntimeException(e);
-        }
-        linesImage.flip();
-        return linesImage.asReadOnlyBuffer();
+    private static boolean isRemote(String path) {
+        return (path.toLowerCase().startsWith("http:")
+                || path.toLowerCase().startsWith("https:"));
     }
 
 }
