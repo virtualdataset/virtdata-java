@@ -1,6 +1,7 @@
 package io.virtdata.core;
 
 import io.virtdata.annotations.ThreadSafeMapper;
+import io.virtdata.services.FunctionFinderService;
 import org.apache.commons.lang3.ClassUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +18,21 @@ import java.util.stream.Collectors;
 public class VirtDataFunctionResolver {
     private final static Logger logger = LoggerFactory.getLogger(VirtDataFunctionResolver.class);
     private final static MethodHandles.Lookup lookup = MethodHandles.publicLookup();
-    private final VirtDataFunctionFinder virtDataFunctionFinder = new VirtDataFunctionFinder();
+    private final FunctionFinder functionFinder = new FunctionFinder();
 
-    public List<ResolvedFunction> resolveFunctions(Class<?> returnType, Class<?> inputType, String functionName, Object... parameters) {
+    public List<ResolvedFunction> resolveFunctions(
+            Class<?> returnType,
+            Class<?> inputType,
+            String functionName,
+            Object... parameters) {
+
+        StringBuilder rs = new StringBuilder();
+        rs.append((inputType == null ? "ANY" : inputType.getSimpleName()));
+        rs.append("->").append(functionName).append("(");
+        rs.append(Arrays.stream(parameters).map(Object::getClass).map(Class::getSimpleName).collect(Collectors.joining(",")));
+        rs.append(")->");
+        rs.append((returnType == null ? "ANY" : returnType.getSimpleName()));
+        String requestedSignature = rs.toString();
 
         // TODO: Make this look for both assignment compatible matches as well as exact assignment matches, and only
         // TODO: return assignment compatible matches when there are none exact matching.
@@ -32,13 +45,21 @@ public class VirtDataFunctionResolver {
 
         List<ResolvedFunction> resolvedFunctions = new ArrayList<>();
 
-        List<String> functionNames = virtDataFunctionFinder.getFunctionNames();
+        List<FunctionFinderService.Path> functionNames = functionFinder.getFunctionNames();
+
+        logger.trace("considering " + functionNames.size() + " different functions for '" + requestedSignature);
         List<Class<?>> matchingClasses = functionNames
                 .stream()
-                .filter(s -> s.endsWith("." + functionName))
+//                .filter(pat -> {
+//                    logger.debug("p.className=" + pat.className + " funcName=" + functionName);
+//                    return true;
+//                })
+                .filter(p -> p.className.endsWith("." + functionName))
                 .map(this::maybeClassForName)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
+
+        logger.trace("found " + matchingClasses.size() + " matching classes with the same simple name '" + functionName + "'");
 
         List<Constructor<?>> matchingConstructors = null;
         matchingConstructors = matchingClasses.stream()
@@ -48,38 +69,53 @@ public class VirtDataFunctionResolver {
                     boolean canAssignInput = inputType == null || canAssignInputType(c, inputType);
                     boolean canAssignReturn = returnType == null || canAssignReturnType(c, returnType);
                     boolean matchesSignature = isFunctional && canAssignInput && canAssignReturn;
+                    if (!matchesSignature) {
+                        logger.trace("rejected: functional?=" + isFunctional + ", input type ok?=" + canAssignInput +
+                                ", output type ok?=" + canAssignReturn);
+                    }
                     return matchesSignature;
                 })
                 .flatMap(c -> Arrays.stream(c.getDeclaredConstructors()))
                 .filter(c -> {
+                    logger.trace("considering " + getEffectiveSignature(c));
+
                     Class<?>[] ctypes = c.getParameterTypes();
+
                     if (c.isVarArgs()) {
                         if (!ClassUtils.isAssignable(
                                 Arrays.copyOfRange(parameterTypes, 0, ctypes.length - 1),
                                 Arrays.copyOfRange(ctypes, 0, ctypes.length - 1),
                                 true)) {
+                            logger.trace(" rejected: varargs types are not assignable from the input values");
                             return false;
                         }
+
                         Class<?> componentType = ctypes[ctypes.length - 1].getComponentType();
                         if (parameterTypes.length >= ctypes.length && !ClassUtils.isAssignable(parameterTypes[ctypes.length - 1], componentType, true)) {
+                            logger.trace(" rejected: varargs type is not assignable from the input value type");
                             return false;
                         }
                         return true;
                     } else {
-                        if (parameterTypes.length!=ctypes.length) {
+                        if (parameterTypes.length != ctypes.length) {
+                            logger.trace(" rejected: the ctor has " + ctypes.length + " parameters, but " + parameterTypes.length + " are provided.");
                             return false;
                         }
-                        return ClassUtils.isAssignable(parameterTypes, ctypes, true);
+                        boolean assignable = ClassUtils.isAssignable(parameterTypes, ctypes, true);
+                        if (!assignable) {
+                            logger.trace(" rejected: parameter types are not assignable to signature");
+                        }
+                        return assignable;
                     }
+
                 })
-//                .map(c -> {
-//                    try {
-//                        return lookup.findConstructor(c, MethodType.methodType(void.class, parameterTypes));
-//                    } catch (NoSuchMethodException | IllegalAccessException e) {
-//                        throw new RuntimeException(e);
-//                    }
-//                })
                 .collect(Collectors.toList());
+
+        logger.debug("found " + matchingConstructors.size() + " matching constructors which can fulfill " +
+                requestedSignature);
+        if (!logger.isTraceEnabled()) {
+            logger.debug("see TRACE level logs for details.");
+        }
 
         if (returnType != null && inputType != null && matchingConstructors.size() > 1) {
             throw new RuntimeException(
@@ -198,12 +234,26 @@ public class VirtDataFunctionResolver {
         return isAssignable;
     }
 
-    private Class<?> maybeClassForName(String className) {
+    private Class<?> maybeClassForName(FunctionFinderService.Path path) {
         try {
-            return Class.forName(className);
+            return Class.forName(path.finder.getClass().getModule(), path.className);
         } catch (Exception e) {
             return null;
         }
+    }
+
+    private String getEffectiveSignature(Constructor ctor) {
+        StringBuilder sb = new StringBuilder();
+        Method fmethod = toFunctionalMethod(ctor.getDeclaringClass());
+        sb.append(fmethod.getParameterTypes()[0].getTypeName()).append("->");
+        sb.append(ctor.getDeclaringClass().getCanonicalName()).append("(");
+        for (Class<?> parameterType : ctor.getParameterTypes()) {
+            sb.append(parameterType.getTypeName()).append(",");
+        }
+        sb.setLength(sb.length() - 1);
+        sb.append(")->");
+        sb.append(fmethod.getReturnType().getTypeName());
+        return sb.toString();
     }
 
     private Method toFunctionalMethod(Class<?> clazz) {
@@ -220,28 +270,9 @@ public class VirtDataFunctionResolver {
         );
     }
 
-    public List<String> getFunctionNames() {
-        return virtDataFunctionFinder.getFunctionNames();
+    public List<FunctionFinderService.Path> getFunctionNames() {
+        return functionFinder.getFunctionNames();
     }
 
-
-//    public List<DocFuncData> getDocModels() {
-//        List<String> classes= virtDataFunctionFinder.getFunctionNames().stream().map(s -> s+"DocInfo").collect(Collectors.toList());
-//        List<DocFuncData> docFuncData = new ArrayList<>(classes.size());
-//        for (String aClass : classes) {
-//            try {
-//                Class<?> docClass = Class.forName(aClass);
-//                if (DocFuncData.class.isAssignableFrom(docClass)) {
-//                    DocFuncData dfd = DocFuncData.class.cast(docClass);
-//                    docFuncData.add(dfd);
-//                } else {
-//                    throw new RuntimeException("Unable to cast " + docClass.getCanonicalName() + " to class DocFuncData");
-//                }
-//            } catch (ClassNotFoundException e) {
-//                throw new RuntimeException(e);
-//            }
-//        }
-//        return docFuncData;
-//    }
 
 }

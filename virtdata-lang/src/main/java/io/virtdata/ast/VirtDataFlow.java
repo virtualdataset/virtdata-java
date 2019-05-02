@@ -2,6 +2,7 @@ package io.virtdata.ast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class VirtDataFlow {
     private List<Expression> expressions = new ArrayList<>();
@@ -26,5 +27,9 @@ public class VirtDataFlow {
             throw new RuntimeException("expressions not initialized, first expression undefined.");
         }
         return expressions.get(0);
+    }
+
+    public String toString() {
+        return this.expressions.stream().map(String::valueOf).collect(Collectors.joining("; "));
     }
 }
