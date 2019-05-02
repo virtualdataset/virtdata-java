@@ -2,6 +2,7 @@ package io.virtdata.core;
 
 import io.virtdata.autodoctypes.DocFuncData;
 import io.virtdata.processors.FunctionDocInfoProcessor;
+import io.virtdata.services.FunctionFinderService;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -18,19 +19,24 @@ public class VirtDataDocs {
 
     private final static MethodHandles.Lookup lookup = MethodHandles.publicLookup();
 
-    public static List<String> getAllNames() {
-        VirtDataFunctionFinder finder = new VirtDataFunctionFinder();
+    public static List<FunctionFinderService.Path> getAllNames() {
+        FunctionFinder finder = new FunctionFinder();
         return finder.getFunctionNames();
     }
 
     public static List<DocFuncData> getAllDocs() {
-        VirtDataFunctionFinder finder = new VirtDataFunctionFinder();
-        List<String> functionNames = finder.getFunctionNames();
+        FunctionFinder finder = new FunctionFinder();
+        List<FunctionFinderService.Path> functionNames = finder.getFunctionNames();
+
         List<DocFuncData> docs = new ArrayList<>();
         try {
-            for (String n : functionNames) {
-                String s = n + FunctionDocInfoProcessor.AUTOSUFFIX;
-                Class<?> aClass = Class.forName(s);
+            for (FunctionFinderService.Path n : functionNames) {
+
+                Class<?> aClass =Class.forName(
+                        n.finder.getClass().getModule(),
+                         n.className + FunctionDocInfoProcessor.AUTOSUFFIX
+                );
+
                 MethodHandle constructor = lookup.findConstructor(aClass, MethodType.methodType(Void.TYPE));
                 Object o = constructor.invoke();
                 if (DocFuncData.class.isAssignableFrom(o.getClass())) {
