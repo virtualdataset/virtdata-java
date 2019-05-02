@@ -1,6 +1,6 @@
 package io.virtdata.long_collections;
 
-import io.virtdata.basicsmappers.from_long.to_collection.HashedRangeToLongList;
+import io.virtdata.libbasics.shared.from_long.to_collection.HashedRangeToLongList;
 import org.junit.Test;
 
 import java.util.List;

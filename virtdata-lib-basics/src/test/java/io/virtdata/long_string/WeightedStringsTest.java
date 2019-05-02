@@ -1,6 +1,6 @@
 package io.virtdata.long_string;
 
-import io.virtdata.basicsmappers.from_long.to_string.WeightedStrings;
+import io.virtdata.libbasics.shared.from_long.to_string.WeightedStrings;
 import org.junit.Test;
 
 import java.util.HashMap;

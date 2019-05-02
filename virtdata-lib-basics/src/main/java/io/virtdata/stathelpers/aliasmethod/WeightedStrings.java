@@ -1,7 +1,7 @@
 package io.virtdata.stathelpers.aliasmethod;
 
 import io.virtdata.annotations.ThreadSafeMapper;
-import io.virtdata.basicsmappers.from_long.to_long.Hash;
+import io.virtdata.libbasics.shared.from_long.to_long.Hash;
 import io.virtdata.stathelpers.EvProbD;
 import io.virtdata.util.ResourceFinder;
 import org.apache.commons.csv.CSVParser;

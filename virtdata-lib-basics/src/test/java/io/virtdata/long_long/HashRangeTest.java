@@ -1,6 +1,6 @@
 package io.virtdata.long_long;
 
-import io.virtdata.basicsmappers.from_long.to_long.HashRange;
+import io.virtdata.libbasics.shared.from_long.to_long.HashRange;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
