@@ -10,7 +10,7 @@
     <parent>
         <artifactId>virtdata-defaults</artifactId>
         <groupId>io.virtdata</groupId>
-        <version>2.12.06-SNAPSHOT</version>
+        <version>2.12.06</version>
         <relativePath>virtdata-defaults</relativePath>
     </parent>
 
@@ -38,7 +38,7 @@
         <developerConnection>scm:git:https://github.com/virtualdataset/virtdata-java.git</developerConnection>
         <!--<developerConnection>scm:git:git@github.com:engineblock/engineblock.git</developerConnection> broken? -->
         <url>scm:git:git@github.com:virtualdataset/virtdata-java.git</url>
-        <tag>virtdata-1.2.39-SNAPSHOT</tag>
+        <tag>virtdata-2.12.06</tag>
     </scm>
 
     <distributionManagement>
