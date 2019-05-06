@@ -34,6 +34,12 @@ public class FunctionFinder {
                 .collect(Collectors.toList());
 
         logger.debug("Found " + finders.size() + " function enumerators in the runtime.");
+        if (finders.size()==0) {
+            logger.error("This runtime could not find any FunctionFinderService endpoints using Java SPI with JPMS." +
+                    " This means that the dependencies might not be present which provide this service, or that the" +
+                    "module-info files are not configured with the correct provides or uses clause, or that the modules" +
+                    " used in this runtime are not all using JPMS.");
+        }
 
         for (FunctionFinderService docFuncDataFinder : finders) {
             List<FunctionFinderService.Path> funcNamesForModule = docFuncDataFinder.getFunctionPaths();

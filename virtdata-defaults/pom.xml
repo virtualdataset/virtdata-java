@@ -251,28 +251,28 @@
                     <artifactId>antlr4-maven-plugin</artifactId>
                     <version>4.7.2</version>
                 </plugin>
-                <!-- Shading -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-shade-plugin</artifactId>
-                    <version>3.2.1</version>
-                    <executions>
-                        <execution>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>shade</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <transformers>
-                            <transformer implementation="org.org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-                        </transformers>
-                        <createSourcesJar>true</createSourcesJar>
-                        <createDependencyReducedPom>false</createDependencyReducedPom>
-                        <minimizeJar>false</minimizeJar>
-                    </configuration>
-                </plugin>
+<!--                &lt;!&ndash; Shading &ndash;&gt;-->
+<!--                <plugin>-->
+<!--                    <groupId>org.apache.maven.plugins</groupId>-->
+<!--                    <artifactId>maven-shade-plugin</artifactId>-->
+<!--                    <version>3.2.1</version>-->
+<!--                    <executions>-->
+<!--                        <execution>-->
+<!--                            <phase>package</phase>-->
+<!--                            <goals>-->
+<!--                                <goal>shade</goal>-->
+<!--                            </goals>-->
+<!--                        </execution>-->
+<!--                    </executions>-->
+<!--                    <configuration>-->
+<!--                        <transformers>-->
+<!--                            <transformer implementation="org.org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />-->
+<!--                        </transformers>-->
+<!--                        <createSourcesJar>true</createSourcesJar>-->
+<!--                        <createDependencyReducedPom>false</createDependencyReducedPom>-->
+<!--                        <minimizeJar>false</minimizeJar>-->
+<!--                    </configuration>-->
+<!--                </plugin>-->
             </plugins>
         </pluginManagement>
 
