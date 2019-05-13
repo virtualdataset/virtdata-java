@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.virtdata</groupId>
@@ -109,13 +110,6 @@
                 <version>0.1-SNAPSHOT</version>
             </dependency>
 
-
-<!--            <dependency>-->
-<!--                <groupId>org.testng</groupId>-->
-<!--                <artifactId>testng</artifactId>-->
-<!--                <version>7.0.0-beta3</version>-->
-<!--                <scope>test</scope>-->
-<!--            </dependency>-->
             <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
@@ -170,10 +164,10 @@
                     <includes>
                         <include>**/*Test*.java</include>
                     </includes>
-                        <useModulePath>true</useModulePath>
-<!--                    <useSystemClassLoader>true</useSystemClassLoader>-->
-<!--                    <forkCount>0</forkCount>-->
-<!--                    <debugForkedProcess>true</debugForkedProcess>-->
+                    <useModulePath>true</useModulePath>
+                    <!--                    <useSystemClassLoader>true</useSystemClassLoader>-->
+                    <!--                    <forkCount>0</forkCount>-->
+                    <!--                    <debugForkedProcess>true</debugForkedProcess>-->
                 </configuration>
             </plugin>
 
@@ -194,6 +188,23 @@
                         <goals>
                             <goal>jar</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- assemble dependencies for jlink, integration tests, etc -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -251,28 +262,28 @@
                     <artifactId>antlr4-maven-plugin</artifactId>
                     <version>4.7.2</version>
                 </plugin>
-<!--                &lt;!&ndash; Shading &ndash;&gt;-->
-<!--                <plugin>-->
-<!--                    <groupId>org.apache.maven.plugins</groupId>-->
-<!--                    <artifactId>maven-shade-plugin</artifactId>-->
-<!--                    <version>3.2.1</version>-->
-<!--                    <executions>-->
-<!--                        <execution>-->
-<!--                            <phase>package</phase>-->
-<!--                            <goals>-->
-<!--                                <goal>shade</goal>-->
-<!--                            </goals>-->
-<!--                        </execution>-->
-<!--                    </executions>-->
-<!--                    <configuration>-->
-<!--                        <transformers>-->
-<!--                            <transformer implementation="org.org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />-->
-<!--                        </transformers>-->
-<!--                        <createSourcesJar>true</createSourcesJar>-->
-<!--                        <createDependencyReducedPom>false</createDependencyReducedPom>-->
-<!--                        <minimizeJar>false</minimizeJar>-->
-<!--                    </configuration>-->
-<!--                </plugin>-->
+                <!--                &lt;!&ndash; Shading &ndash;&gt;-->
+                <!--                <plugin>-->
+                <!--                    <groupId>org.apache.maven.plugins</groupId>-->
+                <!--                    <artifactId>maven-shade-plugin</artifactId>-->
+                <!--                    <version>3.2.1</version>-->
+                <!--                    <executions>-->
+                <!--                        <execution>-->
+                <!--                            <phase>package</phase>-->
+                <!--                            <goals>-->
+                <!--                                <goal>shade</goal>-->
+                <!--                            </goals>-->
+                <!--                        </execution>-->
+                <!--                    </executions>-->
+                <!--                    <configuration>-->
+                <!--                        <transformers>-->
+                <!--                            <transformer implementation="org.org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />-->
+                <!--                        </transformers>-->
+                <!--                        <createSourcesJar>true</createSourcesJar>-->
+                <!--                        <createDependencyReducedPom>false</createDependencyReducedPom>-->
+                <!--                        <minimizeJar>false</minimizeJar>-->
+                <!--                    </configuration>-->
+                <!--                </plugin>-->
             </plugins>
         </pluginManagement>
 
