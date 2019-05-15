@@ -1,0 +1,66 @@
+#!/bin/bash
+rm -f mkmods.log
+exec 3<>mkmods.log
+# to redirect anything to this log, just add 1>&3 to the end of the command
+
+export TARGETDIR=${TARGETDIR:-target}
+export DEPSSUBDIR=${DEPSSUBDIR:-dependencies}
+export JMODSUBDIR=${JMODSUBDIR:-jmods}
+
+pushd ${TARGETDIR}
+
+#for file in $(find $DEPSDIR -type f -name '*.jar')
+for file in $(find $DEPSDIR -type f -name '*assert*.jar')
+do
+ jarname=$(basename $file)
+ modname=${jarname%%-[0-9.]*.jar}
+ modname=${modname//-/.}
+ printf "file:%s \n jarname:%s\n modname:%s\n" "${file}" "${jarname}" "${modname}"
+ jdeps --multi-release 12 --module-path *.jar:dependencies --generate-module-info ${JMODSUBDIR} $file
+ modulefile=${JMODSUBDIR}/${modname}/module-info.java
+ if [ -f "${modulefile}" ]
+ then
+  printf " PRESENT\n"
+ else
+  printf " MISSING\n"
+ fi
+
+done
+#!/bin/bash
+
+if [ ! -d "target/dependencies" ]
+then
+ printf "target/dependencies directory does not exist. Exiting!\n"
+ exit 2
+fi
+
+cd target
+mkdir -p jmods
+export MAINDIR=`pwd`
+
+for file in dependencies/*.jar
+do
+ printf "examining file '%s' ...\n" ${file}
+ if unzip -l $file | grep 'module-info'
+ then
+  printf "FOUND MODULE-INFO...\n"
+ else
+  printf "DID NOT FIND MODULE-INFO...\n"
+
+  FN=$(basename $file)
+  printf "FN: %s\n" ${FN}
+  FN=${FN%%-[0-9.]*.jar}
+  printf " FN: %s\n" ${FN}
+  FN=${FN//-/.}
+  printf "  FN: %s\n" ${FN}
+
+  jdeps --multi-release 12 --module-path *.jar:dependencies --generate-module-info jmods $file
+#  echo
+#  pwd
+#  (cd $MAINDIR/jmods/$FN && jar xf $MAINDIR/$file)
+  
+#  jar uf $file -C $ROOT_DIR/classes module-info.class
+ fi
+done
+
+#jdeps --multi-release 12  --module-path ./*SNAPSHOT.jar:dependencies/ --generate-module-info out1 dependencies/jetty-io-9.4.18.v20190429.jar

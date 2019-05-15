@@ -1,4 +1,5 @@
 **/generated
+**/*.log
 **/.idea
 **/*.iml
 **/target
