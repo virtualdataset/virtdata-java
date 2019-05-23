@@ -1,0 +1,37 @@
++ export TARGETDIR=target
++ TARGETDIR=target
++ pushd target
++ export DEPSIMGDIR=deps-image
++ DEPSIMGDIR=deps-image
++ export JMODSUBDIR=jmods
++ JMODSUBDIR=jmods
++ printf 'DEPSIMGDIR=deps-image JMODSUBDIR=jmods MODSDIR=\n'
++ '[' '!' -d deps-image ']'
+++ pwd
++ printf 'pwd:%s\n' /home/jshook/IdeaProjects/virtdata-java/virtdata-userlibs/target
+++ find deps-image -type f -name '*number-to-words*.jar'
++ for file in $(find $DEPSIMGDIR -type f -name '*number-to-words*.jar')
+++ basename deps-image/number-to-words-1.0.0.jar
++ jarname=number-to-words-1.0.0.jar
++ modname=number-to-words
++ modname=number.to.words
++ printf 'file:%s \n jarname:%s\n modname:%s\n' deps-image/number-to-words-1.0.0.jar number-to-words-1.0.0.jar number.to.words
++ unzip -l ''
++ grep module-info
+unzip:  cannot find or open , .zip or .ZIP.
++ printf 'NOT A MODULE\n'
++ jdeps --multi-release 12 --module-path '*.jar:target/deps-image' --generate-module-info jmods deps-image/number-to-words-1.0.0.jar
++ modulefile=jmods/number.to.words/module-info.java
++ '[' -f jmods/number.to.words/module-info.java ']'
++ printf ' PRESENT\n'
++ pushd jmods/number.to.words
+++ pwd
++ printf 'PWD %s\n' /home/jshook/IdeaProjects/virtdata-java/virtdata-userlibs/target/jmods/number.to.words
++ unzip ../../deps-image/number-to-words-1.0.0.jar
++ javac module-info.java
+module-info.java:2: error: package is empty or does not exist: uk.ydubey.formatter.numtoword
+    exports uk.ydubey.formatter.numtoword;
+                               ^
+1 error
++ popd
++ exit 0
