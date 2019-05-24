@@ -22,6 +22,7 @@ import org.testng.annotations.Test;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.LongFunction;
 import java.util.function.LongUnaryOperator;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -218,4 +219,21 @@ public class IntegratedBindingsTest {
         assertThat(f.getClass()==LongUnaryOperator.class);
     }
 
+    // This test is for the added boolean type, as well as ToString(func) types, as well as the
+    // ability to have the MapTemplate optionally promote types to string values or leave them as
+    // their native object values
+    @Test
+    public void testMapElementTypes() {
+        LongFunction f = VirtData.getFunction(
+                "MapTemplate(false, HashRange(2,10),ToString(HashRange(1000,9999)),ToLongFunction(HashRange(0,99)));",
+                LongFunction.class
+        );
+        Object o1 = f.apply(1L);
+        assertThat(o1).isInstanceOf(Map.class);
+        Map map = Map.class.cast(o1);
+        //<{"3294"=87, "4506"=19, "5521"=56, "7626"=46}>
+        assertThat(map).containsOnlyKeys("3294","4506","5521","7626");
+        assertThat(map).containsValues(87,19,56,46);
+
+    }
 }

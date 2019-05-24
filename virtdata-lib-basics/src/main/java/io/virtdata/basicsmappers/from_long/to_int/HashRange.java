@@ -1,5 +1,6 @@
 package io.virtdata.basicsmappers.from_long.to_int;
 
+import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.basicsmappers.from_long.to_long.Hash;
 
@@ -12,11 +13,13 @@ public class HashRange implements LongToIntFunction {
     private final long width;
     private final Hash hash = new Hash();
 
+    @Example({"HashRange(32L)","map the input to a number in the range 0-31, inclusive, of type int"})
     public HashRange(long width) {
         this.width=width;
         this.minValue=0L;
     }
 
+    @Example({"HashRange(35L,39L)","map the input to a number in the range 35-38, inclusive, of type int"})
     public HashRange(long minValue, long maxValue) {
         this.minValue = minValue;
 

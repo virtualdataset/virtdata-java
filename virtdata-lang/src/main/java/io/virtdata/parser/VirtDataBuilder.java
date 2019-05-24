@@ -122,6 +122,11 @@ public class VirtDataBuilder extends VirtDataBaseListener {
     }
 
     @Override
+    public void exitBooleanValue(VirtDataParser.BooleanValueContext ctx) {
+        calls.peek().addFunctionArg(new BooleanArg(Boolean.valueOf(ctx.getText())));
+    }
+
+    @Override
     public void exitFloatValue(VirtDataParser.FloatValueContext ctx) {
         calls.peek().addFunctionArg(new FloatArg(Float.valueOf(ctx.getText())));
     }

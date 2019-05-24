@@ -20,12 +20,13 @@ outputType : ID;
 
 arg : ( value | virtdataCall | ref );
 ref : ('$' ID );
-value : ( floatValue | doubleValue | integerValue | longValue | stringValue);
+value : ( floatValue | doubleValue | integerValue | longValue | stringValue | booleanValue);
 stringValue : SSTRING_LITERAL | DSTRING_LITERAL ;
 longValue: LONG;
 doubleValue: DOUBLE;
 integerValue: INTEGER;
 floatValue: FLOAT;
+booleanValue: BOOLEAN;
 
 LONG : '-'? INT ('l'|'L') ;
 DOUBLE    :   ('-'? INT '.' INT EXP? | '-'? INT EXP | '-'? INT ) ('d'|'D') ;
@@ -35,6 +36,7 @@ FLOAT
     |   '-'? INT EXP            // 1e10 -3e4
     |   '-'? INT    // -3, 45
     ;
+BOOLEAN : 'true' | 'false';
 
 fragment INT :   '0' | [1-9] [0-9]* ; // no leading zeros
 fragment EXP :   [Ee] [+\-]? INT ;

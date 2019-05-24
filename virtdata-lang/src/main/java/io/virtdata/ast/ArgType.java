@@ -8,7 +8,8 @@ public interface ArgType {
         FloatArg(FloatArg.class, float.class),
         DoubleArg(DoubleArg.class, double.class),
         LongArg(LongArg.class, long.class),
-        IntegerArg(IntegerArg.class, int.class);
+        IntegerArg(IntegerArg.class, int.class),
+        BooleanArg(BooleanArg.class, boolean.class);
 
         private final Class<?> valueClass;
         private final Class<?> typeClass;
