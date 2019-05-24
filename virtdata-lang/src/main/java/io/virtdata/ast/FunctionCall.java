@@ -99,6 +99,9 @@ public class FunctionCall implements ArgType {
                 case DoubleArg:
                     args.add(((DoubleArg) argType).getDoubleValue());
                     break;
+                case BooleanArg:
+                    args.add(((BooleanArg) argType).getBooleanValue());
+                    break;
                 default:
                     throw new RuntimeException("Could not map type into argument object: " + typeName);
             }
