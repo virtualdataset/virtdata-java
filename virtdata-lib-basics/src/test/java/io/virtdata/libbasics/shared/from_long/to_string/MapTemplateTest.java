@@ -1,5 +1,6 @@
 package io.virtdata.libbasics.shared.from_long.to_string;
 
+import io.virtdata.libbasics.shared.from_long.to_collection.MapTemplate;
 import org.assertj.core.api.MapAssert;
 import org.junit.Test;
 

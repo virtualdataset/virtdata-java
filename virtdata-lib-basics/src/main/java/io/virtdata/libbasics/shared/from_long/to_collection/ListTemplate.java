@@ -1,7 +1,6 @@
-package io.virtdata.libbasics.shared.from_long.to_string;
+package io.virtdata.libbasics.shared.from_long.to_collection;
 
-import io.virtdata.annotations.Example;
-import io.virtdata.annotations.ThreadSafeMapper;
+import io.virtdata.annotations.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +13,8 @@ import java.util.function.LongToIntFunction;
  * string values. The input fed to the second function is incremented
  * between elements.
  */
+@Categories({Category.collections})
+@DeprecatedFunction("Use List or StringList instead")
 @ThreadSafeMapper
 public class ListTemplate implements LongFunction<List<String>> {
 

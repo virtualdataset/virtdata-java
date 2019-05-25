@@ -1,7 +1,6 @@
-package io.virtdata.libbasics.shared.from_long.to_string;
+package io.virtdata.libbasics.shared.from_long.to_collection;
 
-import io.virtdata.annotations.Example;
-import io.virtdata.annotations.ThreadSafeMapper;
+import io.virtdata.annotations.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +20,9 @@ import java.util.function.LongToIntFunction;
  * entries using the original input value plus a relative index for both
  * the key and value functions respectively.
  */
+@Categories({Category.collections})
 @ThreadSafeMapper
+@DeprecatedFunction("Use Map or StringMap instead")
 public class MapTemplate implements LongFunction<Map<Object,Object>> {
 
     private final LongToIntFunction sizeFunc;
