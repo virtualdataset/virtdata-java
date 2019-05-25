@@ -11,6 +11,7 @@ module io.virtdata.userlibs {
     uses io.virtdata.services.FunctionFinderService;
     uses io.virtdata.services.ModuleDataService;
 
+    exports io.virtdata.apps;
     exports io.virtdata.apps.docsapp;
     exports io.virtdata.apps.valuesapp;
 

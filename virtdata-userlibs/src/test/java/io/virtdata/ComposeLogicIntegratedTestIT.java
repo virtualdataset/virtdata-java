@@ -3,7 +3,7 @@ package io.virtdata;
 import io.virtdata.api.DataMapper;
 import io.virtdata.core.VirtData;
 import io.virtdata.libbasics.shared.from_long.to_long.Identity;
-import io.virtdata.libbasics.shared.from_long.to_string.MapTemplate;
+import io.virtdata.libbasics.shared.from_long.to_collection.MapTemplate;
 import io.virtdata.libbasics.shared.from_long.to_string.NumberNameToString;
 import io.virtdata.libbasics.shared.from_long.to_string.Template;
 import io.virtdata.util.ModuleInfo;
