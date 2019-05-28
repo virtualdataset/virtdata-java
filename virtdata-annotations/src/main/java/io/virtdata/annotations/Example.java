@@ -1,8 +1,7 @@
 package io.virtdata.annotations;
 
 
-import java.lang.annotation.*;
-import java.util.regex.Pattern;
+import java.lang.annotation.Repeatable;
 
 /**
  * The example annotation allows for a function developer to attach illustrative

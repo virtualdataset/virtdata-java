@@ -1,4 +1,4 @@
-package io.virtdata.annotations;/*
+/*
 *   Copyright 2016 jshook
 *   Licensed under the Apache License, Version 2.0 (the "License");
 *   you may not use this file except in compliance with the License.
@@ -12,6 +12,8 @@ package io.virtdata.annotations;/*
 *   See the License for the specific language governing permissions and
 *   limitations under the License.
 */
+
+package io.virtdata.annotations;
 
 import java.lang.annotation.*;
 

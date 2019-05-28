@@ -1,11 +1,9 @@
 package io.virtdata.annotations;
 
-import java.nio.LongBuffer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.LongStream;
 
 /**
  * <H2>Formatting conventions</H2>

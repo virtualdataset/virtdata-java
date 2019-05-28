@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>io.virtdata</groupId>
-            <artifactId>project-processors</artifactId>
+            <artifactId>virtdata-processors</artifactId>
             <version>2.11.19-SNAPSHOT</version>
         </dependency>
         <dependency>
