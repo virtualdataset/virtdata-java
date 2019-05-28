@@ -3,8 +3,8 @@ package io.virtdata.conversions.from_long;
 import io.virtdata.annotations.Categories;
 import io.virtdata.annotations.Category;
 import io.virtdata.annotations.ThreadSafeMapper;
-import io.virtdata.libbasics.shared.from_long.to_byte.LongToByte;
-import io.virtdata.libbasics.shared.from_long.to_short.LongToShort;
+import io.virtdata.basicsmappers.from_long.to_byte.LongToByte;
+import io.virtdata.basicsmappers.from_long.to_short.LongToShort;
 
 import java.util.function.*;
 

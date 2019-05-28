@@ -1,4 +1,4 @@
-package io.virtdata.libbasics.shared.conversions.from_string;
+package io.virtdata.basicsmappers.conversions.from_string;
 
 import io.virtdata.annotations.Categories;
 import io.virtdata.annotations.Category;

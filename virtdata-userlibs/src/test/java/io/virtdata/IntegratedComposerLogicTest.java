@@ -2,14 +2,12 @@ package io.virtdata;
 
 import io.virtdata.api.DataMapper;
 import io.virtdata.basicsmappers.from_long.to_long.Identity;
-import io.virtdata.basicsmappers.from_long.to_string.MapTemplate;
 import io.virtdata.basicsmappers.from_long.to_string.NumberNameToString;
 import io.virtdata.basicsmappers.from_long.to_string.Template;
 import io.virtdata.core.VirtData;
 import org.apache.commons.lang3.ClassUtils;
 import org.testng.annotations.Test;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.LongFunction;
 import java.util.function.LongUnaryOperator;
@@ -94,19 +92,6 @@ public class IntegratedComposerLogicTest {
         DataMapper<String> dm2 = m2.get();
         Object r3 = dm2.get(42L);
 
-    }
-
-    public void testMapTemplate() {
-        MapTemplate mt = new MapTemplate(l -> (int)l,String::valueOf, String::valueOf);
-        assertThat(mt.apply(3)).containsEntry("3","3");
-        Optional<DataMapper<Map>> optionalMapper =VirtData.getOptionalMapper(
-                "MapTemplate(long->Mod(5)->int,NumberNameToString(),NumberNameToString())"
-        );
-        assertThat(optionalMapper).isPresent();
-        DataMapper<Map> mapper = optionalMapper.get();
-        Map o = mapper.get(6L);
-        assertThat(o).isNotNull();
-        assertThat(o.get("six")).isEqualTo("six");
     }
 
     public void testNegativeLongs() {
