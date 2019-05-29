@@ -85,7 +85,7 @@ public class VirtDataFunctionResolver {
                         int commonLen=Math.min(ctypes.length-1,parameters.length);
                         Class<?>[] paramNonVarArgs = Arrays.copyOfRange(parameterTypes, 0, commonLen);
                         Class<?>[] ctorNonVarArgs = Arrays.copyOfRange(ctypes, 0, commonLen);
-                        if (parameters.length< (ctypes).length-1) {
+                        if (parameters.length< (ctypes.length-1)) {
                             return false;
                         }
                         if (!ClassUtils.isAssignable(paramNonVarArgs, ctorNonVarArgs, true)) {

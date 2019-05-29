@@ -15,6 +15,7 @@
 
 package io.virtdata;
 
+import io.virtdata.api.DataMapper;
 import io.virtdata.core.Bindings;
 import io.virtdata.core.VirtData;
 import io.virtdata.util.ModuleInfo;
@@ -24,6 +25,7 @@ import org.junit.Test;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.LongFunction;
 import java.util.function.LongUnaryOperator;
 
@@ -244,7 +246,10 @@ public class BindingsIntegratedTestIT {
     }
     @Test
     public void testMatchingArgs() {
-        Optional<DataMapper<Object>> mapper = VirtData.getOptionalMapper("WeightedStrings('phone:10;computer:10;')");
+        Optional<DataMapper<Object>> mapper = VirtData.getOptionalMapper(
+                "WeightedStrings('phone:10;computer:10;')"
+        );
+        assertThat(mapper).isPresent();
     }
 
 }
