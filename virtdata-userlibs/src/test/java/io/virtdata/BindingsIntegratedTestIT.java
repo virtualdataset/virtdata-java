@@ -242,4 +242,9 @@ public class BindingsIntegratedTestIT {
         assertThat(map).containsValues(87,19,56,46);
 
     }
+    @Test
+    public void testMatchingArgs() {
+        Optional<DataMapper<Object>> mapper = VirtData.getOptionalMapper("WeightedStrings('phone:10;computer:10;')");
+    }
+
 }
