@@ -53,10 +53,13 @@ public class VirtDataFunctionResolver {
                 .filter(c -> {
                     Class<?>[] ctypes = c.getParameterTypes();
                     if (c.isVarArgs()) {
-                        if (!ClassUtils.isAssignable(
-                                Arrays.copyOfRange(parameterTypes, 0, ctypes.length - 1),
-                                Arrays.copyOfRange(ctypes, 0, ctypes.length - 1),
-                                true)) {
+                        int commonLen=Math.min(ctypes.length-1,parameters.length);
+                        Class<?>[] paramNonVarArgs = Arrays.copyOfRange(parameterTypes, 0, commonLen);
+                        Class<?>[] ctorNonVarArgs = Arrays.copyOfRange(ctypes, 0, commonLen);
+                        if (parameters.length< (ctypes).length-1) {
+                            return false;
+                        }
+                        if (!ClassUtils.isAssignable(paramNonVarArgs, ctorNonVarArgs, true)) {
                             return false;
                         }
                         Class<?> componentType = ctypes[ctypes.length - 1].getComponentType();

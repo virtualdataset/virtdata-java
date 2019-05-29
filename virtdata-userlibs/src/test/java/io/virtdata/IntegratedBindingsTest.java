@@ -15,6 +15,7 @@
 
 package io.virtdata;
 
+import io.virtdata.api.DataMapper;
 import io.virtdata.core.Bindings;
 import io.virtdata.core.VirtData;
 import org.testng.annotations.Test;
@@ -22,6 +23,7 @@ import org.testng.annotations.Test;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.LongUnaryOperator;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -216,6 +218,11 @@ public class IntegratedBindingsTest {
         LongUnaryOperator f = VirtData.getFunction("Add(5L)", LongUnaryOperator.class);
         assertThat(f).isNotNull();
         assertThat(f.getClass()==LongUnaryOperator.class);
+    }
+
+    @Test
+    public void testMatchingArgs() {
+        Optional<DataMapper<Object>> mapper = VirtData.getOptionalMapper("WeightedStrings('phone:10;computer:10;')");
     }
 
 }
