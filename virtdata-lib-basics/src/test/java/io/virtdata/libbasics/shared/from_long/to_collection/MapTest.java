@@ -22,4 +22,20 @@ public class MapTest {
         assertThat(m2).containsValues("11","12");
     }
 
+    @Test
+    public void testMapTuple() {
+        Map mf = new Map(s1 -> (int) s1, k2 -> (int) k2, s2 -> (int) s2, k2 -> (int)k2);
+        java.util.Map<Object, Object> mt = mf.apply(37L);
+        assertThat(mt).containsOnlyKeys(37,38);
+        assertThat(mt).containsValues(37,38);
+    }
+
+    @Test
+    public void testStringMapTuple() {
+        StringMap mf = new StringMap(s1 -> (int) s1, k2 -> (int) k2, s2 -> (int) s2, k2 -> (int)k2);
+        java.util.Map<String, String> mt = mf.apply(37L);
+        assertThat(mt).containsOnlyKeys("37","38");
+        assertThat(mt).containsValues("37","38");
+    }
+
 }

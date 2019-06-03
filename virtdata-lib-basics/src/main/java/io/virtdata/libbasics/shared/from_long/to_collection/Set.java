@@ -5,7 +5,6 @@ import io.virtdata.annotations.Category;
 import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.function.LongFunction;
 import java.util.function.LongToIntFunction;
