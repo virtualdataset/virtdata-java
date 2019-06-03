@@ -225,4 +225,14 @@ public class IntegratedBindingsTest {
         Optional<DataMapper<Object>> mapper = VirtData.getOptionalMapper("WeightedStrings('phone:10;computer:10;')");
     }
 
+    @Test
+    public void testCombinationsOverflow() {
+        Optional<DataMapper<Object>> mapper = VirtData.getOptionalMapper("Hash(); Hash(); Combinations('0-3;0-9;0-9;0-9')");
+
+        assertThat(mapper).isPresent();
+        DataMapper<Object> cmapper = mapper.get();
+        for (long i = 0; i < 10; i++) {
+            cmapper.get(i);
+        }
+    }
 }

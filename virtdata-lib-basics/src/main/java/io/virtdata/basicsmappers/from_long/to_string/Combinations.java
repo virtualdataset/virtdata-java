@@ -44,7 +44,7 @@ public class Combinations implements LongFunction<String> {
     public String apply(long value) {
         CharBuffer cb = CharBuffer.allocate(charsets.length);
         for (int cs = 0; cs < charsets.length; cs++) {
-            int charv = (int) (value / modulo[cs]);
+            int charv = (int) ((value / modulo[cs]) % Integer.MAX_VALUE);
             value %= modulo[cs];
             int selector = charv % charsets[cs].length;
             char c = charsets[cs][selector];
