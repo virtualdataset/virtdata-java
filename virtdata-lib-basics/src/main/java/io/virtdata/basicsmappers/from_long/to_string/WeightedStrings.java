@@ -40,8 +40,10 @@ public class WeightedStrings implements LongFunction<String> {
         List<Double> parsedWeights = new ArrayList<>();
         for (int i = 0; i < pairs.length; i++) {
             String[] pair = pairs[i].split(":", 2);
-            if (pair.length != 2) {
-                throw new RuntimeException("Each pair must be in value:weight form");
+            if (pair.length == 2) {
+                parsedWeights.add(Double.valueOf(pair[1].trim()));
+            } else {
+                parsedWeights.add(1.0D);
             }
             values[i] = pair[0].trim();
             parsedWeights.add(Double.valueOf(pair[1].trim()));
