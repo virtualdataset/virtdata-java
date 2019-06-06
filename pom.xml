@@ -28,6 +28,8 @@
         <module>virtdata-lib-random</module>
         <module>virtdata-lib-curves4</module>
         <module>virtdata-lib-realer</module>
+
+        <module>virtdata-docsys</module>
     </modules>
 
     <scm>
