@@ -1,5 +1,7 @@
 package io.virtdata.basicsmappers.from_double.to_double;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.threadstate.SharedState;
@@ -8,6 +10,7 @@ import java.util.HashMap;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
 
+@Categories(Category.state)
 @ThreadSafeMapper
 public class Load implements DoubleUnaryOperator {
 

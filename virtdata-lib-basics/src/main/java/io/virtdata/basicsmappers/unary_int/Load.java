@@ -1,5 +1,7 @@
 package io.virtdata.basicsmappers.unary_int;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.threadstate.SharedState;
@@ -8,6 +10,7 @@ import java.util.HashMap;
 import java.util.function.Function;
 import java.util.function.IntUnaryOperator;
 
+@Categories(Category.state)
 @ThreadSafeMapper
 public class Load implements IntUnaryOperator {
 

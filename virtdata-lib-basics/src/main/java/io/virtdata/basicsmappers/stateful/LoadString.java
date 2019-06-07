@@ -1,5 +1,7 @@
 package io.virtdata.basicsmappers.stateful;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.threadstate.SharedState;
@@ -12,6 +14,7 @@ import java.util.function.Function;
  * name is fixed or a generated variable name from a provided function.
  * If the named variable is not defined, then the default value is returned.
  */
+@Categories(Category.state)
 @ThreadSafeMapper
 public class LoadString implements Function<Object,String> {
 
