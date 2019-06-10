@@ -44,6 +44,13 @@
             <groupId>io.virtdata</groupId>
             <version>2.11.22-SNAPSHOT</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.metawiring</groupId>
+            <artifactId>virtdata-docsys</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>

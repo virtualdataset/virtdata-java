@@ -12,8 +12,8 @@ import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class DocsApp {
-    private final static Logger logger = LoggerFactory.getLogger(DocsApp.class);
+public class AutoDocsApp {
+    private final static Logger logger = LoggerFactory.getLogger(AutoDocsApp.class);
     private final static String SPLIT = "split";
     private final static String COMBINED = "combined";
     private final static String ALL = "all";
@@ -28,7 +28,7 @@ public class DocsApp {
     private String categories = SPLIT;
 
     public static void main(String[] args) {
-        new DocsApp().invoke(args);
+        new AutoDocsApp().invoke(args);
     }
 
     private void invoke(String[] args) {
@@ -36,7 +36,7 @@ public class DocsApp {
         while (largs.peekFirst() != null) {
             String argtype = largs.removeFirst();
             if (largs.peekFirst() == null) {
-                throw new RuntimeException(DocsApp.class.toString() + " expects args in param value couplets.");
+                throw new RuntimeException(AutoDocsApp.class.toString() + " expects args in param value couplets.");
             }
             String argval = largs.removeFirst().toLowerCase();
             switch (argtype) {

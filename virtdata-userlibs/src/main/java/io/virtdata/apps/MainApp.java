@@ -1,7 +1,8 @@
 package io.virtdata.apps;
 
-import io.virtdata.apps.docsapp.DocsApp;
+import io.virtdata.apps.docsapp.AutoDocsApp;
 import io.virtdata.apps.valuesapp.ValuesCheckerApp;
+import io.virtdata.docsys.DocServerApp;
 
 import java.util.Arrays;
 
@@ -12,23 +13,26 @@ public class MainApp {
 
     private final static String APP_TESTMAPPER = "testmapper";
     private final static String APP_GENDOCS = "gendocs";
+    private final static String APP_DOCSERVER = "docserver";
 
     public static void main(String[] args) {
-        if (args.length==0) {
+        if (args.length == 0) {
             System.out.println("Usage: app (" + APP_TESTMAPPER + "|" + APP_GENDOCS + ")");
             System.exit(0);
         }
 
         String appSelection = args[0];
-        String[] appArgs= new String[0];
-        if (args.length>1) {
+        String[] appArgs = new String[0];
+        if (args.length > 1) {
             appArgs = Arrays.copyOfRange(args, 1, args.length);
         }
 
         if (appSelection.toLowerCase().equals(APP_TESTMAPPER)) {
             ValuesCheckerApp.main(appArgs);
         } else if (appSelection.toLowerCase().equals(APP_GENDOCS)) {
-            DocsApp.main(appArgs);
+            AutoDocsApp.main(appArgs);
+        } else if (appSelection.toLowerCase().equals(APP_DOCSERVER)) {
+            DocServerApp.main(appArgs);
         } else {
             System.err.println("Error in command line. The first argument must be " + APP_GENDOCS + " or " + APP_TESTMAPPER);
         }
