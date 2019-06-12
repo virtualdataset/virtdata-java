@@ -1,5 +1,7 @@
 package io.virtdata.basicsmappers.stateful;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.threadstate.SharedState;
@@ -15,6 +17,7 @@ import java.util.function.UnaryOperator;
  * so this is more likely to be used in an indirect naming pattern like
  * <pre>SaveDouble(Load('id'))</pre>
  */
+@Categories(Category.state)
 @ThreadSafeMapper
 public class SaveFloat implements UnaryOperator<Float> {
 
