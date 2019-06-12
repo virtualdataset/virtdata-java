@@ -8,9 +8,6 @@ import io.virtdata.basicsmappers.from_long.to_short.LongToShort;
 
 import java.util.function.*;
 
-/**
- * Convert the input value to a String.
- */
 @ThreadSafeMapper
 @Categories({Category.conversion})
 public class ToString implements LongFunction<String> {

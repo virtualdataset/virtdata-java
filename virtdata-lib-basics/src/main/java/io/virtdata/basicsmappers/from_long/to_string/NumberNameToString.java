@@ -23,6 +23,12 @@ import uk.ydubey.formatter.numtoword.NumberInWordsFormatter;
 
 import java.util.function.LongFunction;
 
+/**
+ * Provides the spelled-out name of a number. For example,
+ * an input of 7 would yield "seven". An input of 4234
+ * yields the value "four thousand thirty four".
+ * The maximum value is limited at 999,999,999.
+ */
 @ThreadSafeMapper
 public class NumberNameToString implements LongFunction<String> {
 

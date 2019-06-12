@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.LongFunction;
 
+/**
+ * Creates a List&lt;String&gt; from a list of words in a file.
+ */
 @ThreadSafeMapper
 @Categories({Category.collections})
 public class HashedLineToStringList implements LongFunction<List> {
