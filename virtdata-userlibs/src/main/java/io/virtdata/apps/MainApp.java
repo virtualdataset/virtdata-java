@@ -2,8 +2,9 @@ package io.virtdata.apps;
 
 import io.virtdata.apps.docsapp.AutoDocsApp;
 import io.virtdata.apps.valuesapp.ValuesCheckerApp;
-import io.virtdata.docsys.DocServerApp;
+import io.virtdata.docsys.core.DocServer;
 
+import java.nio.file.Path;
 import java.util.Arrays;
 
 /**
@@ -17,7 +18,7 @@ public class MainApp {
 
     public static void main(String[] args) {
         if (args.length == 0) {
-            System.out.println("Usage: app (" + APP_TESTMAPPER + "|" + APP_GENDOCS + ")");
+            System.out.println("Usage: app (" + APP_TESTMAPPER + "|" + APP_GENDOCS + "|" + APP_DOCSERVER + ")");
             System.exit(0);
         }
 
@@ -32,7 +33,12 @@ public class MainApp {
         } else if (appSelection.toLowerCase().equals(APP_GENDOCS)) {
             AutoDocsApp.main(appArgs);
         } else if (appSelection.toLowerCase().equals(APP_DOCSERVER)) {
-            DocServerApp.main(appArgs);
+            DocServer docs = new DocServer().addPaths(
+                    Path.of("docs"),
+                    Path.of("virtdata-docsys/docs")
+            ).addWebObject(VirtDataService.class);
+
+            docs.run();
         } else {
             System.err.println("Error in command line. The first argument must be " + APP_GENDOCS + " or " + APP_TESTMAPPER);
         }
