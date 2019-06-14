@@ -29,7 +29,7 @@
         <module>virtdata-lib-curves4</module>
         <module>virtdata-lib-realer</module>
 
-        <module>virtdata-docsys</module>
+        <module>virtdata-docs</module>
     </modules>
 
     <scm>

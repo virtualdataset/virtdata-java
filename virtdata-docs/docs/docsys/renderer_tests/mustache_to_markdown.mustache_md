@@ -1,0 +1,3 @@
+## Example Mustache Rendering directly to Markdown
+
+The path is '{{ path }}'
