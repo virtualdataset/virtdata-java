@@ -1,10 +1,10 @@
 package io.virtdata.libbasics.shared;
 
-import io.virtdata.basicsmappers.from_double.to_double.Max;
-import io.virtdata.basicsmappers.from_long.to_long.Add;
-import io.virtdata.basicsmappers.unary_int.Mul;
-import io.virtdata.basicsmappers.unary_string.Prefix;
-import io.virtdata.basicsmappers.unary_string.Suffix;
+import io.virtdata.libbasics.shared.from_double.to_double.Max;
+import io.virtdata.libbasics.shared.from_long.to_long.Add;
+import io.virtdata.libbasics.shared.unary_int.Mul;
+import io.virtdata.libbasics.shared.unary_string.Prefix;
+import io.virtdata.libbasics.shared.unary_string.Suffix;
 import io.virtdata.libbasics.shared.unary_string.StringFlow;
 import org.assertj.core.data.Offset;
 import org.junit.Test;

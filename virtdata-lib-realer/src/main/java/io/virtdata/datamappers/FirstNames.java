@@ -4,7 +4,7 @@ import io.virtdata.annotations.Categories;
 import io.virtdata.annotations.Category;
 import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
-import io.virtdata.stathelpers.aliasmethod.WeightedStringsFromCSV;
+import io.virtdata.libbasics.shared.distributions.WeightedStringsFromCSV;
 
 import java.util.function.LongFunction;
 

@@ -12,25 +12,25 @@ public class ToStringTest {
 
     @Test
     public void testNoArgs() {
-        io.virtdata.basicsmappers.unary_string.ToString t1 = new io.virtdata.basicsmappers.unary_string.ToString();
+        io.virtdata.libbasics.shared.unary_string.ToString t1 = new io.virtdata.libbasics.shared.unary_string.ToString();
         assertThat(t1.apply(1L)).isEqualTo("1");
     }
 
     @Test
     public void testWithLongUnaryOperator() {
-        io.virtdata.conversions.from_long.ToString t = new io.virtdata.conversions.from_long.ToString(new LongUnaryOperatorIdentity());
+        io.virtdata.libbasics.shared.conversions.from_long.ToString t = new io.virtdata.libbasics.shared.conversions.from_long.ToString(new LongUnaryOperatorIdentity());
         assertThat(t.apply(2L)).isEqualTo("2");
     }
 
     @Test
     public void testWithLongFunction() {
-        io.virtdata.conversions.from_long.ToString t = new io.virtdata.conversions.from_long.ToString(new LongFuncIdentity());
+        io.virtdata.libbasics.shared.conversions.from_long.ToString t = new io.virtdata.libbasics.shared.conversions.from_long.ToString(new LongFuncIdentity());
         assertThat(t.apply(3L)).isEqualTo("3");
     }
 
     @Test
     public void testWithLongObFunc() {
-        io.virtdata.conversions.from_long.ToString t = new io.virtdata.conversions.from_long.ToString(new LongObFunc());
+        io.virtdata.libbasics.shared.conversions.from_long.ToString t = new io.virtdata.libbasics.shared.conversions.from_long.ToString(new LongObFunc());
         assertThat(t.apply(4L)).isEqualTo("4");
     }
 

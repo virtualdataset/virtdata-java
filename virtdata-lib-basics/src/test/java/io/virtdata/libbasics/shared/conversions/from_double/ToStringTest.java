@@ -12,13 +12,13 @@ public class ToStringTest {
 
     @Test
     public void TestNoFunc() {
-        io.virtdata.conversions.from_long.ToString f = new io.virtdata.conversions.from_long.ToString();
+        io.virtdata.libbasics.shared.conversions.from_long.ToString f = new io.virtdata.libbasics.shared.conversions.from_long.ToString();
         assertThat(f.apply(1L)).isEqualTo("1");
     }
 
     @Test
     public void TestDoubleUnaryOp() {
-        io.virtdata.conversions.from_double.ToString f = new io.virtdata.conversions.from_double.ToString(new DoubleUnaryOperator() {
+        io.virtdata.libbasics.shared.conversions.from_double.ToString f = new io.virtdata.libbasics.shared.conversions.from_double.ToString(new DoubleUnaryOperator() {
             @Override
             public double applyAsDouble(double operand) {
                 return operand;
@@ -29,7 +29,7 @@ public class ToStringTest {
 
     @Test
     public void TestDoubleFunction() {
-        io.virtdata.conversions.from_double.ToString f = new io.virtdata.conversions.from_double.ToString(new DoubleFunction<Double>() {
+        io.virtdata.libbasics.shared.conversions.from_double.ToString f = new io.virtdata.libbasics.shared.conversions.from_double.ToString(new DoubleFunction<Double>() {
 
             @Override
             public Double apply(double value) {
@@ -41,7 +41,7 @@ public class ToStringTest {
 
     @Test
     public void TestFunctionDoubleDouble() {
-        io.virtdata.conversions.from_double.ToString f = new io.virtdata.conversions.from_double.ToString(new Function<Double,Double>() {
+        io.virtdata.libbasics.shared.conversions.from_double.ToString f = new io.virtdata.libbasics.shared.conversions.from_double.ToString(new Function<Double,Double>() {
 
             @Override
             public Double apply(Double aDouble) {

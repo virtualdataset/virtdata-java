@@ -1,9 +1,9 @@
 package io.virtdata;
 
 import io.virtdata.api.DataMapper;
-import io.virtdata.basicsmappers.from_long.to_long.Identity;
-import io.virtdata.basicsmappers.from_long.to_string.NumberNameToString;
-import io.virtdata.basicsmappers.from_long.to_string.Template;
+import io.virtdata.libbasics.shared.from_long.to_long.Identity;
+import io.virtdata.libbasics.shared.from_long.to_string.NumberNameToString;
+import io.virtdata.libbasics.shared.from_long.to_string.Template;
 import io.virtdata.core.VirtData;
 import org.apache.commons.lang3.ClassUtils;
 import org.testng.annotations.Test;

@@ -1,6 +1,6 @@
 package io.virtdata.long_double;
 
-import io.virtdata.basicsmappers.from_long.to_double.HashedDoubleRange;
+import io.virtdata.libbasics.shared.from_long.to_double.HashedDoubleRange;
 import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

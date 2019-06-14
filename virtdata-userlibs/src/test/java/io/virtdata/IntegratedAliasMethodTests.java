@@ -1,6 +1,6 @@
 package io.virtdata;
 
-import io.virtdata.stathelpers.aliasmethod.WeightedStringsFromCSV;
+import io.virtdata.libbasics.shared.distributions.WeightedStringsFromCSV;
 import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
