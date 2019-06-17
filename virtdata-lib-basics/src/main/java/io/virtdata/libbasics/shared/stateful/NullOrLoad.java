@@ -22,7 +22,7 @@ public class NullOrLoad implements LongFunction<Object> {
     private final Load load;
 
     public NullOrLoad(double ratio, String varname) {
-        if (ratio<=0.0D || ratio >=1.0D) {
+        if (ratio<0.0D || ratio>1.0D) {
             throw new RuntimeException("The " + NullOrLoad.class.getSimpleName() + " function requires a ratio between 0.0D and 1.0D");
         }
         this.ratio = ratio;
