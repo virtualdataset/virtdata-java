@@ -1,19 +1,20 @@
-package io.virtdata.libbasics.shared.unary_string;
+package io.virtdata.libbasics.shared.from_string.to_unset;
 
 import io.virtdata.annotations.Categories;
 import io.virtdata.annotations.Category;
 import io.virtdata.annotations.ThreadSafeMapper;
+import io.virtdata.api.VALUE;
 
 import java.util.function.Function;
 
 @Categories(Category.nulls)
 @ThreadSafeMapper
-public class NullIfNullOrEmpty implements Function<String,String> {
+public class UnsetIfNullOrEmpty implements Function<String,Object> {
     
     @Override
-    public String apply(String s) {
+    public Object apply(String s) {
         if (s==null || s.isEmpty()) {
-            return null;
+            return VALUE.unset;
         }
         return s;
     }

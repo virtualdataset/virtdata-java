@@ -4,9 +4,11 @@ import io.virtdata.api.ValuesArrayBinder;
 import io.virtdata.api.Binder;
 
 /**
- * <p>A thread-local template that describes a set of data mappers, a context object, and a method for applying
- * mapped values to the context object via an object array. This type is used in thread-local scope to map thread-specific
- * data mapper instances to a contextual template object and a method for applying mapped values to it.</p>
+ * <p>A thread-local template that describes a set of data mappers, a context object,
+ * and a method for applying mapped values to the context object via an object array.
+ * This type is used in thread-local scope to map thread-specific
+ * data mapper instances to a contextual template object and a method for
+ * applying mapped values to it.</p>
  *
  * <p>This type is generally constructed by a ContextualBindingsTemplate.</p>
  *
