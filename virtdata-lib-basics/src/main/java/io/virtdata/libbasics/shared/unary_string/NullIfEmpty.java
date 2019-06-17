@@ -1,7 +1,13 @@
 package io.virtdata.libbasics.shared.unary_string;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
+import io.virtdata.annotations.ThreadSafeMapper;
+
 import java.util.function.Function;
 
+@Categories(Category.nulls)
+@ThreadSafeMapper
 public class NullIfEmpty implements Function<String,String> {
 
     @Override

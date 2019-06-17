@@ -4,21 +4,21 @@ import io.virtdata.annotations.Categories;
 import io.virtdata.annotations.Category;
 import io.virtdata.annotations.ThreadSafeMapper;
 
-import java.util.function.Function;
+import java.util.function.LongFunction;
 
 @ThreadSafeMapper
 @Categories(Category.nulls)
-public class NullIfEq implements Function<Long,Long> {
+public class NullIfEq implements LongFunction<Long> {
 
-    private final long eqvalue;
+    private final long compareto;
 
-    public NullIfEq(long eqvalue) {
-        this.eqvalue = eqvalue;
+    public NullIfEq(long compareto) {
+        this.compareto = compareto;
     }
 
     @Override
-    public Long apply(Long aLong) {
-        if (aLong.equals(eqvalue)) return null;
-        return aLong;
+    public Long apply(long value) {
+        if (value == compareto) return null;
+        return value;
     }
 }

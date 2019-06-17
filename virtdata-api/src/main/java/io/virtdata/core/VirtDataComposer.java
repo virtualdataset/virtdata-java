@@ -203,7 +203,8 @@ public class VirtDataComposer {
     private void removeNonLongFunctions(List<ResolvedFunction> funcs) {
         List<ResolvedFunction> toRemove = new LinkedList<>();
         for (ResolvedFunction func : funcs) {
-            if (func.getFunctionType().getInputValueType() != ValueType.LONG) {
+            if (!func.getInputClass().isAssignableFrom(long.class)) {
+                logger.trace("input type " + func.getInputClass().getCanonicalName() + " is not assignable from long");
                 toRemove.add(func);
             }
         }

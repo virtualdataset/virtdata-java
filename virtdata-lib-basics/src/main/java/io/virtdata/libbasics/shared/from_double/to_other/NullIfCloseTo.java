@@ -4,11 +4,11 @@ import io.virtdata.annotations.Categories;
 import io.virtdata.annotations.Category;
 import io.virtdata.annotations.ThreadSafeMapper;
 
-import java.util.function.Function;
+import java.util.function.DoubleFunction;
 
 @ThreadSafeMapper
 @Categories(Category.nulls)
-public class NullIfCloseTo implements Function<Double,Double> {
+public class NullIfCloseTo implements DoubleFunction<Double> {
 
     private final double compareto;
     private final double sigma;
@@ -19,7 +19,7 @@ public class NullIfCloseTo implements Function<Double,Double> {
     }
 
     @Override
-    public Double apply(Double value) {
+    public Double apply(double value) {
         if (Math.abs(value - compareto) <= sigma) return null;
         return value;
     }

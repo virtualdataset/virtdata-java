@@ -4,11 +4,11 @@ import io.virtdata.annotations.Categories;
 import io.virtdata.annotations.Category;
 import io.virtdata.annotations.ThreadSafeMapper;
 
-import java.util.function.Function;
+import java.util.function.DoubleFunction;
 
 @ThreadSafeMapper
 @Categories(Category.nulls)
-public class NullIfWithin implements Function<Double,Double> {
+public class NullIfWithin implements DoubleFunction<Double> {
 
 
     private final double min;
@@ -20,7 +20,7 @@ public class NullIfWithin implements Function<Double,Double> {
     }
 
     @Override
-    public Double apply(Double value) {
+    public Double apply(double value) {
         if (value>=min && value <=max) { return null; }
         return value;
     }

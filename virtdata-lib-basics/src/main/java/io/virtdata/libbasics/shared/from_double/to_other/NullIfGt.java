@@ -4,11 +4,11 @@ import io.virtdata.annotations.Categories;
 import io.virtdata.annotations.Category;
 import io.virtdata.annotations.ThreadSafeMapper;
 
-import java.util.function.Function;
+import java.util.function.DoubleFunction;
 
 @ThreadSafeMapper
 @Categories(Category.nulls)
-public class NullIfGt implements Function<Double,Double> {
+public class NullIfGt implements DoubleFunction<Double> {
 
     private final double compareto;
 
@@ -17,7 +17,7 @@ public class NullIfGt implements Function<Double,Double> {
     }
 
     @Override
-    public Double apply(Double value) {
+    public Double apply(double value) {
         if (value > compareto) return null;
         return value;
     }
