@@ -31,7 +31,7 @@ public class WeightedStrings implements LongFunction<String> {
     }
 
     private void parseWeights() {
-        String[] pairs = valuesAndWeights.split(";");
+        String[] pairs = valuesAndWeights.split("[;,]");
         if (pairs.length == 0) {
             throw new RuntimeException("No pairs were found. They must be separated by ';'");
         }

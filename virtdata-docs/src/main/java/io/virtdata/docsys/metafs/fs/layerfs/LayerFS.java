@@ -40,12 +40,14 @@ import java.util.stream.StreamSupport;
 @SuppressWarnings("ALL")
 public class LayerFS extends MetaFS {
 
+    private final String name;
     private final static Logger logger = LoggerFactory.getLogger(LayerFS.class);
     private static LayerFSProvider provider = LayerFSProvider.get();
     private List<FileSystem> wrappedFilesystems = new ArrayList<>();
 
 
-    public LayerFS() {
+    public LayerFS(String name) {
+        this.name = name;
     }
 
     public LayerFS setWritable(boolean writable) {
@@ -53,8 +55,8 @@ public class LayerFS extends MetaFS {
         return this;
     }
 
-    public LayerFS addLayer(Path outerPath) {
-        VirtFS metafs = new VirtFS(outerPath);
+    public LayerFS addLayer(Path outerPath, String pathSymbolicName) {
+        VirtFS metafs = new VirtFS(outerPath, pathSymbolicName);
         this.wrappedFilesystems.add(metafs);
         return this;
     }
@@ -140,6 +142,11 @@ public class LayerFS extends MetaFS {
 
     }
 
+    @Override
+    public String getName() {
+        return name;
+    }
+
 
     @Override
     public PathMatcher getPathMatcher(String syntaxAndPattern) {
@@ -163,7 +170,7 @@ public class LayerFS extends MetaFS {
 
     @Override
     public String toString() {
-        return "LayerFS:" + wrappedFilesystems.stream().map(String::valueOf).collect(Collectors.joining(",", "[[", "]]"));
+        return "LayerFS(" + getName() + "):" + wrappedFilesystems.stream().map(String::valueOf).collect(Collectors.joining(",", "[[", "]]"));
     }
 
     private LayerFS assertThisFs(MetaPath path) {
@@ -202,5 +209,27 @@ public class LayerFS extends MetaFS {
         }
         throw new RuntimeException("Unable to find a readable " + toRead + " in any addLayer");
     }
+
+    @Override
+    public void checkAccess(Path path, AccessMode... modes) throws IOException {
+        MetaPath metapath = assertMetaPath(path);
+        LayerFS layerFS = assertThisFs(metapath);
+
+        IOException possibleException = null;
+        for (FileSystem wrappedFilesystem : layerFS.getWrappedFilesystems()) {
+            try {
+                Path wrappedPath = wrappedFilesystem.getPath(metapath.toString());
+                wrappedPath.getFileSystem().provider().checkAccess(wrappedPath, modes);
+                return;
+            } catch (IOException ioe) {
+                possibleException = ioe;
+            }
+        }
+        if (possibleException != null) {
+            throw possibleException;
+        }
+        throw new RuntimeException("Invalid condition.");
+    }
+
 
 }

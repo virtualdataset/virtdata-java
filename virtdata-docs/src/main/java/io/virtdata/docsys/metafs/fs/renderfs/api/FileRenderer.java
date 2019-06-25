@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("Duplicates")
 public class FileRenderer implements FileContentRenderer {
@@ -30,51 +31,47 @@ public class FileRenderer implements FileContentRenderer {
      * Create a file renderer from a source extension to a target extension, which will yield the
      * virtual contents of the target file by applying a set of renderers to the source file data.
      *
-     * @param sourceExtension The extension of the source (actual) file, including the dot and extension name.
-     * @param targetExtension The extension of the target (virtual) file, including the dot and extension name.
-     * @param isCaseSensitive Whether or not to do case-sensitive matching against the source and target extensions.
+     * @param fromext The extension of the source (actual) file, including the dot and extension name.
+     * @param toext The extension of the target (virtual) file, including the dot and extension name.
+     * @param cased Whether or not to do case-sensitive matching against the source and target extensions.
      * @param compilers       A lookup function which can create a renderer for a specific path as needed.
      */
-    public FileRenderer(String sourceExtension, String targetExtension, boolean isCaseSensitive, TemplateCompiler... compilers) {
+    public FileRenderer(String fromext, String toext, boolean cased, TemplateCompiler... compilers) {
         this.compilers = compilers;
 
-        if (!sourceExtension.startsWith(".")) {
+        if (!fromext.startsWith(".")) {
             throw new InvalidParameterException("You must provide a source extension in '.xyz' form.");
         }
-        if (!targetExtension.startsWith(".")) {
+        if (!toext.startsWith(".")) {
             throw new InvalidParameterException("You must provide a target extension in '.xyz' form.");
         }
-        this.isCaseSensitive = isCaseSensitive;
-        this.sourceExtension = sourceExtension;
-        this.sourceNamePattern = toNamePattern(sourceExtension);
-        this.targetExtension = targetExtension;
-        this.targetNamePattern = toNamePattern(targetExtension);
+        this.isCaseSensitive = cased;
+        this.sourceExtension = fromext;
+        this.sourceNamePattern = toNamePattern(fromext);
+        this.targetExtension = toext;
+        this.targetNamePattern = toNamePattern(toext);
 
     }
 
     private Pattern toNamePattern(String fileExtension) {
         Pattern.compile(fileExtension);
-        if (fileExtension.matches("\\.[a-zA-Z0-9_-]+")) {
-            StringBuilder sb = new StringBuilder("(?<basepath>.+)(?<extension>");
-            if (isCaseSensitive) {
-                sb.append(fileExtension.substring(1));
-            } else {
-                sb.append("(");
-                for (int i = 0; i < fileExtension.length(); i++) {
-                    String charString = fileExtension.substring(i, i + 1);
-                    if (charString.equals(".")) {
-                        sb.append("\\.");
-                    } else {
-                        sb.append("[").append(charString.toUpperCase()).append(charString.toLowerCase()).append("]");
-                    }
+        StringBuilder sb = new StringBuilder("(?<basepath>.+)(?<extension>");
+        if (this.isCaseSensitive) {
+            sb.append(Pattern.quote(fileExtension));
+        } else {
+            for (int i = 0; i < fileExtension.length(); i++) {
+                String c = fileExtension.substring(i,i+1);
+                if(c.toUpperCase().equals(c.toLowerCase())) {
+                    sb.append(Pattern.quote(c));
+                } else {
+                    sb.append("[").append(c.toLowerCase()).append(c.toUpperCase()).append("]");
                 }
-                sb.append(")");
             }
             sb.append(")");
-            return Pattern.compile(sb.toString());
-        } else {
-            throw new RuntimeException("Invalid extension pattern '" + fileExtension + "'. This must be all letters or numbers.");
         }
+        String pattern = sb.toString().replaceAll("\\\\E\\\\Q", "");
+        return Pattern.compile(pattern);
+
     }
 
     @Override
@@ -177,8 +174,11 @@ public class FileRenderer implements FileContentRenderer {
 
     @Override
     public String toString() {
-        return this.sourceExtension + "->" + this.targetExtension + ", with " +
-                Arrays.toString(this.compilers);
+        StringBuilder sb = new StringBuilder();
+        sb.append(
+                Arrays.stream(compilers).map(String::valueOf).collect(Collectors.joining("⊕","","("))
+        ).append(this.sourceExtension).append("→").append(this.targetExtension).append(")");
+        return sb.toString();
     }
 
 }

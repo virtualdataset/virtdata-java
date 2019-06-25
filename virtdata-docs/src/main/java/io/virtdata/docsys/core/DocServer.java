@@ -7,7 +7,6 @@ import io.virtdata.docsys.metafs.fs.layerfs.LayerFS;
 import io.virtdata.docsys.metafs.fs.renderfs.api.FileRenderer;
 import io.virtdata.docsys.metafs.fs.renderfs.fs.RenderFS;
 import io.virtdata.docsys.metafs.fs.renderfs.renderers.MarkdownProcessor;
-import io.virtdata.docsys.metafs.fs.renderfs.renderers.MarkdownProcessorDebugger;
 import io.virtdata.docsys.metafs.fs.renderfs.renderers.MustacheProcessor;
 import io.virtdata.docsys.metafs.fs.virtual.VirtFS;
 import org.eclipse.jetty.server.Server;
@@ -22,6 +21,7 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.AccessMode;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -76,7 +76,15 @@ public class DocServer implements Runnable {
     }
 
     public DocServer addPaths(Path... paths) {
-        this.basePaths.addAll(Arrays.asList(paths));
+        for (Path path : paths) {
+            try {
+                path.getFileSystem().provider().checkAccess(path, AccessMode.READ);
+                this.basePaths.add(path);
+            } catch (Exception e) {
+                logger.error("Unable to access path " + path.toString());
+                throw new RuntimeException(e);
+            }
+        }
         return this;
     }
 
@@ -121,37 +129,18 @@ public class DocServer implements Runnable {
 //        new FileRenderer(".md",".html",false, rendererResolver);
 //
 //
-        LayerFS layerfs = new LayerFS();
+        LayerFS layerfs = new LayerFS("layers");
 
         for (Path basePath : basePaths) {
-            VirtFS vfs = new VirtFS(basePath);
-            RenderFS rfs = new RenderFS(vfs);
+            VirtFS vfs = new VirtFS(basePath, "virt:" + basePath.toString());
+            RenderFS rfs = new RenderFS(vfs, "render:" + basePath.toString());
 
-            MustacheProcessor msp = new MustacheProcessor();
-            MarkdownProcessor mdp = new MarkdownProcessor();
-            MarkdownProcessorDebugger mdd = new MarkdownProcessorDebugger();
-
-            FileRenderer htmlRenderer = new FileRenderer(".md", ".html", false, msp, mdp);
-            rfs.addRenderer(htmlRenderer);
-
-            MustacheProcessor ms_html = new MustacheProcessor();
-            FileRenderer mustacheToHtmlRenderer = new FileRenderer(
-                    ".mustache_html", ".html", false, ms_html
-            );
-            rfs.addRenderer(mustacheToHtmlRenderer);
-
-            MustacheProcessor ms_md = new MustacheProcessor();
-            FileRenderer mustacheToMarkdown = new FileRenderer(
-                    ".mustache_md", ".md", false, ms_md
-            );
-            rfs.addRenderer(mustacheToMarkdown);
-            //            FileRenderer debugRenderer = new FileRenderer(".md", ".mustache", false, msp);
-//            rfs.addRenderer(debugRenderer);
-
-//            FileRenderer mdparserRenderer = new FileRenderer(".md", ".mdparse", false, mdd);
-//            rfs.addRenderer(mdparserRenderer);
-            // Handle Static Resources
-
+            MustacheProcessor mustache = new MustacheProcessor();
+            MarkdownProcessor markdown = new MarkdownProcessor();
+            FileRenderer mustacheMarkdown = new FileRenderer("._md", ".md", false, mustache);
+            FileRenderer mustacheHtml = new FileRenderer("._html", ".html", false, mustache);
+            FileRenderer markdownHtml = new FileRenderer(".md", ".html", false, markdown);
+            rfs.addRenderers(mustacheMarkdown, mustacheHtml, markdownHtml);
             layerfs.addLayer(rfs);
         }
 

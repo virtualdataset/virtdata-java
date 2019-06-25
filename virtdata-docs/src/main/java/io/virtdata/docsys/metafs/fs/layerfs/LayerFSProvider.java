@@ -37,7 +37,7 @@ public class LayerFSProvider extends MetaFSProvider {
     @Override
     public synchronized FileSystem newFileSystem(URI uri, Map<String, ?> env) throws IOException {
         boolean readonly = true;
-        LayerFS fs = new LayerFS();
+        LayerFS fs = new LayerFS(uri.toString());
         fs.setWritable(env != null && env.get("writable").toString().equals("true"));
         return fs;
     }
@@ -157,20 +157,7 @@ public class LayerFSProvider extends MetaFSProvider {
     public void checkAccess(Path path, AccessMode... modes) throws IOException {
         MetaPath metapath = assertMetaPath(path);
         LayerFS layerFS = assertLayerFS(metapath);
-        IOException possibleException = null;
-        for (FileSystem wrappedFilesystem : layerFS.getWrappedFilesystems()) {
-            try {
-                Path wrappedPath = wrappedFilesystem.getPath(metapath.toString());
-                wrappedPath.getFileSystem().provider().checkAccess(wrappedPath, modes);
-                return;
-            } catch (IOException ioe) {
-                possibleException = ioe;
-            }
-        }
-        if (possibleException != null) {
-            throw possibleException;
-        }
-        throw new RuntimeException("Invalid condition.");
+        layerFS.checkAccess(path, modes);
     }
 
 

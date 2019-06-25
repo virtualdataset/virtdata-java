@@ -14,9 +14,9 @@ public class LayerFSTest {
 
     public void testLayeringAB() throws IOException {
 
-        LayerFS fs1 = new LayerFS()
-                .addLayer(Path.of("src/test/resources/testsite1"))
-                .addLayer(Path.of("src/test/resources/testsite2"));
+        LayerFS fs1 = new LayerFS("testlayers")
+                .addLayer(Path.of("src/test/resources/testsite1"),"testsite1")
+                .addLayer(Path.of("src/test/resources/testsite2"),"testsite2");
 
         Path basics = fs1.getPath("/basics/section1/topic1.md");
         FileSystem basics1fs = basics.getFileSystem();
@@ -32,7 +32,7 @@ public class LayerFSTest {
 
 //    public void testBasicRendering() throws IOException {
 //        RenderFS renderFS = new RenderFS(Path.of("src/test/resources/testsite1"));
-//        renderFS.addRenderer(new MarkdownRenderer("md","html"));
+//        renderFS.addRenderers(new MarkdownRenderer("md","html"));
 //        byte[] bytes1 = Files.readAllBytes(renderFS.getPath("/basics/section1/topic1.md"));
 //        System.out.println(new String(bytes1, StandardCharsets.UTF_8));
 //        byte[] bytes2 = Files.readAllBytes(renderFS.getPath("/basics/section1/topic1.html"));

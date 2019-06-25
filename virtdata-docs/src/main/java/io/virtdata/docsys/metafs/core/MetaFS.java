@@ -61,6 +61,7 @@ public abstract class MetaFS extends FileSystem {
      * {@link java.nio.file.spi.FileSystemProvider#checkAccess(Path, AccessMode[])}
      */
     public void checkAccess(Path path, AccessMode[] modes) throws IOException {
+
         throw new RuntimeException("Implement me (checkAccess) for " + path.getFileSystem().toString());
     }
 
@@ -79,6 +80,11 @@ public abstract class MetaFS extends FileSystem {
 
     public abstract SeekableByteChannel newByteChannel(Path path, Set<? extends OpenOption> options, FileAttribute<?>... attrs) throws IOException;
 
+    public abstract String getName();
+
+    public String toString() {
+        return getName();
+    }
 //    public abstract FileChannel newFileChannel(Path path, Set<? extends OpenOption> options, FileAttribute<?>[] attrs);
 
 //    protected abstract BasicFileAttributes getFileAttributes(Path path, Class type, LinkOption[] options) throws IOException;

@@ -16,12 +16,14 @@ import java.util.Set;
 public class TestableMetaFS extends MetaFS {
     private final Path[] roots;
     private final FileStore[] filestores;
+    private final String name;
     private Set<String> supportedFileAttributeViews;
 
-    public TestableMetaFS(Path[] roots, FileStore[] filestores, Set<String> supportedFileAttributeViews) {
+    public TestableMetaFS(Path[] roots, FileStore[] filestores, Set<String> supportedFileAttributeViews, String name) {
         this.roots = roots;
         this.filestores = filestores;
         this.supportedFileAttributeViews = supportedFileAttributeViews;
+        this.name = name;
     }
 
     @Override
@@ -52,5 +54,10 @@ public class TestableMetaFS extends MetaFS {
     @Override
     public SeekableByteChannel newByteChannel(Path path, Set<? extends OpenOption> options, FileAttribute<?>... attrs) throws IOException {
         return null;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 }

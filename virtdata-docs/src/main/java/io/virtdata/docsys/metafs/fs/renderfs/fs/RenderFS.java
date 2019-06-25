@@ -8,7 +8,6 @@ import io.virtdata.docsys.metafs.fs.virtual.VirtFS;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -36,24 +35,26 @@ public class RenderFS extends VirtFS {
     Renderers renderers = new Renderers();
 
 
-    public RenderFS(FileSystem layer) {
-        super(layer.getPath(layer.getSeparator()));
+    public RenderFS(FileSystem layer, String name) {
+        super(layer.getPath(layer.getSeparator()), name);
     }
 
-    public RenderFS(Path wrapped) {
-        super(wrapped);
+    public RenderFS(Path wrapped, String name) {
+        super(wrapped, name);
     }
 
-    public RenderFS(URI baseUri) {
-        this(Path.of(baseUri));
+    public RenderFS(URI baseUri, String name) {
+        this(Path.of(baseUri), name);
     }
 
     public Renderers getRenderers() {
         return renderers;
     }
 
-    public void addRenderer(FileContentRenderer rendererType) {
-        renderers.add(rendererType);
+    public void addRenderers(FileContentRenderer... rendererType) {
+        for (FileContentRenderer renderer : rendererType) {
+            renderers.add(renderer);
+        }
     }
 
     @Override
@@ -170,7 +171,7 @@ public class RenderFS extends VirtFS {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        return "RenderFS: root=" + super.getOuterMount().toString() + " renderers=" + renderers;
+        return "RenderFS(" + getName() +"): root=" + super.getOuterMount().toString() + " renderers=" + renderers;
     }
 
 

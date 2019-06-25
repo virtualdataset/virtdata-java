@@ -31,13 +31,14 @@ public class MarkdownProcessor implements TemplateCompiler {
         public ByteBuffer apply(TargetPathView targetPathView) {
             String rendered = renderer.render(document);
             byte[] bytes = rendered.getBytes(StandardCharsets.UTF_8);
-            ByteBuffer wrapped = ByteBuffer.wrap(bytes);
+            ByteBuffer wrapped = ByteBuffer.wrap(bytes).asReadOnlyBuffer();
             return wrapped;
         }
     }
 
     @Override
     public String toString() {
-        return MarkdownProcessor.class.getSimpleName();
+        return "\uD83C\uDD6B";
+//        return MarkdownProcessor.class.getSimpleName();
     }
 }

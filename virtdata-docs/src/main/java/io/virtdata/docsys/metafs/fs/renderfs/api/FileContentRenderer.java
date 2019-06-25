@@ -10,6 +10,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.file.AccessMode;
 import java.nio.file.Path;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("Duplicates")
@@ -34,7 +35,9 @@ public interface FileContentRenderer {
     }
 
     default boolean matchesTarget(Path p) {
-        return getTargetPattern().matcher(p.toString()).matches();
+        Pattern targetPattern = getTargetPattern();
+        Matcher matcher = targetPattern.matcher(p.toString());
+        return matcher.matches();
     }
 
     default boolean hasSource(Path p) {
@@ -111,6 +114,6 @@ public interface FileContentRenderer {
         InputStream inputStream = sourcePath.getFileSystem().provider().newInputStream(sourcePath);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         inputStream.transferTo(bos);
-        return ByteBuffer.wrap(bos.toByteArray());
+        return ByteBuffer.wrap(bos.toByteArray()).asReadOnlyBuffer();
     }
 }

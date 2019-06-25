@@ -41,7 +41,7 @@ public class VirtFSProvider extends MetaFSProvider {
         if (filesystems.containsKey(uri)) {
             throw new FileSystemAlreadyExistsException("meta FileSystem under URI " + uri + " already exists.");
         }
-        VirtFS virtFS = new VirtFS(Path.of(uri));
+        VirtFS virtFS = new VirtFS(Path.of(uri), uri.toString());
         filesystems.put(uri, virtFS);
         return virtFS;
     }

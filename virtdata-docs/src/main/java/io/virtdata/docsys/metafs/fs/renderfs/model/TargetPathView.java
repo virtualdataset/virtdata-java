@@ -1,16 +1,16 @@
 package io.virtdata.docsys.metafs.fs.renderfs.model;
 
+import com.samskivert.mustache.Mustache;
 import io.virtdata.docsys.metafs.fs.renderfs.api.MarkdownStringer;
 import io.virtdata.docsys.metafs.fs.renderfs.api.Versioned;
 import io.virtdata.docsys.metafs.fs.renderfs.model.properties.ListView;
 import io.virtdata.docsys.metafs.fs.renderfs.model.properties.PathView;
 import io.virtdata.docsys.metafs.fs.renderfs.model.properties.TreeView;
 
-import java.io.IOException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TargetPathView implements Versioned, MarkdownStringer {
     private TargetPathView parent;
@@ -20,6 +20,10 @@ public class TargetPathView implements Versioned, MarkdownStringer {
     public TargetPathView(Path path, long version) {
         this.path = path;
         this.version = version;
+    }
+
+    public ActualFsView getFs() {
+        return new ActualFsView(this.path, this.version);
     }
 
     public TargetPathView setParent(TargetPathView parent) {
@@ -37,34 +41,31 @@ public class TargetPathView implements Versioned, MarkdownStringer {
         return paths;
     }
 
+
     public PathView getPath() {
         return new PathView(path);
     }
 
-    public ListView getFiles() {
-        List<String> files = new ArrayList<>();
-        Path dirPath = path.getParent();
-        try {
-            DirectoryStream<Path> paths =
-                    dirPath.getFileSystem().provider()
-                            .newDirectoryStream(dirPath, AcceptAllFiles);
-            paths.forEach(p -> files.add(p.getFileName().toString()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return new ListView(files);
+    public ListView<Path> getPaths() {
+        List<Path> nontemplatefiles = getFs().getPaths().stream().filter(
+                p -> {
+                    if (p.getFileName().toString().matches(".*?\\._.*+")) {
+                        return false;
+                    }
+                    return true;
+                }
+        ).collect(Collectors.toList());
+        return new ListView<>(nontemplatefiles);
     }
 
     public TreeView getFileTree() {
         return new TreeView(this);
     }
 
-    private final static DirectoryStream.Filter<Path> AcceptAllFiles = new DirectoryStream.Filter<Path>() {
-        @Override
-        public boolean accept(Path entry) throws IOException {
-            return true;
-        }
-    };
+    public Mustache.Lambda getMarkdown() {
+        return new MarkdownLambda(this);
+    }
+
 
     @Override
     public long getVersion() {

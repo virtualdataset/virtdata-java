@@ -11,8 +11,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Test
 public class MetaPathTest {
 
-    private final TestableMetaFS fs1 = new TestableMetaFS(new Path[0], new FileStore[0], Collections.emptySet());
-    private final TestableMetaFS fs2 = new TestableMetaFS(new Path[0], new FileStore[0], Collections.emptySet());
+    private final TestableMetaFS fs1 = new TestableMetaFS(new Path[0], new FileStore[0], Collections.emptySet(), "fs1");
+    private final TestableMetaFS fs2 = new TestableMetaFS(new Path[0], new FileStore[0], Collections.emptySet(), "fs2");
 
     public void testResolve() {
         Path p1 = fs1.getPath("/an/absolute/one");

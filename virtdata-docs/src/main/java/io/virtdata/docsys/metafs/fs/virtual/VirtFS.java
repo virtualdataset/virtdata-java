@@ -37,6 +37,7 @@ public class VirtFS extends MetaFS {
     public final Function<MetaPath, Path> metaToSysFunc;
     public final Function<Path, MetaPath> sysToMetaFunc;
     private Path sysDefaultPath;
+    private final String name;
 
 
 //    protected VirtFS(VirtFSProvider provider, URI uri) {
@@ -56,13 +57,19 @@ public class VirtFS extends MetaFS {
 //    }
 //
 
-    public VirtFS(Path outerPath) {
+    public VirtFS(Path outerPath, String name) {
+        this.name = name;
         this.outerMount = outerPath;
         provider = VirtFSProvider.get();
         setSysDefaultPath(outerPath);
         metaToSysFunc = new MapMetaPathToContainerPath(outerMount, this);
         sysToMetaFunc = new MapContainerPathToMetaPath(outerMount, this);
 
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -141,7 +148,7 @@ public class VirtFS extends MetaFS {
 
     @Override
     public String toString() {
-        return "VirtFS:" + "[" + this.outerMount.toString() + " -> /]";
+        return "VirtFS(" + getName()+ "):" + "[" + this.outerMount.toString() + " -> /]";
     }
 
     private static class MapContainerPathToMetaPath implements Function<Path, MetaPath> {
@@ -219,4 +226,5 @@ public class VirtFS extends MetaFS {
     protected Path getOuterMount() {
         return outerMount;
     }
+
 }
