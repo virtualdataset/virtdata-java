@@ -1,4 +1,4 @@
-package io.virtdata.libbasics.shared.from_long.to_string;
+package io.virtdata.libbasics.shared.from_long.to_bytebuffer;
 
 import io.virtdata.annotations.Categories;
 import io.virtdata.annotations.Category;
@@ -12,13 +12,13 @@ import java.util.function.LongFunction;
 
 @Categories(Category.conversion)
 @ThreadSafeMapper
-public class MD5ByteBuffer implements LongFunction<ByteBuffer> {
+public class ToMD5ByteBuffer implements LongFunction<ByteBuffer> {
 
     private final MessageDigest md5;
     private static final ThreadLocal<TLState> tl_state = ThreadLocal.withInitial(TLState::new);
 
     @Example({"MD5ByteBuffer()","convert the a input to an md5 digest of its bytes"})
-    public MD5ByteBuffer() {
+    public ToMD5ByteBuffer() {
         try {
             md5 = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {

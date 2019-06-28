@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MD5ByteBufferTest {
+public class ToMD5ByteBufferTest {
 
     @Test
     public void testMD5String() {
