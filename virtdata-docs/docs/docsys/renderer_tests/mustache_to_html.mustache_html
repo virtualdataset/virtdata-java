@@ -2,7 +2,7 @@
  <head>Example Mustache Rendering directly to HTML</head>
  <body>
  <p>
- <span>The path is '{{ path }}'</span>
+ <span>The target is '{{ target }}'</span>
  </p>
  </body>
 </html>

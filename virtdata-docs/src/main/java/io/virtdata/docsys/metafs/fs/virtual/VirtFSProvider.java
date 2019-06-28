@@ -74,7 +74,7 @@ public class VirtFSProvider extends MetaFSProvider {
     @Override
     public Path getPath(URI uri) {
         if (!uri.getScheme().equals(this.getScheme())) {
-            throw new IllegalArgumentException("Invalid uri scheme '" + uri.getScheme() + "' for " + this.getClass().getCanonicalName() + ".getPath(URI)");
+            throw new IllegalArgumentException("Invalid uri scheme '" + uri.getScheme() + "' for " + this.getClass().getCanonicalName() + ".getTargetPath(URI)");
         }
         for (Map.Entry<URI, VirtFS> entry : filesystems.entrySet()) {
             if (entry.getKey().toString().startsWith(uri.toString())) {

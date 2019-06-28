@@ -1,4 +1,4 @@
-package io.virtdata.docsys.metafs.fs.renderfs.api;
+package io.virtdata.docsys.metafs.fs.renderfs.api.rendering;
 
 /**
  * Versioned objects have a long property that can be used as a version.

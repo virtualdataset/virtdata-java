@@ -46,7 +46,7 @@ id : 'entity' | 'sampler' | ID;
 
 LINE_COMMENT: '//' (~'\n')* NEWLINE -> skip ;
 COMMENT: '/*' .*? '*/' -> skip;
-WS : [ \t\n]+ -> skip ;
+WS : [ \e\n]+ -> skip ;
 NEWLINE: '\r' ? '\n';
 ID: IDPART ('.' IDPART)* ;
 IDPART:  [a-zA-Z] [0-9a-zA-Z_-]* ;

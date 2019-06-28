@@ -52,5 +52,5 @@ IDPART:  ( ( [a-zA-Z] [0-9a-zA-Z_]* )
  | ( [a-zA-Z] [0-9a-zA-Z_]* '-' [0-9a-zA-Z_]) )
  ;
 
-WS : [\t\u000C ]+ -> channel(HIDDEN);
+WS : [\e\u000C ]+ -> channel(HIDDEN);
 // NL : [\r\nu000C]

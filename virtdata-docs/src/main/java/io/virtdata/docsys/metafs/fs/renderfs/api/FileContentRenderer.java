@@ -15,8 +15,7 @@ import java.util.regex.Pattern;
 
 @SuppressWarnings("Duplicates")
 /**
- * This is the main interface for allowing filesystem calls to use
- * rendered content.
+ * This is the main interface for allowing filesystem calls to use rendered content.
  */
 public interface FileContentRenderer {
 

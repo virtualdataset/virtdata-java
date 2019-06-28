@@ -16,4 +16,8 @@ public class PathView implements MarkdownStringer {
     public String asMarkdown() {
         return path.toString();
     }
+
+    public String toString() {
+        return path.toString();
+    }
 }

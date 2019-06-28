@@ -254,7 +254,7 @@ public class MetaPath implements Path {
 
     //    private Path tmpSysPath() {
 //        if (path.length>0) {
-//            return FileSystems.getDefault().getPath(
+//            return FileSystems.getDefault().getTargetPath(
 //                    (isAbsolute() ? FileSystems.getDefault().getSeparator() : "") + path[0],
 //                    Arrays.copyOfRange(path,1,path.length-1)
 //            );

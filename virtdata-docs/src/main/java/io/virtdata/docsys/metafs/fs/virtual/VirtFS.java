@@ -43,7 +43,7 @@ public class VirtFS extends MetaFS {
 //    protected VirtFS(VirtFSProvider provider, URI uri) {
 //        this.provider = provider;
 //
-//        outerMount=new URI("VIRTUAL",null,uri.getPath(),null, null);
+//        outerMount=new URI("VIRTUAL",null,uri.getTargetPath(),null, null);
 //        this.uri = uri;
 //        this.innerRoot = new MetaPath(this,"/");
 //    }

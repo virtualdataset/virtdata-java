@@ -33,9 +33,9 @@ public class LayerFSTest {
 //    public void testBasicRendering() throws IOException {
 //        RenderFS renderFS = new RenderFS(Path.of("src/test/resources/testsite1"));
 //        renderFS.addRenderers(new MarkdownRenderer("md","html"));
-//        byte[] bytes1 = Files.readAllBytes(renderFS.getPath("/basics/section1/topic1.md"));
+//        byte[] bytes1 = Files.readAllBytes(renderFS.getTargetPath("/basics/section1/topic1.md"));
 //        System.out.println(new String(bytes1, StandardCharsets.UTF_8));
-//        byte[] bytes2 = Files.readAllBytes(renderFS.getPath("/basics/section1/topic1.html"));
+//        byte[] bytes2 = Files.readAllBytes(renderFS.getTargetPath("/basics/section1/topic1.html"));
 //        System.out.println(new String(bytes2, StandardCharsets.UTF_8));
 //    }
 

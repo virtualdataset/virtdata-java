@@ -1,7 +1,7 @@
 package io.virtdata.docsys.metafs.fs.renderfs.model.properties;
 
 import io.virtdata.docsys.metafs.fs.renderfs.api.MarkdownStringer;
-import io.virtdata.docsys.metafs.fs.renderfs.model.TargetPathView;
+import io.virtdata.docsys.metafs.fs.renderfs.model.ViewModel;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -11,10 +11,10 @@ import java.nio.file.attribute.BasicFileAttributes;
 
 public class TreeView implements MarkdownStringer {
 
-    private final TargetPathView targetPathView;
+    private final ViewModel viewModel;
 
-    public TreeView(TargetPathView targetPathView) {
-        this.targetPathView = targetPathView;
+    public TreeView(ViewModel viewModel) {
+        this.viewModel = viewModel;
     }
 
     @Override

@@ -78,10 +78,33 @@ The TargetPathView provides access to a few types of data:
 - Semantic models of the target path, such as contained topics and categories.
 - Support for internal rendering helpers, like rendering markdown inside html templates.
 
+The combination of a specific rendering context and template is called
+a _rendering scope_, thus a rendering scope has a version which is
+the newest version of either components.
+ 
 ### Composite Templating
 
 Composite templates are templates which can automatically layer together
 in order to impose a format around target file rendering.
+
+When two templates are composited together, they are set in a parent-child
+relationship. As with templates, the context objects for these templates
+are also set in a parent-child relationship.
+
+This is the arrangement of a set of composite scopes in chain form:
+
+```
++-------+ parent of -> +-------+ parent of -> +-------+
+| tmpl1 |              | tmpl2 |              | tmpl3 |
++-------+              +-------+              +-------+
+| view1 |              | view2 |              | view3 |
++-------+  <- child of +-------+  <- child of +-------+
+``` 
+
+In this arrangement, tmpl1 is the parent template of templ2, which is the parent of tmpl3. The rendering contexts have the identical arrangement.
+
+When a parent template needs to access the direct child context, it does
+so by using the name `inner`
 
 #### Local Directory Template
 

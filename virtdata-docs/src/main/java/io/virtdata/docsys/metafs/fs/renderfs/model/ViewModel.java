@@ -1,8 +1,10 @@
 package io.virtdata.docsys.metafs.fs.renderfs.model;
 
-import com.samskivert.mustache.Mustache;
 import io.virtdata.docsys.metafs.fs.renderfs.api.MarkdownStringer;
-import io.virtdata.docsys.metafs.fs.renderfs.api.Versioned;
+import io.virtdata.docsys.metafs.fs.renderfs.api.RendererIO;
+import io.virtdata.docsys.metafs.fs.renderfs.api.rendered.RenderedContent;
+import io.virtdata.docsys.metafs.fs.renderfs.api.rendered.StringContent;
+import io.virtdata.docsys.metafs.fs.renderfs.api.rendering.Versioned;
 import io.virtdata.docsys.metafs.fs.renderfs.model.properties.ListView;
 import io.virtdata.docsys.metafs.fs.renderfs.model.properties.PathView;
 import io.virtdata.docsys.metafs.fs.renderfs.model.properties.TreeView;
@@ -12,38 +14,40 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TargetPathView implements Versioned, MarkdownStringer {
-    private TargetPathView parent;
-    private Path path;
-    private long version;
+public class ViewModel implements Versioned, MarkdownStringer {
 
-    public TargetPathView(Path path, long version) {
-        this.path = path;
+    private ViewModel inner;
+    private Path target;
+    private long version;
+    private RenderedContent rendered;
+
+    public ViewModel(Path target, long version) {
+        this.target = target;
         this.version = version;
     }
 
+    public ViewModel(Path sourcePath, Path targetPath) {
+        this.version = RendererIO.mtimeFor(sourcePath);
+        this.target = targetPath;
+    }
+
+    public Path getTarget() {
+        return target;
+    }
+
     public ActualFsView getFs() {
-        return new ActualFsView(this.path, this.version);
-    }
-
-    public TargetPathView setParent(TargetPathView parent) {
-        this.parent = parent;
-        return this;
-    }
-
-    public TargetPathView getParent() {
-        return parent;
+        return new ActualFsView(this.target, this.version);
     }
 
     public List<Path> getBreadcrumbs() {
         ArrayList<Path> paths = new ArrayList<>();
-        path.iterator().forEachRemaining(paths::add);
+        target.iterator().forEachRemaining(paths::add);
         return paths;
     }
 
 
     public PathView getPath() {
-        return new PathView(path);
+        return new PathView(target);
     }
 
     public ListView<Path> getPaths() {
@@ -62,9 +66,9 @@ public class TargetPathView implements Versioned, MarkdownStringer {
         return new TreeView(this);
     }
 
-    public Mustache.Lambda getMarkdown() {
-        return new MarkdownLambda(this);
-    }
+//    public Mustache.Lambda getMarkdown() {
+//        return new MarkdownLambda(this);
+//    }
 
 
     @Override
@@ -74,8 +78,8 @@ public class TargetPathView implements Versioned, MarkdownStringer {
 
     @Override
     public String toString() {
-        return "TargetPathView{" +
-                "path=" + path +
+        return "ViewModel{" +
+                "target=" + target.toString() +
                 ", version=" + version +
                 '}';
     }
@@ -83,5 +87,20 @@ public class TargetPathView implements Versioned, MarkdownStringer {
     @Override
     public String asMarkdown() {
         return "```\n" + toString() + "\n```\n";
+    }
+
+    public void setInner(ViewModel innerRender) {
+        this.inner = innerRender;
+    }
+
+    public ViewModel getInner() {
+        return inner;
+    }
+
+    public void setRendered(RenderedContent rendered) {
+        this.rendered = rendered;
+    }
+    public RenderedContent getRendered() {
+        return (rendered==null ? new StringContent("NULL RENDERING", getVersion()) : rendered);
     }
 }
