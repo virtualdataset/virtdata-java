@@ -7,7 +7,7 @@ import java.util.function.LongToIntFunction;
 @ThreadSafeMapper
 public class Mul implements LongToIntFunction {
 
-    public Mul(long multiplicand) {
+    public Mul(int multiplicand) {
         this.multiplicand = multiplicand;
     }
 

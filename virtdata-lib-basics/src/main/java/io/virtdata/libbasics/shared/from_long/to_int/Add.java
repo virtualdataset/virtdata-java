@@ -9,7 +9,7 @@ public class Add implements LongToIntFunction {
 
     private final long addend;
 
-    public Add(long addend) {
+    public Add(int addend) {
         this.addend = addend;
     }
 

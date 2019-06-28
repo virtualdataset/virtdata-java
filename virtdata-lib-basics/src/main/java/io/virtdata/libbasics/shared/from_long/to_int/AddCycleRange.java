@@ -10,11 +10,11 @@ public class AddCycleRange implements LongToIntFunction {
 
     private final CycleRange cycleRange;
 
-    public AddCycleRange(long maxValue) {
+    public AddCycleRange(int maxValue) {
         this(0, maxValue);
     }
 
-    public AddCycleRange(long minValue, long maxValue) {
+    public AddCycleRange(int minValue, int maxValue) {
         this.cycleRange = new CycleRange(minValue,maxValue);
     }
 

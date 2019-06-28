@@ -10,11 +10,11 @@ public class CycleRange implements LongToIntFunction {
     private final long minValue;
     private final long width;
 
-    public CycleRange(long maxValue) {
+    public CycleRange(int maxValue) {
         this(0,maxValue);
     }
 
-    public CycleRange(long minValue, long maxValue) {
+    public CycleRange(int minValue, int maxValue) {
         this.minValue = minValue;
 
         if (maxValue<minValue) {

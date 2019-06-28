@@ -10,11 +10,11 @@ public class AddHashRange implements LongToIntFunction {
 
     private final HashRange hashRange;
 
-    public AddHashRange(long maxValue) {
+    public AddHashRange(int maxValue) {
         this(0, maxValue);
     }
 
-    public AddHashRange(long minValue, long maxValue) {
+    public AddHashRange(int minValue, int maxValue) {
         this.hashRange = new HashRange(minValue, maxValue);
     }
 

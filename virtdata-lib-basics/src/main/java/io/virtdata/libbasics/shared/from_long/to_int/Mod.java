@@ -23,7 +23,7 @@ public class Mod implements LongToIntFunction {
 
     private long modulo;
 
-    public Mod(long modulo) {
+    public Mod(int modulo) {
         this.modulo = modulo;
     }
 

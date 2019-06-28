@@ -14,13 +14,13 @@ public class HashRange implements LongToIntFunction {
     private final Hash hash = new Hash();
 
     @Example({"HashRange(32L)","map the input to a number in the range 0-31, inclusive, of type int"})
-    public HashRange(long width) {
+    public HashRange(int width) {
         this.width=width;
         this.minValue=0L;
     }
 
     @Example({"HashRange(35L,39L)","map the input to a number in the range 35-38, inclusive, of type int"})
-    public HashRange(long minValue, long maxValue) {
+    public HashRange(int minValue, int maxValue) {
         this.minValue = minValue;
 
         if (maxValue<=minValue) {
