@@ -1,4 +1,4 @@
-package io.virtdata.docsys.metafs.fs.renderfs.fs;
+package io.virtdata.docsys.metafs.fs.renderfs.fs.virtualio;
 
 import io.virtdata.docsys.metafs.core.AugmentingIterator;
 import io.virtdata.docsys.metafs.fs.renderfs.api.FileContentRenderer;
@@ -12,7 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
 
-class RenderFSDirectoryStream implements DirectoryStream<Path> {
+public class RenderFSDirectoryStream implements DirectoryStream<Path> {
 
     private final DirectoryStream<Path> wrappedStream;
     private final NameMappingFunc func;

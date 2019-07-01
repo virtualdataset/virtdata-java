@@ -129,17 +129,11 @@ public class FileRenderer implements FileContentRenderer {
     }
 
     @Override
-    public String getTargetSuffix() {
-        return this.targetExtension;
-    }
-
-    @Override
     public synchronized ByteBuffer render(Path sourcePath, Path targetPath, ByteBuffer byteBuffer) {
         RenderingScope scope = new RenderingScope(sourcePath, targetPath, compiler);
-        LinkedList<Path> templates = getTemplates(sourcePath);
-        for (Path template : templates) {
-            RenderingScope outer = new RenderingScope(template, targetPath, compiler);
-            scope = scope.addParent(outer);
+        for (Path template : getTemplates(sourcePath)) {
+            RenderingScope outer = new RenderingScope(template, template, compiler);
+            scope = outer.wrap(scope);
         }
         RenderedContent rendered = scope.getRendered();
 

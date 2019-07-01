@@ -12,6 +12,7 @@ public class RenderingScope implements IRenderingScope {
     private final TemplateView templateView;
     private final ViewModel viewModel;
     private final TemplateCompiler compiler;
+    private RenderingScope innerScope;
 
     private Renderer renderer;
     private RenderedContent rendered;
@@ -44,6 +45,10 @@ public class RenderingScope implements IRenderingScope {
     @Override
     public RenderedContent getRendered() {
         try {
+            if (innerScope!=null) {
+                innerScope.getRendered();
+                this.getViewModel().setInner(innerScope.getViewModel());
+            }
             if (this.rendered==null || !this.rendered.isValidFor(this)) {
                 if (this.renderer==null || !this.renderer.isValidFor(this)) {
                     this.renderer =compiler.apply(templateView);
@@ -56,9 +61,19 @@ public class RenderingScope implements IRenderingScope {
         }
     }
 
-    public RenderingScope addParent(RenderingScope outerScope) {
-        this.getViewModel().setRendered(this.getRendered());
-        outerScope.getViewModel().setInner(this.viewModel);
-        return outerScope;
+    public RenderingScope wrap(RenderingScope innerScope) {
+        this.innerScope=innerScope;
+        this.viewModel.setInner(innerScope.getViewModel());
+        return this;
+//
+//        RenderedContent rendered = this.getRendered();
+//        this.getViewModel().setRendered(rendered);
+//        outerScope.getViewModel().setInner(this.viewModel);
+//        outerScope.setInnerScope()
+//        return outerScope;
+    }
+
+    public String toString() {
+        return "[view: " + this.getViewModel().getPath().toString() + "][target: " + this.getViewModel().getTarget()+ "]";
     }
 }

@@ -1,6 +1,6 @@
 package io.virtdata.docsys.metafs.core;
 
-import io.virtdata.docsys.metafs.fs.renderfs.fs.RenderedFileChannel;
+import io.virtdata.docsys.metafs.fs.renderfs.fs.virtualio.RenderedFileChannel;
 
 import java.io.IOException;
 import java.io.InputStream;

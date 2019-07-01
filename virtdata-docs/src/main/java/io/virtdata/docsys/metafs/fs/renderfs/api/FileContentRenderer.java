@@ -1,13 +1,12 @@
 package io.virtdata.docsys.metafs.fs.renderfs.api;
 
-import org.apache.commons.compress.utils.SeekableInMemoryByteChannel;
+import io.virtdata.docsys.metafs.fs.renderfs.fs.virtualio.VirtualFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.nio.channels.SeekableByteChannel;
 import java.nio.file.AccessMode;
 import java.nio.file.Path;
 import java.util.regex.Matcher;
@@ -53,8 +52,6 @@ public interface FileContentRenderer {
         return matchesTarget(p) && hasSource(p);
     }
 
-    String getTargetSuffix();
-
     /**
      * Return the matching source path, but only if the target name matches the target extension.
      *
@@ -65,7 +62,7 @@ public interface FileContentRenderer {
 
     Path getRenderedTargetName(Path sourceName);
 
-    default InputStream getInputStream(Path targetName) {
+    private InputStream getInputStream(Path targetName) {
         ByteBuffer buf = getRendered(targetName);
         if (buf == null) {
             return null;
@@ -75,11 +72,11 @@ public interface FileContentRenderer {
 
     ByteBuffer render(Path source, Path target, ByteBuffer input);
 
-    default ByteBuffer getRendered(Path targetPath) {
+    private ByteBuffer getRendered(Path targetPath) {
         Path sourcePath = getSourcePath(targetPath);
         if (sourcePath != null) {
             try {
-                ByteBuffer rawInput = getByteBuffer(sourcePath);
+                ByteBuffer rawInput = getRawByteBuffer(sourcePath);
                 ByteBuffer rendered = render(sourcePath, targetPath, rawInput);
                 return rendered;
             } catch (IOException ioe) {
@@ -92,27 +89,17 @@ public interface FileContentRenderer {
     }
 
 
-    default SeekableByteChannel getByteChannel(Path targetPath) {
-        Path sourcePath = getSourcePath(targetPath);
-        if (sourcePath != null) {
-            try {
-                ByteBuffer rawInput = getByteBuffer(sourcePath);
-                ByteBuffer renderedOutput = render(sourcePath, targetPath, rawInput);
-                SeekableInMemoryByteChannel channel = new SeekableInMemoryByteChannel();
-                channel.write(renderedOutput);
-                channel.position(0);
-                return channel;
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return null;
-    }
-
-    default ByteBuffer getByteBuffer(Path sourcePath) throws IOException {
+    private ByteBuffer getRawByteBuffer(Path sourcePath) throws IOException {
         InputStream inputStream = sourcePath.getFileSystem().provider().newInputStream(sourcePath);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         inputStream.transferTo(bos);
         return ByteBuffer.wrap(bos.toByteArray()).asReadOnlyBuffer();
+    }
+
+    default VirtualFile getVirtualFile(Path target) {
+        ByteBuffer bb = getRendered(target);
+        if (bb==null) { return null; }
+        Path delegate = getSourcePath(target);
+        return new VirtualFile(delegate,target,bb);
     }
 }

@@ -9,6 +9,7 @@ import io.virtdata.docsys.metafs.fs.renderfs.api.rendering.Renderer;
 import io.virtdata.docsys.metafs.fs.renderfs.api.rendering.RenderingScope;
 import io.virtdata.docsys.metafs.fs.renderfs.api.rendering.TemplateCompiler;
 import io.virtdata.docsys.metafs.fs.renderfs.api.rendering.TemplateView;
+import io.virtdata.docsys.metafs.fs.renderfs.model.ViewModel;
 
 public class MustacheProcessor implements TemplateCompiler {
 
@@ -41,7 +42,8 @@ public class MustacheProcessor implements TemplateCompiler {
                 if (compiledTemplate == null) {
                     this.compiledTemplate = compiler.compile(templateView.get());
                 }
-                String renderedText = compiledTemplate.execute(renderingScope.getViewModel());
+                ViewModel viewModel = renderingScope.getViewModel();
+                String renderedText = compiledTemplate.execute(viewModel);
                 return new StringContent(renderedText,this.getVersion());
             } catch (Exception e) {
                 return new ExceptionContent(e, getVersion());

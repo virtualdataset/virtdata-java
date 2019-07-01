@@ -1,0 +1,11 @@
+# Function Reference
+
+## Sections
+
+- inner path: {{ inner.path }}
+
+{{# files }}
+ {{ . }}
+{{/ files}}
+
+{{ inner.rendered }}

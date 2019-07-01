@@ -1,5 +1,7 @@
 package io.virtdata.docsys.metafs.fs.renderfs.api;
 
+import io.virtdata.docsys.metafs.fs.renderfs.fs.virtualio.VirtualFile;
+
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -25,7 +27,7 @@ public class Renderers {
      * @param path The target path which is meant to be rendered
      * @return A renderer or null, if none are available
      */
-    public FileContentRenderer forTargetPath(Path path) {
+    private FileContentRenderer forTargetPath(Path path) {
         for (FileContentRenderer rendererType : rendererTypes) {
             if (rendererType.canRender(path)) {
                 return rendererType;
@@ -36,5 +38,14 @@ public class Renderers {
 
     public String toString() {
         return this.rendererTypes.stream().map(String::valueOf).collect(Collectors.joining(",", "[", "]"));
+    }
+
+    public VirtualFile getVirtualFile(Path p) {
+        FileContentRenderer renderer = forTargetPath(p);
+        if (renderer!=null) {
+            VirtualFile vf = renderer.getVirtualFile(p);
+            return vf;
+        }
+        return null;
     }
 }

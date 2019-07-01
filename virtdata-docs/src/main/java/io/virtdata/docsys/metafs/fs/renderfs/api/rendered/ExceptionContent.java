@@ -30,4 +30,8 @@ public class ExceptionContent implements RenderedContent {
         String out = new String(bos.toByteArray(), StandardCharsets.UTF_8);
         return out;
     }
+
+    public String toString() {
+        return get();
+    }
 }

@@ -3,11 +3,12 @@ package io.virtdata.docsys.metafs.fs.renderfs.fs;
 import io.virtdata.docsys.metafs.core.MetaPath;
 import io.virtdata.docsys.metafs.fs.renderfs.api.FileContentRenderer;
 import io.virtdata.docsys.metafs.fs.renderfs.api.Renderers;
+import io.virtdata.docsys.metafs.fs.renderfs.fs.virtualio.RenderFSDirectoryStream;
+import io.virtdata.docsys.metafs.fs.renderfs.fs.virtualio.VirtualFile;
 import io.virtdata.docsys.metafs.fs.virtual.VirtFS;
 
 import java.io.IOException;
 import java.net.URI;
-import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -29,10 +30,12 @@ import java.util.Set;
  * the attributes of their upstream file format, except
  * for file size and file data.
  */
+@SuppressWarnings("ALL")
 public class RenderFS extends VirtFS {
 
     private final RenderFSProvider provider = RenderFSProvider.get();
     Renderers renderers = new Renderers();
+    private VirtualFileCache cache = new VirtualFileCache();
 
 
     public RenderFS(FileSystem layer, String name) {
@@ -68,7 +71,8 @@ public class RenderFS extends VirtFS {
     }
 
     @Override
-    public SeekableByteChannel newByteChannel(Path path, Set<? extends OpenOption> options, FileAttribute<?>... attrs) throws IOException {
+    public SeekableByteChannel newByteChannel(
+            Path path, Set<? extends OpenOption> options, FileAttribute<?>... attrs) throws IOException {
         MetaPath metaPath = assertMetaPath(path);
         Path syspath = this.metaToSysFunc.apply(metaPath);
 
@@ -76,12 +80,21 @@ public class RenderFS extends VirtFS {
             SeekableByteChannel channel = super.newByteChannel(path, options, attrs);
             return channel;
         } catch (Exception e) {
-            FileContentRenderer renderer = renderers.forTargetPath(path);
-            if (renderer != null) {
-                return renderer.getByteChannel(path);
+            VirtualFile vf = cache.computeIfAbsent(path, renderers::getVirtualFile);
+            if (vf != null) {
+                return vf.getSeekableByteChannel();
+            } else {
+                throw e;
             }
+//
+//            FileContentRenderer renderer = renderers.forTargetPath(path).map();
+//            if (renderer != null) {
+//                renderer.getVirtualFile(path);
+//
+//                return renderer.getByteChannel(path);
+//            }
         }
-        return syspath.getFileSystem().provider().newByteChannel(syspath, options, attrs);
+//        return syspath.getFileSystem().provider().newByteChannel(syspath, options, attrs);
     }
 
 
@@ -89,16 +102,9 @@ public class RenderFS extends VirtFS {
         try {
             return super.readAttributes(path, type, options);
         } catch (Exception e1) {
-            FileContentRenderer renderer = renderers.forTargetPath(path);
-            if (renderer != null) {
-                try {
-                    Path sourcePath = renderer.getSourcePath(path);
-                    ByteBuffer rendered = renderer.getRendered(path);
-                    BasicFileAttributes attrs = readAttributes(sourcePath, type, options);
-                    return new RenderedBasicFileAttributes(attrs, rendered.remaining());
-                } catch (Exception e) {
-                    throw new RuntimeException("There was a problem rendering " + path.toString() + " with " + renderer);
-                }
+            VirtualFile vf = cache.computeIfAbsent(path, renderers::getVirtualFile);
+            if (vf != null) {
+                return vf.readAttributes(path, type, options);
             } else {
                 throw e1;
             }
@@ -109,12 +115,9 @@ public class RenderFS extends VirtFS {
         try {
             return super.readAttributes(path, attributes, options);
         } catch (Exception e1) {
-            FileContentRenderer renderer = renderers.forTargetPath(path);
-            if (renderer != null) {
-                Path sourcePath = renderer.getSourcePath(path);
-                ByteBuffer rendered = renderer.getRendered(path);
-                Map<String, Object> sourceAttrs = readAttributes(sourcePath, attributes, options);
-                return new RenderedFileAttributeMap(sourcePath, sourceAttrs, path, rendered.remaining());
+            VirtualFile vf = cache.computeIfAbsent(path, renderers::getVirtualFile);
+            if (vf != null) {
+                return vf.readAttributes(path, attributes, options);
             } else {
                 throw e1;
             }
@@ -126,8 +129,10 @@ public class RenderFS extends VirtFS {
         try {
             super.checkAccess(path, modes);
         } catch (Exception e1) {
-            FileContentRenderer renderer = renderers.forTargetPath(path);
-            if (renderer == null) {
+            VirtualFile vf = cache.computeIfAbsent(path, renderers::getVirtualFile);
+            if (vf != null) {
+                vf.checkAccess(path, modes);
+            } else {
                 throw e1;
             }
         }
@@ -145,19 +150,14 @@ public class RenderFS extends VirtFS {
             super.readAttributes(path, BasicFileAttributes.class, new LinkOption[0]);
             return super.getFileAttributeView(path, type, options);
         } catch (IOException e1) {
-            FileContentRenderer renderer = renderers.forTargetPath(path);
-            if (renderer != null) {
-                Path sourcePath = renderer.getSourcePath(path);
-                ByteBuffer rendered = renderer.getRendered(path);
-                FileAttributeView sourceFileAttributeView = getFileAttributeView(sourcePath, type, options);
-                return new RenderedFileAttributeView(
-                        sourcePath, sourceFileAttributeView, path, type, options, rendered.remaining()
-                );
+            VirtualFile vf = cache.computeIfAbsent(path, renderers::getVirtualFile);
+            if (vf!=null) {
+                return vf.getFileAttributeView(path, type, options);
             } else {
                 throw new RuntimeException(e1);
             }
-        }
 
+        }
 
 //        /*
 //        Although the case for neither the source file or the target file being present is
@@ -171,7 +171,7 @@ public class RenderFS extends VirtFS {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        return "RenderFS(" + getName() +"): root=" + super.getOuterMount().toString() + " renderers=" + renderers;
+        return "RenderFS(" + getName() + "): root=" + super.getOuterMount().toString() + " renderers=" + renderers;
     }
 
 

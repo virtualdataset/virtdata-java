@@ -32,7 +32,7 @@ public class MetaShift {
     private static int[] msbs = {0,1,2,2,3,3,3,3,4,4,4,4,4,4,4,4};
     public static int getMsbPosition(long value) {
         if (value<0) {
-            throw new RuntimeException("Only values between 1 and " + Long.MAX_VALUE + " are supported");
+            throw new RuntimeException("Only values between 1 and " + Long.MAX_VALUE + " are supported, and you tried to get the MSB position for value " + value + " or possible overflowed to a negative value.");
         }
         int r=0;
         if ((value & 0xFFFFFFFF00000000L)>0) { r+=32 ; value >>=32; }

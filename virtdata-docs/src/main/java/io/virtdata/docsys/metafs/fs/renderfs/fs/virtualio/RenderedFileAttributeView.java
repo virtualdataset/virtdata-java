@@ -1,4 +1,4 @@
-package io.virtdata.docsys.metafs.fs.renderfs.fs;
+package io.virtdata.docsys.metafs.fs.renderfs.fs.virtualio;
 
 import java.io.IOException;
 import java.nio.file.LinkOption;

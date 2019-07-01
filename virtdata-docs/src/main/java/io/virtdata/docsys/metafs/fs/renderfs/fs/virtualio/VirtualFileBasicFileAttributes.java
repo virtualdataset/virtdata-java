@@ -1,14 +1,14 @@
-package io.virtdata.docsys.metafs.fs.renderfs.fs;
+package io.virtdata.docsys.metafs.fs.renderfs.fs.virtualio;
 
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 
-public class RenderedBasicFileAttributes implements BasicFileAttributes {
+public class VirtualFileBasicFileAttributes implements BasicFileAttributes {
 
     private BasicFileAttributes sysFileAttributeDelegate;
     private long virtualSize;
 
-    public RenderedBasicFileAttributes(BasicFileAttributes sysFileAttributeDelegate, long virtualSize) {
+    public VirtualFileBasicFileAttributes(BasicFileAttributes sysFileAttributeDelegate, long virtualSize) {
         this.sysFileAttributeDelegate = sysFileAttributeDelegate;
         this.virtualSize = virtualSize;
     }
