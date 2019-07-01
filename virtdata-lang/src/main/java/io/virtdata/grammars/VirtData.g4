@@ -29,7 +29,7 @@ floatValue: FLOAT;
 booleanValue: BOOLEAN;
 
 LONG : '-'? INT ('l'|'L') ;
-DOUBLE    :   ('-'? INT '.' ZINT EXP? | '-'? INT EXP | '-'? INT ) ('d'|'D') ;
+DOUBLE    :   ('-'? INT '.' '0'* INT EXP? | '-'? INT EXP | '-'? INT ) ('d'|'D') ;
 INTEGER : '-'? INT ;
 FLOAT
     :    '-'? INT '.' ZINT EXP?   // 1.35, 1.35E-9, 0.3, -4.5
@@ -59,5 +59,6 @@ IDPART:  ( ( [a-zA-Z] [0-9a-zA-Z_]* )
  | ( [a-zA-Z] [0-9a-zA-Z_]* '-' [0-9a-zA-Z_]) )
  ;
 
-WS : [\e\u000C ]+ -> channel(HIDDEN);
+// include form feed
+WS : [\u000C \t\n]+ -> channel(HIDDEN);
 // NL : [\r\nu000C]
