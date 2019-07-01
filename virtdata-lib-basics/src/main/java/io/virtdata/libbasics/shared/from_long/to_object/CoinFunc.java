@@ -25,7 +25,7 @@ import java.util.function.LongUnaryOperator;
  * user may need to use the full input value before hashing as the
  * input to one or both of the functions.
  *
- * This function will accept either a LongFunction or a <pre>Function<Long,Object></pre>
+ * This function will accept either a LongFunction or a {@link Function}
  * or a LongUnaryOperator in either position. If necessary, use
  * {@link java.util.function.ToLongFunction} to adapt other function forms to be
  * compatible with these signatures.
