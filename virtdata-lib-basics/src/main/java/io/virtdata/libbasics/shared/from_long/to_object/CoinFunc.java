@@ -25,7 +25,7 @@ import java.util.function.LongFunction;
  * input to one or both of the functions.
  *
  * This function will accept either a LongFunction or a Function&lt;Long,Object&gt;
- * in either position. If necessary, use {@see ToLongFunction} to adapt other
+ * in either position. If necessary, use {@link java.util.function.ToLongFunction} to adapt other
  * function forms to be compatible with these signatures.
  */
 
