@@ -8,6 +8,7 @@ import io.virtdata.libbasics.shared.from_long.to_double.HashedDoubleRange;
 
 import java.util.function.Function;
 import java.util.function.LongFunction;
+import java.util.function.LongUnaryOperator;
 
 /**
  * This is a higher-order function which takes an input value,
@@ -24,9 +25,10 @@ import java.util.function.LongFunction;
  * user may need to use the full input value before hashing as the
  * input to one or both of the functions.
  *
- * This function will accept either a LongFunction or a Function&lt;Long,Object&gt;
- * in either position. If necessary, use {@link java.util.function.ToLongFunction} to adapt other
- * function forms to be compatible with these signatures.
+ * This function will accept either a LongFunction or a <pre>Function<Long,Object></pre>
+ * or a LongUnaryOperator in either position. If necessary, use
+ * {@link java.util.function.ToLongFunction} to adapt other function forms to be
+ * compatible with these signatures.
  */
 
 @Categories(Category.distributions)
@@ -46,6 +48,20 @@ public class CoinFunc implements Function<Long,Object> {
         this.second = second;
     }
 
+    public CoinFunc(double threshold, LongFunction<? extends Object> first, Function<Long,? extends Object> second) {
+        this.threshold = threshold;
+        this.first = first;
+        this.second = second::apply;
+    }
+
+    public CoinFunc(double threshold, LongFunction<? extends Object> first, LongUnaryOperator second) {
+        this.threshold = threshold;
+        this.first = first::apply;
+        this.second = second::applyAsLong;
+    }
+
+
+
     public CoinFunc(double threshold, Function<Long,? extends Object> first, Function<Long,? extends Object> second) {
         this.threshold = threshold;
         this.first = first::apply;
@@ -58,10 +74,29 @@ public class CoinFunc implements Function<Long,Object> {
         this.second = second;
     }
 
-    public CoinFunc(double threshold, LongFunction<? extends Object> first, Function<Long,? extends Object> second) {
+    public CoinFunc(double threshold, Function<Long,? extends Object> first, LongUnaryOperator second) {
         this.threshold = threshold;
-        this.first = first;
+        this.first = first::apply;
+        this.second = second::applyAsLong;
+    }
+
+
+
+    public CoinFunc(double threshold, LongUnaryOperator first, Function<Long,? extends Object> second) {
+        this.threshold = threshold;
+        this.first = first::applyAsLong;
         this.second = second::apply;
+    }
+    public CoinFunc(double threshold, LongUnaryOperator first, LongFunction<? extends Object> second) {
+        this.threshold = threshold;
+        this.first = first::applyAsLong;
+        this.second = second::apply;
+    }
+
+    public CoinFunc(double threshold, LongUnaryOperator first, LongUnaryOperator second) {
+        this.threshold = threshold;
+        this.first = first::applyAsLong;
+        this.second = second::applyAsLong;
     }
 
     @Override
