@@ -19,9 +19,19 @@ import java.util.regex.Pattern;
  * result of the provided functions. The number of <pre>{}</pre> entries in the template
  * must strictly match the number of functions or an error will be thrown.
  *
- * To provide differing values for similarly defined functions in the list, the input
- * value used is automatically incremented by one for each function, starting with
- * the initial input value.
+ * The objects passed must be functions of any of the following types:
+ * <UL>
+ *     <LI>LongUnaryOperator</LI>
+ *     <LI>IntUnaryOperator</LI>
+ *     <LI>DoubleUnaryOperator</LI>
+ *     <LI>LongFunction</LI>
+ *     <LI>IntFunction</LI>
+ *     <LI>DoubleFunction</LI>
+ *     <LI>Function&lt;Long,?&gt;</LI>
+ * </UL>
+ *
+ * The result of applying the input value to any of these functions is converted to a String
+ * and then stitched together according to the template provided.
  */
 @ThreadSafeMapper
 public class Template implements LongFunction<String> {
