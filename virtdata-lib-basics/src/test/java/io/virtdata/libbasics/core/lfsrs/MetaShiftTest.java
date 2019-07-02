@@ -1,11 +1,12 @@
 package io.virtdata.libbasics.core.lfsrs;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MetaShiftTest {
 
+    @Test
     public void testWidthSelection() {
         assertThat(MetaShift.getMsbPosition(2)).isEqualTo(2);
         assertThat(MetaShift.getMsbPosition(7)).isEqualTo(3);
@@ -13,7 +14,7 @@ public class MetaShiftTest {
         assertThat(MetaShift.getMsbPosition(Long.MAX_VALUE)).isEqualTo(63);
     }
 
-    @Test(expectedExceptions = RuntimeException.class, expectedExceptionsMessageRegExp = ".*Only values between.*")
+    @Test(expected = RuntimeException.class)
     public void testNegativeException() {
         assertThat(MetaShift.getMsbPosition(-34)).isEqualTo(64);
     }
@@ -24,7 +25,7 @@ public class MetaShiftTest {
         assertThat(f.config.feedback).isEqualTo(9L);
     }
 
-    @Test(expectedExceptions = RuntimeException.class, expectedExceptionsMessageRegExp = ".*are only 2 items available.*")
+    @Test(expected = RuntimeException.class)
     public void testBankSelectorOverrun() {
         MetaShift.Func f = MetaShift.forSizeAndBank(4, 123);
     }

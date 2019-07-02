@@ -1,6 +1,6 @@
 package io.virtdata.libbasics.core.stathelpers;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 public class DiscreteProbabilityBufferTest {
 

@@ -1,14 +1,15 @@
 package io.virtdata;
 
 import io.virtdata.api.DataMapper;
+import io.virtdata.core.VirtData;
 import io.virtdata.libbasics.shared.from_long.to_long.Identity;
 import io.virtdata.libbasics.shared.from_long.to_string.NumberNameToString;
 import io.virtdata.libbasics.shared.from_long.to_string.Template;
-import io.virtdata.core.VirtData;
 import org.apache.commons.lang3.ClassUtils;
 import org.testng.annotations.Test;
 
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.LongFunction;
 import java.util.function.LongUnaryOperator;
 
@@ -76,7 +77,7 @@ public class IntegratedComposerLogicTest {
 //    }
 
     public void testNestedFunction() {
-        Template t = new Template("_{}_{}_", String::valueOf, (LongFunction<?>) String::valueOf);
+        Template t = new Template("_{}_{}_", (Function) String::valueOf, (LongFunction<?>) String::valueOf);
         String r = t.apply(5);
         assertThat(r).isEqualTo("_5_6_");
         Optional<DataMapper<String>> m2 = VirtData.getOptionalMapper("Template('_{}_',long->NumberNameToString()->java.lang.String)");

@@ -19,7 +19,7 @@
 package io.virtdata.random;
 
 import io.virtdata.annotations.DeprecatedFunction;
-import io.virtdata.util.ResourceFinder;
+import io.virtdata.util.VirtDataResources;
 import org.apache.commons.math3.distribution.IntegerDistribution;
 import org.apache.commons.math3.distribution.UniformIntegerDistribution;
 import org.apache.commons.math3.random.MersenneTwister;
@@ -59,7 +59,7 @@ public class RandomFileExtractToString implements LongFunction<String> {
         if (fileDataImage == null) {
             synchronized (RandomFileExtractToString.class) {
                 if (fileDataImage == null) {
-                    CharBuffer image= ResourceFinder.readDataFileToCharBuffer(fileName);
+                    CharBuffer image= VirtDataResources.readDataFileToCharBuffer(fileName);
                     fileDataImage = image;
                 }
             }

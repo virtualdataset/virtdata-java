@@ -20,7 +20,7 @@ package io.virtdata.libbasics.shared.from_long.to_string;
 
 import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
-import io.virtdata.util.ResourceFinder;
+import io.virtdata.util.VirtDataResources;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
@@ -46,7 +46,7 @@ public class ModuloCSVLineToString implements LongFunction<String> {
     @Example({"ModuloCSVLineToString('data/myfile.csv','lat')","load values for 'lat' from the CSV file myfile.csv."})
     public ModuloCSVLineToString(String filename, String fieldname) {
         this.filename = filename;
-        CSVParser csvp = ResourceFinder.readFileCSV(filename);
+        CSVParser csvp = VirtDataResources.readFileCSV(filename);
         int column = csvp.getHeaderMap().get(fieldname);
         for (CSVRecord strings : csvp) {
             lines.add(strings.get(column));

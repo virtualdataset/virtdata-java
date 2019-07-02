@@ -2,10 +2,14 @@ package io.virtdata.libbasics.shared.from_long.to_string;
 
 import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
+import io.virtdata.util.VirtDataFunctions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.*;
+import java.util.function.LongFunction;
+import java.util.function.LongUnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,6 +25,8 @@ import java.util.regex.Pattern;
  */
 @ThreadSafeMapper
 public class Template implements LongFunction<String> {
+    private final static Logger logger = LoggerFactory.getLogger(Template.class);
+
     private static final String EXPR_BEGIN = "[[";
     private static final String EXPR_END = "]]";
     private final static ThreadLocal<StringBuilder> sb = ThreadLocal.withInitial(StringBuilder::new);
@@ -30,72 +36,94 @@ public class Template implements LongFunction<String> {
     private LongFunction<?>[] adaptedFuncs;
 
     @Example({"Template('{}-{}',Add(10),Hash())","concatenate input+10, '-', and a pseudo-random long"})
-    public Template(String template, LongFunction<?>... funcs) {
-        this.adaptedFuncs = funcs;
-        this.rawTemplate = template;
-        this.literals = parseTemplate(template, funcs);
+    public Template(String template, Object...funcs) {
+        this(true, template, funcs);
     }
 
-    public Template(String template, Function<Long,?>... funcs) {
-        this.adaptedFuncs = new LongFunction[funcs.length];
-        for (int i = 0; i < funcs.length; i++) {
-            int finalI = i;
-            adaptedFuncs[i]=(l) -> funcs[finalI].apply(l);
+    @Example({"Template(true, '{}-{}', Add(10),Hash())", "throws an error, as the Add(10) function causes a narrowing conversion for a long input"})
+    public Template(boolean truncate, String template, Object... funcs) {
+        this.adaptedFuncs = adapt(funcs, truncate);
+        this.rawTemplate = template;
+        this.literals = parseTemplate(template, funcs.length);
+    }
+
+    private LongFunction<?>[] adapt(Object[] funcs, boolean truncate) {
+
+        List<LongFunction<?>> adapted = new ArrayList<>();
+        for (Object func : funcs) {
+            LongFunction lf= VirtDataFunctions.adapt(func, LongFunction.class, Object.class, truncate);
+            adapted.add(lf);
         }
-        this.rawTemplate = template;
-        this.literals = parseTemplate(template,adaptedFuncs);
+        return adapted.toArray(new LongFunction<?>[0]);
     }
 
-    public Template(String template, LongUnaryOperator... funcs) {
-        this.adaptedFuncs = new LongFunction[funcs.length];
-        for (int i = 0; i < funcs.length; i++) {
-            int finalI = i;
-            adaptedFuncs[i]=(l) -> funcs[finalI].applyAsLong(l);
-        }
-        this.rawTemplate = template;
-        this.literals = parseTemplate(template,adaptedFuncs);
-    }
-
-    public Template(String template, IntUnaryOperator... funcs) {
-        this.adaptedFuncs = new LongFunction[funcs.length];
-        for (int i = 0; i < funcs.length; i++) {
-            int finalI = i;
-            adaptedFuncs[i]=(l) -> funcs[finalI].applyAsInt(Long.valueOf(l).intValue());
-        }
-        this.rawTemplate = template;
-        this.literals = parseTemplate(template,adaptedFuncs);
-    }
-
-    public Template(String template, DoubleUnaryOperator... funcs) {
-        this.adaptedFuncs = new LongFunction[funcs.length];
-        for (int i = 0; i < funcs.length; i++) {
-            int finalI = i;
-            adaptedFuncs[i]=(l) -> funcs[finalI].applyAsDouble(l);
-        }
-        this.rawTemplate = template;
-        this.literals = parseTemplate(template,adaptedFuncs);
-    }
-
-    public Template(String template, LongToDoubleFunction... funcs) {
-        this.adaptedFuncs = new LongFunction[funcs.length];
-        for (int i = 0; i < funcs.length; i++) {
-            int finalI = i;
-            adaptedFuncs[i]=(l) -> funcs[finalI].applyAsDouble(l);
-        }
-        this.rawTemplate = template;
-        this.literals = parseTemplate(template,adaptedFuncs);
-    }
-
-    public Template(String template, LongToIntFunction... funcs) {
-        this.adaptedFuncs = new LongFunction[funcs.length];
-        for (int i = 0; i < funcs.length; i++) {
-            int finalI = i;
-            adaptedFuncs[i]=(l) -> funcs[finalI].applyAsInt(l);
-        }
-        this.rawTemplate = template;
-        this.literals = parseTemplate(template,adaptedFuncs);
-
-    }
+//    public Template(String template, LongFunction<?>... funcs) {
+//        this.adaptedFuncs = funcs;
+//        this.rawTemplate = template;
+//        this.literals = parseTemplate(template, funcs.length);
+//    }
+//
+//
+//    public Template(String template, Function<Long,?>... funcs) {
+//        this.adaptedFuncs = new LongFunction[funcs.length];
+//        for (int i = 0; i < funcs.length; i++) {
+//            int finalI = i;
+//            adaptedFuncs[i]=(l) -> funcs[finalI].apply(l);
+//        }
+//        this.rawTemplate = template;
+//        this.literals = parseTemplate(template,funcs.length);
+//    }
+//
+//    public Template(String template, LongUnaryOperator... funcs) {
+//        this.adaptedFuncs = new LongFunction[funcs.length];
+//        for (int i = 0; i < funcs.length; i++) {
+//            int finalI = i;
+//            adaptedFuncs[i]=(l) -> funcs[finalI].applyAsLong(l);
+//        }
+//        this.rawTemplate = template;
+//        this.literals = parseTemplate(template,funcs.length);
+//    }
+//
+//    public Template(String template, IntUnaryOperator... funcs) {
+//        this.adaptedFuncs = new LongFunction[funcs.length];
+//        for (int i = 0; i < funcs.length; i++) {
+//            int finalI = i;
+//            adaptedFuncs[i]=(l) -> funcs[finalI].applyAsInt(Long.valueOf(l).intValue());
+//        }
+//        this.rawTemplate = template;
+//        this.literals = parseTemplate(template,funcs.length);
+//    }
+//
+//    public Template(String template, DoubleUnaryOperator... funcs) {
+//        this.adaptedFuncs = new LongFunction[funcs.length];
+//        for (int i = 0; i < funcs.length; i++) {
+//            int finalI = i;
+//            adaptedFuncs[i]=(l) -> funcs[finalI].applyAsDouble(l);
+//        }
+//        this.rawTemplate = template;
+//        this.literals = parseTemplate(template,funcs.length);
+//    }
+//
+//    public Template(String template, LongToDoubleFunction... funcs) {
+//        this.adaptedFuncs = new LongFunction[funcs.length];
+//        for (int i = 0; i < funcs.length; i++) {
+//            int finalI = i;
+//            adaptedFuncs[i]=(l) -> funcs[finalI].applyAsDouble(l);
+//        }
+//        this.rawTemplate = template;
+//        this.literals = parseTemplate(template,funcs.length);
+//    }
+//
+//    public Template(String template, LongToIntFunction... funcs) {
+//        this.adaptedFuncs = new LongFunction[funcs.length];
+//        for (int i = 0; i < funcs.length; i++) {
+//            int finalI = i;
+//            adaptedFuncs[i]=(l) -> funcs[finalI].applyAsInt(l);
+//        }
+//        this.rawTemplate = template;
+//        this.literals = parseTemplate(template,funcs.length);
+//
+//    }
 
     /**
      * If an operator is provided, it is used to change the function input value in an additional way before each function.
@@ -110,7 +138,7 @@ public class Template implements LongFunction<String> {
     }
 
     @SuppressWarnings("unchecked")
-    private String[] parseTemplate(String template, LongFunction<?>... funcs) {
+    private String[] parseTemplate(String template, int funcCount) {
         try {
             List<String> literals = new ArrayList<>();
             Pattern p = Pattern.compile("\\{}");
@@ -121,7 +149,7 @@ public class Template implements LongFunction<String> {
                 pos = m.end();
             }
             literals.add(template.substring(pos));
-            if (literals.size() != funcs.length + 1) {
+            if (literals.size() != funcCount + 1) {
                 throw new RuntimeException("The number of {} place holders in '" + template + "' should equal the number of functions.");
             }
             return literals.toArray(new String[0]);

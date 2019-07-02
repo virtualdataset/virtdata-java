@@ -1,10 +1,9 @@
 package io.virtdata.libbasics.shared.from_long.to_string;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Test
 public class DirectoryLinesTest {
 
     @Test

@@ -1,12 +1,11 @@
 package io.virtdata.core;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.util.function.LongUnaryOperator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Test
 public class ResolvedFunctionTest {
 
     @Test

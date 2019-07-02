@@ -1,11 +1,9 @@
 package io.virtdata.annotations;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.testng.Assert.*;
 
-@Test
 public class ExampleDataTest {
 
     @Test

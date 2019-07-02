@@ -28,8 +28,8 @@ import java.nio.CharBuffer;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ResourceFinder {
-    private final static Logger logger = LoggerFactory.getLogger(ResourceFinder.class);
+public class VirtDataResources {
+    private final static Logger logger = LoggerFactory.getLogger(VirtDataResources.class);
 
     public final static String DATA_DIR = "data";
 
@@ -120,7 +120,7 @@ public class ResourceFinder {
         }
 
         // Classpath
-        ClassLoader classLoader = ResourceFinder.class.getClassLoader();
+        ClassLoader classLoader = VirtDataResources.class.getClassLoader();
         InputStream stream = classLoader.getResourceAsStream(path);
         if (stream != null) {
             return Optional.of(stream);

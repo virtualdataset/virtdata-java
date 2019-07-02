@@ -1,12 +1,12 @@
 package io.virtdata.testmappers;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Test
 public class TestableTemplateTest {
 
+    @Test
     public void testTestableTemplateValidForTesting() {
         TestableTemplate tt = new TestableTemplate(",", String::valueOf, String::valueOf);
         String v = tt.apply(3);

@@ -1,11 +1,10 @@
 package io.virtdata.long_long;
 
 import io.virtdata.libbasics.shared.from_long.to_long.SignedHash;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Test
 public class SignedHashTest {
 
     @Test

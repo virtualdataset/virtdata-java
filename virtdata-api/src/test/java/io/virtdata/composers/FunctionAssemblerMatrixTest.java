@@ -5,14 +5,13 @@ import io.virtdata.api.FunctionType;
 import io.virtdata.api.composers.FunctionAssembly;
 import io.virtdata.api.composers.FunctionComposer;
 import io.virtdata.core.DataMapperFunctionMapper;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.*;
 
-@Test
 public class FunctionAssemblerMatrixTest {
 
     @Test

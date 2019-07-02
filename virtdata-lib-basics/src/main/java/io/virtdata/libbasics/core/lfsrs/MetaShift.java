@@ -1,6 +1,6 @@
 package io.virtdata.libbasics.core.lfsrs;
 
-import io.virtdata.util.ResourceFinder;
+import io.virtdata.util.VirtDataResources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -142,7 +142,7 @@ public class MetaShift {
             }
             int availableSize= Math.max(registerSize,4);
             String maskFileName= String.valueOf(availableSize)+"."+"txt";
-            List<String> lines = ResourceFinder.readDataFileLines("lfsrmasks/" + maskFileName);
+            List<String> lines = VirtDataResources.readDataFileLines("lfsrmasks/" + maskFileName);
             long[] longs = lines.stream().mapToLong(s -> Long.parseLong(s, 16)).toArray();
             return longs;
         }

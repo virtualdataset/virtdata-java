@@ -19,7 +19,7 @@
 package io.virtdata.libbasics.shared.from_long.to_string;
 
 import io.virtdata.annotations.ThreadSafeMapper;
-import io.virtdata.util.ResourceFinder;
+import io.virtdata.util.VirtDataResources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +41,7 @@ public class ModuloLineToString implements LongFunction<String> {
 
     public ModuloLineToString(String filename) {
         this.filename = filename;
-        this.lines = ResourceFinder.readDataFileLines(filename);
+        this.lines = VirtDataResources.readDataFileLines(filename);
     }
 
     @Override

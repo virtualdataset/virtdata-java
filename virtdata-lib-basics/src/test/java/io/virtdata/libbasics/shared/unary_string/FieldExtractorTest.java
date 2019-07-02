@@ -1,10 +1,9 @@
 package io.virtdata.libbasics.shared.unary_string;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Test
 public class FieldExtractorTest {
 
     @Test
@@ -13,6 +12,7 @@ public class FieldExtractorTest {
         assertThat(fieldExtractor.apply("one|two|three|four|five|six")).isEqualTo("two|three|five");
     }
 
+    @Test
     public void testUnderrun() {
         FieldExtractor fieldExtractor = new FieldExtractor("|,2,3,5");
         assertThat(fieldExtractor.apply("one|two")).isEqualTo("ERROR-UNDERRUN in FieldExtractor");

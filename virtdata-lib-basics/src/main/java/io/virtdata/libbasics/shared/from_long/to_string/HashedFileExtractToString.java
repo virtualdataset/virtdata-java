@@ -21,7 +21,7 @@ package io.virtdata.libbasics.shared.from_long.to_string;
 import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.libbasics.shared.from_long.to_int.HashRange;
-import io.virtdata.util.ResourceFinder;
+import io.virtdata.util.VirtDataResources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +59,7 @@ public class HashedFileExtractToString implements LongFunction<String> {
         if (fileDataImage == null) {
             synchronized (HashedFileExtractToString.class) {
                 if (fileDataImage == null) {
-                    CharBuffer image= ResourceFinder.readDataFileToCharBuffer(fileName);
+                    CharBuffer image= VirtDataResources.readDataFileToCharBuffer(fileName);
                     fileDataImage = image;
                 }
             }

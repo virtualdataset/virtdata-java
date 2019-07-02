@@ -1,14 +1,13 @@
 package io.virtdata.libbasics.shared.stateful;
 
 import io.virtdata.libbasics.shared.from_long.to_long.Save;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Test
 public class ShowTest {
 
-    @Test(singleThreaded = true)
+    @Test
     public void testBasicStateSupport() {
         new Clear().apply(0L);
         io.virtdata.libbasics.shared.from_long.to_long.Save saveFoo = new io.virtdata.libbasics.shared.from_long.to_long.Save("foo");

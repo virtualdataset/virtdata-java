@@ -1,7 +1,7 @@
 package io.virtdata.libbasics.shared.from_long.to_int;
 
 import io.virtdata.annotations.ThreadSafeMapper;
-import io.virtdata.util.ResourceFinder;
+import io.virtdata.util.VirtDataResources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +22,7 @@ public class HashedLineToInt implements LongToIntFunction {
 
     public HashedLineToInt(String filename) {
         this.filename = filename;
-        List<String> lines = ResourceFinder.readDataFileLines(filename);
+        List<String> lines = VirtDataResources.readDataFileLines(filename);
         this.values = lines.stream().mapToInt(Integer::parseInt).toArray();
         this.intHash = new Hash();
     }

@@ -2,7 +2,7 @@ package io.virtdata.libbasics.core.stathelpers.aliasmethod;
 
 import io.virtdata.libbasics.core.stathelpers.AliasElementSampler;
 import io.virtdata.libbasics.core.stathelpers.ElemProbD;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -1,13 +1,12 @@
 package io.virtdata.util;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Test
 public class StringObjectPromoterTest {
 
     @Test

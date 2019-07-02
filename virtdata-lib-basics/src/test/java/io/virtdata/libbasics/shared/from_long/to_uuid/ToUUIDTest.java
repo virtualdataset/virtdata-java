@@ -1,12 +1,11 @@
 package io.virtdata.libbasics.shared.from_long.to_uuid;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Test
 public class ToUUIDTest {
 
     @Test

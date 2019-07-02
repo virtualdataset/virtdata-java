@@ -1,12 +1,12 @@
 package io.virtdata.libbasics.shared.from_long.to_long;
 
-import org.testng.annotations.Test;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Test
 public class ShuffleTest {
 
     /**
@@ -58,7 +58,8 @@ public class ShuffleTest {
      *  size  27: [67108864, 33554433, 16777215, 8388608, 4194304, 2097152, 1048576, 524288, 262144, 131072, 65536, 32768, 16384, 8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0, 1]
      * </pre>
      */
-    @Test(enabled=false)
+    @Test
+    @Ignore
     public void testWorstCaseThrough28Bits() {
         int min=1;
         int max=28;
@@ -113,7 +114,8 @@ public class ShuffleTest {
      *  size  30: [536870911, 536870911]
      * </pre>
      */
-    @Test(enabled=false)
+    @Test
+    @Ignore
     public void testBestCaseThrough31Bits() {
         int min=1;
         int max=31;
@@ -162,6 +164,8 @@ public class ShuffleTest {
 
     }
 
+    @Test
+    @Ignore
     public void test97() {
         int max=97;
         Shuffle shuffle = new Shuffle(0,max);
@@ -179,6 +183,8 @@ public class ShuffleTest {
 
     }
 
+    @Test
+    @Ignore
     public void test1000000() {
         int max=1000000;
 

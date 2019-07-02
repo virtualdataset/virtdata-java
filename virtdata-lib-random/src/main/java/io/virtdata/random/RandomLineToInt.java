@@ -1,7 +1,7 @@
 package io.virtdata.random;
 
 import io.virtdata.annotations.DeprecatedFunction;
-import io.virtdata.util.ResourceFinder;
+import io.virtdata.util.VirtDataResources;
 import org.apache.commons.math3.distribution.IntegerDistribution;
 import org.apache.commons.math3.distribution.UniformIntegerDistribution;
 import org.apache.commons.math3.random.MersenneTwister;
@@ -27,7 +27,7 @@ public class RandomLineToInt implements LongToIntFunction {
 
     public RandomLineToInt(String filename, long seed) {
         this.filename = filename;
-        this.lines = ResourceFinder.readDataFileLines(filename);
+        this.lines = VirtDataResources.readDataFileLines(filename);
         this.rng = new MersenneTwister(seed);
         this.itemDistribution= new UniformIntegerDistribution(rng, 0, lines.size()-2);
     }

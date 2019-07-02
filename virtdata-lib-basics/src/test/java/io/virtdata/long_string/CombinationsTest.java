@@ -1,7 +1,7 @@
 package io.virtdata.long_string;
 
 import io.virtdata.libbasics.shared.from_long.to_string.Combinations;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -69,7 +69,7 @@ public class CombinationsTest {
         assertThat(combinations.apply(31)).isEqualTo("D1");
     }
 
-    @Test(expectedExceptions = {ArithmeticException.class}, expectedExceptionsMessageRegExp = ".*long overflow.*")
+    @Test(expected = ArithmeticException.class)
     public void testOverflow() {
         // (104^9 / 2^63) < 1.0
         // (104^10 / 2^63) > 1.0

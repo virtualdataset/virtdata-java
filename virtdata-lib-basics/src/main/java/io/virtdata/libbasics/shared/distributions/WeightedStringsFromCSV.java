@@ -6,7 +6,7 @@ import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.libbasics.core.stathelpers.AliasSamplerDoubleInt;
 import io.virtdata.libbasics.shared.from_long.to_long.Hash;
 import io.virtdata.libbasics.core.stathelpers.EvProbD;
-import io.virtdata.util.ResourceFinder;
+import io.virtdata.util.VirtDataResources;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
@@ -71,7 +71,7 @@ public class WeightedStringsFromCSV implements LongFunction<String> {
             this.hash=new Hash();
         }
         for (String filename: filenames) {
-            CSVParser csvdata = ResourceFinder.readFileCSV(filename);
+            CSVParser csvdata = VirtDataResources.readFileCSV(filename);
             for (CSVRecord csvdatum : csvdata) {
                 String value = csvdatum.get(valueColumn);
                 values.add(value);

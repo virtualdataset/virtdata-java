@@ -4,7 +4,7 @@ import io.virtdata.libbasics.shared.from_long.to_long.AddCycleRange;
 import io.virtdata.libbasics.shared.from_long.to_long.AddHashRange;
 import io.virtdata.libbasics.shared.from_long.to_long.CycleRange;
 import io.virtdata.libbasics.shared.from_long.to_long.HashRange;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
