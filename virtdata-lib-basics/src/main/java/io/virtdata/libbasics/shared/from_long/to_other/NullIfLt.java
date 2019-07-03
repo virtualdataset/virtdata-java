@@ -6,9 +6,13 @@ import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongFunction;
 
+/**
+ * Yields a null if the input value is equal to the specified value.
+ */
 @ThreadSafeMapper
 @Categories(Category.nulls)
-public class NullIfLt implements LongFunction<Long> {
+public class
+NullIfLt implements LongFunction<Long> {
 
     private final long compareto;
 

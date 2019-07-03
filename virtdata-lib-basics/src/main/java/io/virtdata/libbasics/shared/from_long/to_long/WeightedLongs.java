@@ -1,5 +1,6 @@
 package io.virtdata.libbasics.shared.from_long.to_long;
 
+import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.libbasics.shared.from_long.to_double.HashedDoubleRange;
 
@@ -7,6 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.LongFunction;
 
+/**
+ * Provides a long value from a list of weighted values. The total likelihood
+ * of any value to be produced is proportional to its relative weight in
+ * the total weight of all elements.
+ *
+ * This function automatically hashes the input, so the result is already pseudo-random.
+ */
 @ThreadSafeMapper
 public class WeightedLongs implements LongFunction<Long> {
 
@@ -16,6 +24,7 @@ public class WeightedLongs implements LongFunction<Long> {
     private HashedDoubleRange unitRange = new HashedDoubleRange(0.0D, 1.0D);
     private long[] values;
 
+    @Example({"WeightedLongs('1:10;3;5;12345;1","Yield 1 62.5% of the time, 3 31.25% of the time, and 12345 6.2% of the time"})
     public WeightedLongs(String valuesAndWeights) {
         this.valuesAndWeights = valuesAndWeights;
         parseWeights();

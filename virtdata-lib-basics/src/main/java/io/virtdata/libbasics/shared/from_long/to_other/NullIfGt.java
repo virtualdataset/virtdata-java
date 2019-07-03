@@ -6,6 +6,10 @@ import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongFunction;
 
+/**
+ * Yields a null if the input value is greater than the
+ * specified value.
+ */
 @ThreadSafeMapper
 @Categories(Category.nulls)
 public class NullIfGt implements LongFunction<Long> {

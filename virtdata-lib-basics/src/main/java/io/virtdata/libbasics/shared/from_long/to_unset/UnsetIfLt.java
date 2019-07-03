@@ -7,6 +7,10 @@ import io.virtdata.api.VALUE;
 
 import java.util.function.LongFunction;
 
+/**
+ * Yield VALUE.unset if the provided value is less than the specified value,
+ * otherwise, pass the original value;
+ */
 @ThreadSafeMapper
 @Categories(Category.nulls)
 public class UnsetIfLt implements LongFunction<Object> {

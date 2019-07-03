@@ -7,6 +7,11 @@ import io.virtdata.api.VALUE;
 
 import java.util.function.Function;
 
+/**
+ * Yields UNSET.value if the input String is not equal to the
+ * specified String value. Throws an error if the input value
+ * is null. Otherwise, passes the original value along.
+ */
 @Categories(Category.nulls)
 @ThreadSafeMapper
 public class UnsetIfStringNe implements Function<String,Object> {

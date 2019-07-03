@@ -11,6 +11,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.function.LongFunction;
 
+/**
+ * Computes the MD5 digest of the byte image of the input long, and
+ * returns it in hexadecimal String form.
+ */
 @Categories(Category.conversion)
 @ThreadSafeMapper
 public class MD5HexString implements LongFunction<String> {

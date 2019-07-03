@@ -12,7 +12,7 @@ import java.util.function.Function;
 /**
  * Reads a long variable from the thread local variable map, hashes and scales it
  * to the unit interval 0.0d - 1.0d, then uses the result to determine whether
- * to return a null object or the input value.
+ * to return UNSET.value or the input value.
  */
 @ThreadSafeMapper
 @Categories({Category.state,Category.nulls})

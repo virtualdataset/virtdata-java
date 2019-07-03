@@ -12,6 +12,23 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+/**
+ * Computes the digest of the ByteBuffer on input and stores it in the output
+ * ByteBuffer. The digestTypes available are:
+ * <UL>
+ *     <LI>MD2</LI>
+ *     <LI>MD5</LI>
+ *     <LI>SHA-1</LI>
+ *     <LI>SHA-224</LI>
+ *     <LI>SHA-256</LI>
+ *     <LI>SHA-384</LI>
+ *     <LI>SHA-512</LI>
+ *     <LI>SHA3-224</LI>
+ *     <LI>SHA3-256</LI>
+ *     <LI>SHA3-384</LI>
+ *     <LI>SHA3-512</LI>
+ * </UL>
+ */
 @Categories(Category.conversion)
 @ThreadSafeMapper
 public class DigestToByteBuffer implements Function<ByteBuffer,ByteBuffer> {

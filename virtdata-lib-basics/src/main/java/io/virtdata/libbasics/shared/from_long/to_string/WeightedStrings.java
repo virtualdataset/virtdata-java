@@ -9,9 +9,7 @@ import java.util.function.LongFunction;
 
 /**
  * Allows for weighted elements to be used, such as
- * <pre>a:0.25;b:0.25;c:0.5</pre>
- * or
- * <pre>a:1;b:1.0;c:2.0</pre>
+ * <code>a:0.25;b:0.25;c:0.5</code> or <code>a:1;b:1.0;c:2.0</code>
  * The unit weights are normalized to the cumulative sum
  * internally, so it is not necessary for them
  * to add up to any particular value.

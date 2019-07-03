@@ -23,18 +23,18 @@ import java.util.function.LongFunction;
  * column contains the floating-point weight or mass associated with the
  * value on the same line. All the weights are normalized automatically.
  *
- * If there are multiple file names containing the same format, then they
- * will all be read in the same way.
+ * <P>If there are multiple file names containing the same format, then they
+ * will all be read in the same way.</P>
  *
- * If the first word in the filenames list is 'map', then the values will not
+ * <p>If the first word in the filenames list is 'map', then the values will not
  * be pseudo-randomly selected. Instead, they will be mapped over in some
- * other unsorted and stable order as input values vary from 0L to Long.MAX_VALUE.
+ * other unsorted and stable order as input values vary from 0L to Long.MAX_VALUE.</p>
  *
- * Generally, you want to leave out the 'map' directive to get "random sampling"
- * of these values.
+ * <p>Generally, you want to leave out the 'map' directive to get "random sampling"
+ * of these values.</p>
  *
- * This function works the same as the three-parametered form of WeightedStrings,
- * which is deprecated in lieu of this one. Use this one instead.
+ * <p>This function works the same as the three-parametered form of WeightedStrings,
+ * which is deprecated in lieu of this one. Use this one instead.</p>
  */
 @Categories(Category.general)
 @ThreadSafeMapper

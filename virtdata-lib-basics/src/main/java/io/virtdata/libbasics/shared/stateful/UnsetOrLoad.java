@@ -11,7 +11,7 @@ import java.util.function.LongFunction;
 /**
  * Reads a long variable from the input, hashes and scales it
  * to the unit interval 0.0d - 1.0d, then uses the result to determine whether
- * to return null object or a loaded value.
+ * to return UNSET.value or a loaded value.
  */
 @ThreadSafeMapper
 @Categories({Category.state,Category.nulls})

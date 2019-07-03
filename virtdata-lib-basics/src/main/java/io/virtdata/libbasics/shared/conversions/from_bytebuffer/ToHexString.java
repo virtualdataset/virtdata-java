@@ -8,6 +8,9 @@ import org.apache.commons.codec.binary.Hex;
 import java.nio.ByteBuffer;
 import java.util.function.Function;
 
+/**
+ * Converts the input ByteBuffer to a hexadecimal String.
+ */
 @Categories(Category.conversion)
 @ThreadSafeMapper
 public class ToHexString implements Function<ByteBuffer,String> {

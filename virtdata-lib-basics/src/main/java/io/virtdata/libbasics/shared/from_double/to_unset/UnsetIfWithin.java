@@ -7,6 +7,10 @@ import io.virtdata.api.VALUE;
 
 import java.util.function.DoubleFunction;
 
+/**
+ * Yields UNSET.value if the input value is within the specified
+ * range, inclusive. Otherwise, passes the original value along.
+ */
 @ThreadSafeMapper
 @Categories(Category.nulls)
 public class UnsetIfWithin implements DoubleFunction<Object> {

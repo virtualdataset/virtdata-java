@@ -11,7 +11,6 @@ import java.util.function.Function;
 /**
  * Extracts out a set of fields from a delimited string, returning
  * a string with the same delimiter containing only the specified fields.
- * The
  */
 @ThreadSafeMapper
 public class FieldExtractor implements Function<String,String> {

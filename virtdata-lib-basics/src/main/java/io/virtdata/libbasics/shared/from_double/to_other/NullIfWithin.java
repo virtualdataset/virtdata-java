@@ -6,6 +6,10 @@ import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.DoubleFunction;
 
+/**
+ * Yields a null if the input value is within the specified range,
+ * inclusive.
+ */
 @ThreadSafeMapper
 @Categories(Category.nulls)
 public class NullIfWithin implements DoubleFunction<Double> {

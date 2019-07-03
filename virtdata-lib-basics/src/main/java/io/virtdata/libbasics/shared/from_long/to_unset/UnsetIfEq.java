@@ -7,6 +7,10 @@ import io.virtdata.api.VALUE;
 
 import java.util.function.LongFunction;
 
+/**
+ * Yield UNSET.vale if the input value is equal to the
+ * specified value. Otherwise, pass the input value along.
+ */
 @ThreadSafeMapper
 @Categories(Category.nulls)
 public class UnsetIfEq implements LongFunction<Object> {

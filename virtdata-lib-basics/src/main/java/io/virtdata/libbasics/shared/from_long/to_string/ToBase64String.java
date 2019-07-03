@@ -9,6 +9,9 @@ import java.nio.ByteBuffer;
 import java.util.Base64;
 import java.util.function.LongFunction;
 
+/**
+ * Computes the Base64 representation of the byte image of the input long.
+ */
 @Categories(Category.conversion)
 @ThreadSafeMapper
 public class ToBase64String implements LongFunction<String> {

@@ -15,8 +15,8 @@ import java.util.regex.Pattern;
 
 /**
  * Creates a template function which will yield a string which fits the template
- * provided, with all occurrences of <pre>{}</pre> substituted pair-wise with the
- * result of the provided functions. The number of <pre>{}</pre> entries in the template
+ * provided, with all occurrences of <code>{}</code> substituted pair-wise with the
+ * result of the provided functions. The number of <code>{}</code> entries in the template
  * must strictly match the number of functions or an error will be thrown.
  *
  * The objects passed must be functions of any of the following types:
@@ -30,8 +30,8 @@ import java.util.regex.Pattern;
  *     <LI>Function&lt;Long,?&gt;</LI>
  * </UL>
  *
- * The result of applying the input value to any of these functions is converted to a String
- * and then stitched together according to the template provided.
+ * <p>The result of applying the input value to any of these functions is converted to a String
+ * and then stitched together according to the template provided.</p>
  */
 @ThreadSafeMapper
 public class Template implements LongFunction<String> {

@@ -6,6 +6,9 @@ import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.DoubleFunction;
 
+/**
+ * Returns null if the input value is within range of the specified value.
+ */
 @ThreadSafeMapper
 @Categories(Category.nulls)
 public class NullIfCloseTo implements DoubleFunction<Double> {

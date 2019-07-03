@@ -7,6 +7,10 @@ import io.virtdata.api.VALUE;
 
 import java.util.function.Function;
 
+/**
+ * Yields UNSET.value if the input value is null or empty.
+ * Otherwise, passes the original value along.
+ */
 @Categories(Category.nulls)
 @ThreadSafeMapper
 public class UnsetIfNullOrEmpty implements Function<String,Object> {

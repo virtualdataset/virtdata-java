@@ -6,6 +6,10 @@ import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.Function;
 
+/**
+ * Yields a null if the input String is empty. Throws an error if the input
+ * String is null.
+ */
 @Categories(Category.nulls)
 @ThreadSafeMapper
 public class NullIfEmpty implements Function<String,String> {

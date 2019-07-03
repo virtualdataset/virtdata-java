@@ -7,6 +7,11 @@ import io.virtdata.api.VALUE;
 
 import java.util.function.DoubleFunction;
 
+/**
+ * Yield VALUE.unset if the input value is close to the
+ * specified value by the sigma threshold. Otherwise,
+ * pass the input value along.
+ */
 @ThreadSafeMapper
 @Categories(Category.nulls)
 public class UnsetIfCloseTo implements DoubleFunction<Object> {

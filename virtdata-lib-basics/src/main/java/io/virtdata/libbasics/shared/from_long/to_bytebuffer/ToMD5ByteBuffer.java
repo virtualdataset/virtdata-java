@@ -10,6 +10,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.function.LongFunction;
 
+/**
+ * Converts the byte image of the input long to a MD5 digest in ByteBuffer form.
+ */
 @Categories(Category.conversion)
 @ThreadSafeMapper
 public class ToMD5ByteBuffer implements LongFunction<ByteBuffer> {
