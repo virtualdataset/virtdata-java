@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 /**
  * Uses the alias sampling method to encode and sample from discrete probabilities,
- * even over larger sets of data. This form requires a unit interval sample value
+ * even over large sets of data. This form requires a unit interval sample value
  * between 0.0 and 1.0. Assuming the maximal amount of memory is used for distinct
  * outcomes N, a memory buffer of N*16 bytes is required for this implementation,
  * requiring 32MB of memory for 1M entries.

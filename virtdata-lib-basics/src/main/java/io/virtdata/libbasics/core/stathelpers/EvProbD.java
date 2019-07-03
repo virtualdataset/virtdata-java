@@ -30,7 +30,8 @@ public class EvProbD implements Comparable<EvProbD> {
         return Integer.compare(eventId, other.getEventId());
     }
 
-    public static Comparator<EvProbD> DESCENDING_PROBABILTY = (Comparator<EvProbD>) (o1, o2) -> Double.compare(o2.probability,o1.probability);
+    public static Comparator<EvProbD> DESCENDING_PROBABILTY =
+            (Comparator<EvProbD>) (o1, o2) -> Double.compare(o2.probability,o1.probability);
 
     public void setProbability(double probability) {
         this.probability = probability;
