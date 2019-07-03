@@ -1,7 +1,10 @@
 package io.virtdata.docsys.metafs.fs.renderfs.api.rendering;
 
-import java.util.function.Supplier;
+import java.nio.file.Path;
 
-public interface TemplateView extends Supplier<String>, Versioned {
+public interface TemplateView extends Versioned {
+    Path getTemplatePath();
+    String getRawTemplate();
+
 
 }

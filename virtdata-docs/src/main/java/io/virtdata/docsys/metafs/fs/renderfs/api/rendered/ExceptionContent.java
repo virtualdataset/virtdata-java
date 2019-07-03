@@ -8,10 +8,13 @@ public class ExceptionContent implements RenderedContent {
 
     private final long version;
     private final Exception e;
+    private final Object[] details;
 
-    public ExceptionContent(Exception e, long version) {
+    public ExceptionContent(Exception e, long version, Object... details) {
+
         this.e = e;
         this.version = version;
+        this.details = details;
     }
 
     @Override
@@ -23,9 +26,10 @@ public class ExceptionContent implements RenderedContent {
     public String get() {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         PrintWriter printStream = new PrintWriter(bos);
+        for (Object detail : this.details) {
+            printStream.write(detail.toString());
+        }
         printStream.write(e.getMessage());
-//        printStream.write("\n");
-//        e.printStackTrace(printStream);
         printStream.flush();
         String out = new String(bos.toByteArray(), StandardCharsets.UTF_8);
         return out;

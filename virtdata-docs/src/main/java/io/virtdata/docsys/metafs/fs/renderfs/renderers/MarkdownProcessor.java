@@ -15,7 +15,7 @@ public class MarkdownProcessor implements TemplateCompiler {
 
     @Override
     public Renderer apply(TemplateView templateView) {
-        return new MarkdownRenderer(templateView.get());
+        return new MarkdownRenderer(templateView.getRawTemplate());
     }
 
     public static class MarkdownRenderer implements Renderer {
@@ -43,6 +43,11 @@ public class MarkdownProcessor implements TemplateCompiler {
         @Override
         public long getVersion() {
             return this.version;
+        }
+
+        @Override
+        public String wrapError(String error) {
+            return "\n```\nMarkdown Error:\n" + error + "\n```\n";
         }
     }
 

@@ -7,7 +7,7 @@ public interface IRenderingScope extends Versioned {
 
     long getVersion();
 
-    String getTemplateView();
+    TemplateView getTemplate();
 
     ViewModel getViewModel();
 

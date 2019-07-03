@@ -14,17 +14,25 @@ then this will be added at that time.
 
 ## Examples
 
-### &#123;&#123; files &#125;&#125; as markdown
 ```
-{{ files }}
-```
-
-### &#123;&#123; path &#125;&#125; as markdown
-```
-{{ path }}
+{{{test}}}
 ```
 
-### &#123;&#123; files &#125;&#125; as html
-{{ files }}
+### &#123;&#123; paths &#125;&#125; as markdown
+```
+{{ paths }}
+
+{{# paths }}
+ {{.}}
+{{/ paths }}
+```
+
+### &#123;&#123; target &#125;&#125; as markdown
+```
+{{ target }}
+```
+
+### &#123;&#123; paths &#125;&#125; as html
+{{ paths }}
 
 

@@ -15,7 +15,6 @@ public class RenderingScope implements IRenderingScope {
     private RenderingScope innerScope;
 
     private Renderer renderer;
-    private RenderedContent rendered;
 
     public RenderingScope(TemplateView templateView, ViewModel viewModel, TemplateCompiler compiler) {
         this.templateView = templateView;
@@ -29,13 +28,15 @@ public class RenderingScope implements IRenderingScope {
 
     @Override
     public long getVersion() {
-        return Math.max(templateView.getVersion(),viewModel.getVersion());
+        long thisVersion = Math.max(templateView.getVersion(), viewModel.getVersion());
+        return (innerScope==null) ? thisVersion : Math.max(thisVersion, innerScope.getVersion());
     }
 
     @Override
-    public String getTemplateView() {
-        return templateView.get();
+    public TemplateView getTemplate() {
+        return templateView;
     }
+
 
     @Override
     public ViewModel getViewModel() {
@@ -49,15 +50,17 @@ public class RenderingScope implements IRenderingScope {
                 innerScope.getRendered();
                 this.getViewModel().setInner(innerScope.getViewModel());
             }
-            if (this.rendered==null || !this.rendered.isValidFor(this)) {
+            if (this.getViewModel().getRendered()==null || !this.getViewModel().isValidFor(this)) {
                 if (this.renderer==null || !this.renderer.isValidFor(this)) {
                     this.renderer =compiler.apply(templateView);
                 }
-                this.rendered = renderer.apply(this);
+                RenderedContent rendered = renderer.apply(this);
+                this.getViewModel().setRendered(rendered);
             }
-            return this.rendered;
+            return this.viewModel.getRendered();
         } catch (Exception e) {
-            return new ExceptionContent(e, templateView.getVersion());
+            String wrappedMessage = renderer.wrapError(e.getMessage());
+            return new ExceptionContent(e, getVersion(), wrappedMessage);
         }
     }
 
@@ -74,6 +77,15 @@ public class RenderingScope implements IRenderingScope {
     }
 
     public String toString() {
-        return "[view: " + this.getViewModel().getPath().toString() + "][target: " + this.getViewModel().getTarget()+ "]";
+        StringBuilder sb = new StringBuilder();
+        sb.append("[view:").append(this.getViewModel().toString()).append("]");
+        int indent = 0;
+        RenderingScope scope = this.innerScope;
+        while (scope!=null) {
+            sb.append("\n").append(" ".repeat(++indent));
+            sb.append(scope.toString());
+            scope=scope.innerScope;
+        }
+        return sb.toString();
     }
 }

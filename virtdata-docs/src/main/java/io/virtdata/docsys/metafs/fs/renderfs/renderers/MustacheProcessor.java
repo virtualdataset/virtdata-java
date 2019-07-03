@@ -11,6 +11,9 @@ import io.virtdata.docsys.metafs.fs.renderfs.api.rendering.TemplateCompiler;
 import io.virtdata.docsys.metafs.fs.renderfs.api.rendering.TemplateView;
 import io.virtdata.docsys.metafs.fs.renderfs.model.ViewModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MustacheProcessor implements TemplateCompiler {
 
     public final static Mustache.Compiler compiler = Mustache.compiler();
@@ -37,16 +40,31 @@ public class MustacheProcessor implements TemplateCompiler {
 
         @Override
         public RenderedContent apply(RenderingScope renderingScope) {
+            ViewModel viewModel = null;
             try {
 
                 if (compiledTemplate == null) {
-                    this.compiledTemplate = compiler.compile(templateView.get());
+                    this.compiledTemplate = compiler.compile(templateView.getRawTemplate());
                 }
-                ViewModel viewModel = renderingScope.getViewModel();
+                viewModel = renderingScope.getViewModel();
                 String renderedText = compiledTemplate.execute(viewModel);
                 return new StringContent(renderedText,this.getVersion());
             } catch (Exception e) {
-                return new ExceptionContent(e, getVersion());
+                List<String> details = new ArrayList<>();
+
+                if (viewModel!=null) {
+                    details.add("View Model:");
+                    details.add(viewModel.toString());
+                }
+
+                details.add("Template Path:");
+                details.add(templateView.getTemplatePath().toString());
+
+                details.add("Raw Template:");
+                details.add(templateView.getRawTemplate());
+
+
+                return new ExceptionContent(e, getVersion(), details.toArray());
             }
         }
 
@@ -55,6 +73,10 @@ public class MustacheProcessor implements TemplateCompiler {
             return templateView.getVersion();
         }
 
+        @Override
+        public String wrapError(String error) {
+            return "Mustache Error\n" + error;
+        }
     }
 
 }

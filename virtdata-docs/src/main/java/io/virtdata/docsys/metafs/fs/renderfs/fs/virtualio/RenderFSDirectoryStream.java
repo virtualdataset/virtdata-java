@@ -1,15 +1,12 @@
 package io.virtdata.docsys.metafs.fs.renderfs.fs.virtualio;
 
 import io.virtdata.docsys.metafs.core.AugmentingIterator;
-import io.virtdata.docsys.metafs.fs.renderfs.api.FileContentRenderer;
 import io.virtdata.docsys.metafs.fs.renderfs.api.Renderers;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 
 public class RenderFSDirectoryStream implements DirectoryStream<Path> {
@@ -19,7 +16,7 @@ public class RenderFSDirectoryStream implements DirectoryStream<Path> {
 
     public RenderFSDirectoryStream(DirectoryStream<Path> wrappedStream, Renderers renderers) {
         this.wrappedStream = wrappedStream;
-        this.func = new NameMappingFunc(renderers.getRendererTypes());
+        this.func = new NameMappingFunc(renderers);
     }
 
     @Override
@@ -33,26 +30,35 @@ public class RenderFSDirectoryStream implements DirectoryStream<Path> {
     }
 
     private class NameMappingFunc implements Function<Path,List<Path>> {
-        private List<FileContentRenderer> renderers;
+        private Renderers renderers;
 
-        public NameMappingFunc(List<FileContentRenderer> renderers) {
+        public NameMappingFunc(Renderers renderers) {
             this.renderers = renderers;
         }
 
+        /**
+         * This method does a recursive evaluation on a list in place.
+         * The purpose of this is to expand out all source to target
+         * mappings across multiple renderers.
+         * @param path The top level path which is considered a source path
+         * @return A list of all possible virtual paths that could be rendered from this path.
+         */
         @Override
         public List<Path> apply(Path path) {
-            List<Path> newpaths=null;
+            LinkedList<Path> pathlist =
+                    new LinkedList<>(renderers.getVirtualPathsFor(path));
 
-            for (FileContentRenderer renderer : renderers) {
-                if (renderer.matchesSource(path)) {
-                    if (newpaths==null) {
-                        newpaths=new ArrayList<>();
-                    }
-                    Path renderedTargetName = renderer.getRenderedTargetName(path);
-                    newpaths.add(renderedTargetName);
-                }
+            ListIterator<Path> cursor = pathlist.listIterator();
+            while (cursor.hasNext()) {
+                Path next = cursor.next();
+                List<Path> adding = renderers.getVirtualPathsFor(next);
+                adding.forEach(cursor::add);
             }
-            return newpaths;
+
+            if (pathlist.size()==0) {
+                return null;
+            }
+            return pathlist;
         }
     }
 }

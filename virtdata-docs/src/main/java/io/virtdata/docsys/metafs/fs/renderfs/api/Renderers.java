@@ -3,6 +3,7 @@ package io.virtdata.docsys.metafs.fs.renderfs.api;
 import io.virtdata.docsys.metafs.fs.renderfs.fs.virtualio.VirtualFile;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,6 +37,19 @@ public class Renderers {
         return null;
     }
 
+    public List<Path> getVirtualPathsFor(Path path) {
+        List<Path> vpaths = new ArrayList<>();
+        for (FileContentRenderer rendererType : rendererTypes) {
+            List<Path> virtualPathsFor = rendererType.getVirtualPathsFor(path);
+            vpaths.addAll(virtualPathsFor);
+        }
+        return vpaths;
+//
+//        return rendererTypes.stream()
+//                .flatMap(f -> f.getVirtualPathsFor(path).stream())
+//                .collect(Collectors.toList());
+    }
+
     public String toString() {
         return this.rendererTypes.stream().map(String::valueOf).collect(Collectors.joining(",", "[", "]"));
     }
@@ -48,4 +62,5 @@ public class Renderers {
         }
         return null;
     }
+
 }

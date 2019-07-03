@@ -10,8 +10,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.AccessMode;
 import java.nio.file.Path;
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,7 +25,6 @@ public class FileRenderer implements FileContentRenderer {
     private final Pattern targetNamePattern;
     private final boolean isCaseSensitive;
 
-    private final ConcurrentHashMap<String, Renderable> renderables = new ConcurrentHashMap<>();
     private TemplateCompiler compiler;
 
     /**
@@ -75,6 +75,17 @@ public class FileRenderer implements FileContentRenderer {
     }
 
     @Override
+    public List<Path> getVirtualPathsFor(Path path) {
+        ArrayList<Path> vpaths = new ArrayList<>();
+        if (this.matchesSource(path) && !isTemplatePath(path)) {
+            Path targetPaths = this.getRenderedTargetName(path);
+            vpaths.add(targetPaths);
+        }
+        return vpaths;
+    }
+
+
+    @Override
     public Pattern getSourcePattern() {
         return sourceNamePattern;
     }
@@ -82,6 +93,15 @@ public class FileRenderer implements FileContentRenderer {
     @Override
     public Pattern getTargetPattern() {
         return targetNamePattern;
+    }
+
+    @Override
+    public boolean isTemplatePath(Path p) {
+        String filename = p.getName(p.getNameCount()-1).toString();
+        if (filename.startsWith("__.") || filename.contains("._") || filename.startsWith("_.")) {
+            return true;
+        }
+        return false;
     }
 
     public String getSourceExtension() {
@@ -139,22 +159,6 @@ public class FileRenderer implements FileContentRenderer {
 
         byte[] bytes = rendered.get().getBytes(StandardCharsets.UTF_8);
         return ByteBuffer.wrap(bytes).asReadOnlyBuffer();
-//
-//        LinkedList<Path> renderLayers = getTemplates(sourcePath);
-//
-//        Supplier<ByteBuffer> compositeTemplateProvider = new CompositeTemplate(renderLayers);
-//
-//        Renderable renderable = renderables.get(targetPath.toString());
-//        if (renderable == null) {
-//            if (compilers.length==1) {
-//                renderable = new RenderableEntry(() -> RendererIO.readString(sourcePath), compilers[0]);
-//            } else {
-//                renderable = new RenderableChain(() -> RendererIO.readBuffer(sourcePath), compilers);
-//            }
-//            renderables.put(targetPath.toString(), renderable);
-//        }
-//        String rendered = renderable.apply(new ViewModel(targetPath, lastModified));
-//        return ByteBuffer.wrap(rendered.getBytes(StandardCharsets.UTF_8)).asReadOnlyBuffer();
     }
 
     private LinkedList<Path> getTemplates(Path sourcePath) {
@@ -183,26 +187,6 @@ public class FileRenderer implements FileContentRenderer {
         }
         return chain;
     }
-//
-//
-//    private LinkedList<Path> getRenderLayers(Path sourcePath) {
-//        sourcePath = sourcePath.normalize();
-//        LinkedList<Path> renderchain = new LinkedList<>();
-//        renderchain.add(sourcePath);
-//        Path directoryPath = sourcePath.getParent();
-//
-//        while (directoryPath != null) {
-//            try {
-//                Path candidate = directoryPath.resolve("_template" + sourceExtension);
-//                candidate.getFileSystem().provider().checkAccess(candidate, AccessMode.READ);
-//                renderchain.addFirst(candidate);
-//                directoryPath = directoryPath.getParent();
-//            } catch (IOException e) {
-//                break;
-//            }
-//        }
-//        return renderchain;
-//    }
 
     @Override
     public String toString() {

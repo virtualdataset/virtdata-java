@@ -13,17 +13,26 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileAttributeView;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class VirtualFile {
 
-    private final ByteBuffer content;
+    private ByteBuffer contentCache;
     private final Path target;
     private final Path delegate;
+    private final Supplier<ByteBuffer> dynamicRenderer;
 
-    public VirtualFile(Path delegate, Path target, ByteBuffer renderedContent) {
+    public VirtualFile(Path delegate, Path target, Supplier<ByteBuffer> dynamicRenderer) {
         this.delegate = delegate;
         this.target = target;
-        this.content = renderedContent.asReadOnlyBuffer();
+        this.dynamicRenderer = dynamicRenderer;
+    }
+
+    private ByteBuffer getContent() {
+        if (contentCache==null) {
+            contentCache =dynamicRenderer.get().asReadOnlyBuffer();
+        }
+        return contentCache;
     }
 
     public BasicFileAttributes readAttributes(
@@ -32,13 +41,13 @@ public class VirtualFile {
             LinkOption... options) throws IOException {
         FileSystemProvider provider = delegate.getFileSystem().provider();
         BasicFileAttributes delegateAttrs = provider.readAttributes(delegate, type, options);
-        return new VirtualFileBasicFileAttributes(delegateAttrs, content.remaining());
+        return new VirtualFileBasicFileAttributes(delegateAttrs, getContent().remaining());
     }
 
     public SeekableByteChannel getSeekableByteChannel() {
         try {
             SeekableInMemoryByteChannel channel = new SeekableInMemoryByteChannel();
-            channel.write(this.content.asReadOnlyBuffer());
+            channel.write(getContent().asReadOnlyBuffer());
             channel.position(0);
             return channel;
         } catch (IOException e) {
@@ -49,7 +58,7 @@ public class VirtualFile {
     public Map<String, Object> readAttributes(Path path, String attributes, LinkOption[] options) throws IOException {
         FileSystemProvider provider = delegate.getFileSystem().provider();
         Map<String, Object> sourceAttrs = provider.readAttributes(delegate, attributes, options);
-        return new VirtualFileAttributeMap(delegate, sourceAttrs, path, this.content.remaining());
+        return new VirtualFileAttributeMap(delegate, sourceAttrs, path, getContent().remaining());
     }
 
     public void checkAccess(Path path, AccessMode[] modes) throws IOException {
@@ -67,7 +76,7 @@ public class VirtualFile {
         FileSystemProvider provider = delegate.getFileSystem().provider();
         FileAttributeView sourceFileAttributeView = provider.getFileAttributeView(delegate, type, options);
         return new RenderedFileAttributeView(
-                delegate, sourceFileAttributeView, path, type, options, content.remaining()
+                delegate, sourceFileAttributeView, path, type, options, getContent().remaining()
         );
     }
 }

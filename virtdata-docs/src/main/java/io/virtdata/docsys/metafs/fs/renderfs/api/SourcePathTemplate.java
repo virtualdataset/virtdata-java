@@ -8,6 +8,8 @@ public final class SourcePathTemplate implements TemplateView {
 
     private final Path sourcePath;
 
+
+
     public SourcePathTemplate(Path sourcePath) {
         this.sourcePath = sourcePath;
     }
@@ -18,7 +20,14 @@ public final class SourcePathTemplate implements TemplateView {
     }
 
     @Override
-    public String get() {
-        return RendererIO.readString(sourcePath);
+    public Path getTemplatePath() {
+        return sourcePath;
     }
+
+    @Override
+    public String getRawTemplate() {
+        return RendererIO.readString(sourcePath);    }
+
+
+
 }

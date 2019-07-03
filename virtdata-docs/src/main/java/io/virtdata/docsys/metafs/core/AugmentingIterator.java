@@ -48,9 +48,9 @@ public class AugmentingIterator<O> implements Iterator<O> {
         }
 
         elem = wrapped.next();
-        List<O> apply = function.apply(elem);
-        if (apply != null) {
-            optionalElements = apply.iterator();
+        List<O> added = function.apply(elem);
+        if (added != null) {
+            optionalElements = added.iterator();
         }
         return elem;
     }

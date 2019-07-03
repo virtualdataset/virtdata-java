@@ -9,6 +9,8 @@ import io.virtdata.docsys.metafs.fs.renderfs.fs.RenderFS;
 import io.virtdata.docsys.metafs.fs.renderfs.renderers.MarkdownProcessor;
 import io.virtdata.docsys.metafs.fs.renderfs.renderers.MustacheProcessor;
 import io.virtdata.docsys.metafs.fs.virtual.VirtFS;
+import org.eclipse.jetty.server.AbstractConnector;
+import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -178,6 +180,12 @@ public class DocServer implements Runnable {
         handlers.addHandler(defaultHandler);
 
         server.setHandler(handlers);
+        for (Connector connector : server.getConnectors()) {
+            if (connector instanceof AbstractConnector) {
+                logger.info("Setting idle timeout for " + connector.toString() + " to 300,000ms");
+                ((AbstractConnector)connector).setIdleTimeout(300000);
+            }
+        }
         try {
             server.start();
         } catch (Exception e) {

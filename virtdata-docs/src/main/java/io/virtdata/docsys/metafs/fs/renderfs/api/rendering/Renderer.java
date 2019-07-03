@@ -9,4 +9,5 @@ import java.util.function.Function;
  * type from a view of the source
  */
 public interface Renderer extends Function<RenderingScope, RenderedContent>, Versioned {
+    String wrapError(String error);
 }

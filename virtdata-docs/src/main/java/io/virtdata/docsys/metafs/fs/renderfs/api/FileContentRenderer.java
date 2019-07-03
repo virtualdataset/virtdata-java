@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.file.AccessMode;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,8 +50,14 @@ public interface FileContentRenderer {
     }
 
     default boolean canRender(Path p) {
+        if (isTemplatePath(p)) {
+            return false;
+        }
+
         return matchesTarget(p) && hasSource(p);
     }
+
+    boolean isTemplatePath(Path p);
 
     /**
      * Return the matching source path, but only if the target name matches the target extension.
@@ -97,9 +104,11 @@ public interface FileContentRenderer {
     }
 
     default VirtualFile getVirtualFile(Path target) {
-        ByteBuffer bb = getRendered(target);
-        if (bb==null) { return null; }
+//        ByteBuffer bb = getRendered(target);
+//        if (bb==null) { return null; }
         Path delegate = getSourcePath(target);
-        return new VirtualFile(delegate,target,bb);
+        return new VirtualFile(delegate,target,() -> getRendered(target));
     }
+
+    List<Path> getVirtualPathsFor(Path path);
 }

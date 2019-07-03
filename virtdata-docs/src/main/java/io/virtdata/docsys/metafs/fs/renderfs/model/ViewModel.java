@@ -3,7 +3,6 @@ package io.virtdata.docsys.metafs.fs.renderfs.model;
 import io.virtdata.docsys.metafs.fs.renderfs.api.MarkdownStringer;
 import io.virtdata.docsys.metafs.fs.renderfs.api.RendererIO;
 import io.virtdata.docsys.metafs.fs.renderfs.api.rendered.RenderedContent;
-import io.virtdata.docsys.metafs.fs.renderfs.api.rendered.StringContent;
 import io.virtdata.docsys.metafs.fs.renderfs.api.rendering.Versioned;
 import io.virtdata.docsys.metafs.fs.renderfs.model.properties.ListView;
 import io.virtdata.docsys.metafs.fs.renderfs.model.properties.PathView;
@@ -20,11 +19,6 @@ public class ViewModel implements Versioned, MarkdownStringer {
     private Path target;
     private long version;
     private RenderedContent rendered;
-
-    public ViewModel(Path target, long version) {
-        this.target = target;
-        this.version = version;
-    }
 
     public ViewModel(Path sourcePath, Path targetPath) {
         this.version = RendererIO.mtimeFor(sourcePath);
@@ -100,7 +94,9 @@ public class ViewModel implements Versioned, MarkdownStringer {
     public void setRendered(RenderedContent rendered) {
         this.rendered = rendered;
     }
+
     public RenderedContent getRendered() {
-        return (rendered==null ? new StringContent("NULL RENDERING", getVersion()) : rendered);
+        return rendered;
     }
+
 }
