@@ -2,12 +2,19 @@ package io.virtdata.libbasics.shared;
 
 import io.virtdata.libbasics.shared.from_double.to_double.Max;
 import io.virtdata.libbasics.shared.from_long.to_long.Add;
+import io.virtdata.libbasics.shared.from_long.to_string.Combinations;
+import io.virtdata.libbasics.shared.from_long.to_string.Template;
+import io.virtdata.libbasics.shared.functionadapters.Flow;
 import io.virtdata.libbasics.shared.unary_int.Mul;
 import io.virtdata.libbasics.shared.unary_string.Prefix;
-import io.virtdata.libbasics.shared.unary_string.Suffix;
 import io.virtdata.libbasics.shared.unary_string.StringFlow;
+import io.virtdata.libbasics.shared.unary_string.Suffix;
 import org.assertj.core.data.Offset;
 import org.junit.Test;
+
+import java.util.function.IntUnaryOperator;
+import java.util.function.LongFunction;
+import java.util.function.LongUnaryOperator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -48,5 +55,24 @@ public class FlowTest {
         Suffix sf = new Suffix ("<-");
         StringFlow flow = new StringFlow(pf,sf);
         assertThat(flow.apply("woot")).isEqualTo("->woot<-");
+    }
+
+    @Test
+    public void testGenericFlow() {
+        Combinations fc = new Combinations("A-Z");
+        Template tc = new Template(
+                "{}-{}",
+                (LongFunction)(l ->l+3),
+                (LongFunction)(m -> m+21L)
+        );
+        IntUnaryOperator ints = i -> 12 + i;
+        LongUnaryOperator longs = l -> 32L + l;
+
+        Flow f = new Flow(ints, longs, ints, fc);
+        for (int i = 0; i < 100; i++) {
+            Object r = f.apply(i);
+            System.out.print(r);
+        }
+        System.out.println();
     }
 }

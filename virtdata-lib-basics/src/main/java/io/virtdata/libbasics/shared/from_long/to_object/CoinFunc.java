@@ -5,10 +5,10 @@ import io.virtdata.annotations.Category;
 import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.libbasics.shared.from_long.to_double.HashedDoubleRange;
+import io.virtdata.util.VirtDataFunctions;
 
 import java.util.function.Function;
 import java.util.function.LongFunction;
-import java.util.function.LongUnaryOperator;
 
 /**
  * This is a higher-order function which takes an input value,
@@ -33,70 +33,19 @@ import java.util.function.LongUnaryOperator;
 
 @Categories(Category.distributions)
 @ThreadSafeMapper
-public class CoinFunc implements Function<Long,Object> {
+public class CoinFunc implements Function<Long, Object> {
 
     private final double threshold;
-    private final LongFunction<? extends Object> first;
-    private final LongFunction<? extends Object> second;
-    private final HashedDoubleRange cointoss = new HashedDoubleRange(0.0d,1.0d);
+    private final LongFunction first;
+    private final LongFunction second;
+    private final HashedDoubleRange cointoss = new HashedDoubleRange(0.0d, 1.0d);
 
 
-    @Example({"CoinFunc(0.15,NumberNameToString(),Combinations('A:1:B:23'))","use the first function 15% of the time"})
-    public CoinFunc(double threshold, LongFunction<? extends Object> first, LongFunction<? extends Object> second) {
+    @Example({"CoinFunc(0.15,NumberNameToString(),Combinations('A:1:B:23'))", "use the first function 15% of the time"})
+    public CoinFunc(double threshold, Object first, Object second) {
         this.threshold = threshold;
-        this.first = first;
-        this.second = second;
-    }
-
-    public CoinFunc(double threshold, LongFunction<? extends Object> first, Function<Long,? extends Object> second) {
-        this.threshold = threshold;
-        this.first = first;
-        this.second = second::apply;
-    }
-
-    public CoinFunc(double threshold, LongFunction<? extends Object> first, LongUnaryOperator second) {
-        this.threshold = threshold;
-        this.first = first::apply;
-        this.second = second::applyAsLong;
-    }
-
-
-
-    public CoinFunc(double threshold, Function<Long,? extends Object> first, Function<Long,? extends Object> second) {
-        this.threshold = threshold;
-        this.first = first::apply;
-        this.second = second::apply;
-    }
-
-    public CoinFunc(double threshold, Function<Long,? extends Object> first, LongFunction<? extends Object> second) {
-        this.threshold = threshold;
-        this.first = first::apply;
-        this.second = second;
-    }
-
-    public CoinFunc(double threshold, Function<Long,? extends Object> first, LongUnaryOperator second) {
-        this.threshold = threshold;
-        this.first = first::apply;
-        this.second = second::applyAsLong;
-    }
-
-
-
-    public CoinFunc(double threshold, LongUnaryOperator first, Function<Long,? extends Object> second) {
-        this.threshold = threshold;
-        this.first = first::applyAsLong;
-        this.second = second::apply;
-    }
-    public CoinFunc(double threshold, LongUnaryOperator first, LongFunction<? extends Object> second) {
-        this.threshold = threshold;
-        this.first = first::applyAsLong;
-        this.second = second::apply;
-    }
-
-    public CoinFunc(double threshold, LongUnaryOperator first, LongUnaryOperator second) {
-        this.threshold = threshold;
-        this.first = first::applyAsLong;
-        this.second = second::applyAsLong;
+        this.first = VirtDataFunctions.adapt(first, LongFunction.class, Object.class, true);
+        this.second = VirtDataFunctions.adapt(second, LongFunction.class, Object.class, true);
     }
 
     @Override
