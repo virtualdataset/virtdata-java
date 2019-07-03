@@ -1,5 +1,6 @@
 package io.virtdata.apps.docsapp;
 
+import com.vladsch.flexmark.convert.html.FlexmarkHtmlParser;
 import io.virtdata.annotations.Category;
 import io.virtdata.core.VirtDataDocs;
 import io.virtdata.processors.DocCtorData;
@@ -127,7 +128,7 @@ public class AutoDocsApp {
                     }
 
                     String docs = writeCategoryDocs(category, groupedModels.get(category));
-                    docs = replacePatterns(docs);
+                    //docs = replacePatterns(docs);
                     writer.write(docs);
                     writer.flush();
                 }
@@ -142,6 +143,8 @@ public class AutoDocsApp {
     }
 
     private String replacePatterns(String docdata) {
+        docdata = docdata.replaceAll("<Object","&lt;Object");
+        docdata = docdata.replaceAll("Object>","Object&gt;");
         docdata = docdata.replaceAll("java.lang.", "");
         docdata = docdata.replaceAll("^\\s*</?pre>\\s*\n", "\n```\n");
         docdata = docdata.replaceAll("(<p>|</p>| \n)+", "\n");
@@ -185,8 +188,10 @@ public class AutoDocsApp {
                 logger.warn("There were multiple class docs found for types named " + name);
             }
 
+
             if (distinctClassDocs.size() == 1) {
                 String classdoc = distinctClassDocs.get(0);
+                classdoc = parseHtmlToMarkdown(classdoc);
                 sb.append(classdoc);
                 if (!classdoc.endsWith("\n\n")) {
                     sb.append("\n");
@@ -209,6 +214,7 @@ public class AutoDocsApp {
                     );
                     sb.append(")");
                     sb.append(" -> ").append(doc.getOutType()).append("\n");
+
                     String ctorDoc = ctor.getCtorJavaDoc();
                     if (!ctorDoc.isEmpty()) {
                         sb.append("  - *notes:* ").append(ctorDoc);
@@ -226,6 +232,11 @@ public class AutoDocsApp {
             sb.append("\n");
         }
         return sb.toString();
+    }
+
+    private String parseHtmlToMarkdown(String classdoc) {
+        String markdown = FlexmarkHtmlParser.parse(classdoc);
+        return markdown;
     }
 
 

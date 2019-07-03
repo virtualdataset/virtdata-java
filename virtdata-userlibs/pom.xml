@@ -51,6 +51,17 @@
             <version>2.11.29-SNAPSHOT</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-all</artifactId>
+            <version>0.50.16</version>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.vladsch.flexmark</groupId>-->
+<!--            <artifactId>flexmark-html-parser</artifactId>-->
+<!--            <version>0.50.16</version>-->
+<!--        </dependency>-->
+
         <!-- temporary -->
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
