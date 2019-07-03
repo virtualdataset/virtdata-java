@@ -1,10 +1,13 @@
 package io.virtdata.libbasics.shared;
 
+import io.virtdata.libbasics.shared.from_double.to_double.DoubleFlow;
 import io.virtdata.libbasics.shared.from_double.to_double.Max;
 import io.virtdata.libbasics.shared.from_long.to_long.Add;
+import io.virtdata.libbasics.shared.from_long.to_long.LongFlow;
 import io.virtdata.libbasics.shared.from_long.to_string.Combinations;
 import io.virtdata.libbasics.shared.from_long.to_string.Template;
 import io.virtdata.libbasics.shared.functionadapters.Flow;
+import io.virtdata.libbasics.shared.unary_int.IntFlow;
 import io.virtdata.libbasics.shared.unary_int.Mul;
 import io.virtdata.libbasics.shared.unary_string.Prefix;
 import io.virtdata.libbasics.shared.unary_string.StringFlow;
@@ -18,12 +21,12 @@ import java.util.function.LongUnaryOperator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FlowTest {
+public class IntFlowTest {
 
     @Test
     public void testLongFlow() {
-        io.virtdata.libbasics.shared.from_long.to_long.Flow lf =
-                new io.virtdata.libbasics.shared.from_long.to_long.Flow(
+        LongFlow lf =
+                new LongFlow(
                         new Add(3L),
                         new Add(4L)
                 );
@@ -34,8 +37,8 @@ public class FlowTest {
     @Test
     public void testIntegerFlow() {
         Mul imul3 = new Mul(3);
-        io.virtdata.libbasics.shared.unary_int.Flow ifl =
-                new io.virtdata.libbasics.shared.unary_int.Flow(imul3, imul3);
+        IntFlow ifl =
+                new IntFlow(imul3, imul3);
         assertThat(ifl.applyAsInt(2)).isEqualTo(18);
     }
 
@@ -43,8 +46,8 @@ public class FlowTest {
     public void testDoubleFlow() {
         Max dmax12 = new Max(12D);
         Max dmax100 = new Max(100D);
-        io.virtdata.libbasics.shared.from_double.to_double.Flow dmax =
-                new io.virtdata.libbasics.shared.from_double.to_double.Flow(dmax12,dmax100);
+        DoubleFlow dmax =
+                new DoubleFlow(dmax12,dmax100);
         assertThat(dmax.applyAsDouble(13D)).isCloseTo(100D, Offset.offset(0.0001D));
 
     }

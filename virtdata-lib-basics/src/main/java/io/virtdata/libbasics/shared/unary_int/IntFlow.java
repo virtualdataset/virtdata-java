@@ -1,12 +1,21 @@
 package io.virtdata.libbasics.shared.unary_int;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
+import io.virtdata.annotations.ThreadSafeMapper;
+
 import java.util.function.IntUnaryOperator;
 
-public class Flow implements IntUnaryOperator {
+/**
+ * Combine multiple IntUnaryOperators into a single function.
+ */
+@Categories(Category.functional)
+@ThreadSafeMapper
+public class IntFlow implements IntUnaryOperator {
 
     private final IntUnaryOperator[] ops;
 
-    public Flow(IntUnaryOperator... ops) {
+    public IntFlow(IntUnaryOperator... ops) {
         this.ops = ops;
     }
 

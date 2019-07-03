@@ -1,20 +1,23 @@
 package io.virtdata.libbasics.shared.from_long.to_long;
 
+import io.virtdata.annotations.Categories;
+import io.virtdata.annotations.Category;
 import io.virtdata.annotations.Example;
+import io.virtdata.annotations.ThreadSafeMapper;
 
 import java.util.function.LongUnaryOperator;
 
 /**
- * Combine multiple unary operators into a single operator as
- * a higher-order function. This allows for flows to be used
- * in places where a single function is allowed.
+ * Combine multiple LongUnaryOperators into a single function.
  */
-public class Flow implements LongUnaryOperator {
+@Categories(Category.functional)
+@ThreadSafeMapper
+public class LongFlow implements LongUnaryOperator {
 
     private final LongUnaryOperator[] ops;
 
     @Example({"StringFlow(Add(3),Mul(6))","Create an integer operator which adds 3 and multiplies the result by 6"})
-    public Flow(LongUnaryOperator... ops) {
+    public LongFlow(LongUnaryOperator... ops) {
         this.ops = ops;
     }
 
