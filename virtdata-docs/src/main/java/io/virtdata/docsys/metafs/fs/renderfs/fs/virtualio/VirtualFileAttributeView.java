@@ -8,14 +8,14 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileAttributeView;
 import java.nio.file.attribute.FileTime;
 
-public class RenderedFileAttributeView implements BasicFileAttributeView {
+public class VirtualFileAttributeView implements BasicFileAttributeView {
     private final FileAttributeView sourceAttributeView;
     private final long size;
     private final Path targetPath;
     private final Path sourcePath;
 
-    public RenderedFileAttributeView(Path sourcePath, FileAttributeView sourceAttributeView,
-                                     Path targetPath, Class type, LinkOption[] options, long size) {
+    public VirtualFileAttributeView(Path sourcePath, FileAttributeView sourceAttributeView,
+                                    Path targetPath, Class type, LinkOption[] options, long size) {
         this.sourcePath = sourcePath;
         this.targetPath = targetPath;
         this.sourceAttributeView = sourceAttributeView;

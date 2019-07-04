@@ -1,5 +1,0 @@
-## Template For {{ target }}
-{{{# sublayer }}}
-### content for sublayer:
- {{{ this }}}
-{{{/ sublayer }}}

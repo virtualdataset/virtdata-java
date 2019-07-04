@@ -1,5 +1,7 @@
 package io.virtdata.docsys.metafs.fs.renderfs.api.rendered;
 
+import io.virtdata.docsys.metafs.fs.renderfs.api.rendering.Versioned;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
@@ -8,13 +10,16 @@ public class ExceptionContent implements RenderedContent {
 
     private final long version;
     private final Exception e;
+    private Versioned dependency;
     private final Object[] details;
 
-    public ExceptionContent(Exception e, long version, Object... details) {
+    public ExceptionContent(Exception e, long version, Versioned dependency, Object... details) {
 
         this.e = e;
         this.version = version;
+        this.dependency = dependency;
         this.details = details;
+
     }
 
     @Override
@@ -37,5 +42,10 @@ public class ExceptionContent implements RenderedContent {
 
     public String toString() {
         return get();
+    }
+
+    @Override
+    public Versioned getVersionDependency() {
+        return dependency;
     }
 }

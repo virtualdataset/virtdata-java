@@ -141,8 +141,9 @@ public class DocServer implements Runnable {
             MarkdownProcessor markdown = new MarkdownProcessor();
             FileRenderer mustacheMarkdown = new FileRenderer("._md", ".md", false, mustache);
             FileRenderer mustacheHtml = new FileRenderer("._html", ".html", false, mustache);
+            FileRenderer mustacheJson = new FileRenderer("._json", ".json", false, mustache);
             FileRenderer markdownHtml = new FileRenderer(".md", ".html", false, markdown);
-            rfs.addRenderers(mustacheMarkdown, mustacheHtml, markdownHtml);
+            rfs.addRenderers(mustacheMarkdown, mustacheHtml, mustacheJson, markdownHtml);
             layerfs.addLayer(rfs);
         }
 

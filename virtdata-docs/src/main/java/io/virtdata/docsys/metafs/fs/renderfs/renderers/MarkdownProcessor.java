@@ -30,13 +30,13 @@ public class MarkdownProcessor implements TemplateCompiler {
         }
 
         @Override
-        public RenderedContent apply(RenderingScope targetPathView) {
+        public RenderedContent apply(RenderingScope scope) {
             try {
                 String rendered = renderer.render(document);
-                this.version = targetPathView.getVersion();
-                return new StringContent(rendered, targetPathView.getVersion());
+                this.version = scope.getVersion();
+                return new StringContent(rendered, scope.getVersion(), scope);
             } catch (Exception e) {
-                return new ExceptionContent(e, targetPathView.getVersion());
+                return new ExceptionContent(e, scope.getVersion(), scope);
             }
         }
 

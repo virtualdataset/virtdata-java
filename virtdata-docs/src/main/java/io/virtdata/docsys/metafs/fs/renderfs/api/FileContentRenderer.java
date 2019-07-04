@@ -1,8 +1,8 @@
 package io.virtdata.docsys.metafs.fs.renderfs.api;
 
+import io.virtdata.docsys.metafs.fs.renderfs.api.rendered.RenderedContent;
 import io.virtdata.docsys.metafs.fs.renderfs.fs.virtualio.VirtualFile;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -69,22 +69,14 @@ public interface FileContentRenderer {
 
     Path getRenderedTargetName(Path sourceName);
 
-    private InputStream getInputStream(Path targetName) {
-        ByteBuffer buf = getRendered(targetName);
-        if (buf == null) {
-            return null;
-        }
-        return new ByteArrayInputStream(buf.array());
-    }
+    RenderedContent render(Path source, Path target, ByteBuffer input);
 
-    ByteBuffer render(Path source, Path target, ByteBuffer input);
-
-    private ByteBuffer getRendered(Path targetPath) {
+    private RenderedContent getRendered(Path targetPath) {
         Path sourcePath = getSourcePath(targetPath);
         if (sourcePath != null) {
             try {
                 ByteBuffer rawInput = getRawByteBuffer(sourcePath);
-                ByteBuffer rendered = render(sourcePath, targetPath, rawInput);
+                RenderedContent rendered = render(sourcePath, targetPath, rawInput);
                 return rendered;
             } catch (IOException ioe) {
                 throw new RuntimeException(ioe);
@@ -107,7 +99,7 @@ public interface FileContentRenderer {
 //        ByteBuffer bb = getRendered(target);
 //        if (bb==null) { return null; }
         Path delegate = getSourcePath(target);
-        return new VirtualFile(delegate,target,() -> getRendered(target));
+        return new VirtualFile(delegate,target,getRendered(target));
     }
 
     List<Path> getVirtualPathsFor(Path path);

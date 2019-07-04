@@ -1,6 +1,6 @@
 package io.virtdata.docsys.metafs.core;
 
-import io.virtdata.docsys.metafs.fs.renderfs.fs.virtualio.RenderedFileChannel;
+import io.virtdata.docsys.metafs.fs.renderfs.fs.virtualio.VirtualFileChannel;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -68,7 +68,7 @@ public abstract class MetaFS extends FileSystem {
     public FileChannel newFileChannel(Path path, Set<? extends OpenOption> options, FileAttribute<?>... attrs)
             throws IOException {
         SeekableByteChannel seekableByteChannel = this.newByteChannel(path, options, attrs);
-        return new RenderedFileChannel(seekableByteChannel);
+        return new VirtualFileChannel(seekableByteChannel);
     }
 
     public InputStream newInputStream(Path path, OpenOption... options) throws IOException {

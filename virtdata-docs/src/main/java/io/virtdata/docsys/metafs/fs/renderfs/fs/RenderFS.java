@@ -3,7 +3,7 @@ package io.virtdata.docsys.metafs.fs.renderfs.fs;
 import io.virtdata.docsys.metafs.core.MetaPath;
 import io.virtdata.docsys.metafs.fs.renderfs.api.FileContentRenderer;
 import io.virtdata.docsys.metafs.fs.renderfs.api.Renderers;
-import io.virtdata.docsys.metafs.fs.renderfs.fs.virtualio.RenderFSDirectoryStream;
+import io.virtdata.docsys.metafs.fs.renderfs.fs.virtualio.VirtualDirectoryStream;
 import io.virtdata.docsys.metafs.fs.renderfs.fs.virtualio.VirtualFile;
 import io.virtdata.docsys.metafs.fs.virtual.VirtFS;
 
@@ -67,7 +67,7 @@ public class RenderFS extends VirtFS {
 
 
     public DirectoryStream<Path> newDirectoryStream(DirectoryStream<Path> paths) {
-        return new RenderFSDirectoryStream(paths, renderers);
+        return new VirtualDirectoryStream(paths, renderers);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class RenderFS extends VirtFS {
             return channel;
         } catch (Exception e) {
             VirtualFile vf = cache.computeIfAbsent(path, renderers::getVirtualFile);
-            if (vf != null) {
+            if (vf!=null) {
                 return vf.getSeekableByteChannel();
             } else {
                 throw e;

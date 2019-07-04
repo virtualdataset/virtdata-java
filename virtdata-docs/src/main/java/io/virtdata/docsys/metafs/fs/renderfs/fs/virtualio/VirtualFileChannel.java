@@ -5,11 +5,11 @@ import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.*;
 
-public class RenderedFileChannel extends FileChannel {
+public class VirtualFileChannel extends FileChannel {
 
     private final SeekableByteChannel bytes;
 
-    public RenderedFileChannel(SeekableByteChannel bytes) {
+    public VirtualFileChannel(SeekableByteChannel bytes) {
         this.bytes = bytes;
     }
 

@@ -7,7 +7,7 @@ import io.virtdata.docsys.metafs.fs.renderfs.model.ViewModel;
 
 import java.nio.file.Path;
 
-public class RenderingScope implements IRenderingScope {
+public class RenderingScope implements Versioned {
 
     private final TemplateView templateView;
     private final ViewModel viewModel;
@@ -26,24 +26,20 @@ public class RenderingScope implements IRenderingScope {
         this(new SourcePathTemplate(sourcePath), new ViewModel(sourcePath, targetPath), compiler);
     }
 
-    @Override
     public long getVersion() {
         long thisVersion = Math.max(templateView.getVersion(), viewModel.getVersion());
         return (innerScope==null) ? thisVersion : Math.max(thisVersion, innerScope.getVersion());
     }
 
-    @Override
     public TemplateView getTemplate() {
         return templateView;
     }
 
 
-    @Override
     public ViewModel getViewModel() {
         return viewModel;
     }
 
-    @Override
     public RenderedContent getRendered() {
         try {
             if (innerScope!=null) {
@@ -60,7 +56,7 @@ public class RenderingScope implements IRenderingScope {
             return this.viewModel.getRendered();
         } catch (Exception e) {
             String wrappedMessage = renderer.wrapError(e.getMessage());
-            return new ExceptionContent(e, getVersion(), wrappedMessage);
+            return new ExceptionContent(e, getVersion(), this, wrappedMessage);
         }
     }
 

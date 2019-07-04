@@ -2,9 +2,7 @@ package io.virtdata.docsys.metafs.fs.renderfs.renderers;
 
 import com.samskivert.mustache.Mustache;
 import com.samskivert.mustache.Template;
-import io.virtdata.docsys.metafs.fs.renderfs.api.rendered.ExceptionContent;
-import io.virtdata.docsys.metafs.fs.renderfs.api.rendered.RenderedContent;
-import io.virtdata.docsys.metafs.fs.renderfs.api.rendered.StringContent;
+import io.virtdata.docsys.metafs.fs.renderfs.api.rendered.*;
 import io.virtdata.docsys.metafs.fs.renderfs.api.rendering.Renderer;
 import io.virtdata.docsys.metafs.fs.renderfs.api.rendering.RenderingScope;
 import io.virtdata.docsys.metafs.fs.renderfs.api.rendering.TemplateCompiler;
@@ -39,16 +37,16 @@ public class MustacheProcessor implements TemplateCompiler {
         }
 
         @Override
-        public RenderedContent apply(RenderingScope renderingScope) {
+        public RenderedContent apply(RenderingScope scope) {
             ViewModel viewModel = null;
             try {
 
                 if (compiledTemplate == null) {
                     this.compiledTemplate = compiler.compile(templateView.getRawTemplate());
                 }
-                viewModel = renderingScope.getViewModel();
+                viewModel = scope.getViewModel();
                 String renderedText = compiledTemplate.execute(viewModel);
-                return new StringContent(renderedText,this.getVersion());
+                return new StringContent(renderedText,this.getVersion(), scope);
             } catch (Exception e) {
                 List<String> details = new ArrayList<>();
 
@@ -63,8 +61,14 @@ public class MustacheProcessor implements TemplateCompiler {
                 details.add("Raw Template:");
                 details.add(templateView.getRawTemplate());
 
+                if (viewModel.getTarget().toString().endsWith(".md")) {
+                    return new MarkdownRenderedException(e, templateView, viewModel, scope, details.toArray());
+                } else if (viewModel.getTarget().toString().endsWith(".html")) {
+                    return new HTMLRenderedException(e, templateView, viewModel, scope, details.toArray());
+                } else {
+                    return new ExceptionContent(e, getVersion(), scope, details.toArray());
+                }
 
-                return new ExceptionContent(e, getVersion(), details.toArray());
             }
         }
 

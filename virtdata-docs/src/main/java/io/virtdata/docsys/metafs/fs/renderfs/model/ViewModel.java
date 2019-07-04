@@ -15,9 +15,9 @@ import java.util.stream.Collectors;
 
 public class ViewModel implements Versioned, MarkdownStringer {
 
-    private ViewModel inner;
     private Path target;
     private long version;
+    private ViewModel inner;
     private RenderedContent rendered;
 
     public ViewModel(Path sourcePath, Path targetPath) {
@@ -71,14 +71,6 @@ public class ViewModel implements Versioned, MarkdownStringer {
     }
 
     @Override
-    public String toString() {
-        return "ViewModel{" +
-                "target=" + target.toString() +
-                ", version=" + version +
-                '}';
-    }
-
-    @Override
     public String asMarkdown() {
         return "```\n" + toString() + "\n```\n";
     }
@@ -97,6 +89,19 @@ public class ViewModel implements Versioned, MarkdownStringer {
 
     public RenderedContent getRendered() {
         return rendered;
+    }
+
+    @Override
+    public String toString() {
+        return "ViewModel{" +
+                "target=" + target.toString() +
+                ", version=" + version +
+                '}';
+    }
+
+    public List<Topic> getTopics() {
+        return TopicFinder.getTopics(target.getParent());
+
     }
 
 }

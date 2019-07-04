@@ -5,6 +5,4 @@ import java.nio.file.Path;
 public interface TemplateView extends Versioned {
     Path getTemplatePath();
     String getRawTemplate();
-
-
 }

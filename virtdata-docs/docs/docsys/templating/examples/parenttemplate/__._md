@@ -1,7 +1,7 @@
 # Parent Template Example
 
 {{# inner }}
-- inner {{ . }}
+- inner.rendered {{ rendered }}
 - target: {{ target }}
 - path: {{ path }}
 {{/ inner }}

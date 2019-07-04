@@ -6,7 +6,6 @@ import io.virtdata.docsys.metafs.fs.renderfs.api.rendering.TemplateCompiler;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.AccessMode;
 import java.nio.file.Path;
 import java.security.InvalidParameterException;
@@ -98,7 +97,7 @@ public class FileRenderer implements FileContentRenderer {
     @Override
     public boolean isTemplatePath(Path p) {
         String filename = p.getName(p.getNameCount()-1).toString();
-        if (filename.startsWith("__.") || filename.contains("._") || filename.startsWith("_.")) {
+        if (filename.startsWith("__.") || filename.startsWith("_.")) {
             return true;
         }
         return false;
@@ -149,16 +148,14 @@ public class FileRenderer implements FileContentRenderer {
     }
 
     @Override
-    public synchronized ByteBuffer render(Path sourcePath, Path targetPath, ByteBuffer byteBuffer) {
+    public synchronized RenderedContent render(Path sourcePath, Path targetPath, ByteBuffer byteBuffer) {
         RenderingScope scope = new RenderingScope(sourcePath, targetPath, compiler);
         for (Path template : getTemplates(sourcePath)) {
             RenderingScope outer = new RenderingScope(template, template, compiler);
             scope = outer.wrap(scope);
         }
         RenderedContent rendered = scope.getRendered();
-
-        byte[] bytes = rendered.get().getBytes(StandardCharsets.UTF_8);
-        return ByteBuffer.wrap(bytes).asReadOnlyBuffer();
+        return rendered;
     }
 
     private LinkedList<Path> getTemplates(Path sourcePath) {

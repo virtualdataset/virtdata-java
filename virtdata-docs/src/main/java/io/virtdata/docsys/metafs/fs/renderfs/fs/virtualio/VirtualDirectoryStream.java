@@ -9,12 +9,12 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Function;
 
-public class RenderFSDirectoryStream implements DirectoryStream<Path> {
+public class VirtualDirectoryStream implements DirectoryStream<Path> {
 
     private final DirectoryStream<Path> wrappedStream;
     private final NameMappingFunc func;
 
-    public RenderFSDirectoryStream(DirectoryStream<Path> wrappedStream, Renderers renderers) {
+    public VirtualDirectoryStream(DirectoryStream<Path> wrappedStream, Renderers renderers) {
         this.wrappedStream = wrappedStream;
         this.func = new NameMappingFunc(renderers);
     }
