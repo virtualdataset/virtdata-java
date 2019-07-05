@@ -130,6 +130,21 @@ parent directory template, it is possible to have both apply. ...
 
 TODO: Implement this
 
+## Cyclic Dependencies
+
+As with any system which can have internal references, it is possible
+to create a cyclic dependency. For example, as directory template
+which provides a topic list must read the contents of all files which
+it will be composited with. This creates a cyclic reference. 
+Presently, this is not supported. It is conceptually possible to
+make a compositor which can read metadata like topics from rendered
+partials without invoking the canonical name of the current target
+in rendering, but this will be an incremental improvement.
+
+## TODO: Implement the above as a special case where a non-layered
+view of the partial file is allowed to be rendered as a separate file
+only for the purposes of reading metadata.
+
 
 
 

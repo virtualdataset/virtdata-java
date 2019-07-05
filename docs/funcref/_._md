@@ -1,11 +1,7 @@
-# Function Reference
+# Topics
 
-## Sections
-
-- inner path: {{ inner.path }}
-
-{{# files }}
- {{ . }}
-{{/ files}}
+{{# topics }}
+  - {{ name }}
+{{/ topics }}
 
 {{ inner.rendered }}

@@ -12,7 +12,7 @@ public class TopicFinder {
 
         Predicate<String> f = s -> s.endsWith(".md") && !s.equals(baseTopicPath.toString());
         FV v = new FV();
-        VirtTreeWalker.walk(baseTopicPath, v, f);
+        VirtTreeWalker.walk(baseTopicPath.getParent(), v, f);
         List<Topic> topics = v.getTopics();
         return topics;
     }
