@@ -15,7 +15,7 @@ public class TypeOf implements Function<Object,String> {
 
     @Override
     public String apply(Object o) {
-        return o.getClass().toString();
+        return o.getClass().getCanonicalName().toString();
     }
 
 
