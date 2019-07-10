@@ -66,12 +66,12 @@ public class RenderFS extends VirtFS {
     }
 
 
-    public DirectoryStream<Path> newDirectoryStream(DirectoryStream<Path> paths) {
+    public synchronized DirectoryStream<Path> newDirectoryStream(DirectoryStream<Path> paths) {
         return new VirtualDirectoryStream(paths, renderers);
     }
 
     @Override
-    public SeekableByteChannel newByteChannel(
+    public synchronized SeekableByteChannel newByteChannel(
             Path path, Set<? extends OpenOption> options, FileAttribute<?>... attrs) throws IOException {
         MetaPath metaPath = assertMetaPath(path);
         Path syspath = this.metaToSysFunc.apply(metaPath);
@@ -98,7 +98,7 @@ public class RenderFS extends VirtFS {
     }
 
 
-    public BasicFileAttributes readAttributes(Path path, Class type, LinkOption... options) throws IOException {
+    public synchronized BasicFileAttributes readAttributes(Path path, Class type, LinkOption... options) throws IOException {
         try {
             return super.readAttributes(path, type, options);
         } catch (Exception e1) {
@@ -111,7 +111,7 @@ public class RenderFS extends VirtFS {
         }
     }
 
-    public Map<String, Object> readAttributes(Path path, String attributes, LinkOption[] options) throws IOException {
+    public synchronized Map<String, Object> readAttributes(Path path, String attributes, LinkOption[] options) throws IOException {
         try {
             return super.readAttributes(path, attributes, options);
         } catch (Exception e1) {
@@ -125,7 +125,7 @@ public class RenderFS extends VirtFS {
     }
 
     @Override
-    public void checkAccess(Path path, AccessMode... modes) throws IOException {
+    public synchronized void checkAccess(Path path, AccessMode... modes) throws IOException {
         try {
             super.checkAccess(path, modes);
         } catch (Exception e1) {
@@ -138,7 +138,7 @@ public class RenderFS extends VirtFS {
         }
     }
 
-    public FileAttributeView getFileAttributeView(Path path, Class type, LinkOption[] options) {
+    public synchronized FileAttributeView getFileAttributeView(Path path, Class type, LinkOption[] options) {
 
         /*
           Since an attribute view does not check to see if a file exists on the system first,

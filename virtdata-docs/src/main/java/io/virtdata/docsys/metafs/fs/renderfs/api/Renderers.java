@@ -25,12 +25,12 @@ public class Renderers {
      * Return the first renderer which matches the target extension
      * and which also has a readable source file under the source extension,
      * or null if none is available.
-     * @param path The target path which is meant to be rendered
+     * @param targetPath The target path which is meant to be rendered
      * @return A renderer or null, if none are available
      */
-    private FileContentRenderer forTargetPath(Path path) {
+    private FileContentRenderer forTargetPath(Path targetPath) {
         for (FileContentRenderer rendererType : rendererTypes) {
-            if (rendererType.canRender(path)) {
+            if (rendererType.canRender(targetPath)) {
                 return rendererType;
             }
         }

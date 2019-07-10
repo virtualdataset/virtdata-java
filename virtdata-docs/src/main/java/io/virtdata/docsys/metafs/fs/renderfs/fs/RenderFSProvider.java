@@ -54,7 +54,7 @@ public class RenderFSProvider extends VirtFSProvider {
     }
 
     @Override
-    public FileChannel newFileChannel(
+    public synchronized FileChannel newFileChannel(
             Path path,
             Set<? extends OpenOption> options,
             FileAttribute<?>... attrs) throws IOException {
@@ -64,32 +64,32 @@ public class RenderFSProvider extends VirtFSProvider {
     }
 
     @Override
-    public DirectoryStream<Path> newDirectoryStream(Path dir, DirectoryStream.Filter<? super Path> filter) throws IOException {
+    public synchronized DirectoryStream<Path> newDirectoryStream(Path dir, DirectoryStream.Filter<? super Path> filter) throws IOException {
         RenderFS renderFS = assertThisFS(dir);
         DirectoryStream<Path> paths = super.newDirectoryStream(dir, filter);
         return renderFS.newDirectoryStream(paths);
     }
 
     @Override
-    public BasicFileAttributes readAttributes(Path path, Class type, LinkOption... options) throws IOException {
+    public synchronized BasicFileAttributes readAttributes(Path path, Class type, LinkOption... options) throws IOException {
         RenderFS renderFS = assertThisFS(path);
         return renderFS.readAttributes(path, type, options);
     }
 
     @Override
-    public Map<String, Object> readAttributes(Path path, String attributes, LinkOption... options) throws IOException {
+    public synchronized Map<String, Object> readAttributes(Path path, String attributes, LinkOption... options) throws IOException {
         RenderFS renderFS = assertThisFS(path);
          return renderFS.readAttributes(path, attributes, options);
    }
 
     @Override
-    public void checkAccess(Path path, AccessMode... modes) throws IOException {
+    public synchronized void checkAccess(Path path, AccessMode... modes) throws IOException {
         RenderFS renderFS = assertThisFS(path);
         renderFS.checkAccess(path, modes);
     }
 
     @Override
-    public FileAttributeView getFileAttributeView(Path path, Class type, LinkOption... options) {
+    public synchronized FileAttributeView getFileAttributeView(Path path, Class type, LinkOption... options) {
         RenderFS renderFS = assertThisFS(path);
         return renderFS.getFileAttributeView(path, type, options);
     }

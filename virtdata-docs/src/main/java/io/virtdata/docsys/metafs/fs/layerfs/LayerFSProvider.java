@@ -150,7 +150,7 @@ public class LayerFSProvider extends MetaFSProvider {
                 exceptions.add(e);
             }
         }
-        throw new RuntimeException(exceptions.size() + " exceptions occurred:" + exceptions.stream().map(Exception::getMessage).collect(Collectors.joining(",")));
+        throw new RuntimeException(exceptions.size() + " exceptions occurred:" + exceptions.stream().map(Exception::getMessage).collect(Collectors.joining(",\n","\n","")));
     }
 
     @Override
@@ -178,7 +178,7 @@ public class LayerFSProvider extends MetaFSProvider {
                 fsSpecificPath.getFileSystem().provider().checkAccess(fsSpecificPath, AccessMode.READ);
                 return fsSpecificPath;
             } catch (IOException e) {
-                logger.warn("Did not find readable file " + toRead + " in fs " + fileSystem);
+                logger.trace("Did not find readable file " + toRead + " in fs " + fileSystem);
             }
         }
         throw new RuntimeException("Unable to find a readable " + toRead + " in any addLayer");

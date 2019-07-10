@@ -1,26 +1,54 @@
 package io.virtdata.docsys.metafs.fs.renderfs.fs;
 
-import io.virtdata.docsys.metafs.fs.renderfs.api.rendered.RenderedContent;
 import io.virtdata.docsys.metafs.fs.renderfs.fs.virtualio.VirtualFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
-public class VirtualFileCache extends HashMap<Path, VirtualFile>{
+public class VirtualFileCache {
+    private final static Logger logger = LoggerFactory.getLogger(VirtualFileCache.class);
 
-    @Override
+    private final Map<Path, VirtualFile> cacheMap = new HashMap<>();
+
+
     public synchronized VirtualFile computeIfAbsent(
             Path key, Function<? super Path, ? extends VirtualFile> mappingFunction
     ) {
-
-        if (containsKey(key)) {
-            VirtualFile virtualFile = get(key);
-            RenderedContent renderedContent = virtualFile.getRenderedContent();
-            if (!renderedContent.isCurrent()) {
-                remove(key);
+        try {
+            VirtualFile vf = cacheMap.get(key);
+            if (vf!=null) {
+                if (vf.getRenderedContent().isCurrent()) {
+                    logger.info("REUSED  " + key);
+                    return vf;
+                } else {
+                    logger.info("REFRESH " + key);
+                    vf=mappingFunction.apply(key);
+                    if (vf==null) {
+                        logger.info("NULLREN " + key);
+                    } else {
+                        logger.info("PRESENT " + key);
+                        cacheMap.put(key,vf);
+                    }
+                }
             }
+            else {
+                logger.info("COMPUTE " + key);
+                vf = mappingFunction.apply(key);
+                if (vf==null) {
+                    logger.info("NULLREN " + key);
+                } else {
+                    logger.info("PRESENT " + key);
+                    cacheMap.put(key,vf);
+                }
+            }
+            return vf;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return super.computeIfAbsent(key, mappingFunction);
+
     }
 }

@@ -1,5 +1,6 @@
 {{# markdown }}
 # markdown rendered as html in markdown file
+
 This is an example of markdown rendering.
 Since this is a markdown processor inside a markdown file,
 the result will be HTML, which the downstream markdown processing

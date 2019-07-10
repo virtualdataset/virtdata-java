@@ -3,6 +3,7 @@ package io.virtdata.docsys.metafs.fs.renderfs.walkers;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.function.Predicate;
 
@@ -21,6 +22,9 @@ public class VirtTreeWalker {
 //
 //                    }
 //                }
+                } else if (path.getFileSystem().provider().readAttributes(path, BasicFileAttributes.class).isDirectory()) {
+                    // TODO: fix recursion here that results from cyclic dependency
+                    walk(path, v, filter);
                 }
             }
         } catch (IOException e) {

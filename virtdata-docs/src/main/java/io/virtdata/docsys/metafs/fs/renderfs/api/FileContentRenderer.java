@@ -2,6 +2,8 @@ package io.virtdata.docsys.metafs.fs.renderfs.api;
 
 import io.virtdata.docsys.metafs.fs.renderfs.api.rendered.RenderedContent;
 import io.virtdata.docsys.metafs.fs.renderfs.fs.virtualio.VirtualFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -17,29 +19,33 @@ import java.util.regex.Pattern;
 /**
  * This is the main interface for allowing filesystem calls to use rendered content.
  */
-public interface FileContentRenderer {
+public abstract class FileContentRenderer {
+    private final static Logger logger = LoggerFactory.getLogger(FileContentRenderer.class);
 
     /**
      * @return a pattern that can be used to match path names which serve as the source data of rendered files.
      */
-    Pattern getSourcePattern();
+    abstract Pattern getSourcePattern();
 
     /**
      * @return a pattern that can be used to match path names which are to be dynamically rendered from source file content.
      */
-    Pattern getTargetPattern();
+    abstract Pattern getTargetPattern();
 
-    default boolean matchesSource(Path p) {
-        return getSourcePattern().matcher(p.toString()).matches();
+    public boolean matchesSource(Path p) {
+        Pattern sourcePattern = getSourcePattern();
+        Matcher matcher = sourcePattern.matcher(p.toString());
+        boolean matches = matcher.matches();
+        return matches;
     }
 
-    default boolean matchesTarget(Path p) {
+    public boolean matchesTarget(Path p) {
         Pattern targetPattern = getTargetPattern();
         Matcher matcher = targetPattern.matcher(p.toString());
         return matcher.matches();
     }
 
-    default boolean hasSource(Path p) {
+    public boolean hasSource(Path p) {
         Path sourcePath = getSourcePath(p);
         try {
             sourcePath.getFileSystem().provider().checkAccess(sourcePath, AccessMode.READ);
@@ -49,15 +55,19 @@ public interface FileContentRenderer {
         return true;
     }
 
-    default boolean canRender(Path p) {
-        if (isTemplatePath(p)) {
+    public boolean canRender(Path p) {
+        if (isWrapperPath(p)) {
             return false;
         }
 
-        return matchesTarget(p) && hasSource(p);
+        boolean canRender = matchesTarget(p) && hasSource(p);
+        if (canRender) {
+            logger.info("CANRENDER " + p + " (" + this + ")");
+        }
+        return canRender;
     }
 
-    boolean isTemplatePath(Path p);
+    abstract boolean isWrapperPath(Path p);
 
     /**
      * Return the matching source path, but only if the target name matches the target extension.
@@ -65,11 +75,11 @@ public interface FileContentRenderer {
      * @param targetName The target Path which represents the intended to be rendered
      * @return A source path, or null if the target name does not match for this renderer
      */
-    Path getSourcePath(Path targetName);
+    abstract Path getSourcePath(Path targetName);
 
-    Path getRenderedTargetName(Path sourceName);
+    abstract Path getRenderedTargetName(Path sourceName);
 
-    RenderedContent render(Path source, Path target, ByteBuffer input);
+    abstract RenderedContent render(Path source, Path target, ByteBuffer input);
 
     private RenderedContent getRendered(Path targetPath) {
         Path sourcePath = getSourcePath(targetPath);
@@ -95,12 +105,12 @@ public interface FileContentRenderer {
         return ByteBuffer.wrap(bos.toByteArray()).asReadOnlyBuffer();
     }
 
-    default VirtualFile getVirtualFile(Path target) {
+    public VirtualFile getVirtualFile(Path target) {
 //        ByteBuffer bb = getRendered(target);
 //        if (bb==null) { return null; }
         Path delegate = getSourcePath(target);
         return new VirtualFile(delegate,target,getRendered(target));
     }
 
-    List<Path> getVirtualPathsFor(Path path);
+    abstract List<Path> getVirtualPathsFor(Path path);
 }

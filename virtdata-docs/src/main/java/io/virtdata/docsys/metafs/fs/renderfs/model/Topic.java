@@ -15,8 +15,12 @@ public class Topic {
         return name;
     }
 
-    public Path getPath() {
+    public Path getMdpath() {
         return path;
+    }
+
+    public String getPath() {
+        return path.toString().replaceAll(".md$","");
     }
 
     public String toString() {

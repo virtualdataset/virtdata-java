@@ -52,7 +52,10 @@ public class VirtualDirectoryStream implements DirectoryStream<Path> {
             while (cursor.hasNext()) {
                 Path next = cursor.next();
                 List<Path> adding = renderers.getVirtualPathsFor(next);
-                adding.forEach(cursor::add);
+                adding.forEach(e -> {
+                    cursor.add(e);
+                    cursor.previous();
+                });
             }
 
             if (pathlist.size()==0) {

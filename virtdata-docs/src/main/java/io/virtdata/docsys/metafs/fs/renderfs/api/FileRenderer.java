@@ -16,7 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("Duplicates")
-public class FileRenderer implements FileContentRenderer {
+public class FileRenderer extends FileContentRenderer {
 
     private final String sourceExtension;
     private final String targetExtension;
@@ -76,7 +76,7 @@ public class FileRenderer implements FileContentRenderer {
     @Override
     public List<Path> getVirtualPathsFor(Path path) {
         ArrayList<Path> vpaths = new ArrayList<>();
-        if (this.matchesSource(path) && !isTemplatePath(path)) {
+        if (this.matchesSource(path) && !isWrapperPath(path)) {
             Path targetPaths = this.getRenderedTargetName(path);
             vpaths.add(targetPaths);
         }
@@ -95,7 +95,7 @@ public class FileRenderer implements FileContentRenderer {
     }
 
     @Override
-    public boolean isTemplatePath(Path p) {
+    public boolean isWrapperPath(Path p) {
         String filename = p.getName(p.getNameCount()-1).toString();
         if (filename.startsWith("__.") || filename.startsWith("_.")) {
             return true;
@@ -168,18 +168,17 @@ public class FileRenderer implements FileContentRenderer {
         try {
             Path localTmpl = directoryPath.resolve("_." + extension);
             localTmpl.getFileSystem().provider().checkAccess(localTmpl, AccessMode.READ);
-            chain.addFirst(localTmpl);
+            chain.addLast(localTmpl);
         } catch (IOException ignored) {
         }
 
         while (directoryPath != null) {
             try {
                 Path localTmpl = directoryPath.resolve("__." + extension);
-                localTmpl.getFileSystem().provider().checkAccess(localTmpl, AccessMode.READ);
-                chain.addFirst(localTmpl);
                 directoryPath = directoryPath.getParent();
+                localTmpl.getFileSystem().provider().checkAccess(localTmpl, AccessMode.READ);
+                chain.addLast(localTmpl);
             } catch (IOException ignored) {
-                break;
             }
         }
         return chain;
