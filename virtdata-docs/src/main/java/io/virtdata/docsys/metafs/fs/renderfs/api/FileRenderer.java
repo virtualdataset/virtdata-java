@@ -150,9 +150,11 @@ public class FileRenderer extends FileContentRenderer {
     @Override
     public synchronized RenderedContent render(Path sourcePath, Path targetPath, ByteBuffer byteBuffer) {
         RenderingScope scope = new RenderingScope(sourcePath, targetPath, compiler);
-        for (Path template : getTemplates(sourcePath)) {
-            RenderingScope outer = new RenderingScope(template, template, compiler);
-            scope = outer.wrap(scope);
+        if (!targetPath.toString().endsWith(".mdf")) {
+            for (Path template : getTemplates(sourcePath)) {
+                RenderingScope outer = new RenderingScope(template, template, compiler);
+                scope = outer.wrap(scope);
+            }
         }
         RenderedContent rendered = scope.getRendered();
         return rendered;

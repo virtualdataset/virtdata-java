@@ -14,7 +14,7 @@ public class TopicFinder {
 
     public static List<Topic> getTopics(Path baseTopicPath) {
 
-        Predicate<String> f = s -> s.endsWith(".md") && !s.equals(baseTopicPath.toString());
+        Predicate<String> f = s -> s.endsWith(".mdf") && !s.equals(baseTopicPath.toString());
         FV v = new FV();
         VirtTreeWalker.walk(baseTopicPath.getParent(), v, f);
         List<Topic> topics = v.getTopics();
