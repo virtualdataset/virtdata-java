@@ -13,15 +13,21 @@ public class VirtualDirectoryStream implements DirectoryStream<Path> {
 
     private final DirectoryStream<Path> wrappedStream;
     private final NameMappingFunc func;
+    private final Path of;
 
-    public VirtualDirectoryStream(DirectoryStream<Path> wrappedStream, Renderers renderers) {
+    public VirtualDirectoryStream(Path of, DirectoryStream<Path> wrappedStream, Renderers renderers) {
+        this.of = of;
         this.wrappedStream = wrappedStream;
         this.func = new NameMappingFunc(renderers);
     }
 
     @Override
     public Iterator<Path> iterator() {
-        return new AugmentingIterator<>(wrappedStream.iterator(),func);
+        AugmentingIterator<Path> pathAugmentingIterator = new AugmentingIterator<>(wrappedStream.iterator(), func);
+        List<Path> paths = new ArrayList<>();
+        pathAugmentingIterator.forEachRemaining(paths::add);
+        Collections.sort(paths);
+        return paths.iterator();
     }
 
     @Override

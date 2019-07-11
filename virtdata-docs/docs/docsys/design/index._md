@@ -3,10 +3,7 @@
 This directory contains the design docs for the doc system to be used
 with Virtdata and downstream projects. This will be called *DocSys* from here forward.
 
-Here is a list of topics:
-{{# topics }}
- - [{{ name }}]({{ path }}.html)
-{{/ topics }}
+A list of topics is on the left.
 
 The view you are looking at now is rendered by DocSys from a template named
 `index._md`. Here is how this view was rendered:

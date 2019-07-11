@@ -1,6 +1,6 @@
-# RealSimpleDocs Design
+# Virtual DocSys
 
-## Basic Architecture
+## Architecture
 
 The RealSimpleDoc system is meant to be embedded within
 other projects. It has been design to require a minimum of
@@ -18,7 +18,7 @@ multiple contributing components. This shifts the classic problem
 of doing server-side web programming in-depth for basic content
 authoring to one of simply having the right transformers in place.
 
-## MetaFS Filesystems
+## MetaFS
 
 The content provided to the web server from the filesystem is provided
 by a set of filesystem modules that are collectively called MetaFS. This

@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  * path syntax. Internally, the MetaPath syntax sill defer to the
  * default FileSystem provider's syntax.
  */
-public class MetaPath implements Path {
+public class MetaPath implements Path, Comparable<Path> {
     protected final String[] path;
     private final MetaFS filesystem;
     private final boolean isAbsolute;
@@ -33,8 +33,8 @@ public class MetaPath implements Path {
         //path = new String[remaining.length+1];
         StringBuilder sb = new StringBuilder();
         sb.append(initial);
-        sb.append(FileSystems.getDefault().getSeparator());
         for (String s : remaining) {
+            sb.append(FileSystems.getDefault().getSeparator());
             sb.append(s);
         }
 
@@ -165,11 +165,34 @@ public class MetaPath implements Path {
             return false;
         }
         for (int i = 0; i < other.getNameCount(); i++) {
-            if (!path[path.length - i].equals(other.getName(other.getNameCount() - (i + 1)))) {
+            Path p1 = getName(getNameCount()- (i+1));
+            Path p2 = other.getName(other.getNameCount() - (i + 1));
+            if (!p1.equals(p2)) {
                 return false;
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MetaPath paths = (MetaPath) o;
+
+        if (isAbsolute != paths.isAbsolute) return false;
+        // Probably incorrect - comparing Object[] arrays with Arrays.equals
+        if (!Arrays.equals(path, paths.path)) return false;
+        return filesystem.equals(paths.filesystem);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Arrays.hashCode(path);
+        result = 31 * result + filesystem.hashCode();
+        result = 31 * result + (isAbsolute ? 1 : 0);
+        return result;
     }
 
     @Override
@@ -241,15 +264,7 @@ public class MetaPath implements Path {
     public int compareTo(Path other) {
         int thisSize = getNameCount();
         int thatSize = other.getNameCount();
-
-        int commonIdx = Math.min(thisSize, thatSize);
-        for (int i = 0; i < commonIdx; i++) {
-            int diff = getName(i).compareTo(other.getName(i));
-            if (diff != 0) {
-                return diff;
-            }
-        }
-        return Integer.compare(thisSize, thatSize);
+        return this.toString().compareTo(other.toString());
     }
 
     //    private Path tmpSysPath() {
@@ -348,24 +363,4 @@ public class MetaPath implements Path {
         return null;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        MetaPath paths = (MetaPath) o;
-
-        if (isAbsolute != paths.isAbsolute) return false;
-        // Probably incorrect - comparing Object[] arrays with Arrays.equals
-        if (!Arrays.equals(path, paths.path)) return false;
-        return filesystem != null ? filesystem.equals(paths.filesystem) : paths.filesystem == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Arrays.hashCode(path);
-        result = 31 * result + (filesystem != null ? filesystem.hashCode() : 0);
-        result = 31 * result + (isAbsolute ? 1 : 0);
-        return result;
-    }
 }

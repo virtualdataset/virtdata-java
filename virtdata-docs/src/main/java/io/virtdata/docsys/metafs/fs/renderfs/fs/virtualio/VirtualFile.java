@@ -2,6 +2,8 @@ package io.virtdata.docsys.metafs.fs.renderfs.fs.virtualio;
 
 import io.virtdata.docsys.metafs.fs.renderfs.api.rendered.RenderedContent;
 import org.apache.commons.compress.utils.SeekableInMemoryByteChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -17,19 +19,27 @@ import java.nio.file.spi.FileSystemProvider;
 import java.util.Map;
 
 public class VirtualFile {
+    private final static Logger logger = LoggerFactory.getLogger(VirtualFile.class);
 
     private final Path target;
     private final Path delegate;
-    private final RenderedContent content;
+    private final RenderedContent contents;
+    String renderCache = null;
 
     public VirtualFile(Path delegate, Path target, RenderedContent content) {
         this.delegate = delegate;
         this.target = target;
-        this.content = content;
+        this.contents = content;
     }
 
     private ByteBuffer getContent() {
-        return ByteBuffer.wrap(content.get().getBytes(StandardCharsets.UTF_8)).asReadOnlyBuffer();
+        logger.info("ACCESSING CONTENT " + this.target.toString());
+        if (renderCache==null) {
+            logger.info("CREATING CONTENT " + this.target.toString());
+            renderCache = contents.get();
+        }
+        ByteBuffer byteBuffer = ByteBuffer.wrap(renderCache.getBytes(StandardCharsets.UTF_8)).asReadOnlyBuffer();
+        return byteBuffer;
 //        if (contentCache == null) {
 //            contentCache = dynamicRenderer.get().asReadOnlyBuffer();
 //        }
@@ -42,7 +52,7 @@ public class VirtualFile {
             LinkOption... options) throws IOException {
         FileSystemProvider provider = delegate.getFileSystem().provider();
         BasicFileAttributes delegateAttrs = provider.readAttributes(delegate, type, options);
-        return new VirtualFileBasicFileAttributes(delegateAttrs, getContent().remaining());
+        return new VirtualFileBasicFileAttributes(delegateAttrs, () -> getContent().remaining());
     }
 
     public SeekableByteChannel getSeekableByteChannel() {
@@ -59,7 +69,7 @@ public class VirtualFile {
     public Map<String, Object> readAttributes(Path path, String attributes, LinkOption[] options) throws IOException {
         FileSystemProvider provider = delegate.getFileSystem().provider();
         Map<String, Object> sourceAttrs = provider.readAttributes(delegate, attributes, options);
-        return new VirtualFileAttributeMap(delegate, sourceAttrs, path, getContent().remaining());
+        return new VirtualFileAttributeMap(delegate, sourceAttrs, path, () -> getContent().remaining());
     }
 
     public void checkAccess(Path path, AccessMode[] modes) throws IOException {
@@ -77,12 +87,20 @@ public class VirtualFile {
         FileSystemProvider provider = delegate.getFileSystem().provider();
         FileAttributeView sourceFileAttributeView = provider.getFileAttributeView(delegate, type, options);
         return new VirtualFileAttributeView(
-                delegate, sourceFileAttributeView, path, type, options, getContent().remaining()
+                delegate, sourceFileAttributeView, path, type, options, () -> getContent().remaining()
         );
     }
 
     public RenderedContent getRenderedContent() {
-        return content;
+        return contents;
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.target.toString());
+        sb.append(":[").append(renderCache==null ? "" : renderCache.length()).append("]");
+
+        return sb.toString();
     }
 
 }

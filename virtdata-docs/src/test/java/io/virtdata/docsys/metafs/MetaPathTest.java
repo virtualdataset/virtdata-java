@@ -14,6 +14,7 @@ public class MetaPathTest {
     private final TestableMetaFS fs1 = new TestableMetaFS(new Path[0], new FileStore[0], Collections.emptySet(), "fs1");
     private final TestableMetaFS fs2 = new TestableMetaFS(new Path[0], new FileStore[0], Collections.emptySet(), "fs2");
 
+    @Test
     public void testResolve() {
         Path p1 = fs1.getPath("/an/absolute/one");
         Path p2 = fs1.getPath("relative/two");
@@ -22,6 +23,7 @@ public class MetaPathTest {
 
     }
 
+    @Test
     public void testNormalize() {
         Path p1 = fs1.getPath("/an/absolute/one/../two");
         Path p2 = p1.normalize();
@@ -30,12 +32,31 @@ public class MetaPathTest {
         assertThat(p3.toString()).isEqualTo("/a/basic/path");
     }
 
+    @Test
     public void testRelativize() {
         Path p1 = fs1.getPath("/root/one/two/three");
         Path p2 = fs1.getPath("/root/a/b/c");
         Path p3 = p1.relativize(p2);
         assertThat(p3.toString()).isEqualTo("../../../a/b/c");
 
+    }
+
+    @Test
+    public void testComparator() {
+        Path p1 = fs1.getPath("a", "B");
+        Path p2 = fs1.getPath("b", "C");
+        int i = p1.compareTo(p2);
+        assertThat(i).isEqualTo(-1);
+    }
+
+    @Test
+    public void testEndsWithPath() {
+        Path p1 = fs1.getPath("a","b","c");
+        Path p2 = fs1.getPath("b","c");
+        boolean actual = p1.endsWith(p2);
+        assertThat(actual).isTrue();
+        boolean actual1 = p2.endsWith(p1);
+        assertThat(actual1).isFalse();
     }
 
 }

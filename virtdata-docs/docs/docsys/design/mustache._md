@@ -1,5 +1,5 @@
 
-## Using Mustache Templating
+# Templating
 
 This doc system comes pre-wired to work with both
 markdown and mustache as rendering layers. That means
@@ -16,7 +16,7 @@ then this will be added at that time.
 
 ## Examples
 
-### &#123;&#123; paths &#125;&#125; as markdown
+### paths as markdown
 ```
 {{ paths }}
 
@@ -25,12 +25,15 @@ then this will be added at that time.
 {{/ paths }}
 ```
 
-### &#123;&#123; target &#125;&#125; as markdown
+### target as markdown
 ```
 {{ target }}
 ```
 
-### &#123;&#123; paths &#125;&#125; as html
+### paths as html
 {{ paths }}
+
+### paths as markdown
+
 
 

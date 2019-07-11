@@ -11,10 +11,9 @@ Any file which contains an extension with an underscore at the start is
 considered a template file. Only these files will be evaluated dynamically
 with mustache.
 
-### Local Templates: `_._extension`
+### Local Templates
 
-Any file with a base name of `_._extension` is considered a local template. That is, any other file with the same
-extension will be wrapped within this template.
+Any file with a base name of `_._extension` is considered a local template. That is, any other file with the same extension will be wrapped within this template.
 
 For example. A directory with files named
 - `_._extension`
@@ -32,13 +31,10 @@ wrapping logic above.
 Local templates only apply to files in the same directory
 as the template.
 
-## TODO: implement this ^^
+### Hierarchic Templates
 
-### Parent Templates `__._extension`
-
-While local templates only apply to files in the current directory,
-parent templates apply to every file within their filesystem scope
-of the same extension.
+Hierarchic templates apply to files within subdirectories that
+match the template extension. They are named `__._extension`.
 
 For example, with the structure:
 

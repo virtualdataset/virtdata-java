@@ -22,7 +22,7 @@ public class VirtualFileCache {
             VirtualFile vf = cacheMap.get(key);
             if (vf!=null) {
                 if (vf.getRenderedContent().isCurrent()) {
-                    logger.info("REUSED  " + key);
+                    logger.trace("REUSED  " + key);
                     return vf;
                 } else {
                     logger.info("REFRESH " + key);

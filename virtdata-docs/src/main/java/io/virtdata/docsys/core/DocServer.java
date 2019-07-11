@@ -140,10 +140,10 @@ public class DocServer implements Runnable {
             MustacheProcessor mustache = new MustacheProcessor();
             MarkdownProcessor mdToHtml = new MarkdownProcessor();
             FileRenderer mustacheMarkdown = new FileRenderer("._md", ".md", false, mustache);
+            FileRenderer toMdFragment = new FileRenderer("._md", ".mdf", false, mustache);
+            FileRenderer markdownHtml = new FileRenderer(".md", "._html", false, mdToHtml);
             FileRenderer mustacheHtml = new FileRenderer("._html", ".html", false, mustache);
             FileRenderer mustacheJson = new FileRenderer("._json", ".json", false, mustache);
-            FileRenderer markdownHtml = new FileRenderer(".md", "._html", false, mdToHtml);
-            FileRenderer toMdFragment = new FileRenderer("._md", ".mdf", false, mustache);
             rfs.addRenderers(mustacheMarkdown, mustacheHtml, mustacheJson, markdownHtml, toMdFragment);
             layerfs.addLayer(rfs);
         }

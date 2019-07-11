@@ -1,4 +1,4 @@
-### Requirements for Templating
+## Templating Design
 
 - Static files which use standard extensions should be loadable without
   triggering any render logic. This is important to make static content
@@ -13,11 +13,8 @@ _ Target files should be able to be wrapped automatically with a template
   that is provided by the parent directory of the current directory.
 - Rendering stages which are completed should be cached in memory,
   as long as the underlying templates and data have not changed.
-  
 
-## Templating Guide
-
-### Template File Names
+## Template File Names
 
 All files which are intended to be interpreted as a template must have an
 extension which starts with an underscore. For examples, both `myfile._md` and `myfile._html` would both be considered templates subject to
@@ -53,7 +50,7 @@ The configuration described above is known as as an `extension mapping`. An exte
 If you have multiple extension mappings which chain together, such as `._md -> .md (mustache)` and `.md -> .html (markdown)`, then these will
 cascade together gracefully.
 
-### Rendering Steps
+## Rendering Steps
 
 Normally, users do not access the template files directly. Ideally, users
 are not even aware that there is templating happening at all.
@@ -65,7 +62,7 @@ These steps are followed when a user accesses a target file:
     1. If the file has already been rendered and the source modification time hasn't changed, the the cached copy is provided.
     2. Otherwise, the target file is rendered to a _rendered file_, cached in memory, and also returned to the caller as a virtual file.  
 
-### Rendering Context
+## Rendering Context
 
 If the results of a template were always the same, then the templates would serve no special purpose. When a template is used to render a file, it needs some data to plug in to the template sections.
 
@@ -82,7 +79,7 @@ The combination of a specific rendering context and template is called
 a _rendering scope_, thus a rendering scope has a version which is
 the newest version of either components.
  
-### Composite Templating
+## Compositing
 
 Composite templates are templates which can automatically layer together
 in order to impose a format around target file rendering.
@@ -119,7 +116,7 @@ Within the `foobarbaz._md` template, everything works as it usually does,
 only its placement within the local directory template is determined by
 the use of the `target` value.
 
-#### Parent Directory Template
+## Hierarchic Wrapping
 
 Moving from the target file up through the file system, if there are any
 templates with the name `__._.md`, then these template are applied just
@@ -128,9 +125,7 @@ as above, but they apply for all elements, and they are applied recursively.
 Taking the local directory template above into consideration with the 
 parent directory template, it is possible to have both apply. ...
 
-TODO: Implement this
-
-## Cyclic Dependencies
+## Directory Wrapping
 
 As with any system which can have internal references, it is possible
 to create a cyclic dependency. For example, as directory template
@@ -141,9 +136,6 @@ make a compositor which can read metadata like topics from rendered
 partials without invoking the canonical name of the current target
 in rendering, but this will be an incremental improvement.
 
-## TODO: Implement the above as a special case where a non-layered
-view of the partial file is allowed to be rendered as a separate file
-only for the purposes of reading metadata.
 
 
 

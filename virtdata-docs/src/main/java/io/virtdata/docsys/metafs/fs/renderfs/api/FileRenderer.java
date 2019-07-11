@@ -3,6 +3,8 @@ package io.virtdata.docsys.metafs.fs.renderfs.api;
 import io.virtdata.docsys.metafs.fs.renderfs.api.rendered.RenderedContent;
 import io.virtdata.docsys.metafs.fs.renderfs.api.rendering.RenderingScope;
 import io.virtdata.docsys.metafs.fs.renderfs.api.rendering.TemplateCompiler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -17,6 +19,7 @@ import java.util.regex.Pattern;
 
 @SuppressWarnings("Duplicates")
 public class FileRenderer extends FileContentRenderer {
+    private final static Logger logger = LoggerFactory.getLogger(FileRenderer.class);
 
     private final String sourceExtension;
     private final String targetExtension;
@@ -156,6 +159,7 @@ public class FileRenderer extends FileContentRenderer {
                 scope = outer.wrap(scope);
             }
         }
+        logger.info("SCOPE chain: " + scope.getDiagnosticSummary());
         RenderedContent rendered = scope.getRendered();
         return rendered;
     }

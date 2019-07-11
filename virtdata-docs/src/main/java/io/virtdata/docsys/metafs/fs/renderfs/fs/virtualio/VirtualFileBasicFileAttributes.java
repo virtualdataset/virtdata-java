@@ -2,15 +2,17 @@ package io.virtdata.docsys.metafs.fs.renderfs.fs.virtualio;
 
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
+import java.util.function.LongSupplier;
 
 public class VirtualFileBasicFileAttributes implements BasicFileAttributes {
 
     private BasicFileAttributes sysFileAttributeDelegate;
-    private long virtualSize;
+    private LongSupplier sizereader;
 
-    public VirtualFileBasicFileAttributes(BasicFileAttributes sysFileAttributeDelegate, long virtualSize) {
+    public VirtualFileBasicFileAttributes(
+            BasicFileAttributes sysFileAttributeDelegate, LongSupplier sizereader) {
         this.sysFileAttributeDelegate = sysFileAttributeDelegate;
-        this.virtualSize = virtualSize;
+        this.sizereader = sizereader;
     }
 
     @Override
@@ -50,7 +52,7 @@ public class VirtualFileBasicFileAttributes implements BasicFileAttributes {
 
     @Override
     public long size() {
-        return this.virtualSize;
+        return this.sizereader.getAsLong();
     }
 
     @Override

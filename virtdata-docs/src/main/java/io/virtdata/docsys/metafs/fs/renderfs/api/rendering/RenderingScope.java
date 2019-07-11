@@ -4,10 +4,13 @@ import io.virtdata.docsys.metafs.fs.renderfs.api.SourcePathTemplate;
 import io.virtdata.docsys.metafs.fs.renderfs.api.rendered.ExceptionContent;
 import io.virtdata.docsys.metafs.fs.renderfs.api.rendered.RenderedContent;
 import io.virtdata.docsys.metafs.fs.renderfs.model.ViewModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 
 public class RenderingScope implements Versioned {
+    private final static Logger logger = LoggerFactory.getLogger(RenderingScope.class);
 
     private final TemplateView templateView;
     private final ViewModel viewModel;
@@ -43,13 +46,16 @@ public class RenderingScope implements Versioned {
     public RenderedContent getRendered() {
         try {
             if (innerScope!=null) {
+                logger.info("RENDERING INNER " + innerScope.getTemplate().getTemplatePath() + " -> " + innerScope.getViewModel().getTarget());
                 innerScope.getRendered();
                 this.getViewModel().setInner(innerScope.getViewModel());
             }
             if (this.getViewModel().getRendered()==null || !this.getViewModel().isValidFor(this)) {
                 if (this.renderer==null || !this.renderer.isValidFor(this)) {
+                    logger.info("COMPILING OUTER " + getTemplate().getTemplatePath() + " -> " + getViewModel().getTarget());
                     this.renderer =compiler.apply(templateView);
                 }
+                logger.info("RENDERING OUTER " + getTemplate().getTemplatePath() + " -> " + getViewModel().getTarget());
                 RenderedContent rendered = renderer.apply(this);
                 this.getViewModel().setRendered(rendered);
             }
@@ -82,6 +88,18 @@ public class RenderingScope implements Versioned {
             sb.append(scope.toString());
             scope=scope.innerScope;
         }
+        return sb.toString();
+    }
+
+    public String getDiagnosticSummary() {
+        StringBuilder sb = new StringBuilder();
+        RenderingScope sc = this;
+        while (sc!=null) {
+            sb.append(sc.getTemplate().getTemplatePath());
+            sb.append(" ");
+            sc = sc.innerScope;
+        }
+        sb.setLength(sb.length()-1);
         return sb.toString();
     }
 }

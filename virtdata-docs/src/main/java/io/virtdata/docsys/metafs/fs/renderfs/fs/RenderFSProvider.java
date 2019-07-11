@@ -67,7 +67,7 @@ public class RenderFSProvider extends VirtFSProvider {
     public synchronized DirectoryStream<Path> newDirectoryStream(Path dir, DirectoryStream.Filter<? super Path> filter) throws IOException {
         RenderFS renderFS = assertThisFS(dir);
         DirectoryStream<Path> paths = super.newDirectoryStream(dir, filter);
-        return renderFS.newDirectoryStream(paths);
+        return renderFS.newDirectoryStream(dir, paths);
     }
 
     @Override

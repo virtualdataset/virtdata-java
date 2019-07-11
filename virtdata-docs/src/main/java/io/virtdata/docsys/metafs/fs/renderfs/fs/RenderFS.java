@@ -65,9 +65,8 @@ public class RenderFS extends VirtFS {
         return provider;
     }
 
-
-    public synchronized DirectoryStream<Path> newDirectoryStream(DirectoryStream<Path> paths) {
-        return new VirtualDirectoryStream(paths, renderers);
+    public synchronized DirectoryStream<Path> newDirectoryStream(Path of, DirectoryStream<Path> paths) {
+        return new VirtualDirectoryStream(of, paths, renderers);
     }
 
     @Override

@@ -1,25 +1,49 @@
 package io.virtdata.docsys.metafs.fs.renderfs.model;
 
+import com.vladsch.flexmark.ast.Heading;
 import io.virtdata.docsys.metafs.fs.renderfs.walkers.VirtTreeWalker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 
 public class TopicFinder {
     private final static Logger logger = LoggerFactory.getLogger(TopicFinder.class);
 
     public static List<Topic> getTopics(Path baseTopicPath) {
+        logger.info("GET TOPICS " + baseTopicPath);
+        try {
+            FV v = new FV();
+            TopicFileFilter f = new TopicFileFilter(".mdf");
+            Path parent = baseTopicPath.getParent();
+            VirtTreeWalker.walk(parent, v, f);
+            List<Topic> topics = v.getTopics();
+            return topics;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-        Predicate<String> f = s -> s.endsWith(".mdf") && !s.equals(baseTopicPath.toString());
-        FV v = new FV();
-        VirtTreeWalker.walk(baseTopicPath.getParent(), v, f);
-        List<Topic> topics = v.getTopics();
-        logger.info("TOPICS for(" + baseTopicPath + "): " + topics.toString());
-        return topics;
+    private final static class TopicFileFilter implements DirectoryStream.Filter<Path> {
+        private String extension;
+
+        public TopicFileFilter(String extension) {
+            this.extension = extension;
+        }
+
+        @Override
+        public boolean accept(Path entry) throws IOException {
+            if (entry.toString().endsWith(extension))
+                return true;
+            if(entry.getFileSystem().provider().readAttributes(entry, BasicFileAttributes.class).isDirectory())
+                return true;
+            return false;
+        }
     }
 
     private final static class FV implements VirtTreeWalker.PathVisitor {
@@ -27,8 +51,13 @@ public class TopicFinder {
 
         @Override
         public void visit(Path p) {
+            logger.info("VISIT TOPICS for(" + p + "): " + topics.size());
             TopicParser parser = new TopicParser(p);
-            topics.add(new Topic(parser.getTopicName(), p));
+            List<Heading> headings = parser.getTopicNames();
+            for (Heading heading : headings) {
+                Topic topic = new Topic(heading, p);
+                topics.add(topic);
+            }
         }
 
         public List<Topic> getTopics() {

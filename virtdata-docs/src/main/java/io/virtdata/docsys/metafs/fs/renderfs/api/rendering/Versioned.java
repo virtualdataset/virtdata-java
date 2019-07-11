@@ -20,7 +20,8 @@ public interface Versioned {
      * @return true, if the versions match
      */
     default boolean isValidFor(Versioned other) {
-        return getVersion()==other.getVersion();
+        boolean isValid = getVersion() == other.getVersion();
+        return isValid;
     }
 
     /**

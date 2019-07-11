@@ -37,7 +37,8 @@ public class AugmentingIterator<O> implements Iterator<O> {
                 optionalElements = null;
             }
         }
-        return wrapped.hasNext();
+        boolean hasNext = wrapped.hasNext();
+        return hasNext;
 
     }
 
