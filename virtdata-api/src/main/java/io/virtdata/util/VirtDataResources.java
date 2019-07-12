@@ -23,9 +23,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.CharBuffer;
-import java.util.*;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class VirtDataResources {
@@ -45,6 +50,11 @@ public class VirtDataResources {
         return readFileString(basename, DATA_DIR);
     }
 
+    public static Path findRequiredDirPath(String pathname) {
+        Optional<Path> optionalPath = findOptionalDirPath(pathname);
+        return optionalPath.orElseThrow(() -> new RuntimeException(
+                "Unable to find dir path " + pathname + " in class path"));
+    }
 
     public static InputStream findRequiredStreamOrFile(String basename, String extension, String... searchPaths) {
         Optional<InputStream> optionalStreamOrFile = findOptionalStreamOrFile(basename, extension, searchPaths);
@@ -66,6 +76,20 @@ public class VirtDataResources {
         return findOptionalStreamOrFile(basename, extenion, searchPaths)
                 .map(InputStreamReader::new)
                 .map(BufferedReader::new);
+    }
+
+    public static Optional<Path> findOptionalDirPath(String pathName) {
+        URL systemResource = ClassLoader.getSystemResource(pathName);
+
+        if (systemResource!=null) {
+            try {
+                return Optional.of(Path.of(systemResource.toURI()));
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return Optional.empty();
     }
 
     public static Optional<InputStream> findOptionalStreamOrFile(String basename, String extension, String... searchPaths) {

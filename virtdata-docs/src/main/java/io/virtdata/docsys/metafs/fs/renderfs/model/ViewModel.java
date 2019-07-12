@@ -99,10 +99,8 @@ public class ViewModel implements Versioned, MarkdownStringer {
                 '}';
     }
 
-    public List<Topic> getTopics() {
-        List<Topic> topics = TopicFinder.getTopics(target);
-        return topics;
-
+    public TopicView getTopics() {
+        return new TopicView(target);
     }
 
 }

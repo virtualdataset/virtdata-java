@@ -1,0 +1,20 @@
+h1 {
+    background-color: lightblue;
+}
+
+.l1menu {
+    font-size: 12px;
+    line-height: 14px;
+}
+.l2menu {
+    font-size: 8px;
+    line-height: 10px;
+}
+
+body,div {
+    font-size: .75rem;
+}
+.navmenu {
+    list-style-position: outside;
+    list-style-type: none;
+}

@@ -12,10 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VirtTreeWalker {
+
+//    public static final ThreadLocal<Set<Path>> TLPATHS = ThreadLocal.withInitial(HashSet::new);
+
     private final static Logger logger = LoggerFactory.getLogger(VirtTreeWalker.class);
 
     public static void walk(Path p, PathVisitor v, DirectoryStream.Filter<Path> filter) {
         try {
+            logger.info(" TOPIC-WALK > " + p);
             FileSystemProvider provider = p.getFileSystem().provider();
             DirectoryStream<Path> paths = provider.newDirectoryStream(p, (Path r) -> true);
             List<Path> pathlist = new ArrayList<>();
@@ -23,15 +27,27 @@ public class VirtTreeWalker {
                 pathlist.add(path);
             }
             for (Path path : pathlist) {
-                if (filter.accept(path)) {
-                    logger.info("COMPUTE TOPICS for(" + path + ")");
-                    v.visit(path);
-                } else if (path.getFileSystem().provider().readAttributes(path, BasicFileAttributes.class).isDirectory()) {
-                    // TODO: fix recursion here that results from cyclic dependency
-                    logger.info("WALK TOPICS in " + path);
+                if (path.getFileSystem().provider().readAttributes(path, BasicFileAttributes.class).isDirectory()) {
+                    v.preVisitDir(path);
                     walk(path, v, filter);
+                    v.postVisitDir(path);
+                } else if (filter.accept(path)) {
+//                    if (TLPATHS.get().contains(path)) {
+//                        logger.warn("extra recursion");
+//                    }
+//                    TLPATHS.get().add(path);
+                    logger.info("----> COMPUTE TOPICS for (" + path + ")");
+                    v.preVisitFile(path);
+                    v.visit(path);
+                    v.postVisitFile(path);
+                    logger.info("<--- END COMPUTE TOPICS  (" + path + ")");
+
+                } else {
+                    //logger.info("WHOOPS");
                 }
             }
+            logger.info(" TOPIC-WALK < " + p);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -39,6 +55,10 @@ public class VirtTreeWalker {
 
     public interface PathVisitor {
         void visit(Path p);
+        default void preVisitFile(Path path) {}
+        default void postVisitFile(Path path) {}
+        default void preVisitDir(Path path) {}
+        default void postVisitDir(Path path) {}
     }
 
 //    private final static class nameFilter implements DirectoryStream.Filter<Path> {

@@ -12,8 +12,8 @@
   {{/ breadcrumbs }}
   ],
   'topics' : {
-    {{# topics }}
-      '{{ name }}': '{{ path }}'{{^-last}},{{/-last}}
-    {{/ topics }}
+    { {# topics.list } }
+      '{ { name } }': '{ { path } }'{ {^-last} },{ {/-last} }
+    { {/ topics.list } }
   }
 }

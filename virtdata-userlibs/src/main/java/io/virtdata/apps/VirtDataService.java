@@ -14,7 +14,7 @@ import javax.ws.rs.core.MediaType;
 
 @Service(DocSystemEndpoint.class)
 @Path("virtdata")
-public class VirtDataService {
+public class VirtDataService implements DocSystemEndpoint {
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
