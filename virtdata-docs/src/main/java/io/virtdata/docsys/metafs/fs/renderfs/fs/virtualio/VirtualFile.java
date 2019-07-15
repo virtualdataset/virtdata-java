@@ -52,7 +52,10 @@ public class VirtualFile {
             LinkOption... options) throws IOException {
         FileSystemProvider provider = delegate.getFileSystem().provider();
         BasicFileAttributes delegateAttrs = provider.readAttributes(delegate, type, options);
-        return new VirtualFileBasicFileAttributes(delegateAttrs, () -> getContent().remaining());
+        return new VirtualFileBasicFileAttributes(
+                delegateAttrs, () -> getContent().remaining(),
+                () -> contents.getVersion()
+        );
     }
 
     public SeekableByteChannel getSeekableByteChannel() {
@@ -69,7 +72,12 @@ public class VirtualFile {
     public Map<String, Object> readAttributes(Path path, String attributes, LinkOption[] options) throws IOException {
         FileSystemProvider provider = delegate.getFileSystem().provider();
         Map<String, Object> sourceAttrs = provider.readAttributes(delegate, attributes, options);
-        return new VirtualFileAttributeMap(delegate, sourceAttrs, path, () -> getContent().remaining());
+        return new VirtualFileAttributeMap(
+                delegate,
+                sourceAttrs,
+                path,
+                () -> getContent().remaining(),
+                contents::getVersion);
     }
 
     public void checkAccess(Path path, AccessMode[] modes) throws IOException {
@@ -87,7 +95,13 @@ public class VirtualFile {
         FileSystemProvider provider = delegate.getFileSystem().provider();
         FileAttributeView sourceFileAttributeView = provider.getFileAttributeView(delegate, type, options);
         return new VirtualFileAttributeView(
-                delegate, sourceFileAttributeView, path, type, options, () -> getContent().remaining()
+                delegate,
+                sourceFileAttributeView,
+                path,
+                type,
+                options,
+                () -> getContent().remaining(),
+                contents::getVersion
         );
     }
 

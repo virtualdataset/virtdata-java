@@ -14,17 +14,19 @@ public class VirtualFileAttributeView implements BasicFileAttributeView {
     private final Class type;
     private final LinkOption[] options;
     private final LongSupplier sizereader;
+    private LongSupplier versionreader;
     private final Path targetPath;
     private final Path sourcePath;
 
     public VirtualFileAttributeView(Path sourcePath, FileAttributeView sourceAttributeView,
-                                    Path targetPath, Class type, LinkOption[] options, LongSupplier sizereader) {
+                                    Path targetPath, Class type, LinkOption[] options, LongSupplier sizereader, LongSupplier versionreader) {
         this.sourcePath = sourcePath;
         this.targetPath = targetPath;
         this.sourceAttributeView = sourceAttributeView;
         this.type = type;
         this.options = options;
         this.sizereader = sizereader;
+        this.versionreader = versionreader;
     }
 
     @Override
@@ -41,7 +43,9 @@ public class VirtualFileAttributeView implements BasicFileAttributeView {
     public VirtualFileBasicFileAttributes readAttributes() throws IOException {
         BasicFileAttributes delegateAttributes =
                 sourcePath.getFileSystem().provider().readAttributes(targetPath, BasicFileAttributes.class);
-        return new VirtualFileBasicFileAttributes(delegateAttributes,sizereader);
+        return new VirtualFileBasicFileAttributes(
+                delegateAttributes,
+                sizereader, versionreader);
     }
     @Override
     public void setTimes(

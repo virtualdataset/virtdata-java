@@ -83,12 +83,12 @@ public class ViewModel implements Versioned, MarkdownStringer {
         return inner;
     }
 
-    public void setRendered(RenderedContent rendered) {
+    public void setRenderedContent(RenderedContent rendered) {
         this.rendered = rendered;
     }
 
-    public RenderedContent getRendered() {
-        return rendered;
+    public String getRendered() {
+        return rendered.get();
     }
 
     @Override
@@ -103,4 +103,7 @@ public class ViewModel implements Versioned, MarkdownStringer {
         return new TopicView(target);
     }
 
+    public RenderedContent getRenderedContent() {
+        return this.rendered;
+    }
 }

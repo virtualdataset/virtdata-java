@@ -13,19 +13,21 @@ public class VirtualFileCache {
     private final static Logger logger = LoggerFactory.getLogger(VirtualFileCache.class);
 
     private final Map<Path, VirtualFile> cacheMap = new HashMap<>();
+    private boolean devmode = false;
 
 
     public synchronized VirtualFile computeIfAbsent(
             Path key, Function<? super Path, ? extends VirtualFile> mappingFunction
     ) {
+        logger.info("REQUESTFOR " + key);
         try {
             VirtualFile vf = cacheMap.get(key);
             if (vf!=null) {
-                if (vf.getRenderedContent().isCurrent()) {
+                if (!devmode && vf.getRenderedContent().isCurrent()) {
                     logger.trace("REUSED  " + key);
                     return vf;
                 } else {
-                    logger.info("REFRESH " + key);
+                    logger.info("REFRESH " + (devmode ? "(DEVMODE)" : "") + key);
                     vf=mappingFunction.apply(key);
                     if (vf==null) {
                         logger.info("NULLREN " + key);

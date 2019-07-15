@@ -44,7 +44,9 @@ public class TopicView {
     }
 
     private List<Topic> scrunch(List<Topic> topics) {
-        PathTopic root = new FileTopic(this.topicScope);
+        Path parent = this.topicScope.getParent();
+        PathTopic root = new FileTopic(parent);
+        String s = root.toString();
         root.addSubTopics(topics);
 
         LinkedList<Topic> mill = new LinkedList<>();
@@ -72,4 +74,5 @@ public class TopicView {
         List<Topic> topicList = TopicFinder.getTopicList(this.topicScope);
         return topicList;
     }
+
 }

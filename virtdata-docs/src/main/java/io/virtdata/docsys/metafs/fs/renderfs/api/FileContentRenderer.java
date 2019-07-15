@@ -12,6 +12,7 @@ import java.nio.ByteBuffer;
 import java.nio.file.AccessMode;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,7 +61,9 @@ public abstract class FileContentRenderer {
             return false;
         }
 
-        boolean canRender = matchesTarget(p) && hasSource(p);
+        boolean matchesTarget = matchesTarget(p);
+        boolean hasSource = hasSource(p);
+        boolean canRender = matchesTarget && hasSource;
         if (canRender) {
             logger.info("CANRENDER " + p + " (" + this + ")");
         }
@@ -79,14 +82,14 @@ public abstract class FileContentRenderer {
 
     abstract Path getRenderedTargetName(Path sourceName);
 
-    abstract RenderedContent render(Path source, Path target, ByteBuffer input);
+    abstract RenderedContent render(Path source, Path target, Supplier<ByteBuffer> input);
 
     private RenderedContent getRendered(Path targetPath) {
         Path sourcePath = getSourcePath(targetPath);
         if (sourcePath != null) {
             try {
                 ByteBuffer rawInput = getRawByteBuffer(sourcePath);
-                RenderedContent rendered = render(sourcePath, targetPath, rawInput);
+                RenderedContent rendered = render(sourcePath, targetPath, ()->rawInput);
                 return rendered;
             } catch (IOException ioe) {
                 throw new RuntimeException(ioe);

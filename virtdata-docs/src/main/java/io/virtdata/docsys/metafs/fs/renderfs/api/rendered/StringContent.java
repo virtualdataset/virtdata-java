@@ -9,6 +9,7 @@ public class StringContent implements RenderedContent {
     private final Supplier<String> renderedText;
     private final long version;
     private Versioned dependency;
+    private String cache;
 
     public StringContent(Supplier<String> renderedText, long version, Versioned dependency) {
         this.renderedText = renderedText;
@@ -23,11 +24,14 @@ public class StringContent implements RenderedContent {
 
     @Override
     public String get() {
-        return renderedText.get();
+        if (cache==null) {
+            cache = renderedText.get();
+        }
+        return cache;
     }
 
     public String toString() {
-        return get();
+        throw new RuntimeException("not here");
     }
 
     @Override

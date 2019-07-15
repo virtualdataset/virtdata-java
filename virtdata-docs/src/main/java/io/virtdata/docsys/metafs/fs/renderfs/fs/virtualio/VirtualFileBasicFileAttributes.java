@@ -2,22 +2,26 @@ package io.virtdata.docsys.metafs.fs.renderfs.fs.virtualio;
 
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
+import java.util.concurrent.TimeUnit;
 import java.util.function.LongSupplier;
 
 public class VirtualFileBasicFileAttributes implements BasicFileAttributes {
 
     private BasicFileAttributes sysFileAttributeDelegate;
     private LongSupplier sizereader;
+    private LongSupplier versionreader;
 
     public VirtualFileBasicFileAttributes(
-            BasicFileAttributes sysFileAttributeDelegate, LongSupplier sizereader) {
+            BasicFileAttributes sysFileAttributeDelegate, LongSupplier sizereader, LongSupplier versionreader) {
         this.sysFileAttributeDelegate = sysFileAttributeDelegate;
         this.sizereader = sizereader;
+        this.versionreader = versionreader;
     }
 
     @Override
     public FileTime lastModifiedTime() {
-        return sysFileAttributeDelegate.lastModifiedTime();
+        return FileTime.from(versionreader.getAsLong(), TimeUnit.SECONDS);
+//        return sysFileAttributeDelegate.lastModifiedTime();
     }
 
     @Override

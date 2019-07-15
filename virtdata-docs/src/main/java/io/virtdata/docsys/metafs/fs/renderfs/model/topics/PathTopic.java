@@ -21,11 +21,16 @@ public abstract class PathTopic implements Topic {
 
     @Override
     public String getName() {
-        if (name==null) {
-            int i = getPath().lastIndexOf("/");
-            return "unnamed:" + getPath().substring(0,i);
+        try {
+            if (name==null) {
+                String path = getPath();
+                int i = path.lastIndexOf("/");
+                return "unnamed:" + getPath().substring(0,i);
+            }
+            return name;
+        } catch (Exception e) {
+            return "OOPS";
         }
-        return name;
     }
 
     /**
@@ -40,7 +45,11 @@ public abstract class PathTopic implements Topic {
     public String getPath() {
         String pstr = path.toString();
         int i = pstr.lastIndexOf(".");
-        return pstr.substring(0,i);
+        if (i<0) {
+            return pstr;
+        } else {
+            return pstr.substring(0,i);
+        }
     }
 
     @Override

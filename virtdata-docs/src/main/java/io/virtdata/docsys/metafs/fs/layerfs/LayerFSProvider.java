@@ -150,7 +150,11 @@ public class LayerFSProvider extends MetaFSProvider {
                 exceptions.add(e);
             }
         }
-        throw new RuntimeException(exceptions.size() + " exceptions occurred:" + exceptions.stream().map(Exception::getMessage).collect(Collectors.joining(",\n","\n","")));
+        throw new RuntimeException(
+                exceptions.size() + " exceptions occurred:"
+                        + exceptions.stream()
+                        .map(Exception::getMessage)
+                        .collect(Collectors.joining(",\n","\n","")));
     }
 
     @Override

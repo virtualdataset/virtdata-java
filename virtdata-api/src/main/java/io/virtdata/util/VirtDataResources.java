@@ -23,10 +23,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.CharBuffer;
+import java.nio.file.AccessMode;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.spi.FileSystemProvider;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,9 +39,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class VirtDataResources {
-    private final static Logger logger = LoggerFactory.getLogger(VirtDataResources.class);
-
     public final static String DATA_DIR = "data";
+    private final static Logger logger = LoggerFactory.getLogger(VirtDataResources.class);
 
     public static CharBuffer readDataFileToCharBuffer(String basename) {
         return loadFileToCharBuffer(basename, DATA_DIR);
@@ -48,12 +52,6 @@ public class VirtDataResources {
 
     public static String readDataFileString(String basename) {
         return readFileString(basename, DATA_DIR);
-    }
-
-    public static Path findRequiredDirPath(String pathname) {
-        Optional<Path> optionalPath = findOptionalDirPath(pathname);
-        return optionalPath.orElseThrow(() -> new RuntimeException(
-                "Unable to find dir path " + pathname + " in class path"));
     }
 
     public static InputStream findRequiredStreamOrFile(String basename, String extension, String... searchPaths) {
@@ -81,7 +79,7 @@ public class VirtDataResources {
     public static Optional<Path> findOptionalDirPath(String pathName) {
         URL systemResource = ClassLoader.getSystemResource(pathName);
 
-        if (systemResource!=null) {
+        if (systemResource != null) {
             try {
                 return Optional.of(Path.of(systemResource.toURI()));
             } catch (URISyntaxException e) {
@@ -124,16 +122,8 @@ public class VirtDataResources {
 
         // URLs, if http: or https:
         if (isRemote(path)) {
-            URL url;
-            try {
-                url = new URL(path);
-                InputStream inputStream = url.openStream();
-                if (inputStream!=null) {
-                    return Optional.of(inputStream);
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            Optional<InputStream> inputStream = getInputStreamForUrl(path);
+            if (inputStream != null) return inputStream;
         }
 
         // Files
@@ -152,6 +142,21 @@ public class VirtDataResources {
 
         return Optional.empty();
     }
+
+    public static Optional<InputStream> getInputStreamForUrl(String path) {
+        URL url;
+        try {
+            url = new URL(path);
+            InputStream inputStream = url.openStream();
+            if (inputStream != null) {
+                return Optional.of(inputStream);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
 
     public static List<String> readFileLines(String basename, String... searchPaths) {
         InputStream requiredStreamOrFile = findRequiredStreamOrFile(basename, "", DATA_DIR);
@@ -192,7 +197,7 @@ public class VirtDataResources {
         try {
             InputStreamReader isr = new InputStreamReader(stream);
             linesImage = CharBuffer.allocate(1024 * 1024);
-            while (isr.read(linesImage)>0) {
+            while (isr.read(linesImage) > 0) {
             }
             isr.close();
         } catch (IOException e) {
@@ -201,6 +206,81 @@ public class VirtDataResources {
         }
         linesImage.flip();
         return linesImage.asReadOnlyBuffer();
+    }
+
+    /**
+     * <p>Look in all the provided path specifiers for an extant Path, and return
+     * the first one found.</p>
+     *
+     * <p>If the final character of any path specifier is the default file
+     * separator, then the request is for a directory. During searching,
+     * if a directory is found when a file is requested, or vice-versa, then
+     * an error is thrown withouth looking further.</p>
+     *
+     * <p>The locations that are searched include
+     * <OL>
+     * <LI>URLs. If the path specifier is a URI, then it is checked for a positive response
+     * before the path is returned. URLs can not be used for directories.</LI>
+     * <LI>The local filesystem, starting from the current directory of the process.</LI>
+     * <LI>The class path.</LI>
+     * </OL>
+     * </p>
+     *
+     * @param pathspecs A specifier for a URL, a directory with a trailing slash, or a file
+     *                  with no trailing slash.
+     * @return A Path
+     * @throws RuntimeException if none of the specified paths is found in any of the locations
+     */
+    public static Path findPathIn(String... pathspecs) {
+
+        for (String pathspec : pathspecs) {
+            Path foundPath = null;
+
+            if (isRemote(pathspec)) {
+                try {
+                    Optional<InputStream> inputStreamForUrl = getInputStreamForUrl(pathspec);
+                    if (inputStreamForUrl.isPresent()) {
+                        foundPath = Path.of(URI.create(pathspec));
+                        logger.debug("Found accessible remote file at " + foundPath.toString());
+                    }
+                } catch (Exception ignored) {
+                }
+            } else {
+                boolean wantsADirectory = pathspec.endsWith(FileSystems.getDefault().getSeparator());
+                String candidatePath = wantsADirectory ? pathspec.substring(0, pathspec.length() - 2) : pathspec;
+                Path candidate = Path.of(candidatePath);
+                try {
+                    FileSystemProvider provider = candidate.getFileSystem().provider();
+                    provider.checkAccess(candidate, AccessMode.READ);
+                    BasicFileAttributes attrs = provider.readAttributes(candidate, BasicFileAttributes.class);
+                    boolean foundADirectory = attrs.isDirectory();
+                    if (wantsADirectory == foundADirectory) {
+                        throw new RuntimeException("for path " + pathspec + ", user wanted a " +
+                                (wantsADirectory ? "directory" : "file") + ", but found a " +
+                                (foundADirectory ? "directory" : "file") + " while searching paths " +
+                                Arrays.toString(pathspecs));
+                    }
+                    foundPath = candidate;
+                } catch (Exception ignored) {
+                }
+                if (foundPath == null) {
+                    try {
+                        ClassLoader cl = VirtDataResources.class.getClassLoader();
+                        URL url = ClassLoader.getSystemResource(candidatePath);
+                        if (url != null) {
+                            foundPath = Path.of(url.toURI());
+                        }
+                    } catch (Exception ignored) {
+                    }
+
+                }
+            }
+
+            if (foundPath != null) {
+                return foundPath;
+            }
+        }
+        throw new RuntimeException("Unable to find path in " + Arrays.toString(pathspecs));
     }
 
 }

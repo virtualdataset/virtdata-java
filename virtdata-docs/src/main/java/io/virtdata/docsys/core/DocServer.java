@@ -1,6 +1,5 @@
 package io.virtdata.docsys.core;
 
-import io.virtdata.docsys.api.DocSystemEndpoint;
 import io.virtdata.docsys.handlers.EndpointsHandler;
 import io.virtdata.docsys.handlers.FavIconHandler;
 import io.virtdata.docsys.metafs.fs.layerfs.LayerFS;
@@ -97,6 +96,20 @@ public class DocServer implements Runnable {
         HandlerList handlers = new HandlerList();
 
 
+        // TODO: Get auto endpoints running
+//        List<DocSystemEndpoint> autoendpoints = EndpointLoader.load();
+//        autoendpoints.forEach(e -> {
+//            if (!servletObjects.contains(e)) servletObjects.add(e);
+//        });
+//
+//        if (this.servletObjects.size()>0) {
+//            logger.info("adding " + servletObjects.size() + " context handlers");
+//            handlers.addHandler(getContextHandler());
+//        } else {
+//            logger.info("No context handlers defined, not adding context container.");
+//        }
+
+
         //        // Debug
 //        DebugListener debugListener = new DebugListener();
 //        If needed to limit to local only
@@ -160,24 +173,13 @@ public class DocServer implements Runnable {
         resourceHandler.setWelcomeFiles(new String[]{"index.html"});
         resourceHandler.setRedirectWelcome(true);
         resourceHandler.setBaseResource(baseResource);
+        resourceHandler.setCacheControl("no-cache");
         handlers.addHandler(resourceHandler);
 
         // Show contexts
         DefaultHandler defaultHandler = new DefaultHandler();
         defaultHandler.setShowContexts(true);
         defaultHandler.setServeIcon(false);
-
-        List<DocSystemEndpoint> autoendpoints = EndpointLoader.load();
-        autoendpoints.forEach(e -> {
-            if (!servletObjects.contains(e)) servletObjects.add(e);
-        });
-
-        if (this.servletObjects.size()>0) {
-            logger.info("adding " + servletObjects.size() + " context handlers");
-            handlers.addHandler(getContextHandler());
-        } else {
-            logger.info("No context handlers defined, not adding context container.");
-        }
 
         handlers.addHandler(defaultHandler);
 

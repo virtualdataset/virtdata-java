@@ -1,5 +1,8 @@
 package io.virtdata.docsys.metafs.fs.renderfs.api;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -12,6 +15,7 @@ import java.util.function.Function;
 @SuppressWarnings("Duplicates")
 
 public class RendererIO {
+    public final static Logger logger = LoggerFactory.getLogger(RendererIO.class);
 
     public static String readString(Path path) {
         try {
@@ -46,6 +50,7 @@ public class RendererIO {
     }
 
     public static long mtimeFor(Path path) {
+        logger.info("MTIME FOR " + path);
         return getFileAttributes(path).lastModifiedTime().toMillis();
     }
 

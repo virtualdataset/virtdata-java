@@ -12,6 +12,9 @@
      <UL class="navmenu">
      {{# topics.headers }}
        <LI><span title="{{-index}}" class="l1menu"><a href="{{path}}.html#{{id}}">{{name}}</a></span></LI>
+       {{# subTopics }}
+         <LI><span title="{{-index}}" class="l2menu"><a href="{{path}}.html#{{id}}">{{name}}</a></span></LI>
+       {{/ subTopics }}
      {{/ topics.headers }}
      </UL>
 

@@ -6,14 +6,15 @@ import io.virtdata.docsys.metafs.fs.renderfs.api.rendering.TemplateCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.file.AccessMode;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.spi.FileSystemProvider;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -99,11 +100,8 @@ public class FileRenderer extends FileContentRenderer {
 
     @Override
     public boolean isWrapperPath(Path p) {
-        String filename = p.getName(p.getNameCount()-1).toString();
-        if (filename.startsWith("__.") || filename.startsWith("_.")) {
-            return true;
-        }
-        return false;
+        String filename = p.getName(p.getNameCount() - 1).toString();
+        return filename.startsWith("__.") || filename.startsWith("_.");
     }
 
     public String getSourceExtension() {
@@ -151,7 +149,7 @@ public class FileRenderer extends FileContentRenderer {
     }
 
     @Override
-    public synchronized RenderedContent render(Path sourcePath, Path targetPath, ByteBuffer byteBuffer) {
+    public synchronized RenderedContent render(Path sourcePath, Path targetPath, Supplier<ByteBuffer> byteBuffer) {
         RenderingScope scope = new RenderingScope(sourcePath, targetPath, compiler);
         if (!targetPath.toString().endsWith(".mdf")) {
             for (Path template : getTemplates(sourcePath)) {
@@ -173,18 +171,25 @@ public class FileRenderer extends FileContentRenderer {
 
         try {
             Path localTmpl = directoryPath.resolve("_." + extension);
-            localTmpl.getFileSystem().provider().checkAccess(localTmpl, AccessMode.READ);
-            chain.addLast(localTmpl);
-        } catch (IOException ignored) {
+            FileSystemProvider provider = localTmpl.getFileSystem().provider();
+            if (Files.exists(localTmpl)) {
+                chain.addLast(localTmpl);
+            }
+//            provider.checkAccess(localTmpl, AccessMode.READ);
+//            chain.addLast(localTmpl);
+        } catch (Exception ignored) {
         }
 
         while (directoryPath != null) {
             try {
                 Path localTmpl = directoryPath.resolve("__." + extension);
                 directoryPath = directoryPath.getParent();
-                localTmpl.getFileSystem().provider().checkAccess(localTmpl, AccessMode.READ);
-                chain.addLast(localTmpl);
-            } catch (IOException ignored) {
+                if (Files.exists(localTmpl)) {
+                    chain.addLast(localTmpl);
+                }
+//                localTmpl.getFileSystem().provider().checkAccess(localTmpl, AccessMode.READ);
+//                chain.addLast(localTmpl);
+            } catch (Exception ignored) {
             }
         }
         return chain;

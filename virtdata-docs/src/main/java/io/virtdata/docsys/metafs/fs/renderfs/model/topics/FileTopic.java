@@ -9,7 +9,8 @@ public class FileTopic extends PathTopic {
 
     @Override
     public String toString() {
-        return "[FILE] " + super.toString();
+        String s = super.toString();
+        return "[FILE] " + s;
     }
 
 }
