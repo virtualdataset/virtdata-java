@@ -217,14 +217,13 @@ public class VirtDataResources {
      * if a directory is found when a file is requested, or vice-versa, then
      * an error is thrown withouth looking further.</p>
      *
-     * <p>The locations that are searched include
+     * <p>The locations that are searched include:</p>
      * <OL>
      * <LI>URLs. If the path specifier is a URI, then it is checked for a positive response
      * before the path is returned. URLs can not be used for directories.</LI>
      * <LI>The local filesystem, starting from the current directory of the process.</LI>
      * <LI>The class path.</LI>
      * </OL>
-     * </p>
      *
      * @param pathspecs A specifier for a URL, a directory with a trailing slash, or a file
      *                  with no trailing slash.

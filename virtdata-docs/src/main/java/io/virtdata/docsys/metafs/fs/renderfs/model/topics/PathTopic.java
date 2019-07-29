@@ -1,14 +1,18 @@
 package io.virtdata.docsys.metafs.fs.renderfs.model.topics;
 
+import io.virtdata.docsys.metafs.fs.renderfs.api.versioning.VersionData;
+import io.virtdata.docsys.metafs.fs.renderfs.api.versioning.VersionedDirectory;
 import io.virtdata.docsys.metafs.fs.renderfs.renderers.DocSysIdGenerator;
 
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
 
 public abstract class PathTopic implements Topic {
 
     private final DocSysIdGenerator gen = new DocSysIdGenerator();
     protected final Path path;
+    private final VersionData versions;
     protected String name;
 
     protected LinkedList<Topic> subTopics;
@@ -17,6 +21,7 @@ public abstract class PathTopic implements Topic {
 
     public PathTopic(Path path) {
         this.path = path;
+        versions = new VersionData(new VersionedDirectory(path));
     }
 
     @Override
@@ -89,4 +94,5 @@ public abstract class PathTopic implements Topic {
     public void setName(String name) {
         this.name = name;
     }
+
 }

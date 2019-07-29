@@ -33,7 +33,7 @@ public class DocServer implements Runnable {
 
     private final static Logger logger = LoggerFactory.getLogger(DocServer.class);
     private final List<Path> basePaths = new ArrayList<>();
-    private final List<Object> servletObjects = new ArrayList<>();
+    private final List<Class> servletClasses = new ArrayList<>();
     private ServletContextHandler contextHandler;
     private ServletHolder servlets;
     private String bindHost = "localhost";
@@ -49,11 +49,16 @@ public class DocServer implements Runnable {
         return this;
     }
 
-    public DocServer addWebObject(Object... objects) {
-        servletObjects.addAll(Arrays.asList(objects));
+    public DocServer addWebObject(Class... objects) {
+        servletClasses.addAll(Arrays.asList(objects));
+        String servletClasses = this.servletClasses
+                .stream()
+                .map(Class::getCanonicalName)
+                .collect(Collectors.joining(","));
+
         getServlets().setInitParameter(
                 "jersey.config.server.provider.classnames",
-                this.servletObjects.stream().map(o -> o.getClass().getCanonicalName()).collect(Collectors.joining(","))
+                servletClasses
         );
         return this;
     }
@@ -99,15 +104,15 @@ public class DocServer implements Runnable {
         // TODO: Get auto endpoints running
 //        List<DocSystemEndpoint> autoendpoints = EndpointLoader.load();
 //        autoendpoints.forEach(e -> {
-//            if (!servletObjects.contains(e)) servletObjects.add(e);
+//            if (!servletClasses.contains(e)) servletClasses.add(e);
 //        });
 //
-//        if (this.servletObjects.size()>0) {
-//            logger.info("adding " + servletObjects.size() + " context handlers");
-//            handlers.addHandler(getContextHandler());
-//        } else {
-//            logger.info("No context handlers defined, not adding context container.");
-//        }
+        if (this.servletClasses.size()>0) {
+            logger.info("adding " + servletClasses.size() + " context handlers");
+            handlers.addHandler(getContextHandler());
+        } else {
+            logger.info("No context handlers defined, not adding context container.");
+        }
 
 
         //        // Debug
@@ -127,23 +132,6 @@ public class DocServer implements Runnable {
         EndpointsHandler endpointsHandler = new EndpointsHandler();
         handlers.addHandler(endpointsHandler);
 
-
-//        URI vfsRoot;
-//        try {
-//            vfsRoot = new URI("meta",null,basePath.toString(),null,null);
-//        } catch (URISyntaxException e) {
-//            throw new RuntimeException(e);
-//        }
-//        VirtFS fs = new VirtFS(metaFSProvider, vfsRoot, new HashMap<>());
-
-
-//        LayerFS layers = new LayerFS();
-//        layers.addLayer(new VirtFS(basePath));
-
-//        DefaultRendererResolver rendererResolver = new DefaultRendererResolver(RendererIO::readBuffer, MustacheRenderer::new, MarkdownRenderer::new);
-//        new FileRenderer(".md",".html",false, rendererResolver);
-//
-//
         LayerFS layerfs = new LayerFS("layers");
 
         for (Path basePath : basePaths) {
@@ -162,13 +150,11 @@ public class DocServer implements Runnable {
         }
 
         Resource baseResource = new PathResource(layerfs.getRootPath());
-//        Resource baseResource = new PathResource(basePath);
 
         logger.info("Setting root path of server: " + baseResource.toString());
         ResourceHandler resourceHandler = new ResourceHandler();
         resourceHandler.setDirAllowed(true);
         resourceHandler.setAcceptRanges(true);
-        //baseResource=new PathResource(basePath);
 
         resourceHandler.setWelcomeFiles(new String[]{"index.html"});
         resourceHandler.setRedirectWelcome(true);
@@ -187,7 +173,7 @@ public class DocServer implements Runnable {
         for (Connector connector : server.getConnectors()) {
             if (connector instanceof AbstractConnector) {
                 logger.info("Setting idle timeout for " + connector.toString() + " to 300,000ms");
-                ((AbstractConnector)connector).setIdleTimeout(300000);
+                ((AbstractConnector) connector).setIdleTimeout(300000);
             }
         }
         try {

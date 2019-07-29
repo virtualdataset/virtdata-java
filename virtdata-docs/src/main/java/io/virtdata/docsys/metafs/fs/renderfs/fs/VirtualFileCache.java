@@ -23,11 +23,11 @@ public class VirtualFileCache {
         try {
             VirtualFile vf = cacheMap.get(key);
             if (vf!=null) {
-                if (!devmode && vf.getRenderedContent().isCurrent()) {
+                if (!devmode && vf.getRenderedContent().isValid()) {
                     logger.trace("REUSED  " + key);
                     return vf;
                 } else {
-                    logger.info("REFRESH " + (devmode ? "(DEVMODE)" : "") + key);
+                    logger.info("REFRESH (" + (devmode ? "DEV" : vf.getRenderedContent()) +") " + key) ;
                     vf=mappingFunction.apply(key);
                     if (vf==null) {
                         logger.info("NULLREN " + key);

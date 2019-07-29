@@ -102,6 +102,7 @@ public class ParsedTemplate {
      * Construct a new ParsedTemplate from the provided statement template.
      *
      * @param rawtemplate The string that contains literal sections and anchor sections interspersed
+     * @param providedBindings The bindings that are provided for the template to be parsed
      */
     public ParsedTemplate(String rawtemplate, Map<String, String> providedBindings) {
         this(rawtemplate, providedBindings, DEFAULT_PATTERNS);
@@ -290,9 +291,7 @@ public class ParsedTemplate {
     }
 
     /**
-     * Return the list of anchors as found in the raw template.
-     *
-     * @return
+     * @return a list of anchors as fou nd in the raw template.
      */
     public List<String> getAnchors() {
         List<String> anchors = new ArrayList<>();

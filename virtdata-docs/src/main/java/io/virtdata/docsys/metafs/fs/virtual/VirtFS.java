@@ -74,6 +74,7 @@ public class VirtFS extends MetaFS {
 
     @Override
     public SeekableByteChannel newByteChannel(Path path, Set<? extends OpenOption> options, FileAttribute<?>... attrs) throws IOException {
+        logger.debug("newByteChannel for " + path);
         MetaPath metaPath = assertMetaPath(path);
         Path syspath = this.metaToSysFunc.apply(metaPath);
         return syspath.getFileSystem().provider().newByteChannel(syspath,options,attrs);

@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.file.AccessMode;
@@ -88,25 +87,35 @@ public abstract class FileContentRenderer {
         Path sourcePath = getSourcePath(targetPath);
         if (sourcePath != null) {
             try {
-                ByteBuffer rawInput = getRawByteBuffer(sourcePath);
-                RenderedContent rendered = render(sourcePath, targetPath, ()->rawInput);
+                ByteBufferSupplier inputSupplier = new ByteBufferSupplier(sourcePath);
+                RenderedContent rendered = render(sourcePath, targetPath, inputSupplier);
                 return rendered;
-            } catch (IOException ioe) {
-                throw new RuntimeException(ioe);
             } catch (Exception e) {
-                throw e;
+                throw new RuntimeException(e);
             }
         }
         return null;
     }
 
+    private final class ByteBufferSupplier implements Supplier<ByteBuffer> {
+        private Path sourcePath;
+        public ByteBufferSupplier(Path sourcePath) {
+            this.sourcePath = sourcePath;
+        }
+        @Override
+        public ByteBuffer get() {
+            try {
 
-    private ByteBuffer getRawByteBuffer(Path sourcePath) throws IOException {
-        InputStream inputStream = sourcePath.getFileSystem().provider().newInputStream(sourcePath);
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        inputStream.transferTo(bos);
-        return ByteBuffer.wrap(bos.toByteArray()).asReadOnlyBuffer();
+            InputStream inputStream = sourcePath.getFileSystem().provider().newInputStream(sourcePath);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            inputStream.transferTo(bos);
+            return ByteBuffer.wrap(bos.toByteArray()).asReadOnlyBuffer();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
+
 
     public VirtualFile getVirtualFile(Path target) {
 //        ByteBuffer bb = getRendered(target);

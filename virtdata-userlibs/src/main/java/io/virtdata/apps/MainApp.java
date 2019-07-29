@@ -35,7 +35,10 @@ public class MainApp {
             AutoDocsApp.main(appArgs);
         } else if (appSelection.toLowerCase().equals(APP_DOCSERVER)) {
 
-            Path p = VirtDataResources.findPathIn("virtdata-docs/src/main/resources/docs-virtdata");
+            Path p = VirtDataResources.findPathIn(
+                    "virtdata-docs/src/main/resources/docs-virtdata"
+                    , "virtdata-docs"
+            );
 //            Path p = VirtDataResources.findPathIn("src/main/resources/docs-virtdata", "docs-virtdata");
             DocServer docs = new DocServer().addPaths(p)
             .addWebObject(VirtDataService.class);

@@ -1,30 +1,27 @@
 package io.virtdata.docsys.metafs.fs.renderfs.api.rendered;
 
-import io.virtdata.docsys.metafs.fs.renderfs.api.rendering.Versioned;
+import io.virtdata.docsys.metafs.fs.renderfs.api.rendering.TemplateView;
+import io.virtdata.docsys.metafs.fs.renderfs.api.versioning.VersionData;
+import io.virtdata.docsys.metafs.fs.renderfs.model.ViewModel;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 
-public class ExceptionContent implements RenderedContent {
+public class ExceptionContent implements RenderedContent<String> {
 
-    private final long version;
+    private final ViewModel viewModel;
+    private final TemplateView templateView;
     private final Exception e;
-    private Versioned dependency;
     private final Object[] details;
+    private final VersionData versions;
 
-    public ExceptionContent(Exception e, long version, Versioned dependency, Object... details) {
-
+    public ExceptionContent(ViewModel viewModel, TemplateView templateView, Exception e, Object... details) {
+        this.viewModel = viewModel;
+        this.templateView = templateView;
         this.e = e;
-        this.version = version;
-        this.dependency = dependency;
         this.details = details;
-
-    }
-
-    @Override
-    public long getVersion() {
-        return version;
+        this.versions = new VersionData(viewModel,templateView);
     }
 
     @Override
@@ -45,7 +42,12 @@ public class ExceptionContent implements RenderedContent {
     }
 
     @Override
-    public Versioned getVersionDependency() {
-        return dependency;
+    public long getVersion() {
+        return versions.getVersion();
+    }
+
+    @Override
+    public boolean isValid() {
+        return versions.isValid();
     }
 }

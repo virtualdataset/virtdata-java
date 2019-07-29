@@ -28,24 +28,24 @@
             <version>1.7.25</version>
         </dependency>
 
-        <dependency>
-            <!-- key methods were exposed in the commons math4 statistics library
-                 which allow direct access to cumulative distribution calculations.
-                 It appears there is no way to access them via a regular release.
-                 This small enhancement is being held back from release by many other things
-                 which are unrelated. It is not satisfying to embed this, but it is less
-                 bad than breaking builds due to snapshot repo limits. -->
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-math4</artifactId>
-            <version>4.0-SNAPSHOT</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-statistics-distribution</artifactId>
-            <version>0.1-SNAPSHOT</version>
-            <optional>true</optional>
-        </dependency>
+<!--        <dependency>-->
+<!--            &lt;!&ndash; key methods were exposed in the commons math4 statistics library-->
+<!--                 which allow direct access to cumulative distribution calculations.-->
+<!--                 It appears there is no way to access them via a regular release.-->
+<!--                 This small enhancement is being held back from release by many other things-->
+<!--                 which are unrelated. It is not satisfying to embed this, but it is less-->
+<!--                 bad than breaking builds due to snapshot repo limits. &ndash;&gt;-->
+<!--            <groupId>org.apache.commons</groupId>-->
+<!--            <artifactId>commons-math4</artifactId>-->
+<!--            <version>4.0-SNAPSHOT</version>-->
+<!--            <optional>true</optional>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.commons</groupId>-->
+<!--            <artifactId>commons-statistics-distribution</artifactId>-->
+<!--            <version>0.1-SNAPSHOT</version>-->
+<!--            <optional>true</optional>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.greenrobot</groupId>
@@ -150,14 +150,14 @@
         <!--</profile>-->
     </profiles>
 
-    <repositories>
-        <repository>
-            <id>apache.snapshots</id>
-            <url>http://repository.apache.org/snapshots/</url>
-            <snapshots>
-                <updatePolicy>interval:720</updatePolicy>
-            </snapshots>
-        </repository>
-    </repositories>
+<!--    <repositories>-->
+<!--        <repository>-->
+<!--            <id>apache.snapshots</id>-->
+<!--            <url>http://repository.apache.org/snapshots/</url>-->
+<!--            <snapshots>-->
+<!--                <updatePolicy>interval:720</updatePolicy>-->
+<!--            </snapshots>-->
+<!--        </repository>-->
+<!--    </repositories>-->
 
 </project>

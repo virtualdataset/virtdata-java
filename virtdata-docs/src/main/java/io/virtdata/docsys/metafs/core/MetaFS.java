@@ -1,6 +1,8 @@
 package io.virtdata.docsys.metafs.core;
 
 import io.virtdata.docsys.metafs.fs.renderfs.fs.virtualio.VirtualFileChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public abstract class MetaFS extends FileSystem {
+    private final static Logger logger = LoggerFactory.getLogger(MetaFS.class);
 
     protected boolean isReadOnly=true;
 
@@ -59,6 +62,8 @@ public abstract class MetaFS extends FileSystem {
     /**
      * This should be implemented per filesystem, using the signature of
      * {@link java.nio.file.spi.FileSystemProvider#checkAccess(Path, AccessMode[])}
+     * @param modes Access modes to check
+     * @param path Path to check
      */
     public void checkAccess(Path path, AccessMode[] modes) throws IOException {
 
@@ -72,6 +77,7 @@ public abstract class MetaFS extends FileSystem {
     }
 
     public InputStream newInputStream(Path path, OpenOption... options) throws IOException {
+        logger.debug("newInputStream for " + path);
         HashSet optionSet = new HashSet<>(Arrays.asList(options));
         SeekableByteChannel seekableByteChannel = newByteChannel(path, optionSet);
         InputStream inputStream = Channels.newInputStream(seekableByteChannel);

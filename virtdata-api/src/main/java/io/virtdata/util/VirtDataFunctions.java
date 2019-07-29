@@ -42,6 +42,7 @@ public class VirtDataFunctions {
      *
      * @param func     The original function object.
      * @param type     The type of function object needed.
+     * @param output   The output type required for the adapted function.
      * @param truncate Whether to throw an exception on any narrowing conversion. If this is set to false,
      *                 then basic roll-over logic is applied on narrowing conversions.
      * @param <F>      The type of function object needed.

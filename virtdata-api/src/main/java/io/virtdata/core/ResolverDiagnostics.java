@@ -4,10 +4,8 @@ import io.virtdata.api.DataMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
+import java.io.StringWriter;
 import java.util.Optional;
 
 public class ResolverDiagnostics {
@@ -41,10 +39,10 @@ public class ResolverDiagnostics {
         this.error = e;
         log.append("ERROR encountered while resolving function:\n");
         log.append(e.toString()).append("\n");
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        PrintWriter writer = new PrintWriter(new OutputStreamWriter(byteArrayOutputStream));
-        e.printStackTrace(writer);
-        String stacktrace = byteArrayOutputStream.toString(StandardCharsets.UTF_8);
+        StringWriter writer = new StringWriter();
+        PrintWriter pw = new PrintWriter(writer);
+        e.printStackTrace(pw);
+        String stacktrace = writer.toString();
 
         log.append("stack trace:\n");
         log.append(stacktrace);

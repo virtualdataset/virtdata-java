@@ -1,9 +1,9 @@
 package io.virtdata.docsys.metafs.fs.renderfs.model;
 
-import io.virtdata.docsys.metafs.fs.renderfs.api.MarkdownStringer;
-import io.virtdata.docsys.metafs.fs.renderfs.api.RendererIO;
 import io.virtdata.docsys.metafs.fs.renderfs.api.rendered.RenderedContent;
-import io.virtdata.docsys.metafs.fs.renderfs.api.rendering.Versioned;
+import io.virtdata.docsys.metafs.fs.renderfs.api.versioning.VersionData;
+import io.virtdata.docsys.metafs.fs.renderfs.api.versioning.Versioned;
+import io.virtdata.docsys.metafs.fs.renderfs.api.versioning.VersionedPath;
 import io.virtdata.docsys.metafs.fs.renderfs.model.properties.ListView;
 import io.virtdata.docsys.metafs.fs.renderfs.model.properties.PathView;
 import io.virtdata.docsys.metafs.fs.renderfs.model.properties.TreeView;
@@ -13,16 +13,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ViewModel implements Versioned, MarkdownStringer {
+public class ViewModel implements Versioned {
 
+    private final VersionData versions;
     private Path target;
-    private long version;
     private ViewModel inner;
-    private RenderedContent rendered;
+    private RenderedContent<String> rendered;
 
     public ViewModel(Path sourcePath, Path targetPath) {
-        this.version = RendererIO.mtimeFor(sourcePath);
         this.target = targetPath;
+        this.versions = new VersionData(new VersionedPath(sourcePath));
+
     }
 
     public Path getTarget() {
@@ -30,7 +31,7 @@ public class ViewModel implements Versioned, MarkdownStringer {
     }
 
     public ActualFsView getFs() {
-        return new ActualFsView(this.target, this.version);
+        return new ActualFsView(this.target);
     }
 
     public List<Path> getBreadcrumbs() {
@@ -60,21 +61,6 @@ public class ViewModel implements Versioned, MarkdownStringer {
         return new TreeView(this);
     }
 
-//    public Mustache.Lambda getMarkdown() {
-//        return new MarkdownLambda(this);
-//    }
-
-
-    @Override
-    public long getVersion() {
-        return version;
-    }
-
-    @Override
-    public String asMarkdown() {
-        return "```\n" + toString() + "\n```\n";
-    }
-
     public void setInner(ViewModel innerRender) {
         this.inner = innerRender;
     }
@@ -95,15 +81,26 @@ public class ViewModel implements Versioned, MarkdownStringer {
     public String toString() {
         return "ViewModel{" +
                 "target=" + target.toString() +
-                ", version=" + version +
+                ", versions=" + versions +
                 '}';
     }
 
-    public TopicView getTopics() {
-        return new TopicView(target);
+    public TopicViews getTopics() {
+        return new TopicViews(target);
     }
 
     public RenderedContent getRenderedContent() {
         return this.rendered;
     }
+
+    @Override
+    public long getVersion() {
+        return 0;
+    }
+
+    @Override
+    public boolean isValid() {
+        return versions.isValid();
+    }
+
 }

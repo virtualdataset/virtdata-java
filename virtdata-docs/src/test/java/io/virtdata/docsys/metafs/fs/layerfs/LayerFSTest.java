@@ -1,6 +1,6 @@
 package io.virtdata.docsys.metafs.fs.layerfs;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -9,9 +9,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-@Test
 public class LayerFSTest {
 
+    @Test
     public void testLayeringAB() throws IOException {
 
         LayerFS fs1 = new LayerFS("testlayers")

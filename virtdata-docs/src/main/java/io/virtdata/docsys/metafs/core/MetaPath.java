@@ -356,7 +356,7 @@ public class MetaPath implements Path, Comparable<Path> {
     /**
      * This Path implementation does not allow the caller to break out to File abstractions.
      *
-     * @return null, signifying that there are no defined File semantics for a Path
+     * @return null, signifying that there are no defined File semantics for a MetaPath
      */
     @Override
     public File toFile() {

@@ -6,6 +6,8 @@ import io.virtdata.docsys.metafs.fs.renderfs.api.Renderers;
 import io.virtdata.docsys.metafs.fs.renderfs.fs.virtualio.VirtualDirectoryStream;
 import io.virtdata.docsys.metafs.fs.renderfs.fs.virtualio.VirtualFile;
 import io.virtdata.docsys.metafs.fs.virtual.VirtFS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
@@ -32,6 +34,8 @@ import java.util.Set;
  */
 @SuppressWarnings("ALL")
 public class RenderFS extends VirtFS {
+    protected final static Logger logger = LoggerFactory.getLogger(RenderFS.class);
+
 
     private final RenderFSProvider provider = RenderFSProvider.get();
     Renderers renderers = new Renderers();
@@ -72,6 +76,8 @@ public class RenderFS extends VirtFS {
     @Override
     public synchronized SeekableByteChannel newByteChannel(
             Path path, Set<? extends OpenOption> options, FileAttribute<?>... attrs) throws IOException {
+        logger.debug("newByteChannel for " + path);
+
         MetaPath metaPath = assertMetaPath(path);
         Path syspath = this.metaToSysFunc.apply(metaPath);
 

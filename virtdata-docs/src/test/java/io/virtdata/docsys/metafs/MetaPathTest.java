@@ -1,6 +1,6 @@
 package io.virtdata.docsys.metafs;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.nio.file.FileStore;
 import java.nio.file.Path;
@@ -8,7 +8,6 @@ import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Test
 public class MetaPathTest {
 
     private final TestableMetaFS fs1 = new TestableMetaFS(new Path[0], new FileStore[0], Collections.emptySet(), "fs1");

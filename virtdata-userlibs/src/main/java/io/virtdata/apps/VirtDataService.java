@@ -18,6 +18,7 @@ public class VirtDataService implements DocSystemEndpoint {
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
+    @Path("testrecipe")
     public String parseResult(@QueryParam("recipe") String recipe) {
         try {
             DataMapper<Object> mapper = VirtData.getMapper(recipe);

@@ -91,15 +91,19 @@ public class VirtData {
     }
 
     public static ResolverDiagnostics getMapperDiagnostics(String flowSpec) {
-        flowSpec = CompatibilityFixups.fixup(flowSpec);
-        VirtDataDSL.ParseResult parseResult = VirtDataDSL.parse(flowSpec);
-        if (parseResult.throwable != null) {
-            throw new RuntimeException(parseResult.throwable);
+        try {
+            flowSpec = CompatibilityFixups.fixup(flowSpec);
+            VirtDataDSL.ParseResult parseResult = VirtDataDSL.parse(flowSpec);
+            if (parseResult.throwable != null) {
+                throw new RuntimeException(parseResult.throwable);
+            }
+            VirtDataFlow flow = parseResult.flow;
+            VirtDataComposer composer = new VirtDataComposer();
+            ResolverDiagnostics resolverDiagnostics = composer.resolveDiagnosticFunctionFlow(flow);
+            return resolverDiagnostics;
+        } catch (Exception e) {
+            return new ResolverDiagnostics().error(e);
         }
-        VirtDataFlow flow = parseResult.flow;
-        VirtDataComposer composer = new VirtDataComposer();
-        ResolverDiagnostics resolverDiagnostics = composer.resolveDiagnosticFunctionFlow(flow);
-        return resolverDiagnostics;
     }
 
     /**

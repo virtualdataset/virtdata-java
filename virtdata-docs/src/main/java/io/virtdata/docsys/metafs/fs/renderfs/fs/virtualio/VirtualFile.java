@@ -1,5 +1,6 @@
 package io.virtdata.docsys.metafs.fs.renderfs.fs.virtualio;
 
+import io.virtdata.docsys.metafs.fs.renderfs.api.rendered.CachedContent;
 import io.virtdata.docsys.metafs.fs.renderfs.api.rendered.RenderedContent;
 import org.apache.commons.compress.utils.SeekableInMemoryByteChannel;
 import org.slf4j.Logger;
@@ -23,27 +24,19 @@ public class VirtualFile {
 
     private final Path target;
     private final Path delegate;
-    private final RenderedContent contents;
-    String renderCache = null;
+    private final CachedContent<String> contents;
 
-    public VirtualFile(Path delegate, Path target, RenderedContent content) {
+    public VirtualFile(Path delegate, Path target, RenderedContent<String> content) {
         this.delegate = delegate;
         this.target = target;
-        this.contents = content;
+        this.contents = new CachedContent<>(content,content);
     }
 
     private ByteBuffer getContent() {
         logger.info("ACCESSING CONTENT " + this.target.toString());
-        if (renderCache==null) {
-            logger.info("CREATING CONTENT " + this.target.toString());
-            renderCache = contents.get();
-        }
-        ByteBuffer byteBuffer = ByteBuffer.wrap(renderCache.getBytes(StandardCharsets.UTF_8)).asReadOnlyBuffer();
+        String s = contents.get();
+        ByteBuffer byteBuffer = ByteBuffer.wrap(s.getBytes(StandardCharsets.UTF_8)).asReadOnlyBuffer();
         return byteBuffer;
-//        if (contentCache == null) {
-//            contentCache = dynamicRenderer.get().asReadOnlyBuffer();
-//        }
-//        return contentCache;
     }
 
     public BasicFileAttributes readAttributes(
@@ -112,7 +105,7 @@ public class VirtualFile {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(this.target.toString());
-        sb.append(":[").append(renderCache==null ? "" : renderCache.length()).append("]");
+        sb.append(":[").append(contents.toString()).append("]");
 
         return sb.toString();
     }

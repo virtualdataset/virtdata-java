@@ -10,11 +10,9 @@ import java.util.List;
 
 public class ActualFsView {
     private final Path path;
-    private final long version;
 
-    public ActualFsView(Path path, long version) {
+    public ActualFsView(Path path) {
         this.path = path;
-        this.version = version;
     }
 
     public ListView<Path> getPaths() {

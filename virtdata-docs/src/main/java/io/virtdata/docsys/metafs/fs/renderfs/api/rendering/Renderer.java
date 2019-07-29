@@ -1,6 +1,7 @@
 package io.virtdata.docsys.metafs.fs.renderfs.api.rendering;
 
 import io.virtdata.docsys.metafs.fs.renderfs.api.rendered.RenderedContent;
+import io.virtdata.docsys.metafs.fs.renderfs.api.versioning.Versioned;
 
 import java.util.function.Function;
 
