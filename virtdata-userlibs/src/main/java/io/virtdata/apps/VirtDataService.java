@@ -4,7 +4,7 @@ import io.virtdata.annotations.Service;
 import io.virtdata.api.DataMapper;
 import io.virtdata.core.ResolverDiagnostics;
 import io.virtdata.core.VirtData;
-import io.virtdata.docsys.api.DocSystemEndpoint;
+import io.virtdata.docsys.api.WebServiceObject;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -12,9 +12,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-@Service(DocSystemEndpoint.class)
+@Service(WebServiceObject.class)
 @Path("virtdata")
-public class VirtDataService implements DocSystemEndpoint {
+public class VirtDataService implements WebServiceObject {
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)

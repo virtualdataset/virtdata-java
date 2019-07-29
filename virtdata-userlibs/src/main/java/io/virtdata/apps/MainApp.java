@@ -3,9 +3,7 @@ package io.virtdata.apps;
 import io.virtdata.apps.docsapp.AutoDocsApp;
 import io.virtdata.apps.valuesapp.ValuesCheckerApp;
 import io.virtdata.docsys.core.DocServer;
-import io.virtdata.util.VirtDataResources;
 
-import java.nio.file.Path;
 import java.util.Arrays;
 
 /**
@@ -35,13 +33,13 @@ public class MainApp {
             AutoDocsApp.main(appArgs);
         } else if (appSelection.toLowerCase().equals(APP_DOCSERVER)) {
 
-            Path p = VirtDataResources.findPathIn(
-                    "virtdata-docs/src/main/resources/docs-virtdata"
-                    , "virtdata-docs"
-            );
+//            Path p = VirtDataResources.findPathIn(
+//                    "virtdata-docs/src/main/resources/docs-virtdata"
+//                    , "virtdata-docs"
+//            );
 //            Path p = VirtDataResources.findPathIn("src/main/resources/docs-virtdata", "docs-virtdata");
-            DocServer docs = new DocServer().addPaths(p)
-            .addWebObject(VirtDataService.class);
+            DocServer docs = new DocServer();
+//            .addPaths(p).addWebObject(VirtDataService.class);
 
             docs.run();
         } else {

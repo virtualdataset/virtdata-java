@@ -1,6 +1,8 @@
 package io.virtdata.docsys.core;
 
-import io.virtdata.docsys.handlers.EndpointsHandler;
+import io.virtdata.docsys.api.DocPaths;
+import io.virtdata.docsys.api.PathDescriptor;
+import io.virtdata.docsys.api.WebServiceObject;
 import io.virtdata.docsys.handlers.FavIconHandler;
 import io.virtdata.docsys.metafs.fs.layerfs.LayerFS;
 import io.virtdata.docsys.metafs.fs.renderfs.api.FileRenderer;
@@ -23,7 +25,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.AccessMode;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -63,6 +67,28 @@ public class DocServer implements Runnable {
         return this;
     }
 
+    public void LoadDynamicEndpoints() {
+        List<DocPaths> docPathLists = EndpointLoader.loadPathDescriptors();
+        List<PathDescriptor> docPaths = new ArrayList<>();
+        for (DocPaths docPath : docPathLists) {
+            docPaths.addAll(docPath.getPathDescriptors());
+        }
+        docPaths.sort(PathDescriptor::compareTo);
+        for (PathDescriptor docPath : docPaths) {
+            logger.info("Adding doc path " + docPath);
+            this.addPaths(docPath.getPath());
+        }
+        logger.info("No more doc paths.");
+
+        List<WebServiceObject> serviceObjects = EndpointLoader.loadWebServiceObjects();
+        for (WebServiceObject serviceObject : serviceObjects) {
+            logger.info("Adding web service object: " + serviceObject.toString());
+            this.addWebObject(serviceObject.getClass());
+        }
+        logger.info("No more service objects.");
+
+    }
+
     private ServletContextHandler getContextHandler() {
         if (contextHandler == null) {
             contextHandler = new ServletContextHandler();
@@ -100,19 +126,20 @@ public class DocServer implements Runnable {
         Server server = new Server(bindPort);
         HandlerList handlers = new HandlerList();
 
+        if (this.basePaths.size() == 0 && this.servletClasses.size() == 0) {
+            logger.info("No service endpoints or doc paths have been added. Loading dynamically.");
+            this.LoadDynamicEndpoints();
+            if (this.basePaths.size() == 0 && this.servletClasses.size() == 0) {
+                throw new InvalidParameterException("There must be at least one servlet class or doc path");
+            }
+        }
 
         // TODO: Get auto endpoints running
-//        List<DocSystemEndpoint> autoendpoints = EndpointLoader.load();
+//        List<DocSystemEndpoint> autoendpoints = EndpointLoader.loadWebServiceObjects();
 //        autoendpoints.forEach(e -> {
 //            if (!servletClasses.contains(e)) servletClasses.add(e);
 //        });
 //
-        if (this.servletClasses.size()>0) {
-            logger.info("adding " + servletClasses.size() + " context handlers");
-            handlers.addHandler(getContextHandler());
-        } else {
-            logger.info("No context handlers defined, not adding context container.");
-        }
 
 
         //        // Debug
@@ -124,13 +151,18 @@ public class DocServer implements Runnable {
 //        ShutdownHandler shutdownHandler; // for easy recycles
 
         // Favicon
-        FavIconHandler favIconHandler =
-                new FavIconHandler(basePaths.get(0) + "/favicon.ico", false);
-        handlers.addHandler(favIconHandler);
+        for (Path basePath : basePaths) {
+            Path icon = basePath.resolve("/favicon.ico");
+            if (Files.exists(icon)) {
+                FavIconHandler favIconHandler = new FavIconHandler(basePaths.get(0) + "/favicon.ico", false);
+                handlers.addHandler(favIconHandler);
+                break;
+            }
+        }
 
 //        // Hook dynamic endpoints in process, not in fs layers
-        EndpointsHandler endpointsHandler = new EndpointsHandler();
-        handlers.addHandler(endpointsHandler);
+//        EndpointsHandler endpointsHandler = new EndpointsHandler();
+//        handlers.addHandler(endpointsHandler);
 
         LayerFS layerfs = new LayerFS("layers");
 
@@ -168,6 +200,13 @@ public class DocServer implements Runnable {
         defaultHandler.setServeIcon(false);
 
         handlers.addHandler(defaultHandler);
+
+        if (this.servletClasses.size() > 0) {
+            logger.info("adding " + servletClasses.size() + " context handlers");
+            handlers.addHandler(getContextHandler());
+        } else {
+            logger.info("No context handlers defined, not adding context container.");
+        }
 
         server.setHandler(handlers);
         for (Connector connector : server.getConnectors()) {

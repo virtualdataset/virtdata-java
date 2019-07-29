@@ -3,8 +3,6 @@ package io.virtdata.docsys.core;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 
 public class DocServerApp {
@@ -35,14 +33,15 @@ public class DocServerApp {
     }
 
     private static void runServer(String[] serverArgs) {
-
-        Path contentRoot = Paths.get("docs-virtdata").toAbsolutePath().normalize();
-
-        Path docsysDocs = Paths.get("docs-virtdata/docs").toAbsolutePath().normalize();
-        logger.info("Starting server with content roots:" + contentRoot.toString() + "," + docsysDocs.toString());
-
-        DocServer server = new DocServer().addPaths(contentRoot, docsysDocs);
-
+//
+//        Path contentRoot = Paths.get("docs-virtdata").toAbsolutePath().normalize();
+//        Path docsysDocs = Paths.get("docs-virtdata/docs").toAbsolutePath().normalize();
+//
+//        logger.info("Starting server with content roots:" + contentRoot.toString() + "," + docsysDocs.toString());
+//
+//        DocServer server = new DocServer().addPaths(contentRoot, docsysDocs);
+        DocServer server = new DocServer();
+//
         server.run();
     }
 
