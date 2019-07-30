@@ -9,11 +9,17 @@ import java.util.Arrays;
 /**
  * This just routes the user to the correct sub-app depending on the leading verb, stripping it off in the process.
  */
-public class MainApp {
+public class VirtDataMainApp {
 
     private final static String APP_TESTMAPPER = "testmapper";
     private final static String APP_GENDOCS = "gendocs";
     private final static String APP_DOCSERVER = "docserver";
+
+    public static boolean hasNamedApp(String appname) {
+        return (appname.equals(APP_TESTMAPPER)
+        || appname.equals(APP_GENDOCS)
+        || appname.equals(APP_DOCSERVER));
+    }
 
     public static void main(String[] args) {
         if (args.length == 0) {
