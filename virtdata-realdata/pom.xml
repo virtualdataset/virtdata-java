@@ -96,6 +96,7 @@
                 <directory>src/main/resources</directory>
                 <includes>
                     <include>data/**</include>
+                    <include></include>
                 </includes>
             </resource>
         </resources>

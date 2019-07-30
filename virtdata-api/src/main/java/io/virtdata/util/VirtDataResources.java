@@ -27,15 +27,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.CharBuffer;
-import java.nio.file.AccessMode;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.spi.FileSystemProvider;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class VirtDataResources {
@@ -246,14 +241,14 @@ public class VirtDataResources {
                 }
             } else {
                 boolean wantsADirectory = pathspec.endsWith(FileSystems.getDefault().getSeparator());
-                String candidatePath = wantsADirectory ? pathspec.substring(0, pathspec.length() - 2) : pathspec;
+                String candidatePath = wantsADirectory ? pathspec.substring(0, pathspec.length() - 1) : pathspec;
                 Path candidate = Path.of(candidatePath);
                 try {
                     FileSystemProvider provider = candidate.getFileSystem().provider();
                     provider.checkAccess(candidate, AccessMode.READ);
                     BasicFileAttributes attrs = provider.readAttributes(candidate, BasicFileAttributes.class);
                     boolean foundADirectory = attrs.isDirectory();
-                    if (wantsADirectory == foundADirectory) {
+                    if (wantsADirectory != foundADirectory) {
                         throw new RuntimeException("for path " + pathspec + ", user wanted a " +
                                 (wantsADirectory ? "directory" : "file") + ", but found a " +
                                 (foundADirectory ? "directory" : "file") + " while searching paths " +
@@ -267,9 +262,19 @@ public class VirtDataResources {
                         ClassLoader cl = VirtDataResources.class.getClassLoader();
                         URL url = ClassLoader.getSystemResource(candidatePath);
                         if (url != null) {
-                            foundPath = Path.of(url.toURI());
+                            URI uri = URI.create(url.toExternalForm());
+                            foundPath = getPathInFilesystem(uri);
+                            logger.debug("Found path in classpath: " + candidatePath + ": " + foundPath.toString());
+//                            String path = url.getPath();
+//                            if (path.contains("!")) {
+//                                url.getSc
+//                                String[] parts = path.split("!", 2);
+//                                FileSystems.getFileSystem()
+//                            }
+//                            foundPath = Path.of(path);
                         }
-                    } catch (Exception ignored) {
+                    } catch (Exception e) {
+                        logger.trace("Error while looking in classpath for " + e.getMessage(),e);
                     }
 
                 }
@@ -280,6 +285,20 @@ public class VirtDataResources {
             }
         }
         throw new RuntimeException("Unable to find path in " + Arrays.toString(pathspecs));
+    }
+
+    private synchronized static Path getPathInFilesystem(URI uri) {
+        FileSystem fileSystem = null;
+        try {
+            fileSystem=FileSystems.getFileSystem(uri);
+        } catch (FileSystemNotFoundException ignored) {
+            try {
+                fileSystem =FileSystems.newFileSystem(uri, Collections.EMPTY_MAP);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return Path.of(uri);
     }
 
 }

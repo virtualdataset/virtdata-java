@@ -17,8 +17,8 @@ public class VirtDataDocPaths implements DocPaths {
         List<PathDescriptor> paths = new ArrayList<>();
         paths.add(DocPath.from(
                 VirtDataResources.findPathIn(
-                        "virtdata-docs/src/main/resources/docs-virtdata"
-                        , "virtdata-docs"), "docs-virtdata", 1));
+                        "virtdata-docs/src/main/resources/docs-virtdata-wrong/"
+                        , "docs-for-virtdata/"), "docs-for-virtdata", 1));
         return paths;
     }
 

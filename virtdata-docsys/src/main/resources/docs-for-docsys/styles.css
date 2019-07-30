@@ -1,0 +1,33 @@
+h1 {
+    background-color: lightblue;
+}
+
+.l1menu {
+    font-size: 14px;
+    line-height: 15px;
+}
+.l2menu {
+    font-size: 12px;
+    line-height: 13px;
+}
+
+.smaller {
+    font-size: 12px;
+    line-height: 14px;
+}
+
+body,div {
+    font-size: .95rem;
+    font-feature-settings: "kern","liga";
+    box-sizing: border-box;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.navmenu {
+    padding: 20px 20px 20px 20px;
+    list-style-position: outside;
+    list-style-type: none;
+}
