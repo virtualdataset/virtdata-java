@@ -10,9 +10,7 @@ import io.virtdata.docsys.metafs.fs.renderfs.fs.RenderFS;
 import io.virtdata.docsys.metafs.fs.renderfs.renderers.MarkdownProcessor;
 import io.virtdata.docsys.metafs.fs.renderfs.renderers.MustacheProcessor;
 import io.virtdata.docsys.metafs.fs.virtual.VirtFS;
-import org.eclipse.jetty.server.AbstractConnector;
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
@@ -20,10 +18,14 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.PathResource;
 import org.eclipse.jetty.util.resource.Resource;
+import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.ServletRegistration;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.AccessMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,6 +42,9 @@ public class DocServer implements Runnable {
     private final List<Class> servletClasses = new ArrayList<>();
     private ServletContextHandler contextHandler;
     private ServletHolder servlets;
+    private HandlerList handlers;
+
+    private String bindScheme = "http";
     private String bindHost = "localhost";
     private int bindPort = 12345;
 
@@ -50,6 +55,25 @@ public class DocServer implements Runnable {
 
     public DocServer withPort(int bindPort) {
         this.bindPort = bindPort;
+        return this;
+    }
+
+    public DocServer withURL(String urlSpec) {
+        try {
+            URL url = new URL(urlSpec);
+            this.bindPort = url.getPort();
+            this.bindHost = url.getHost();
+            if (url.getPath()!=null && url.getPath().isEmpty()) {
+                throw new UnsupportedOperationException("You may not specify a path for the hosting URL.");
+            }
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+        return this;
+    }
+
+    public DocServer withScheme(String scheme) {
+        this.bindScheme = scheme;
         return this;
     }
 
@@ -101,7 +125,7 @@ public class DocServer implements Runnable {
         if (servlets == null) {
             servlets = getContextHandler().addServlet(
                     ServletContainer.class,
-                    "/*"
+                    "/"
             );
         }
         return servlets;
@@ -124,7 +148,7 @@ public class DocServer implements Runnable {
 
         //new InetSocketAddress("")
         Server server = new Server(bindPort);
-        HandlerList handlers = new HandlerList();
+        handlers = new HandlerList();
 
         if (this.basePaths.size() == 0 && this.servletClasses.size() == 0) {
             logger.info("No service endpoints or doc paths have been added. Loading dynamically.");
@@ -134,20 +158,6 @@ public class DocServer implements Runnable {
             }
         }
 
-        // TODO: Get auto endpoints running
-//        List<DocSystemEndpoint> autoendpoints = EndpointLoader.loadWebServiceObjects();
-//        autoendpoints.forEach(e -> {
-//            if (!servletClasses.contains(e)) servletClasses.add(e);
-//        });
-//
-
-
-        //        // Debug
-//        DebugListener debugListener = new DebugListener();
-//        If needed to limit to local only
-//        InetAccessHandler handler = new InetAccessHandler();
-//        handler.include("127.0.0.1");
-//        InetAccessHandler accessHandler;
 //        ShutdownHandler shutdownHandler; // for easy recycles
 
         // Favicon
@@ -159,10 +169,6 @@ public class DocServer implements Runnable {
                 break;
             }
         }
-
-//        // Hook dynamic endpoints in process, not in fs layers
-//        EndpointsHandler endpointsHandler = new EndpointsHandler();
-//        handlers.addHandler(endpointsHandler);
 
         LayerFS layerfs = new LayerFS("layers");
 
@@ -194,6 +200,21 @@ public class DocServer implements Runnable {
         resourceHandler.setCacheControl("no-cache");
         handlers.addHandler(resourceHandler);
 
+
+        ResourceConfig statusResourceCfg = new ResourceConfig(DocServerStatusEndpoint.class);
+
+        statusResourceCfg.property("server", this);
+        ServletContainer servletContainer = new ServletContainer(statusResourceCfg);
+        ServletHolder servletHolder = new ServletHolder(servletContainer);
+        getContextHandler().addServlet(servletHolder,"/*");
+
+//        if (this.servletClasses.size() > 0) {
+            logger.info("adding " + servletClasses.size() + " context handlers");
+            handlers.addHandler(getContextHandler());
+//        } else {
+//            logger.info("No context handlers defined, not adding context container.");
+//        }
+
         // Show contexts
         DefaultHandler defaultHandler = new DefaultHandler();
         defaultHandler.setShowContexts(true);
@@ -201,12 +222,6 @@ public class DocServer implements Runnable {
 
         handlers.addHandler(defaultHandler);
 
-        if (this.servletClasses.size() > 0) {
-            logger.info("adding " + servletClasses.size() + " context handlers");
-            handlers.addHandler(getContextHandler());
-        } else {
-            logger.info("No context handlers defined, not adding context container.");
-        }
 
         server.setHandler(handlers);
         for (Connector connector : server.getConnectors()) {
@@ -216,9 +231,61 @@ public class DocServer implements Runnable {
             }
         }
         try {
+            ServerConnector sc = null;
+            if (bindScheme.equals("http")) {
+                sc = new ServerConnector(server);
+                sc.setPort(bindPort);
+                sc.setHost(bindHost);
+                server.setConnectors(new Connector[]{sc});
+            } else if (bindScheme.equals("https")) {
+                throw new UnsupportedOperationException("TLS is not supported yet");
+            }
+
             server.start();
+            logger.info("Started documentation server at http://" + bindHost + ":" + bindPort + "/");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (Handler handler : handlers.getHandlers()) {
+            String summary = handlerSummary(handler);
+            sb.append(summary);
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+    private String handlerSummary(Handler handler) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("----\n");
+        sb.append(handler.getClass().getSimpleName()).append("\n");
+        if (handler instanceof ResourceHandler) {
+            ResourceHandler h = (ResourceHandler)handler;
+            sb.append(" base resource: ").append(h.getBaseResource().toString())
+                    .append("\n");
+            sb.append(h.dump());
+        } else if ( handler instanceof ServletContextHandler) {
+            ServletContextHandler h = (ServletContextHandler) handler;
+            sb.append(h.dump()).append("\n");
+            h.getServletContext().getServletRegistrations().forEach(
+                    (k,v) -> {
+                        sb.append("## servlet(").append(k).append(")->").append(getServletSummary(v)).append("\n");
+                    }
+            );
+            sb.append("context path:").append(h.getContextPath());
+        } else if ( handler instanceof DefaultHandler) {
+            DefaultHandler h = (DefaultHandler) handler;
+            sb.append(h.dump());
+        }
+        return sb.toString();
+    }
+
+    private String getServletSummary(ServletRegistration v) {
+        return v.getClassName() + "('"+ v.getName() +"')" + v.getInitParameters().keySet().stream().map(
+                k -> k + "=" + v.getInitParameters().get(k)).collect(Collectors.joining(","));
     }
 }

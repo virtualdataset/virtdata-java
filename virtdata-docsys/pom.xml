@@ -367,9 +367,16 @@
             <version>0.50.18</version>
         </dependency>
         <dependency>
-            <groupId>com.vladsch.flexmark</groupId>
-            <artifactId>flexmark</artifactId>
-            <version>0.50.18</version>
+            <groupId>io.virtdata</groupId>
+            <artifactId>virtdata-annotations</artifactId>
+            <version>2.11.32-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.virtdata</groupId>
+            <artifactId>virtdata-api</artifactId>
+            <version>2.11.32-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

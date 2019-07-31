@@ -47,7 +47,7 @@
 
         <dependency>
             <groupId>io.virtdata</groupId>
-            <artifactId>virtdata-docs</artifactId>
+            <artifactId>virtdata-docsys</artifactId>
             <version>2.11.32-SNAPSHOT</version>
         </dependency>
 
