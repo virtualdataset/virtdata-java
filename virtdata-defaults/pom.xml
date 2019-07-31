@@ -43,7 +43,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.0</version>
                 <configuration>
-                    <debug>true</debug>
+                    <debug>false</debug>
                     <!--<release>11</release>-->
                     <source>11</source>
                     <target>11</target>
@@ -87,7 +87,9 @@
                 <configuration>
                     <doctitle>VirtualDataSet API</doctitle>
                     <windowtitle>VirtualDataSet API</windowtitle>
+                    <isOffline>true</isOffline>
                 </configuration>
+
                 <executions>
                     <execution>
                         <id>attach-javadoc</id>
