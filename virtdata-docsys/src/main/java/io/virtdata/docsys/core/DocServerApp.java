@@ -5,27 +5,14 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 
 public class DocServerApp {
     public final static String APPNAME_DOCSERVER = "docserver";
     private final static Logger logger = LoggerFactory.getLogger(DocServerApp.class);
 
     public static void main(String[] args) {
-        if (args.length > 0) {
-            String subcmd = args[0].toLowerCase();
-            args = Arrays.copyOfRange(args, 1, args.length);
-            if (subcmd.equals("topics")) {
-                listTopics();
-            } else if (subcmd.equals("search")) {
-                search(args);
-            } else if (subcmd.equals("help")) {
-                showHelp(args);
-            } else if (subcmd.equals("server")) {
-                runServer(args);
-            } else {
-                throw new RuntimeException("unknown subcommand: " + subcmd);
-            }
+        if (args.length > 0 && args[0].equals("help")) {
+            showHelp();
         } else {
             runServer(args);
         }
