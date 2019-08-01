@@ -19,7 +19,7 @@ public class VirtualFileCache {
     public synchronized VirtualFile computeIfAbsent(
             Path key, Function<? super Path, ? extends VirtualFile> mappingFunction
     ) {
-        logger.info("REQUESTFOR " + key);
+        logger.trace("REQUESTFOR " + key);
         try {
             VirtualFile vf = cacheMap.get(key);
             if (vf!=null) {
@@ -27,23 +27,23 @@ public class VirtualFileCache {
                     logger.trace("REUSED  " + key);
                     return vf;
                 } else {
-                    logger.info("REFRESH (" + (devmode ? "DEV" : vf.getRenderedContent()) +") " + key) ;
+                    logger.trace("REFRESH (" + (devmode ? "DEV" : vf.getRenderedContent()) +") " + key) ;
                     vf=mappingFunction.apply(key);
                     if (vf==null) {
-                        logger.info("NULLREN " + key);
+                        logger.trace("NULLREN " + key);
                     } else {
-                        logger.info("PRESENT " + key);
+                        logger.trace("PRESENT " + key);
                         cacheMap.put(key,vf);
                     }
                 }
             }
             else {
-                logger.info("COMPUTE " + key);
+                logger.trace("COMPUTE " + key);
                 vf = mappingFunction.apply(key);
                 if (vf==null) {
-                    logger.info("NULLREN " + key);
+                    logger.trace("NULLREN " + key);
                 } else {
-                    logger.info("PRESENT " + key);
+                    logger.trace("PRESENT " + key);
                     cacheMap.put(key,vf);
                 }
             }

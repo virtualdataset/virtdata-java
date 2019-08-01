@@ -77,7 +77,6 @@ public abstract class MetaFS extends FileSystem {
     }
 
     public InputStream newInputStream(Path path, OpenOption... options) throws IOException {
-        logger.debug("newInputStream for " + path);
         HashSet optionSet = new HashSet<>(Arrays.asList(options));
         SeekableByteChannel seekableByteChannel = newByteChannel(path, optionSet);
         InputStream inputStream = Channels.newInputStream(seekableByteChannel);

@@ -14,7 +14,7 @@ public class FileTopicVisitor implements VirtTreeWalker.PathVisitor {
 
     public FileTopicVisitor(Path p) {
         root = new FileTopic(p);
-        logger.info("VISIT FILE TOPICS for(" + p + ")");
+        logger.trace("VISIT FILE TOPICS for(" + p + ")");
     }
 
     public List<Topic> getFileTopics() {

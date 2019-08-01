@@ -76,7 +76,6 @@ public class RenderFS extends VirtFS {
     @Override
     public synchronized SeekableByteChannel newByteChannel(
             Path path, Set<? extends OpenOption> options, FileAttribute<?>... attrs) throws IOException {
-        logger.debug("newByteChannel for " + path);
 
         MetaPath metaPath = assertMetaPath(path);
         Path syspath = this.metaToSysFunc.apply(metaPath);

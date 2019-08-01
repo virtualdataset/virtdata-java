@@ -16,7 +16,7 @@ public class TopicFinder {
     public static List<Topic> getTopicList(Path baseTopicPath) {
 //        VirtTreeWalker.TLPATHS.get().clear();
 
-        logger.info("GET TOPIC LISTS " + baseTopicPath);
+        logger.trace("GET TOPIC LISTS " + baseTopicPath);
         try {
             HeaderTopicVisitor v = new HeaderTopicVisitor();
             TopicFileFilter f = new TopicFileFilter(".mdf", baseTopicPath);
@@ -30,7 +30,7 @@ public class TopicFinder {
     }
 
     public static List<Topic> getHeaderTopics(Path baseTopicPath) {
-        logger.info("GET TOPIC TREES" + baseTopicPath);
+        logger.trace("GET TOPIC TREES" + baseTopicPath);
         try {
             TopicTreeVisitor v = new TopicTreeVisitor(baseTopicPath);
             TopicFileFilter f = new TopicFileFilter(".mdf", baseTopicPath);
@@ -43,7 +43,7 @@ public class TopicFinder {
     }
 
     public static List<Topic> getFileTopics(Path topicScope) {
-        logger.info("GET FILE TOPICS " + topicScope);
+        logger.trace("GET FILE TOPICS " + topicScope);
         try {
             FileTopicVisitor v = new FileTopicVisitor(topicScope);
             TopicFileFilter f = new TopicFileFilter(".mdf", topicScope);

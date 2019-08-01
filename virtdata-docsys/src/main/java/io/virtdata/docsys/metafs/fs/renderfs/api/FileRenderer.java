@@ -157,7 +157,7 @@ public class FileRenderer extends FileContentRenderer {
                 scope = outer.wrap(scope);
             }
         }
-        logger.info("SCOPE chain: " + scope.getDiagnosticSummary());
+        logger.trace("SCOPE chain: " + scope.getDiagnosticSummary());
         RenderedContent rendered = scope.getRendered();
         return rendered;
     }

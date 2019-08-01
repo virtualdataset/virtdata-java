@@ -49,16 +49,16 @@ public class RenderingScope implements Versioned {
     public RenderedContent getRendered() {
         try {
             if (innerScope!=null) {
-                logger.info("RENDERING INNER " + innerScope.getTemplate().getTemplatePath() + " -> " + innerScope.getViewModel().getTarget());
+                logger.trace("RENDERING INNER " + innerScope.getTemplate().getTemplatePath() + " -> " + innerScope.getViewModel().getTarget());
                 innerScope.getRendered();
                 this.getViewModel().setInner(innerScope.getViewModel());
             }
             if (this.getViewModel().getRenderedContent()==null || !this.getViewModel().isValid()) {
                 if (this.renderer==null || !this.renderer.isValid()) {
-                    logger.info("COMPILING OUTER " + getTemplate().getTemplatePath() + " -> " + getViewModel().getTarget());
+                    logger.trace("COMPILING OUTER " + getTemplate().getTemplatePath() + " -> " + getViewModel().getTarget());
                     this.renderer =compiler.apply(templateView);
                 }
-                logger.info("RENDERING OUTER " + getTemplate().getTemplatePath() + " -> " + getViewModel().getTarget());
+                logger.trace("RENDERING OUTER " + getTemplate().getTemplatePath() + " -> " + getViewModel().getTarget());
                 RenderedContent renderedContent = renderer.apply(this);
                 this.getViewModel().setRenderedContent(renderedContent);
             }

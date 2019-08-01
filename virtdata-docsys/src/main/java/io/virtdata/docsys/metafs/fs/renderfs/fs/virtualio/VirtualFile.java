@@ -33,7 +33,7 @@ public class VirtualFile {
     }
 
     private ByteBuffer getContent() {
-        logger.info("ACCESSING CONTENT " + this.target.toString());
+        logger.trace("ACCESSING CONTENT " + this.target.toString());
         String s = contents.get();
         ByteBuffer byteBuffer = ByteBuffer.wrap(s.getBytes(StandardCharsets.UTF_8)).asReadOnlyBuffer();
         return byteBuffer;

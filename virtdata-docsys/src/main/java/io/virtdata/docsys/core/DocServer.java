@@ -63,7 +63,7 @@ public class DocServer implements Runnable {
             URL url = new URL(urlSpec);
             this.bindPort = url.getPort();
             this.bindHost = url.getHost();
-            if (url.getPath()!=null && url.getPath().isEmpty()) {
+            if (url.getPath() != null && url.getPath().isEmpty()) {
                 throw new UnsupportedOperationException("You may not specify a path for the hosting URL.");
             }
         } catch (MalformedURLException e) {
@@ -99,7 +99,7 @@ public class DocServer implements Runnable {
         }
         docPaths.sort(PathDescriptor::compareTo);
         for (PathDescriptor docPath : docPaths) {
-            logger.info("Adding doc path " + docPath);
+            logger.debug("Adding doc path " + docPath);
             this.addPaths(docPath.getPath());
         }
         logger.info("No more doc paths.");
@@ -109,7 +109,7 @@ public class DocServer implements Runnable {
             logger.info("Adding web service object: " + serviceObject.toString());
             this.addWebObject(serviceObject.getClass());
         }
-        logger.info("No more service objects.");
+        logger.debug("No more service objects.");
 
     }
 
@@ -151,7 +151,7 @@ public class DocServer implements Runnable {
         handlers = new HandlerList();
 
         if (this.basePaths.size() == 0 && this.servletClasses.size() == 0) {
-            logger.info("No service endpoints or doc paths have been added. Loading dynamically.");
+            logger.debug("No service endpoints or doc paths have been added. Loading dynamically.");
             this.LoadDynamicEndpoints();
             if (this.basePaths.size() == 0 && this.servletClasses.size() == 0) {
                 throw new InvalidParameterException("There must be at least one servlet class or doc path");
@@ -206,14 +206,10 @@ public class DocServer implements Runnable {
         statusResourceCfg.property("server", this);
         ServletContainer servletContainer = new ServletContainer(statusResourceCfg);
         ServletHolder servletHolder = new ServletHolder(servletContainer);
-        getContextHandler().addServlet(servletHolder,"/*");
+        getContextHandler().addServlet(servletHolder, "/*");
 
-//        if (this.servletClasses.size() > 0) {
-            logger.info("adding " + servletClasses.size() + " context handlers");
-            handlers.addHandler(getContextHandler());
-//        } else {
-//            logger.info("No context handlers defined, not adding context container.");
-//        }
+        logger.info("adding " + servletClasses.size() + " context handlers...");
+        handlers.addHandler(getContextHandler());
 
         // Show contexts
         DefaultHandler defaultHandler = new DefaultHandler();
@@ -226,7 +222,7 @@ public class DocServer implements Runnable {
         server.setHandler(handlers);
         for (Connector connector : server.getConnectors()) {
             if (connector instanceof AbstractConnector) {
-                logger.info("Setting idle timeout for " + connector.toString() + " to 300,000ms");
+                logger.debug("Setting idle timeout for " + connector.toString() + " to 300,000ms");
                 ((AbstractConnector) connector).setIdleTimeout(300000);
             }
         }
@@ -243,6 +239,7 @@ public class DocServer implements Runnable {
 
             server.start();
             logger.info("Started documentation server at http://" + bindHost + ":" + bindPort + "/");
+            server.join();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -264,20 +261,20 @@ public class DocServer implements Runnable {
         sb.append("----\n");
         sb.append(handler.getClass().getSimpleName()).append("\n");
         if (handler instanceof ResourceHandler) {
-            ResourceHandler h = (ResourceHandler)handler;
+            ResourceHandler h = (ResourceHandler) handler;
             sb.append(" base resource: ").append(h.getBaseResource().toString())
                     .append("\n");
             sb.append(h.dump());
-        } else if ( handler instanceof ServletContextHandler) {
+        } else if (handler instanceof ServletContextHandler) {
             ServletContextHandler h = (ServletContextHandler) handler;
             sb.append(h.dump()).append("\n");
             h.getServletContext().getServletRegistrations().forEach(
-                    (k,v) -> {
+                    (k, v) -> {
                         sb.append("## servlet(").append(k).append(")->").append(getServletSummary(v)).append("\n");
                     }
             );
             sb.append("context path:").append(h.getContextPath());
-        } else if ( handler instanceof DefaultHandler) {
+        } else if (handler instanceof DefaultHandler) {
             DefaultHandler h = (DefaultHandler) handler;
             sb.append(h.dump());
         }
@@ -285,7 +282,7 @@ public class DocServer implements Runnable {
     }
 
     private String getServletSummary(ServletRegistration v) {
-        return v.getClassName() + "('"+ v.getName() +"')" + v.getInitParameters().keySet().stream().map(
+        return v.getClassName() + "('" + v.getName() + "')" + v.getInitParameters().keySet().stream().map(
                 k -> k + "=" + v.getInitParameters().get(k)).collect(Collectors.joining(","));
     }
 }

@@ -1,13 +1,11 @@
 package io.virtdata.docsys.metafs.fs.renderfs.model;
 
-import io.virtdata.docsys.metafs.fs.renderfs.api.RendererIO;
 import io.virtdata.docsys.metafs.fs.renderfs.api.versioning.VersionedDirectory;
 import io.virtdata.docsys.metafs.fs.renderfs.api.versioning.VersionedObjectCache;
 import io.virtdata.docsys.metafs.fs.renderfs.model.topics.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
@@ -108,7 +106,6 @@ public class TopicViews {
                     it.previous();
                 }
             }
-            logger.info("Completed scrunch");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

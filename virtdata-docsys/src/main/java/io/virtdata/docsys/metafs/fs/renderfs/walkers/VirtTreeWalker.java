@@ -19,7 +19,7 @@ public class VirtTreeWalker {
 
     public static void walk(Path p, PathVisitor v, DirectoryStream.Filter<Path> filter) {
         try {
-            logger.info(" TOPIC-WALK > " + p);
+            logger.trace(" TOPIC-WALK > " + p);
             FileSystemProvider provider = p.getFileSystem().provider();
             DirectoryStream<Path> paths = provider.newDirectoryStream(p, (Path r) -> true);
             List<Path> pathlist = new ArrayList<>();
@@ -36,17 +36,17 @@ public class VirtTreeWalker {
 //                        logger.warn("extra recursion");
 //                    }
 //                    TLPATHS.get().add(path);
-                    logger.info("----> COMPUTE TOPICS for (" + path + ")");
+                    logger.trace("----> COMPUTE TOPICS for (" + path + ")");
                     v.preVisitFile(path);
                     v.visit(path);
                     v.postVisitFile(path);
-                    logger.info("<--- END COMPUTE TOPICS  (" + path + ")");
+                    logger.trace("<--- END COMPUTE TOPICS  (" + path + ")");
 
                 } else {
-                    //logger.info("WHOOPS");
+                    //logger.error("WHOOPS");
                 }
             }
-            logger.info(" TOPIC-WALK < " + p);
+            logger.trace(" TOPIC-WALK < " + p);
 
         } catch (IOException e) {
             throw new RuntimeException(e);

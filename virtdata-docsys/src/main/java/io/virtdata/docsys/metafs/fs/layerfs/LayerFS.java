@@ -125,7 +125,6 @@ public class LayerFS extends MetaFS {
 
     @Override
     public SeekableByteChannel newByteChannel(Path path, Set<? extends OpenOption> options, FileAttribute<?>... attrs) throws IOException {
-        logger.debug("newByteChannel for " + path);
         MetaPath metapath = assertMetaPath(path);
         LayerFS layerFS = assertThisFs(metapath);
         try {

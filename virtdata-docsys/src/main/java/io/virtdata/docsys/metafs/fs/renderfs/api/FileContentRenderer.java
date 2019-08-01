@@ -64,7 +64,7 @@ public abstract class FileContentRenderer {
         boolean hasSource = hasSource(p);
         boolean canRender = matchesTarget && hasSource;
         if (canRender) {
-            logger.info("CANRENDER " + p + " (" + this + ")");
+            logger.trace("CANRENDER " + p + " (" + this + ")");
         }
         return canRender;
     }

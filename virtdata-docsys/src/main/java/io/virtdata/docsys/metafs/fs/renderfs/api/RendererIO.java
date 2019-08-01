@@ -50,7 +50,7 @@ public class RendererIO {
     }
 
     public static long mtimeFor(Path path) {
-        logger.info("MTIME FOR " + path);
+        logger.trace("MTIME FOR " + path);
         return getFileAttributes(path).lastModifiedTime().toMillis();
     }
 

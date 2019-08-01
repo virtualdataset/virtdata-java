@@ -31,7 +31,7 @@ public class CachedContent<T> implements RenderedContent<T> {
     @Override
     public T get() {
         if (cache==null) {
-            logger.info("CREATING CONTENT");
+            logger.trace("CREATING CONTENT");
             cache=renderer.get();
         }
         return cache;

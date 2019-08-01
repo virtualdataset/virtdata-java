@@ -14,7 +14,7 @@ public final class HeaderTopicVisitor implements VirtTreeWalker.PathVisitor {
 
     @Override
     public void visit(Path p) {
-        logger.info("VISIT TOPICS for(" + p + "): " + topics.size());
+        logger.trace("VISIT TOPICS for(" + p + "): " + topics.size());
         TopicParser parser = new TopicParser(p);
         topics.addAll(parser.getHeaderTopics());
     }
