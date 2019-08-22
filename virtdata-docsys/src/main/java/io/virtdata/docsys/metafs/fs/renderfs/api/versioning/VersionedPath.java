@@ -1,8 +1,9 @@
 package io.virtdata.docsys.metafs.fs.renderfs.api.versioning;
 
-import io.virtdata.docsys.metafs.fs.renderfs.api.RendererIO;
-
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.TimeUnit;
 
 public class VersionedPath implements Versioned {
     private final long createdVersion;
@@ -15,7 +16,11 @@ public class VersionedPath implements Versioned {
 
     @Override
     public long getVersion() {
-        return RendererIO.mtimeFor(sourcePath);
+        try {
+            return Files.getLastModifiedTime(sourcePath).to(TimeUnit.MILLISECONDS);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

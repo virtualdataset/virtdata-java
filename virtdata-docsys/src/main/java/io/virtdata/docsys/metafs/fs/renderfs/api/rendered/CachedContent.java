@@ -10,12 +10,18 @@ public class CachedContent<T> implements RenderedContent<T> {
     private final static Logger logger = LoggerFactory.getLogger(CachedContent.class);
 
     private final Supplier<T> renderer;
+    private final String name;
     private T cache;
     private Versioned versions;
 
-    public CachedContent(Supplier<T> renderer, Versioned versions) {
+    public CachedContent(String name, Supplier<T> renderer, Versioned versions) {
+        this.name = name;
         this.renderer = renderer;
         this.versions = versions;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -31,7 +37,7 @@ public class CachedContent<T> implements RenderedContent<T> {
     @Override
     public T get() {
         if (cache==null) {
-            logger.trace("CREATING CONTENT");
+            logger.trace("CREATING CONTENT ");
             cache=renderer.get();
         }
         return cache;

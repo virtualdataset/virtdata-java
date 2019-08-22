@@ -25,7 +25,7 @@ public class MustacheRenderer implements Renderer {
                 this.compiledTemplate = MustacheProcessor.compiler.compile(templateView.getRawTemplate());
             }
 //                String renderedText = compiledTemplate.execute(viewModel);
-            return new CachedContent<>(()->compiledTemplate.execute(scope.getViewModel()),scope);
+            return new CachedContent<>(scope.getViewModel().getTarget().toString(),()->compiledTemplate.execute(scope.getViewModel()),scope);
         } catch (Exception e) {
             throw new RuntimeException(e);
 //                List<String> details = new ArrayList<>();

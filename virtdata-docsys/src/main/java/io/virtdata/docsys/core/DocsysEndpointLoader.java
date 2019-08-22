@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
 
-public class EndpointLoader {
+public class DocsysEndpointLoader {
 
     public static List<WebServiceObject> loadWebServiceObjects() {
         List<WebServiceObject> endpoints = new ArrayList<>();

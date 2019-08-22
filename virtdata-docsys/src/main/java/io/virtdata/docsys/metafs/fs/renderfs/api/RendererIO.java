@@ -49,10 +49,5 @@ public class RendererIO {
         }
     }
 
-    public static long mtimeFor(Path path) {
-        logger.trace("MTIME FOR " + path);
-        return getFileAttributes(path).lastModifiedTime().toMillis();
-    }
-
     public static Function<Path,ByteBuffer> PATH_BUFFER_FUNCTION = RendererIO::readBuffer;
 }

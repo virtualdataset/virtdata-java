@@ -11,7 +11,13 @@ public class VirtualFileAttributeMap extends HashMap<String,Object> {
     private final IntSupplier sizereader;
     private LongSupplier versionreader;
 
-    public VirtualFileAttributeMap(Path sourcePath, Map<String, Object> sourceAttrs, Path path, IntSupplier sizereader, LongSupplier versionreader) {
+    public VirtualFileAttributeMap(
+            Path sourcePath,
+            Map<String, Object> sourceAttrs,
+            Path path,
+            IntSupplier sizereader,
+            LongSupplier versionreader
+    ) {
         this.versionreader = versionreader;
         putAll(sourceAttrs);
         remove("size");

@@ -33,7 +33,5 @@ then this will be added at that time.
 ### paths as html
 {{ paths }}
 
-### paths as markdown
-
 
 

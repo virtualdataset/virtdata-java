@@ -92,19 +92,21 @@ public class DocServer implements Runnable {
     }
 
     public void LoadDynamicEndpoints() {
-        List<DocPaths> docPathLists = EndpointLoader.loadPathDescriptors();
+        List<DocPaths> docPathLists = DocsysEndpointLoader.loadPathDescriptors();
         List<PathDescriptor> docPaths = new ArrayList<>();
         for (DocPaths docPath : docPathLists) {
-            docPaths.addAll(docPath.getPathDescriptors());
+            List<PathDescriptor> pathDescriptors = docPath.getPathDescriptors();
+            docPaths.addAll(pathDescriptors);
         }
         docPaths.sort(PathDescriptor::compareTo);
         for (PathDescriptor docPath : docPaths) {
             logger.debug("Adding doc path " + docPath);
-            this.addPaths(docPath.getPath());
+            Path path = docPath.getPath();
+            this.addPaths(path);
         }
         logger.info("No more doc paths.");
 
-        List<WebServiceObject> serviceObjects = EndpointLoader.loadWebServiceObjects();
+        List<WebServiceObject> serviceObjects = DocsysEndpointLoader.loadWebServiceObjects();
         for (WebServiceObject serviceObject : serviceObjects) {
             logger.info("Adding web service object: " + serviceObject.toString());
             this.addWebObject(serviceObject.getClass());

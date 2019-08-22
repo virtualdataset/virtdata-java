@@ -12,7 +12,10 @@ public class VirtualFileBasicFileAttributes implements BasicFileAttributes {
     private LongSupplier versionreader;
 
     public VirtualFileBasicFileAttributes(
-            BasicFileAttributes sysFileAttributeDelegate, LongSupplier sizereader, LongSupplier versionreader) {
+            BasicFileAttributes sysFileAttributeDelegate,
+            LongSupplier sizereader,
+            LongSupplier versionreader
+    ) {
         this.sysFileAttributeDelegate = sysFileAttributeDelegate;
         this.sizereader = sizereader;
         this.versionreader = versionreader;

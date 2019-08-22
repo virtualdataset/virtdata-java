@@ -84,6 +84,9 @@ public class RenderFS extends VirtFS {
             SeekableByteChannel channel = super.newByteChannel(path, options, attrs);
             return channel;
         } catch (Exception e) {
+            if (!renderers.canRender(path)) {
+                throw e;
+            }
             VirtualFile vf = cache.computeIfAbsent(path, renderers::getVirtualFile);
             if (vf!=null) {
                 return vf.getSeekableByteChannel();
@@ -106,6 +109,9 @@ public class RenderFS extends VirtFS {
         try {
             return super.readAttributes(path, type, options);
         } catch (Exception e1) {
+            if (!renderers.canRender(path)) {
+                throw e1;
+            }
             VirtualFile vf = cache.computeIfAbsent(path, renderers::getVirtualFile);
             if (vf != null) {
                 return vf.readAttributes(path, type, options);
@@ -119,6 +125,9 @@ public class RenderFS extends VirtFS {
         try {
             return super.readAttributes(path, attributes, options);
         } catch (Exception e1) {
+            if (!renderers.canRender(path)) {
+                throw e1;
+            }
             VirtualFile vf = cache.computeIfAbsent(path, renderers::getVirtualFile);
             if (vf != null) {
                 return vf.readAttributes(path, attributes, options);
@@ -133,12 +142,15 @@ public class RenderFS extends VirtFS {
         try {
             super.checkAccess(path, modes);
         } catch (Exception e1) {
-            VirtualFile vf = cache.computeIfAbsent(path, renderers::getVirtualFile);
-            if (vf != null) {
-                vf.checkAccess(path, modes);
-            } else {
+            if (!renderers.canRender(path)) {
                 throw e1;
             }
+//            VirtualFile vf = cache.computeIfAbsent(path, renderers::getVirtualFile);
+//            if (vf != null) {
+//                vf.checkAccess(path, modes);
+//            } else {
+//                throw e1;
+//            }
         }
     }
 
@@ -154,6 +166,9 @@ public class RenderFS extends VirtFS {
             super.readAttributes(path, BasicFileAttributes.class, new LinkOption[0]);
             return super.getFileAttributeView(path, type, options);
         } catch (IOException e1) {
+            if (!renderers.canRender(path)) {
+                throw new RuntimeException(e1);
+            }
             VirtualFile vf = cache.computeIfAbsent(path, renderers::getVirtualFile);
             if (vf!=null) {
                 return vf.getFileAttributeView(path, type, options);
@@ -162,14 +177,6 @@ public class RenderFS extends VirtFS {
             }
 
         }
-
-//        /*
-//        Although the case for neither the source file or the target file being present is
-//        actually an undefined case (Due to #readAttributes thrown an exception), we don't want
-//        to cause callers who would get a view but who wouldn't trip over an error to be
-//        forced to deal with one here. (Callers may get a view without getting the attributes.)
-//         */
-//        return super.getFileAttributeView(path, type, options);
     }
 
     @Override

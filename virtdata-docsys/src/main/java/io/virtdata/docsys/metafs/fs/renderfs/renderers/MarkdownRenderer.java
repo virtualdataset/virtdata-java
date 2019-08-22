@@ -18,11 +18,13 @@ public class MarkdownRenderer implements Renderer {
 
     static final MutableDataHolder OPTIONS = new MutableDataSet()
             .set(HtmlRenderer.GENERATE_HEADER_ID, true)
+            .set(HtmlRenderer.RENDER_HEADER_ID, true)
             .set(HtmlRenderer.DO_NOT_RENDER_LINKS, false)
             .set(Parser.EXTENSIONS, Arrays.asList(
                     AnchorLinkExtension.create()
             ))
             .set(AnchorLinkExtension.ANCHORLINKS_SET_ID, true)
+            .set(AnchorLinkExtension.ANCHORLINKS_WRAP_TEXT, false)
             .set(AnchorLinkExtension.ANCHORLINKS_ANCHOR_CLASS, "header-anchor");
 
     protected final static Parser parser = Parser.builder(OPTIONS)
@@ -41,7 +43,7 @@ public class MarkdownRenderer implements Renderer {
     public RenderedContent apply(RenderingScope scope) {
         try {
             this.version = scope.getVersion();
-            return new CachedContent<String>(()->renderer.render(document), scope);
+            return new CachedContent<>(scope.getViewModel().getTarget().toString(),()->renderer.render(document), scope);
         } catch (Exception e) {
             throw new RuntimeException(e);
 //                return new ExceptionContent(e, scope.getVersion(), scope);

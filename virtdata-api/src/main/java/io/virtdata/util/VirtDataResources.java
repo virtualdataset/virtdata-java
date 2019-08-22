@@ -259,22 +259,14 @@ public class VirtDataResources {
                 }
                 if (foundPath == null) {
                     try {
-                        ClassLoader cl = VirtDataResources.class.getClassLoader();
                         URL url = ClassLoader.getSystemResource(candidatePath);
                         if (url != null) {
                             URI uri = URI.create(url.toExternalForm());
                             foundPath = getPathInFilesystem(uri);
                             logger.debug("Found path in classpath: " + candidatePath + ": " + foundPath.toString());
-//                            String path = url.getPath();
-//                            if (path.contains("!")) {
-//                                url.getSc
-//                                String[] parts = path.split("!", 2);
-//                                FileSystems.getFileSystem()
-//                            }
-//                            foundPath = Path.of(path);
                         }
                     } catch (Exception e) {
-                        logger.trace("Error while looking in classpath for " + e.getMessage(),e);
+                        logger.trace("Error while looking in classpath for " + e.getMessage(), e);
                     }
 
                 }
@@ -290,10 +282,10 @@ public class VirtDataResources {
     private synchronized static Path getPathInFilesystem(URI uri) {
         FileSystem fileSystem = null;
         try {
-            fileSystem=FileSystems.getFileSystem(uri);
+            fileSystem = FileSystems.getFileSystem(uri);
         } catch (FileSystemNotFoundException ignored) {
             try {
-                fileSystem =FileSystems.newFileSystem(uri, Collections.EMPTY_MAP);
+                fileSystem = FileSystems.newFileSystem(uri, Collections.EMPTY_MAP);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

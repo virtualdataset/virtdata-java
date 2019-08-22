@@ -23,4 +23,5 @@ public class HeaderTopicsView extends ArrayList<Topic> implements Versioned {
     public boolean isValid() {
         return versions.isValid();
     }
+
 }

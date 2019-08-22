@@ -18,8 +18,15 @@ public class VirtualFileAttributeView implements BasicFileAttributeView {
     private final Path targetPath;
     private final Path sourcePath;
 
-    public VirtualFileAttributeView(Path sourcePath, FileAttributeView sourceAttributeView,
-                                    Path targetPath, Class type, LinkOption[] options, LongSupplier sizereader, LongSupplier versionreader) {
+    public VirtualFileAttributeView(
+            Path sourcePath,
+            FileAttributeView sourceAttributeView,
+            Path targetPath,
+            Class type,
+            LinkOption[] options,
+            LongSupplier sizereader,
+            LongSupplier versionreader
+    ) {
         this.sourcePath = sourcePath;
         this.targetPath = targetPath;
         this.sourceAttributeView = sourceAttributeView;

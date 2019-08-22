@@ -203,7 +203,7 @@ public class VirtFS extends MetaFS {
         return syspath.getFileSystem().provider().readAttributes(syspath, attributes, options);
     }
 
-    public FileAttributeView getFileAttributeView(Path path, Class type, LinkOption... options) {
+    public FileAttributeView getFileAttributeView(Path path, Class type, LinkOption... options) throws IOException {
         MetaPath metaPath = assertMetaPath(path);
         Path syspath = this.metaToSysFunc.apply(metaPath);
         return syspath.getFileSystem().provider().getFileAttributeView(syspath, type, options);

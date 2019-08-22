@@ -25,6 +25,7 @@ public class Renderers {
      * Return the first renderer which matches the target extension
      * and which also has a readable source file under the source extension,
      * or null if none is available.
+     *
      * @param targetPath The target path which is meant to be rendered
      * @return A renderer or null, if none are available
      */
@@ -35,6 +36,15 @@ public class Renderers {
             }
         }
         return null;
+    }
+
+    public boolean canRender(Path targetPath) {
+        for (FileContentRenderer rendererType : rendererTypes) {
+            if (rendererType.canRender(targetPath)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public List<Path> getVirtualPathsFor(Path path) {
@@ -56,7 +66,7 @@ public class Renderers {
 
     public VirtualFile getVirtualFile(Path p) {
         FileContentRenderer renderer = forTargetPath(p);
-        if (renderer!=null) {
+        if (renderer != null) {
             VirtualFile vf = renderer.getVirtualFile(p);
             return vf;
         }

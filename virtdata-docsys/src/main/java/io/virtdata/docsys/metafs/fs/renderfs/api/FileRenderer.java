@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.spi.FileSystemProvider;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -171,12 +170,9 @@ public class FileRenderer extends FileContentRenderer {
 
         try {
             Path localTmpl = directoryPath.resolve("_." + extension);
-            FileSystemProvider provider = localTmpl.getFileSystem().provider();
             if (Files.exists(localTmpl)) {
                 chain.addLast(localTmpl);
             }
-//            provider.checkAccess(localTmpl, AccessMode.READ);
-//            chain.addLast(localTmpl);
         } catch (Exception ignored) {
         }
 
@@ -187,8 +183,6 @@ public class FileRenderer extends FileContentRenderer {
                 if (Files.exists(localTmpl)) {
                     chain.addLast(localTmpl);
                 }
-//                localTmpl.getFileSystem().provider().checkAccess(localTmpl, AccessMode.READ);
-//                chain.addLast(localTmpl);
             } catch (Exception ignored) {
             }
         }

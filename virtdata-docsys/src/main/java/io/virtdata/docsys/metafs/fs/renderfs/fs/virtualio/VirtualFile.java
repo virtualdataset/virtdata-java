@@ -29,7 +29,7 @@ public class VirtualFile {
     public VirtualFile(Path delegate, Path target, RenderedContent<String> content) {
         this.delegate = delegate;
         this.target = target;
-        this.contents = new CachedContent<>(content,content);
+        this.contents = new CachedContent<>(target.toString(),content,content);
     }
 
     private ByteBuffer getContent() {
@@ -108,6 +108,10 @@ public class VirtualFile {
         sb.append(":[").append(contents.toString()).append("]");
 
         return sb.toString();
+    }
+
+    public boolean isValid() {
+        return getRenderedContent().isValid();
     }
 
 }

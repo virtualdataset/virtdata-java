@@ -1,6 +1,7 @@
 package io.virtdata.docsys.metafs.fs.renderfs.fs;
 
 import io.virtdata.docsys.metafs.fs.renderfs.fs.virtualio.VirtualFile;
+import io.virtdata.docsys.metafs.fs.virtual.DebugHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,34 +20,34 @@ public class VirtualFileCache {
     public synchronized VirtualFile computeIfAbsent(
             Path key, Function<? super Path, ? extends VirtualFile> mappingFunction
     ) {
-        logger.trace("REQUESTFOR " + key);
+        if (logger.isTraceEnabled()) {
+            String caller = DebugHelper.matchesCallerTree(Thread.currentThread().getStackTrace(), "org.eclipse.jetty.*");
+            if (caller != null) {
+                logger.trace("REQUESTFOR " + key);
+                logger.trace("BY " + caller);
+            }
+        }
         try {
+
             VirtualFile vf = cacheMap.get(key);
-            if (vf!=null) {
-                if (!devmode && vf.getRenderedContent().isValid()) {
-                    logger.trace("REUSED  " + key);
-                    return vf;
-                } else {
-                    logger.trace("REFRESH (" + (devmode ? "DEV" : vf.getRenderedContent()) +") " + key) ;
-                    vf=mappingFunction.apply(key);
-                    if (vf==null) {
-                        logger.trace("NULLREN " + key);
-                    } else {
-                        logger.trace("PRESENT " + key);
-                        cacheMap.put(key,vf);
-                    }
-                }
+            boolean compute = false;
+
+            if (vf == null) {
+                compute = true;
+            } else if (!vf.isValid()) {
+                logger.debug("RECOMPUTING >" + key);
+                compute = true;
+            } else if (devmode) {
+                logger.trace("FORCED >" + key);
+                compute = true;
             }
-            else {
-                logger.trace("COMPUTE " + key);
+
+            if (compute) {
                 vf = mappingFunction.apply(key);
-                if (vf==null) {
-                    logger.trace("NULLREN " + key);
-                } else {
-                    logger.trace("PRESENT " + key);
-                    cacheMap.put(key,vf);
-                }
+                cacheMap.put(key,vf);
+                logger.debug("COMPUTED " + key);
             }
+
             return vf;
         } catch (Exception e) {
             throw new RuntimeException(e);
