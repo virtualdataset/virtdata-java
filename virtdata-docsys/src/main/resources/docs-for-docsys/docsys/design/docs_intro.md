@@ -9,6 +9,7 @@ These are doc sites that have examples of good docs.
 - [NetData](https://docs.netdata.cloud/)
 - [Optimizely](https://developers.optimizely.com/x/solutions/javascript/reference/index.html)
 - [Elastic Step by Step](https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/java-rest-high-search.html)
+- [Javascript.info](https://javascript.info/strict-mode)
 
 
 ## Architecture
