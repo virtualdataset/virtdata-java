@@ -1,6 +1,7 @@
 package io.virtdata.random;
 
-import org.greenrobot.essentials.hash.Murmur3F;
+
+import io.virtdata.core.murmur.Murmur3F;
 
 import java.util.function.LongUnaryOperator;
 

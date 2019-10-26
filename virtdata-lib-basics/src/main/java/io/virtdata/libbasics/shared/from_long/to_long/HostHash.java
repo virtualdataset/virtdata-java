@@ -1,7 +1,7 @@
 package io.virtdata.libbasics.shared.from_long.to_long;
 
 import io.virtdata.annotations.Example;
-import org.greenrobot.essentials.hash.Murmur3F;
+import io.virtdata.core.murmur.Murmur3F;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;

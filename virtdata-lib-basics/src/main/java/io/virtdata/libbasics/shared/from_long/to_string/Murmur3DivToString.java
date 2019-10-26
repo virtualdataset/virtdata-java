@@ -18,9 +18,9 @@
 
 package io.virtdata.libbasics.shared.from_long.to_string;
 
-import org.greenrobot.essentials.hash.Murmur3F;
 import io.virtdata.annotations.DeprecatedFunction;
 import io.virtdata.annotations.ThreadSafeMapper;
+import io.virtdata.core.murmur.Murmur3F;
 import io.virtdata.libbasics.shared.from_long.to_long.DivideToLong;
 
 import java.util.function.LongFunction;
