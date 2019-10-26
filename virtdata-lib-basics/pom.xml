@@ -60,11 +60,6 @@
             <version>3.6.1</version>
         </dependency>
         <dependency>
-            <groupId>org.greenrobot</groupId>
-            <artifactId>essentials</artifactId>
-            <version>3.0.0-RC1</version>
-        </dependency>
-        <dependency>
             <groupId>com.elega9t</groupId>
             <artifactId>number-to-words</artifactId>
             <version>1.0.0</version>
