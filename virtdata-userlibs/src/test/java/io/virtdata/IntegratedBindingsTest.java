@@ -239,7 +239,7 @@ public class IntegratedBindingsTest {
     @Test
     public void testInjectedConfig() {
         Map<String, Map<String, ?>> cfg = Map.of("vars", Map.of("foo", "bar"));
-        Optional<DataMapper<Object>> mapper = VirtData.getOptionalMapper("Identity(); LoadElement('foo')", cfg);
+        Optional<DataMapper<Object>> mapper = VirtData.getOptionalMapper("Identity(); LoadElement('foo','vars','novalue')", cfg);
         assertThat(mapper).isPresent();
         DataMapper<Object> om1 = mapper.get();
         Object o = om1.get(3);
