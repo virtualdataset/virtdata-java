@@ -9,6 +9,7 @@ package io.virtdata.libbasics.shared.distributions;
 
 import io.virtdata.annotations.Categories;
 import io.virtdata.annotations.Category;
+import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.libbasics.core.stathelpers.AliasSamplerDoubleInt;
 import io.virtdata.libbasics.core.stathelpers.EvProbD;
@@ -61,6 +62,7 @@ public class CSVFrequencySampler implements LongFunction<String> {
      * @param filename The name of the file to be read into the sampler buffer
      * @param columnName The name of the column to be sampled
      */
+    @Example({"CSVFrequencySampler('values.csv','modelno')","Read values.csv, count the frequency of values in 'modelno' column, and sample from this column proportionally"})
     public CSVFrequencySampler(String filename, String columnName) {
         this.filename = filename;
         this.columnName = columnName;
