@@ -6,9 +6,7 @@ import io.virtdata.core.DataMapperFunctionMapper;
 import io.virtdata.core.ResolvedFunction;
 import io.virtdata.parser.VirtDataDSL;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -49,10 +47,15 @@ public interface VirtDataFunctionLibrary extends Named {
             Class<?> returnType,
             Class<?> inputType,
             String functionName,
-            Object... parameters);
+            Map<String,?> customConfigs,
+            Object... parameters
+            );
 
 
-    default List<ResolvedFunction> resolveFunctions(String spec) {
+    default List<ResolvedFunction> resolveFunction(String spec) {
+        return this.resolveFunctions(spec, new HashMap<>());
+    }
+    default List<ResolvedFunction> resolveFunctions(String spec, Map<String,Object> customConfigs) {
         List<ResolvedFunction> resolvedFunctions = new ArrayList<>();
 
         VirtDataDSL.ParseResult parseResult = VirtDataDSL.parse(spec);
@@ -70,6 +73,7 @@ public interface VirtDataFunctionLibrary extends Named {
                 Optional.ofNullable(call.getOutputType()).map(ValueType::valueOfClassName).map(ValueType::getValueClass).orElse(null),
                 Optional.ofNullable(call.getInputType()).map(ValueType::valueOfClassName).map(ValueType::getValueClass).orElse(null),
                 call.getFunctionName(),
+                customConfigs,
                 call.getArguments());
 
         resolvedFunctions.addAll(found);
@@ -77,7 +81,10 @@ public interface VirtDataFunctionLibrary extends Named {
     }
 
     default <T> List<DataMapper<T>> getDataMappers(String spec) {
-        List<ResolvedFunction> resolvedFunctions1 = this.resolveFunctions(spec);
+        return this.getDataMappers(spec,new HashMap<>());
+    }
+    default <T> List<DataMapper<T>> getDataMappers(String spec, Map<String,Object> customConfigs) {
+        List<ResolvedFunction> resolvedFunctions1 = this.resolveFunctions(spec, customConfigs);
         return resolvedFunctions1.stream().map(
                 r -> DataMapperFunctionMapper.<T>map(r.getFunctionObject())).collect(Collectors.toList());
     }
@@ -91,7 +98,10 @@ public interface VirtDataFunctionLibrary extends Named {
      * @return An optional data mapper
      */
     default <T> Optional<DataMapper<T>> getDataMapper(String spec) {
-        List<ResolvedFunction> resolvedFunctions = this.resolveFunctions(spec);
+        return this.getDataMapper(spec, new HashMap<>());
+    }
+    default <T> Optional<DataMapper<T>> getDataMapper(String spec, Map<String,Object> customConfigs) {
+        List<ResolvedFunction> resolvedFunctions = this.resolveFunctions(spec, customConfigs);
 
         switch (resolvedFunctions.size()) {
             case 0:

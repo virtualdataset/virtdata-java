@@ -78,7 +78,7 @@ public class VirtData {
      * @param <T>      The parameterized return type of the function
      * @return An optional function which will be empty if the function could not be resolved.
      */
-    public static <T> Optional<DataMapper<T>> getOptionalMapper(String flowSpec) {
+    public static <T> Optional<DataMapper<T>> getOptionalMapper(String flowSpec, Map<String,?> cfg) {
         flowSpec = CompatibilityFixups.fixup(flowSpec);
         VirtDataDSL.ParseResult parseResult = VirtDataDSL.parse(flowSpec);
         if (parseResult.throwable != null) {
@@ -86,11 +86,19 @@ public class VirtData {
         }
         VirtDataFlow flow = parseResult.flow;
         VirtDataComposer composer = new VirtDataComposer();
+        composer.addCustomElements(cfg);
         Optional<ResolvedFunction> resolvedFunction = composer.resolveFunctionFlow(flow);
         return resolvedFunction.map(ResolvedFunction::getFunctionObject).map(DataMapperFunctionMapper::map);
     }
+    public static <T> Optional<DataMapper<T>> getOptionalMapper(String flowSpec) {
+        return getOptionalMapper(flowSpec,Collections.emptyMap());
+    }
 
     public static ResolverDiagnostics getMapperDiagnostics(String flowSpec) {
+        return getMapperDiagnostics(flowSpec, Collections.emptyMap());
+    }
+
+    public static ResolverDiagnostics getMapperDiagnostics(String flowSpec, Map<String,Object> config) {
         try {
             flowSpec = CompatibilityFixups.fixup(flowSpec);
             VirtDataDSL.ParseResult parseResult = VirtDataDSL.parse(flowSpec);
@@ -99,6 +107,8 @@ public class VirtData {
             }
             VirtDataFlow flow = parseResult.flow;
             VirtDataComposer composer = new VirtDataComposer();
+            composer.addCustomElements(config);
+
             ResolverDiagnostics resolverDiagnostics = composer.resolveDiagnosticFunctionFlow(flow);
             return resolverDiagnostics;
         } catch (Exception e) {
@@ -122,6 +132,12 @@ public class VirtData {
      * @return An optional function which will be empty if the function could not be resolved.
      */
     public static <T> Optional<DataMapper<T>> getOptionalMapper(String flowSpec, Class<? extends T> clazz) {
+        return getOptionalMapper(flowSpec,clazz,Collections.emptyMap());
+    }
+    public static <T> Optional<DataMapper<T>> getOptionalMapper(
+            String flowSpec,
+            Class<?> clazz,
+            Map<String,Object> config) {
         flowSpec = CompatibilityFixups.fixup(flowSpec);
         VirtDataDSL.ParseResult parseResult = VirtDataDSL.parse(flowSpec);
         if (parseResult.throwable != null) {
@@ -144,6 +160,7 @@ public class VirtData {
         }
 
         VirtDataComposer composer = new VirtDataComposer();
+        composer.addCustomElements(config);
         Optional<ResolvedFunction> resolvedFunction = composer.resolveFunctionFlow(flow);
         Optional<DataMapper<T>> mapper = resolvedFunction.map(ResolvedFunction::getFunctionObject).map(DataMapperFunctionMapper::map);
         if (mapper.isPresent()) {
@@ -159,11 +176,19 @@ public class VirtData {
     }
 
     public static <T> T getFunction(String flowSpec, Class<? extends T> functionType) {
-        Optional<? extends T> optionalFunction = getOptionalFunction(flowSpec, functionType);
+            return getFunction(flowSpec, functionType, Collections.emptyMap());
+    }
+
+    public static <T> T getFunction(String flowSpec, Class<? extends T> functionType, Map<String,Object> config) {
+        Optional<? extends T> optionalFunction = getOptionalFunction(flowSpec, functionType, config);
         return optionalFunction.orElseThrow();
     }
 
     public static <T> Optional<T> getOptionalFunction(String flowSpec, Class<? extends T> functionType) {
+        return getOptionalFunction(flowSpec,functionType,Collections.emptyMap());
+    }
+
+    public static <T> Optional<T> getOptionalFunction(String flowSpec, Class<? extends T> functionType, Map<String,Object> config) {
         flowSpec = CompatibilityFixups.fixup(flowSpec);
 
         Class<?> requiredInputType = FunctionTyper.getInputClass(functionType);
@@ -210,6 +235,7 @@ public class VirtData {
         }
 
         VirtDataComposer composer = new VirtDataComposer();
+        composer.addCustomElements(config);
         Optional<ResolvedFunction> resolvedFunction = composer.resolveFunctionFlow(flow);
 
         return resolvedFunction.map(ResolvedFunction::getFunctionObject).map(functionType::cast);
@@ -223,9 +249,12 @@ public class VirtData {
      * @return A data mapping function
      * @throws RuntimeException if the function could not be resolved
      */
-    public static <T> DataMapper<T> getMapper(String flowSpec) {
-        Optional<DataMapper<T>> optionalMapper = getOptionalMapper(flowSpec);
+    public static <T> DataMapper<T> getMapper(String flowSpec, Map<String,Object> config) {
+        Optional<DataMapper<T>> optionalMapper = getOptionalMapper(flowSpec,config);
         return optionalMapper.orElseThrow(() -> new RuntimeException("Unable to find mapper: " + flowSpec));
+    }
+    public static <T> DataMapper<T> getMapper(String flowSpec) {
+        return getMapper(flowSpec, Collections.emptyMap());
     }
 
     /**
@@ -237,10 +266,13 @@ public class VirtData {
      * @return A new data mapping function.
      * @throws RuntimeException if the function could not be resolved
      */
-    public static <T> DataMapper<T> getMapper(String flowSpec, Class<? extends T> clazz) {
+    public static <T> DataMapper<T> getMapper(String flowSpec, Class<? extends T> clazz, Map<String,Object> config) {
         Optional<DataMapper<T>> dataMapper = getOptionalMapper(flowSpec, clazz);
         DataMapper<T> mapper = dataMapper.orElseThrow(() -> new RuntimeException("Unable to find mapper: " + flowSpec));
         return mapper;
+    }
+    public static <T> DataMapper<T> getMapper(String flowSpec, Class<? extends T> clazz) {
+        return getMapper(flowSpec, clazz, Collections.emptyMap());
     }
 
 }

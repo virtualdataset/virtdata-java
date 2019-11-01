@@ -35,12 +35,13 @@ public class VirtDataLibraries implements VirtDataFunctionLibrary  {
             Class<?> returnType,
             Class<?> inputType,
             String functionName,
+            Map<String,?> customConfig,
             Object... parameters)
     {
         List<ResolvedFunction> resolvedFunctions = new ArrayList<>();
 
 
-        List<ResolvedFunction> resolved = resolver.resolveFunctions(returnType, inputType, functionName, parameters);
+        List<ResolvedFunction> resolved = resolver.resolveFunctions(returnType, inputType, functionName, customConfig, parameters);
         // Written this way to allow for easy debugging and understanding, do not convert to .stream()...
         if (resolved.size()>0) {
             resolvedFunctions.addAll(resolved);

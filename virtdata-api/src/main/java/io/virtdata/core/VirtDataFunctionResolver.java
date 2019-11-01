@@ -1,6 +1,7 @@
 package io.virtdata.core;
 
 import io.virtdata.annotations.ThreadSafeMapper;
+import io.virtdata.api.config.ConfigAware;
 import org.apache.commons.lang3.ClassUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,7 @@ public class VirtDataFunctionResolver {
     private final static MethodHandles.Lookup lookup = MethodHandles.publicLookup();
     private final VirtDataFunctionFinder virtDataFunctionFinder = new VirtDataFunctionFinder();
 
-    public List<ResolvedFunction> resolveFunctions(Class<?> returnType, Class<?> inputType, String functionName, Object... parameters) {
+    public List<ResolvedFunction> resolveFunctions(Class<?> returnType, Class<?> inputType, String functionName, Map<String,?> customParameters, Object... parameters) {
 
         // TODO: Make this look for both assignment compatible matches as well as exact assignment matches, and only
         // TODO: return assignment compatible matches when there are none exact matching.
@@ -100,6 +101,9 @@ public class VirtDataFunctionResolver {
                 MethodType ctorMethodType = MethodType.methodType(void.class, ctor.getParameterTypes());
                 MethodHandle constructor = lookup.findConstructor(ctorDClass, ctorMethodType);
                 Object functionalInstance = constructor.invokeWithArguments(parameters);
+                if (functionalInstance instanceof ConfigAware) {
+                    ((ConfigAware)functionalInstance).applyConfig(customParameters);
+                }
                 boolean threadSafe = functionalInstance.getClass().getAnnotation(ThreadSafeMapper.class) != null;
                 resolvedFunctions.add(
                         new ResolvedFunction(
@@ -108,7 +112,7 @@ public class VirtDataFunctionResolver {
                                 parameterTypes,
                                 parameters,
                                 getInputClass(functionalInstance.getClass()),
-                                getOutputClas(functionalInstance.getClass())
+                                getOutputClass(functionalInstance.getClass())
                         )
                 );
             } catch (Throwable throwable) {
@@ -191,7 +195,7 @@ public class VirtDataFunctionResolver {
         return toFunctionalMethod(functionalClass).getParameterTypes()[0];
     }
 
-    private Class<?> getOutputClas(Class<?> functionClass) {
+    private Class<?> getOutputClass(Class<?> functionClass) {
         return toFunctionalMethod(functionClass).getReturnType();
     }
 

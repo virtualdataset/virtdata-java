@@ -54,8 +54,10 @@ public class VirtDataComposer {
 
     private final static String PREAMBLE = "compose ";
     private final static Logger logger = LoggerFactory.getLogger(DataMapperLibrary.class);
-    private final VirtDataFunctionLibrary functionLibrary;
     private final static MethodHandles.Lookup lookup = MethodHandles.publicLookup();
+
+    private final VirtDataFunctionLibrary functionLibrary;
+    private final Map<String,Object> customElements = new HashMap<>();
 
     public VirtDataComposer(VirtDataFunctionLibrary functionLibrary) {
         this.functionLibrary = functionLibrary;
@@ -64,6 +66,7 @@ public class VirtDataComposer {
     public VirtDataComposer() {
         this.functionLibrary = VirtDataLibraries.get();
     }
+
 
     public Optional<ResolvedFunction> resolveFunctionFlow(String flowspec) {
 
@@ -115,7 +118,7 @@ public class VirtDataComposer {
             Class<?> outputType = ValueType.classOfType(call.getOutputType());
             Object[] args = call.getArguments();
             try {
-                args = populateFunctions(diagnostics, args);
+                args = populateFunctions(diagnostics, args, this.customElements);
             } catch (Exception e) {
                 return diagnostics.error(e);
             }
@@ -125,7 +128,7 @@ public class VirtDataComposer {
                 diagnostics.trace(" " + arg.getClass().getSimpleName() + ": " + arg.toString());
             }
 
-            List<ResolvedFunction> resolved = functionLibrary.resolveFunctions(outputType, inputType, funcName, args);
+            List<ResolvedFunction> resolved = functionLibrary.resolveFunctions(outputType, inputType, funcName, this.customElements,args);
             if (resolved.size() == 0) {
                 return diagnostics.error(new RuntimeException("Unable to find even one function for " + call));
             }
@@ -177,7 +180,7 @@ public class VirtDataComposer {
         return resolverDiagnostics.getResolvedFunction();
     }
 
-    private Object[] populateFunctions(ResolverDiagnostics diagnostics, Object[] args) {
+    private Object[] populateFunctions(ResolverDiagnostics diagnostics, Object[] args, Map<String,?> cconfig) {
         for (int i = 0; i < args.length; i++) {
             Object o = args[i];
             if (o instanceof FunctionCall) {
@@ -188,9 +191,9 @@ public class VirtDataComposer {
                 Class<?> outputType = ValueType.classOfType(call.getOutputType());
                 Object[] fargs = call.getArguments();
                 diagnostics.trace("resolving argument as function '" + call.toString() + "'");
-                fargs = populateFunctions(diagnostics, fargs);
+                fargs = populateFunctions(diagnostics, fargs, cconfig);
 
-                List<ResolvedFunction> resolved = functionLibrary.resolveFunctions(outputType, inputType, funcName, fargs);
+                List<ResolvedFunction> resolved = functionLibrary.resolveFunctions(outputType, inputType, funcName, cconfig, fargs);
                 if (resolved.size() == 0) {
                     throw new RuntimeException("Unable to resolve even one function for argument: " + call);
                 }
@@ -449,4 +452,16 @@ public class VirtDataComposer {
         return inputs;
     }
 
+    public Map<String,?> getCustomElements() {
+        return this.customElements;
+    }
+    public VirtDataComposer addCustomElement(String name, Object element) {
+        this.customElements.put(name, element);
+        return this;
+    }
+
+    public VirtDataComposer addCustomElements(Map<String, ?> config) {
+        this.customElements.putAll(config);
+        return this;
+    }
 }
