@@ -4,12 +4,6 @@ import io.virtdata.docsys.api.DocPaths;
 import io.virtdata.docsys.api.PathDescriptor;
 import io.virtdata.docsys.api.WebServiceObject;
 import io.virtdata.docsys.handlers.FavIconHandler;
-import io.virtdata.docsys.metafs.fs.layerfs.LayerFS;
-import io.virtdata.docsys.metafs.fs.renderfs.api.FileRenderer;
-import io.virtdata.docsys.metafs.fs.renderfs.fs.RenderFS;
-import io.virtdata.docsys.metafs.fs.renderfs.renderers.MarkdownProcessor;
-import io.virtdata.docsys.metafs.fs.renderfs.renderers.MustacheProcessor;
-import io.virtdata.docsys.metafs.fs.virtual.VirtFS;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -172,36 +166,19 @@ public class DocServer implements Runnable {
             }
         }
 
-        LayerFS layerfs = new LayerFS("layers");
-
         for (Path basePath : basePaths) {
-            VirtFS vfs = new VirtFS(basePath, "virt:" + basePath.toString());
-            RenderFS rfs = new RenderFS(vfs, "render:" + basePath.toString());
+            logger.info("Adding path to server: " + basePath.toString());
+            ResourceHandler resourceHandler = new ResourceHandler();
+            resourceHandler.setDirAllowed(true);
+            resourceHandler.setAcceptRanges(true);
 
-            MustacheProcessor mustache = new MustacheProcessor();
-            MarkdownProcessor mdToHtml = new MarkdownProcessor();
-            FileRenderer mustacheMarkdown = new FileRenderer("._md", ".md", false, mustache);
-            FileRenderer toMdFragment = new FileRenderer("._md", ".mdf", false, mustache);
-            FileRenderer markdownHtml = new FileRenderer(".md", "._html", false, mdToHtml);
-            FileRenderer mustacheHtml = new FileRenderer("._html", ".html", false, mustache);
-            FileRenderer mustacheJson = new FileRenderer("._json", ".json", false, mustache);
-            rfs.addRenderers(mustacheMarkdown, mustacheHtml, mustacheJson, markdownHtml, toMdFragment);
-            layerfs.addLayer(rfs);
+            resourceHandler.setWelcomeFiles(new String[]{"index.html"});
+            resourceHandler.setRedirectWelcome(true);
+            Resource baseResource = new PathResource(basePath);
+            resourceHandler.setBaseResource(baseResource);
+            resourceHandler.setCacheControl("no-cache");
+            handlers.addHandler(resourceHandler);
         }
-
-        Resource baseResource = new PathResource(layerfs.getRootPath());
-
-        logger.info("Setting root path of server: " + baseResource.toString());
-        ResourceHandler resourceHandler = new ResourceHandler();
-        resourceHandler.setDirAllowed(true);
-        resourceHandler.setAcceptRanges(true);
-
-        resourceHandler.setWelcomeFiles(new String[]{"index.html"});
-        resourceHandler.setRedirectWelcome(true);
-        resourceHandler.setBaseResource(baseResource);
-        resourceHandler.setCacheControl("no-cache");
-        handlers.addHandler(resourceHandler);
-
 
         ResourceConfig statusResourceCfg = new ResourceConfig(DocServerStatusEndpoint.class);
 
