@@ -53,6 +53,15 @@ export default {
   ** Build configuration
   */
   build: {
+    html: {
+      minify: {
+        minifyJS: false,
+        minifyCSS: false
+      }
+    },
+    optimization: {
+      minimize: false
+    }
   },
   vuetify: { 
     theme: {
