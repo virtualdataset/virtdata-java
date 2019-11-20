@@ -106,12 +106,12 @@ installComponents_default()(component, {VList: VList["a" /* default */],VListGro
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vuetify-loader/lib/loader.js??ref--16-0!./node_modules/vue-loader/lib??vue-loader-options!./pages/docs/_slug.vue?vue&type=template&id=b6c520d2&
+// CONCATENATED MODULE: ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vuetify-loader/lib/loader.js??ref--16-0!./node_modules/vue-loader/lib??vue-loader-options!./pages/docs/_slug.vue?vue&type=template&id=d184b0e4&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-app',[_c('v-navigation-drawer',{attrs:{"app":""},model:{value:(_vm.drawer),callback:function ($$v) {_vm.drawer=$$v},expression:"drawer"}},[_c('docs-menu',{attrs:{"categories":_vm.categories}})],1),_vm._v(" "),_c('v-app-bar',{attrs:{"app":"","color":"secondary"}},[_c('v-app-bar-nav-icon',{on:{"click":function($event){$event.stopPropagation();_vm.drawer = !_vm.drawer}}}),_vm._v(" "),_c('v-toolbar-title',[_vm._v("DS Bench Documentation")])],1),_vm._v(" "),_c('v-content',[_c('v-container',[_c('v-row',{attrs:{"align":"stretch"}},[_c('div',{staticClass:"Doc"},[_c('div',{staticClass:"doc-title"},[_c('h1')]),_vm._v(" "),_c('div',{staticClass:"content",domProps:{"innerHTML":_vm._s(_vm.doc)}})])])],1)],1),_vm._v(" "),_c('v-footer',{attrs:{"app":"","color":"secondary"}},[_c('span',[_vm._v("© 2019")])])],1)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./pages/docs/_slug.vue?vue&type=template&id=b6c520d2&
+// CONCATENATED MODULE: ./pages/docs/_slug.vue?vue&type=template&id=d184b0e4&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es7.array.includes.js
 var es7_array_includes = __webpack_require__(52);
@@ -267,14 +267,14 @@ var MarkdownIt = __webpack_require__(309),
                       return _context.abrupt("return", "continue");
 
                     case 3:
-                      _key$match = key.match(/\/(.+)\.md$/), _key$match2 = Object(slicedToArray["a" /* default */])(_key$match, 2), name = _key$match2[1];
+                      _key$match = key.match(/(.+)\.md$/), _key$match2 = Object(slicedToArray["a" /* default */])(_key$match, 2), name = _key$match2[1];
                       detailName = key.split("/").filter(function (x) {
                         return x.includes(".md");
                       })[0];
                       detailName = detailName.substr(0, detailName.length - 3); //const mdMeta = resolve(key);
 
                       _context.next = 8;
-                      return regeneratorRuntime.awrap(fetch("/markdown" + key.substr(1)).then(function (res) {
+                      return regeneratorRuntime.awrap(fetch("/markdown/" + key).then(function (res) {
                         return res.text();
                       }).then(function (body) {
                         return rawMD = rawMD + body;
@@ -289,7 +289,7 @@ var MarkdownIt = __webpack_require__(309),
 
                       mdMeta = fm(rawMD);
 
-                      if (key.substr(2, key.length - 5) == params.slug) {
+                      if (key.substr(0, key.length - 3) == params.slug) {
                         rawDoc = mdMeta.body;
                       }
 
