@@ -1,5 +1,4 @@
-Virtual Dataset Concepts
-========================
+# Virtual Dataset Concepts
 
 VirtData is a library for the flexible management and expressive use of
 procedural generation libraries. It is a reincarnation of a previous project.

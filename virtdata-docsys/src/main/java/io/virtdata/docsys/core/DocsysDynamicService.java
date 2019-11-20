@@ -38,13 +38,29 @@ public class DocsysDynamicService implements WebServiceObject {
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
+    @Path("allfiles.csv")
+    public String getAllfilesList() {
+        StringBuilder sb = new StringBuilder();
+        for (java.nio.file.Path path : loadDocPaths().getPaths()) {
+            PathWalker.findAll(path).forEach(f -> {
+                java.nio.file.Path relative = path.relativize(f);
+                sb.append(path.relativize(f).toString()).append("\n");
+            });
+        }
+        return sb.toString();
+    }
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
     @Path("markdown.csv")
     public String getMarkdownList() {
         StringBuilder sb = new StringBuilder();
         for (java.nio.file.Path path : loadDocPaths().getPaths()) {
             PathWalker.findAll(path).forEach(f -> {
-                java.nio.file.Path relative = path.relativize(f);
-                sb.append(path.relativize(f).toString());
+                if (f.toString().endsWith(".md")) {
+                    java.nio.file.Path relative = path.relativize(f);
+                    sb.append(path.relativize(f).toString()).append("\n");
+                }
             });
         }
         return sb.toString();

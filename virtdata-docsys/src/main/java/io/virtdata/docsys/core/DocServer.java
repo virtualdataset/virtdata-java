@@ -243,8 +243,11 @@ public class DocServer implements Runnable {
             logger.info("Started documentation server at http://" + bindHost + ":" + bindPort + "/");
             server.join();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            logger.error(e.getMessage(),e);
+            e.printStackTrace(System.out);
+            System.exit(2);
         }
+
     }
 
     @Override
