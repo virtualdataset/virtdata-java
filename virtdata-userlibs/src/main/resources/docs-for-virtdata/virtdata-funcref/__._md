@@ -1,7 +1,0 @@
-# Topics
-
-{{# topics.list }}
-  - {{ name }}
-{{/ topics.list }}
-
-{{ inner.rendered }}
