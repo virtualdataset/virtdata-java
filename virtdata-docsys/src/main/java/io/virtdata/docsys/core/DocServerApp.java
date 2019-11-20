@@ -47,7 +47,7 @@ public class DocServerApp {
             try {
                 jc.doConfigure(is);
             } catch (JoranException e) {
-                System.err.println("error initializaing logging system: " + e.getMessage());
+                System.err.println("error initializing logging system: " + e.getMessage());
                 throw new RuntimeException(e);
             }
         } else {

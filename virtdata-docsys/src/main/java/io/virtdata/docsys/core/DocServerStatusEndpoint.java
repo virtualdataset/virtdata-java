@@ -1,5 +1,6 @@
 package io.virtdata.docsys.core;
 
+import io.virtdata.annotations.Service;
 import io.virtdata.docsys.api.WebServiceObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+@Service(WebServiceObject.class)
 @Singleton
 @Path("_")
 public class DocServerStatusEndpoint implements WebServiceObject {

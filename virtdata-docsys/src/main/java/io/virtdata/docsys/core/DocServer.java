@@ -1,9 +1,11 @@
 package io.virtdata.docsys.core;
 
-import io.virtdata.docsys.api.DocPaths;
-import io.virtdata.docsys.api.PathDescriptor;
+import io.virtdata.docsys.DocsysDefaultAppPath;
+import io.virtdata.docsys.api.Docs;
 import io.virtdata.docsys.api.WebServiceObject;
 import io.virtdata.docsys.handlers.FavIconHandler;
+import org.eclipse.jetty.rewrite.handler.RedirectRegexRule;
+import org.eclipse.jetty.rewrite.handler.RewriteHandler;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -13,6 +15,8 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.PathResource;
 import org.eclipse.jetty.util.resource.Resource;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.server.ServerProperties;
+import org.glassfish.jersey.server.model.ResourceMethod;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,10 +27,10 @@ import java.net.URL;
 import java.nio.file.AccessMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DocServer implements Runnable {
@@ -35,7 +39,7 @@ public class DocServer implements Runnable {
     private final List<Path> basePaths = new ArrayList<>();
     private final List<Class> servletClasses = new ArrayList<>();
     private ServletContextHandler contextHandler;
-    private ServletHolder servlets;
+    private ServletHolder servletHolder;
     private HandlerList handlers;
 
     private String bindScheme = "http";
@@ -71,60 +75,47 @@ public class DocServer implements Runnable {
         return this;
     }
 
-    public DocServer addWebObject(Class... objects) {
+    private void addWebObject(Class... objects) {
         servletClasses.addAll(Arrays.asList(objects));
-        String servletClasses = this.servletClasses
-                .stream()
-                .map(Class::getCanonicalName)
-                .collect(Collectors.joining(","));
-
-        getServlets().setInitParameter(
-                "jersey.config.server.provider.classnames",
-                servletClasses
-        );
-        return this;
+//        String servletClasses = this.servletClasses
+//                .stream()
+//                .map(Class::getCanonicalName)
+//                .collect(Collectors.joining(","));
+//
+//        getServletHolder().setInitParameter(
+//                "jersey.config.server.provider.classnames",
+//                servletClasses
+//        );
+//        return this;
     }
 
-    public void LoadDynamicEndpoints() {
-        List<DocPaths> docPathLists = DocsysEndpointLoader.loadPathDescriptors();
-        List<PathDescriptor> docPaths = new ArrayList<>();
-        for (DocPaths docPath : docPathLists) {
-            List<PathDescriptor> pathDescriptors = docPath.getPathDescriptors();
-            docPaths.addAll(pathDescriptors);
-        }
-        docPaths.sort(PathDescriptor::compareTo);
-        for (PathDescriptor docPath : docPaths) {
-            logger.debug("Adding doc path " + docPath);
-            Path path = docPath.getPath();
-            this.addPaths(path);
-        }
-        logger.info("No more doc paths.");
-
-        List<WebServiceObject> serviceObjects = DocsysEndpointLoader.loadWebServiceObjects();
+    private void loadDynamicEndpoints() {
+        List<WebServiceObject> serviceObjects = WebObjectLoader.loadWebServiceObjects();
         for (WebServiceObject serviceObject : serviceObjects) {
             logger.info("Adding web service object: " + serviceObject.toString());
             this.addWebObject(serviceObject.getClass());
         }
-        logger.debug("No more service objects.");
+        logger.debug("Loaded " + this.servletClasses.size() + " root resources.");
 
     }
 
     private ServletContextHandler getContextHandler() {
         if (contextHandler == null) {
             contextHandler = new ServletContextHandler();
-            contextHandler.setContextPath("/");
+            contextHandler.setContextPath("/*");
         }
         return contextHandler;
     }
 
-    private ServletHolder getServlets() {
-        if (servlets == null) {
-            servlets = getContextHandler().addServlet(
+    private ServletHolder getServletHolder() {
+        if (servletHolder == null) {
+            servletHolder = getContextHandler().addServlet(
                     ServletContainer.class,
-                    "/"
+                    "/apps"
             );
+            servletHolder.setInitOrder(0);
         }
-        return servlets;
+        return servletHolder;
     }
 
     public DocServer addPaths(Path... paths) {
@@ -147,13 +138,13 @@ public class DocServer implements Runnable {
         handlers = new HandlerList();
 
         if (this.basePaths.size() == 0 && this.servletClasses.size() == 0) {
-            logger.debug("No service endpoints or doc paths have been added. Loading dynamically.");
-            this.LoadDynamicEndpoints();
-            if (this.basePaths.size() == 0 && this.servletClasses.size() == 0) {
-                throw new InvalidParameterException("There must be at least one servlet class or doc path");
-            }
+            logger.warn("No service endpoints or doc paths have been added. Loading dynamically.");
         }
 
+        RewriteHandler rh = new RewriteHandler();
+        rh.addRule(new RedirectRegexRule("/","/docs/"));
+//        rh.addRule(new RedirectPatternRule("/","/docs/"));
+        handlers.addHandler(rh);
 //        ShutdownHandler shutdownHandler; // for easy recycles
 
         // Favicon
@@ -164,6 +155,19 @@ public class DocServer implements Runnable {
                 handlers.addHandler(favIconHandler);
                 break;
             }
+        }
+
+        if (basePaths.size()==0) {
+            Docs docs = new Docs();
+            // Load static path contexts which are published within the runtime.
+            docs.merge(DocsysPathLoader.loadStaticPaths());
+
+            // If none claims the "docsys-app" namespace, then install the
+            // default static copy of the docs app
+            if (!docs.getPathMap().containsKey("docsys-app")) {
+                docs.merge(new DocsysDefaultAppPath().getDocs());
+            }
+            basePaths.addAll(docs.getPaths());
         }
 
         for (Path basePath : basePaths) {
@@ -180,15 +184,34 @@ public class DocServer implements Runnable {
             handlers.addHandler(resourceHandler);
         }
 
-        ResourceConfig statusResourceCfg = new ResourceConfig(DocServerStatusEndpoint.class);
-
-        statusResourceCfg.property("server", this);
-        ServletContainer servletContainer = new ServletContainer(statusResourceCfg);
-        ServletHolder servletHolder = new ServletHolder(servletContainer);
-        getContextHandler().addServlet(servletHolder, "/*");
+//        ResourceConfig statusResourceCfg = new ResourceConfig(DocServerStatusEndpoint.class);
+//        statusResourceCfg.property("server", this);
+//        ServletContainer statusResourceContainer = new ServletContainer(statusResourceCfg);
+//        ServletHolder statusResourceServletHolder = new ServletHolder(statusResourceContainer);
+//        getContextHandler().addServlet(statusResourceServletHolder, "/_");
 
         logger.info("adding " + servletClasses.size() + " context handlers...");
-        handlers.addHandler(getContextHandler());
+        loadDynamicEndpoints();
+
+
+        ResourceConfig rc = new ResourceConfig();
+        rc.property("server", this);
+
+        ServletContainer container = new ServletContainer(rc);
+        ServletHolder servlets = new ServletHolder(container);
+        String classnames = this.servletClasses
+                .stream()
+                .map(Class::getCanonicalName)
+                .collect(Collectors.joining(","));
+        rc.property(ServerProperties.PROVIDER_CLASSNAMES,classnames);
+//        servlets.setInitParameter(ServerProperties.PROVIDER_CLASSNAMES,
+//                classnames
+//        );
+        ServletContextHandler sch = new ServletContextHandler();
+        sch.setContextPath("/*");
+        sch.addServlet(servlets,"/*");
+
+        handlers.addHandler(sch);
 
         // Show contexts
         DefaultHandler defaultHandler = new DefaultHandler();
@@ -227,9 +250,23 @@ public class DocServer implements Runnable {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
+        for (Class servletClass : this.servletClasses) {
+            sb.append("- ").append(servletClass.getCanonicalName()).append("\n");
+            ResourceConfig rc = new ResourceConfig(servletClass);
+            Set<org.glassfish.jersey.server.model.Resource> resources = rc.getResources();
+            for (org.glassfish.jersey.server.model.Resource resource : resources) {
+                sb.append("resource name:").append(resource.getName()).append("\n");
+                List<ResourceMethod> resourceMethods = resource.getResourceMethods();
+                for (ResourceMethod resourceMethod : resourceMethods) {
+                    String rm = resourceMethod.toString();
+                    sb.append("rm:").append(rm);
+                }
+            }
+        }
+        sb.append("- - - -\n");
         for (Handler handler : handlers.getHandlers()) {
             String summary = handlerSummary(handler);
-            sb.append(summary);
+            sb.append(summary == null ? "NULL SUMMARY" : summary);
             sb.append("\n");
         }
         return sb.toString();
@@ -237,8 +274,8 @@ public class DocServer implements Runnable {
 
     private String handlerSummary(Handler handler) {
         StringBuilder sb = new StringBuilder();
-        sb.append("----\n");
-        sb.append(handler.getClass().getSimpleName()).append("\n");
+        sb.append("----> handler type ").append(handler.getClass().getSimpleName()).append("\n");
+
         if (handler instanceof ResourceHandler) {
             ResourceHandler h = (ResourceHandler) handler;
             sb.append(" base resource: ").append(h.getBaseResource().toString())
@@ -249,7 +286,8 @@ public class DocServer implements Runnable {
             sb.append(h.dump()).append("\n");
             h.getServletContext().getServletRegistrations().forEach(
                     (k, v) -> {
-                        sb.append("## servlet(").append(k).append(")->").append(getServletSummary(v)).append("\n");
+                        sb.append("==> servlet type ").append(k).append("\n");
+                        sb.append(getServletSummary(v)).append("\n");
                     }
             );
             sb.append("context path:").append(h.getContextPath());
