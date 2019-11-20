@@ -12,6 +12,7 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.resource.JarResource;
 import org.eclipse.jetty.util.resource.PathResource;
 import org.eclipse.jetty.util.resource.Resource;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -179,9 +180,19 @@ public class DocServer implements Runnable {
             resourceHandler.setWelcomeFiles(new String[]{"index.html"});
             resourceHandler.setRedirectWelcome(true);
             Resource baseResource = new PathResource(basePath);
+
+            if (basePath.toUri().toString().startsWith("jar:")) {
+                try {
+                    baseResource=JarResource.newResource(basePath.toUri());
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
             resourceHandler.setBaseResource(baseResource);
             resourceHandler.setCacheControl("no-cache");
             handlers.addHandler(resourceHandler);
+
         }
 
 //        ResourceConfig statusResourceCfg = new ResourceConfig(DocServerStatusEndpoint.class);
