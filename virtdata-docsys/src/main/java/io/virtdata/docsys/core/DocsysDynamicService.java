@@ -1,17 +1,16 @@
 package io.virtdata.docsys.core;
 
 import io.virtdata.annotations.Service;
+import io.virtdata.docsys.api.DocsInfo;
 import io.virtdata.docsys.api.WebServiceObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -25,19 +24,30 @@ import java.util.Set;
 // TODO: See if deferring to maven always will help
 @Service(WebServiceObject.class)
 @Singleton
-@Path("/docs")
-public class DocPathInfoService implements WebServiceObject {
-    private final static Logger logger = LoggerFactory.getLogger(DocPathInfoService.class);
-
-    private Map<String, Set<java.nio.file.Path>> docPathInfos;
-
-    //private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+@Path("/")
+public class DocsysDynamicService implements WebServiceObject {
+    private final static Logger logger = LoggerFactory.getLogger(DocsysDynamicService.class);
+    private DocsInfo docPathInfos;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("namespaces")
     public Map<String, Set<java.nio.file.Path>> getPaths() {
-        return loadDocPaths();
+        return loadDocPaths().getPathMap();
+    }
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("markdown.csv")
+    public String getMarkdownList() {
+        StringBuilder sb = new StringBuilder();
+        for (java.nio.file.Path path : loadDocPaths().getPaths()) {
+            PathWalker.findAll(path).forEach(f -> {
+                java.nio.file.Path relative = path.relativize(f);
+                sb.append(path.relativize(f).toString());
+            });
+        }
+        return sb.toString();
     }
 
     @GET
@@ -45,46 +55,41 @@ public class DocPathInfoService implements WebServiceObject {
     @Path("list")
     public List<String> listFiles() {
         List<String> list = new ArrayList<>();
-        Map<String, Set<java.nio.file.Path>> paths = loadDocPaths();
-
-        for (Set<java.nio.file.Path> pathSet : paths.values()) {
-            pathSet.forEach(p -> {
-                    PathWalker.findAll(p).forEach(f -> {
-                        java.nio.file.Path relative = p.relativize(f);
-                        list.add(relative.toString());
-                    });
+        for (java.nio.file.Path path : loadDocPaths().getPaths()) {
+            PathWalker.findAll(path).forEach(f -> {
+                java.nio.file.Path relative = path.relativize(f);
+                list.add(relative.toString());
             });
         }
-
         return list;
     }
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    @Path("file/{pathspec: .*}")
+    @Path(value="markdown/{pathspec: .*}")
     public String getFile(@PathParam("pathspec") String pathspec) {
-        for (Set<java.nio.file.Path> pathset : this.loadDocPaths().values()) {
-            for (java.nio.file.Path path : pathset) {
-                java.nio.file.Path resolved = path.resolve(pathspec);
-                if (Files.isDirectory(resolved)) {
-                    throw new RuntimeException("Path is a directory: '" + pathspec + "'");
-                }
-                if (Files.exists(resolved)) {
-                    try {
-                        String content = Files.readString(resolved, StandardCharsets.UTF_8);
-                        return content;
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+
+        pathspec = URLDecoder.decode(pathspec,StandardCharsets.UTF_8);
+        for (java.nio.file.Path path : loadDocPaths().getPaths()) {
+            java.nio.file.Path resolved = path.resolve(pathspec);
+            if (Files.isDirectory(resolved)) {
+                throw new RuntimeException("Path is a directory: '" + pathspec + "'");
+            }
+            if (Files.exists(resolved)) {
+                try {
+                    String content = Files.readString(resolved, StandardCharsets.UTF_8);
+                    return content;
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
             }
         }
         throw new RuntimeException("Unable to find any valid file at '"+ pathspec + "'");
     }
 
-    private Map<String, Set<java.nio.file.Path>> loadDocPaths() {
-        if (this.docPathInfos == null || this.docPathInfos.size()==0) {
-            this.docPathInfos = DocPathLoader.load();
+    private DocsInfo loadDocPaths() {
+        if (this.docPathInfos == null ) {
+            this.docPathInfos = DocsysPathLoader.loadDynamicPaths();
         }
         return this.docPathInfos;
     }

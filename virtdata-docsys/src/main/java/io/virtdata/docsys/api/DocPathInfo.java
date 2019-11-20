@@ -1,21 +1,29 @@
 package io.virtdata.docsys.api;
 
 import java.nio.file.Path;
+import java.util.List;
 
-public interface DocPathInfo extends Comparable<DocPathInfo> {
+/**
+ * Doc Path Info represents a readable Path which is part of a well-known
+ * namespace.
+ *
+ * When callers are using doc paths from this interface, it is an error for
+ * there to be multiple instance of a doc path of the same name in the same
+ * namespace. As long as the root path of a doc tree is unique within the
+ * given namespaces, they may be merged. This is to allow multiple contributors
+ * of detailed docs to a single known namespace.
+ *
+ */
+public interface DocPathInfo extends Iterable<Path> {
+
     /**
      * A simple name which can be used to nest the enclosed path within a larger
      * namespace. Users of this interface should never host content from the path
      * at a root level separate from the namespace.
-     * Further, when multiple descriptors are present at some level, names which
-     * are duplicated should cause an error to be thrown.
+     *
      * @return A canonical namespace identifier
      */
-    public String getNamespace();
+    String getNameSpace();
 
-    /**
-     * The content root of the files contained within this doc path.
-     * @return A readable Path
-     */
-    public Path getRootPath();
+    List<Path> getPaths();
 }
