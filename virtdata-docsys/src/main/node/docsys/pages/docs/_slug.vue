@@ -72,12 +72,12 @@
           continue
         }
 
-        const [, name] = key.match(/\/(.+)\.md$/);
+        const [, name] = key.match(/(.+)\.md$/);
         let detailName = key.split("/").filter(x => x.includes(".md"))[0];
         detailName = detailName.substr(0, detailName.length -3);
 
         //const mdMeta = resolve(key);
-        let rawMD = await fetch("/markdown"+key.substr(1))
+        let rawMD = await fetch("/markdown/"+key)
           .then(res => res.text())
           .then(body => rawMD = rawMD + body)
         
@@ -87,7 +87,7 @@
 
         var mdMeta = fm(rawMD)
 
-        if (key.substr(2, key.length-5) == params.slug){
+        if (key.substr(0, key.length-3) == params.slug){
           rawDoc =  mdMeta.body
         }
        
