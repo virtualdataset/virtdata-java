@@ -41,13 +41,23 @@ public class Docs implements DocsInfo {
     }
 
     @Override
-    public void merge(DocsInfo other) {
+    public DocsInfo merge(DocsInfo other) {
         for (DocPathInfo docPathInfo : other) {
-            this.namespace(docPathInfo.getNameSpace());
+            namespace(docPathInfo.getNameSpace());
             for (Path path : docPathInfo) {
-                this.addPath(path);
+                addPath(path);
             }
         }
+        return this.asDocsInfo();
+    }
+
+    @Override
+    public DocsInfo merge(DocPathInfo pathInfo) {
+        this.namespace(pathInfo.getNameSpace());
+        for (Path path : pathInfo) {
+            this.addPath(path);
+        }
+        return this.asDocsInfo();
     }
 
     @Override
@@ -88,5 +98,21 @@ public class Docs implements DocsInfo {
     public DocsInfo asDocsInfo() {
         return (DocsInfo) this;
     }
+
+    @Override
+    public DocsInfo remove(Set<String> namespaces) {
+        Docs removed = new Docs();
+        ListIterator<DocsPath> iter = this.namespaces.listIterator();
+        while (iter.hasNext()) {
+            DocsPath next = iter.next();
+            if (namespaces.contains(next.getNameSpace())) {
+                iter.previous();
+                iter.remove();
+                removed.merge(next);
+            }
+        }
+        return removed;
+    }
+
 
 }

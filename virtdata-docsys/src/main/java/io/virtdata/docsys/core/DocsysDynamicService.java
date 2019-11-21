@@ -1,6 +1,7 @@
 package io.virtdata.docsys.core;
 
 import io.virtdata.annotations.Service;
+import io.virtdata.docsys.api.Docs;
 import io.virtdata.docsys.api.DocsInfo;
 import io.virtdata.docsys.api.WebServiceObject;
 import org.slf4j.Logger;
@@ -13,52 +14,96 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 
-// TODO: MUltiple service objects don't work together yet in web
-// TODO: Testing doesn't pick up packaged service files
-// TODO: investigate how other bundled services work in debugging
-// TODO: See if deferring to maven always will help
 @Service(WebServiceObject.class)
 @Singleton
 @Path("/")
 public class DocsysDynamicService implements WebServiceObject {
     private final static Logger logger = LoggerFactory.getLogger(DocsysDynamicService.class);
-    private DocsInfo docPathInfos;
+
+    private DocsInfo docsinfo;
+    private DocsInfo enabled;
+    private DocsInfo disabled;
+    private AtomicLong version = new AtomicLong(System.nanoTime());
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("namespaces")
-    public Map<String, Set<java.nio.file.Path>> getPaths() {
-        return loadDocPaths().getPathMap();
+    @Path("version")
+    public long getVersion() {
+        return version.get();
     }
 
+    /**
+     * If no enable= parameter is provided, then this call simply provides a map of
+     * namespaces which are enabled and disabled.
+     *
+     * @param enable A set of namespaces to enable, or no provided value to enable all namespaces
+     * @return A view of the namespaces known to this service
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("namespaces")
+    public Map<String, Map<String, Set<java.nio.file.Path>>> getPaths(
+            @QueryParam("enable") String enable,
+            @QueryParam("reload") boolean reload
+    ) {
+        if (reload) {
+            reload();
+        }
+        load();
+        if (enable != null && !enable.isEmpty()) {
+            Set<String> enabled = new HashSet<>(List.of(enable.split("[, ;]")));
+            this.disabled = new Docs().merge(docsinfo);
+            this.enabled = disabled.remove(enabled);
+        } else {
+            this.enabled = new Docs().merge(docsinfo);
+            this.disabled = new Docs().asDocsInfo();
+        }
+
+        Map<String, Map<String, Set<java.nio.file.Path>>> namespaces = new HashMap<>();
+        namespaces.put("enabled", enabled.getPathMap());
+        namespaces.put("disabled", disabled.getPathMap());
+        return namespaces;
+    }
+
+    /**
+     * @return Provide a list of all files from all enabled namespaces.
+     */
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("allfiles.csv")
-    public String getAllfilesList() {
+    public String getAllfilesList(@QueryParam("reload") boolean reload) {
+        if (reload) {
+            reload();
+        }
+        load();
         StringBuilder sb = new StringBuilder();
-        for (java.nio.file.Path path : loadDocPaths().getPaths()) {
+        for (java.nio.file.Path path : enabled.getPaths()) {
             PathWalker.findAll(path).forEach(f -> {
-                java.nio.file.Path relative = path.relativize(f);
                 sb.append(path.relativize(f).toString()).append("\n");
             });
         }
         return sb.toString();
     }
 
+    /**
+     * @return Provide a lit of all files from all enabled namespaces
+     * where the file path ends with '.md'
+     */
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("markdown.csv")
-    public String getMarkdownList() {
+    public String getMarkdownList(@QueryParam("reload") boolean reload) {
+        if (reload) {
+            reload();
+        }
+        load();
         StringBuilder sb = new StringBuilder();
-        for (java.nio.file.Path path : loadDocPaths().getPaths()) {
+        for (java.nio.file.Path path : enabled.getPaths()) {
             PathWalker.findAll(path).forEach(f -> {
                 if (f.toString().endsWith(".md")) {
-                    java.nio.file.Path relative = path.relativize(f);
                     sb.append(path.relativize(f).toString()).append("\n");
                 }
             });
@@ -66,12 +111,16 @@ public class DocsysDynamicService implements WebServiceObject {
         return sb.toString();
     }
 
+    /**
+     * @return Provides a list of all files from all enabled namespaces as a JSON list.
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("list")
-    public List<String> listFiles() {
+    public List<String> listFiles(@QueryParam("reload") boolean reload) {
+        load();
         List<String> list = new ArrayList<>();
-        for (java.nio.file.Path path : loadDocPaths().getPaths()) {
+        for (java.nio.file.Path path : enabled.getPaths()) {
             PathWalker.findAll(path).forEach(f -> {
                 java.nio.file.Path relative = path.relativize(f);
                 list.add(relative.toString());
@@ -80,13 +129,17 @@ public class DocsysDynamicService implements WebServiceObject {
         return list;
     }
 
+    /**
+     * @param pathspec the path as known to the manifest
+     * @return The contents of a file
+     */
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    @Path(value="markdown/{pathspec: .*}")
+    @Path(value = "markdown/{pathspec: .*}")
     public String getFile(@PathParam("pathspec") String pathspec) {
 
-        pathspec = URLDecoder.decode(pathspec,StandardCharsets.UTF_8);
-        for (java.nio.file.Path path : loadDocPaths().getPaths()) {
+        pathspec = URLDecoder.decode(pathspec, StandardCharsets.UTF_8);
+        for (java.nio.file.Path path : enabled.getPaths()) {
             java.nio.file.Path resolved = path.resolve(pathspec);
             if (Files.isDirectory(resolved)) {
                 throw new RuntimeException("Path is a directory: '" + pathspec + "'");
@@ -100,20 +153,23 @@ public class DocsysDynamicService implements WebServiceObject {
                 }
             }
         }
-        throw new RuntimeException("Unable to find any valid file at '"+ pathspec + "'");
+        throw new RuntimeException("Unable to find any valid file at '" + pathspec + "'");
     }
 
-    private DocsInfo loadDocPaths() {
-        if (this.docPathInfos == null ) {
-            this.docPathInfos = DocsysPathLoader.loadDynamicPaths();
+    private void load() {
+        if (this.docsinfo == null) {
+            this.docsinfo = DocsysPathLoader.loadDynamicPaths();
+            version.set(System.nanoTime());
         }
-        return this.docPathInfos;
     }
 
     @GET
     @Path("reload")
     public void reload() {
-        this.docPathInfos = null;
+        this.enabled = null;
+        this.disabled = null;
+        this.docsinfo = null;
+        load();
     }
 
 
