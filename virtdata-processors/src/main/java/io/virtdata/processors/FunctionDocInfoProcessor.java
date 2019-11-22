@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  * manifests. It simply calls listener interfaces to do the rest of the work.
  */
 @SupportedOptions({"title"})
-@SupportedSourceVersion(SourceVersion.RELEASE_11)
+@SupportedSourceVersion(SourceVersion.RELEASE_12)
 @SupportedAnnotationTypes({
         "io.virtdata.annotations.ThreadSafeMapper",
         "io.virtdata.annotations.PerThreadMapper"})
