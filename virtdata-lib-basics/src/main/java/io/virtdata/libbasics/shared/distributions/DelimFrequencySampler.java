@@ -47,32 +47,35 @@ import java.util.function.LongFunction;
 
 @Categories(Category.general)
 @ThreadSafeMapper
-public class CSVFrequencySampler implements LongFunction<String> {
+public class DelimFrequencySampler implements LongFunction<String> {
 
     private final String filename;
     private final String columnName;
 
     private final String[] lines;
     private final AliasSamplerDoubleInt sampler;
+    private final char delimiter;
     private Hash hash;
 
     /**
-     * Create a sampler of strings from the given CSV file. The CSV file must have plain CSV headers
+     * Create a sampler of strings from the given delimited file. The delimited file must have plain headers
      * as its first line.
      * @param filename The name of the file to be read into the sampler buffer
      * @param columnName The name of the column to be sampled
+     * @param delimiter delimmiter
      */
-    @Example({"CSVFrequencySampler('values.csv','modelno')","Read values.csv, count the frequency of values in 'modelno' column, and sample from this column proportionally"})
-    public CSVFrequencySampler(String filename, String columnName) {
+    @Example({"DelimFrequencySampler('values.csv','modelno', '|')","Read values.csv, count the frequency of values in 'modelno' column, and sample from this column proportionally"})
+    public DelimFrequencySampler(String filename, String columnName, char delimiter) {
         this.filename = filename;
         this.columnName = columnName;
+        this.delimiter = delimiter;
 
         this.hash=new Hash();
 
         Set<String> values = new HashSet<>();
         List<EvProbD> frequencies = new ArrayList<>();
 
-        CSVParser csvdata = VirtDataResources.readFileCSV(filename);
+        CSVParser csvdata = VirtDataResources.readDelimFile(filename, delimiter);
         Frequency freq = new Frequency();
         for (CSVRecord csvdatum : csvdata) {
             String value = csvdatum.get(columnName);

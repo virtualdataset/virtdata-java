@@ -45,8 +45,8 @@
                 <configuration>
                     <debug>false</debug>
                     <!--<release>11</release>-->
-                    <source>11</source>
-                    <target>11</target>
+                    <source>12</source>
+                    <target>12</target>
                     <!--<compilerArgument>-Xdoclint:all</compilerArgument>-->
                     <compilerArgument>-Xlint:all</compilerArgument>
 

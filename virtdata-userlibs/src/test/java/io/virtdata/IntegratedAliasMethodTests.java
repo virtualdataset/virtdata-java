@@ -1,5 +1,6 @@
 package io.virtdata;
 
+import io.virtdata.libbasics.shared.distributions.DelimFrequencySampler;
 import io.virtdata.libbasics.shared.distributions.WeightedStringsFromCSV;
 import io.virtdata.libbasics.shared.distributions.CSVFrequencySampler;
 import org.testng.annotations.Test;
@@ -17,6 +18,16 @@ public class IntegratedAliasMethodTests {
     }
     public void testCSVFrequencySampler() {
         CSVFrequencySampler names= new CSVFrequencySampler("data/countries", "COUNTRY_CODE" );
+        String n = names.apply(23);
+        assertThat(n).isEqualTo("CZ");
+    }
+
+    public void testDelimFrequencySampler() {
+        DelimFrequencySampler names= new DelimFrequencySampler(
+                "data/countries",
+                "COUNTRY_CODE",
+                ','
+        );
         String n = names.apply(23);
         assertThat(n).isEqualTo("CZ");
     }

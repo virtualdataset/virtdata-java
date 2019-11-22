@@ -293,4 +293,14 @@ public class VirtDataResources {
         return Path.of(uri);
     }
 
+    public static CSVParser readDelimFile(String basename, char delimiter, String... searchPaths) {
+        Reader reader = findRequiredReader(basename, "csv", searchPaths);
+        CSVFormat format = CSVFormat.newFormat(delimiter).withFirstRecordAsHeader();
+        try {
+            CSVParser parser = new CSVParser(reader, format);
+            return parser;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
