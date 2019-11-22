@@ -21,7 +21,7 @@
             </v-list-item-title>
             </router-link>
           </v-list-item>
- 
+
         </v-list-group>
     </v-list>
 

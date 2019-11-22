@@ -27,6 +27,7 @@ public class DocsysDynamicService implements WebServiceObject {
     private DocsInfo enabled;
     private DocsInfo disabled;
     private AtomicLong version = new AtomicLong(System.nanoTime());
+    private Set<String> enables = new HashSet<>();
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -45,28 +46,24 @@ public class DocsysDynamicService implements WebServiceObject {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("namespaces")
-    public Map<String, Map<String, Set<java.nio.file.Path>>> getPaths(
+    public Map<String, Map<String, Set<java.nio.file.Path>>> getNamespaces(
             @QueryParam("enable") String enable,
             @QueryParam("reload") boolean reload
     ) {
-        if (reload) {
-            reload();
-        }
-        load();
-        if (enable != null && !enable.isEmpty()) {
-            Set<String> enabled = new HashSet<>(List.of(enable.split("[, ;]")));
-            this.disabled = new Docs().merge(docsinfo);
-            this.enabled = disabled.remove(enabled);
-        } else {
-            this.enabled = new Docs().merge(docsinfo);
-            this.disabled = new Docs().asDocsInfo();
-        }
 
-        Map<String, Map<String, Set<java.nio.file.Path>>> namespaces = new HashMap<>();
-        namespaces.put("enabled", enabled.getPathMap());
-        namespaces.put("disabled", disabled.getPathMap());
-        return namespaces;
+        enables = (enable !=null && !enable.isEmpty()) ?
+            new HashSet<>(List.of(enable.split("[, ;]"))) :
+                Set.of();
+
+        init(reload);
+        enable(enables);
+
+        return Map.of(
+                "enabled",enabled.getPathMap(),
+                "disabled",disabled.getPathMap()
+        );
     }
+
 
     /**
      * @return Provide a list of all files from all enabled namespaces.
@@ -75,10 +72,9 @@ public class DocsysDynamicService implements WebServiceObject {
     @Produces(MediaType.TEXT_PLAIN)
     @Path("allfiles.csv")
     public String getAllfilesList(@QueryParam("reload") boolean reload) {
-        if (reload) {
-            reload();
-        }
-        load();
+
+        init(reload);
+
         StringBuilder sb = new StringBuilder();
         for (java.nio.file.Path path : enabled.getPaths()) {
             PathWalker.findAll(path).forEach(f -> {
@@ -96,10 +92,9 @@ public class DocsysDynamicService implements WebServiceObject {
     @Produces(MediaType.TEXT_PLAIN)
     @Path("markdown.csv")
     public String getMarkdownList(@QueryParam("reload") boolean reload) {
-        if (reload) {
-            reload();
-        }
-        load();
+
+        init(reload);
+
         StringBuilder sb = new StringBuilder();
         for (java.nio.file.Path path : enabled.getPaths()) {
             PathWalker.findAll(path).forEach(f -> {
@@ -118,7 +113,7 @@ public class DocsysDynamicService implements WebServiceObject {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("list")
     public List<String> listFiles(@QueryParam("reload") boolean reload) {
-        load();
+        init(reload);
         List<String> list = new ArrayList<>();
         for (java.nio.file.Path path : enabled.getPaths()) {
             PathWalker.findAll(path).forEach(f -> {
@@ -156,20 +151,29 @@ public class DocsysDynamicService implements WebServiceObject {
         throw new RuntimeException("Unable to find any valid file at '" + pathspec + "'");
     }
 
-    private void load() {
+    private void init(boolean reload) {
+        if (reload) {
+            this.enabled = null;
+            this.disabled = null;
+            this.docsinfo = null;
+        }
         if (this.docsinfo == null) {
             this.docsinfo = DocsysPathLoader.loadDynamicPaths();
             version.set(System.nanoTime());
         }
+        if (enabled==null || disabled==null) {
+            enable(enables);
+        }
     }
 
-    @GET
-    @Path("reload")
-    public void reload() {
-        this.enabled = null;
-        this.disabled = null;
-        this.docsinfo = null;
-        load();
+    private void enable(Set<String> enabled) {
+        if (enabled.isEmpty()) {
+            this.enabled = new Docs().merge(docsinfo);
+            this.disabled = new Docs().asDocsInfo();
+        } else {
+            this.disabled = new Docs().merge(docsinfo);
+            this.enabled = disabled.remove(enabled);
+        }
     }
 
 
