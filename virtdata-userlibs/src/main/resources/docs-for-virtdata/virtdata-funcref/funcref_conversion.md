@@ -19,6 +19,23 @@ Computes the digest of the ByteBuffer on input and stores it in the output ByteB
 - long -> DigestToByteBuffer(java.lang.String: digestType) -> java.nio.ByteBuffer
 
 
+## Flow
+
+Combine functions into one.
+
+This function allows you to combine multiple other functions into one. This is often useful
+for constructing more sophisticated recipes, when you don't have the ability to use
+control flow or non-functional forms.
+
+The functions will be stitched together using the same logic that VirtData uses when
+combining flows outside functions. That said, if the functions selected are not the right ones,
+then it is possible to end up with the wrong data type at the end. To remedy this, be sure
+to add input and output qualifiers, like `long->` or `->String` where
+appropriate, to ensure that VirtData selects the right functions within the flow.
+
+- long -> Flow(java.lang.Object[]...: funcs) -> java.lang.Object
+
+
 ## Format
 
 Apply the Java String.format method to an incoming object. @see [Java 8 String.format(...) javadoc](https://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html#syntax) Note: This function can often be quite slow, so more direct methods are generally preferrable.

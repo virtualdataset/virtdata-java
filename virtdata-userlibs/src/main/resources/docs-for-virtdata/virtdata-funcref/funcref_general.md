@@ -41,6 +41,18 @@ Create an alpha-numeric string of the specified length, character-by-character.
 - long -> AlphaNumericString(int: length) -> java.lang.String
 
 
+## CSVFrequencySampler
+
+Takes a CSV with sample data and generates random values based on the relative frequencies of the values in the file. The CSV file must have headers which can be used to find the named columns. I.E. take the following imaginary \`animals.csv\` file: animal,count,country puppy,1,usa puppy,2,colombia puppy,3,senegal kitten,2,colombia \`CSVFrequencySampler('animals.csv', animal)\` will return \`puppy\` or \`kitten\` randomly. \`puppy\` will be 3x more frequent than \`kitten\`. \`CSVFrequencySampler('animals.csv', country)\` will return \`usa\`, \`columbia\`, or \`senegal\` randomly. \`colombia\` will be 2x more frequent than \`usa\` or \`senegal\`. Use this function to infer frequencies of categorical values from CSVs.
+
+- long -> CSVFrequencySampler(java.lang.String: filename, java.lang.String: columnName) -> java.lang.String
+  - *notes:* Create a sampler of strings from the given CSV file. The CSV file must have plain CSV headers
+as its first line.
+@param filename The name of the file to be read into the sampler buffer
+@param columnName The name of the column to be sampled
+  - *ex:* `CSVFrequencySampler('values.csv','modelno')` - *Read values.csv, count the frequency of values in 'modelno' column, and sample from this column proportionally*
+
+
 ## Clamp
 
 Clamp the output values to be at least the minimum value and at most the maximum value.
@@ -104,13 +116,7 @@ Divide the operand by a fixed value and return the result.
 
 ## DivideToLongToString
 
-This is equivalent to
-
-```
-Div(...)
-```
-
-, but returns the result after String.valueOf(...). This function is also deprecated, as it is easily replaced by other functions.
+This is equivalent to `Div(...)`, but returns the result after String.valueOf(...). This function is also deprecated, as it is easily replaced by other functions.
 
 - long -> DivideToLongToString(long: divisor) -> java.lang.String
 
@@ -124,7 +130,7 @@ Convert the input double value to the closest float value.
 
 ## Expr
 
-Allow for the use of arbitrary expressions according to the \[MVEL\](http://mvel.documentnode.com/) expression language. Variables that have been set by a Save function are available to be used in this function. The variable name \*\*cycle\*\* is reserved, and is always equal to the current input value.
+Allow for the use of arbitrary expressions according to the [MVEL](http://mvel.documentnode.com/) expression language. Variables that have been set by a Save function are available to be used in this function. The variable name `cycle` is reserved, and is always equal to the current input value. This is not the same in every case as the current cycle of an operation. It could be different if there are preceding functions which modify the input value.
 
 - double -> Expr(java.lang.String: expr) -> double
 - long -> Expr(java.lang.String: expr) -> int
@@ -134,7 +140,7 @@ Allow for the use of arbitrary expressions according to the \[MVEL\](http://mvel
 
 ## FieldExtractor
 
-Extracts out a set of fields from a delimited string, returning a string with the same delimiter containing only the specified fields. The
+Extracts out a set of fields from a delimited string, returning a string with the same delimiter containing only the specified fields.
 
 - java.lang.String -> FieldExtractor(java.lang.String: fields) -> java.lang.String
   - *ex:* `FieldExtractor('|,2,16')` - *extract fields 2 and 16 from the input data with '|' as the delimiter*
@@ -291,6 +297,14 @@ Create a {@code List} based on two functions, the first to determine the list si
 
 - long -> ListTemplate(java.util.function.LongToIntFunction: sizeFunc, java.util.function.LongFunction<java.lang.String>: valueFunc) -> java.util.List<java.lang.String>
   - *ex:* `ListTemplate(HashRange(3,7),NumberNameToString())` - *create a list between 3 and 7 elements, with number names as the values*
+
+
+## LoadElement
+
+Load a value from a map, based on the injected configuration. The map which is used must be named by the mapname. If the injected configuration contains a variable of this name which is also a Map, then this map is referenced and read by the provided variable name.
+
+- java.lang.Object -> LoadElement(java.lang.String: varname, java.lang.String: mapname, java.lang.Object: defaultValue) -> java.lang.Object
+  - *ex:* `LoadElement('varname','vars','defaultvalue')` - *Load the varable 'varname' from a map named 'vars', or provide 'defaultvalue' if neither is provided*
 
 
 ## LongToString
@@ -450,7 +464,9 @@ Creates a template function which will yield a string which fits the template pr
 * IntFunction
 * DoubleFunction
 * Function\<Long,?\>
-The result of applying the input value to any of these functions is converted to a String and then stitched together according to the template provided.
+
+The result of applying the input value to any of these functions is converted to a String
+and then stitched together according to the template provided.
 
 - long -> Template(java.lang.String: template, java.lang.Object[]...: funcs) -> java.lang.String
   - *ex:* `Template('{}-{}',Add(10),Hash())` - *concatenate input+10, '-', and a pseudo-random long*
@@ -527,32 +543,27 @@ Provides a long value from a list of weighted values. The total likelihood of an
 
 ## WeightedStrings
 
-Allows for weighted elements to be used, such as
+Allows for weighted elements to be used, such as `a:0.25;b:0.25;c:0.5` or `a:1;b:1.0;c:2.0` The unit weights are normalized to the cumulative sum internally, so it is not necessary for them to add up to any particular value.
 
-```
-a:0.25;b:0.25;c:0.5
-```
-
-or
-
-```
-a:1;b:1.0;c:2.0
-```
-
-The unit weights are normalized to the cumulative sum internally, so it is not necessary for them to add up to any particular value.
-
-- long -> WeightedStrings(java.lang.String: valueColumn, java.lang.String: weightColumn, java.lang.String[]...: filenames) -> java.lang.String
-  - *notes:* Create a sampler of strings from the given CSV file. The CSV file must have plain CSV headers
-as its first line.
-@param valueColumn The name of the value column to be sampled
-@param weightColumn The name of the weight column, which must be parsable as a double
-@param filenames One or more file names which will be read in to the sampler buffer
 - long -> WeightedStrings(java.lang.String: valuesAndWeights) -> java.lang.String
 
 
 ## WeightedStringsFromCSV
 
-Provides sampling of a given field in a CSV file according to discrete probabilities. The CSV file must have headers which can be used to find the named columns for value and weight. The value column contains the string result to be returned by the function. The weight column contains the floating-point weight or mass associated with the value on the same line. All the weights are normalized automatically. If there are multiple file names containing the same format, then they will all be read in the same way. If the first word in the filenames list is 'map', then the values will not be pseudo-randomly selected. Instead, they will be mapped over in some other unsorted and stable order as input values vary from 0L to Long.MAX_VALUE. Generally, you want to leave out the 'map' directive to get "random sampling" of these values. This function works the same as the three-parametered form of WeightedStrings, which is deprecated in lieu of this one. Use this one instead.
+Provides sampling of a given field in a CSV file according to discrete probabilities. The CSV file must have headers which can be used to find the named columns for value and weight. The value column contains the string result to be returned by the function. The weight column contains the floating-point weight or mass associated with the value on the same line. All the weights are normalized automatically.
+
+If there are multiple file names containing the same format, then they
+will all be read in the same way.
+
+If the first word in the filenames list is 'map', then the values will not
+be pseudo-randomly selected. Instead, they will be mapped over in some
+other unsorted and stable order as input values vary from 0L to Long.MAX_VALUE.
+
+Generally, you want to leave out the 'map' directive to get "random sampling"
+of these values.
+
+This function works the same as the three-parametered form of WeightedStrings,
+which is deprecated in lieu of this one. Use this one instead.
 
 - long -> WeightedStringsFromCSV(java.lang.String: valueColumn, java.lang.String: weightColumn, java.lang.String[]...: filenames) -> java.lang.String
   - *notes:* Create a sampler of strings from the given CSV file. The CSV file must have plain CSV headers

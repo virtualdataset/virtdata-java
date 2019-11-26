@@ -37,16 +37,8 @@
 
 This is a higher-order function which takes an input value, and flips a coin. The first parameter is used as the threshold for choosing a function. If the sample values derived from the input is lower than the threshold value, then the first following function is used, and otherwise the second is used. For example, if the threshold is 0.23, and the input value is hashed and sampled in the unit interval to 0.43, then the second of the two provided functions will be used. The input value does not need to be hashed beforehand, since the user may need to use the full input value before hashing as the input to one or both of the functions. This function will accept either a LongFunction or a {@link Function} or a LongUnaryOperator in either position. If necessary, use {@link java.util.function.ToLongFunction} to adapt other function forms to be compatible with these signatures.
 
-- java.lang.Long -> CoinFunc(double: threshold, java.util.function.LongFunction<? extends java.lang.Object>: first, java.util.function.LongFunction<? extends java.lang.Object>: second) -> java.lang.Object
+- java.lang.Long -> CoinFunc(double: threshold, java.lang.Object: first, java.lang.Object: second) -> java.lang.Object
   - *ex:* `CoinFunc(0.15,NumberNameToString(),Combinations('A:1:B:23'))` - *use the first function 15% of the time*
-- java.lang.Long -> CoinFunc(double: threshold, java.util.function.LongFunction<? extends java.lang.Object>: first, java.util.function.Function<java.lang.Long,? extends java.lang.Object>: second) -> java.lang.Object
-- java.lang.Long -> CoinFunc(double: threshold, java.util.function.LongFunction<? extends java.lang.Object>: first, java.util.function.LongUnaryOperator: second) -> java.lang.Object
-- java.lang.Long -> CoinFunc(double: threshold, java.util.function.Function<java.lang.Long,? extends java.lang.Object>: first, java.util.function.Function<java.lang.Long,? extends java.lang.Object>: second) -> java.lang.Object
-- java.lang.Long -> CoinFunc(double: threshold, java.util.function.Function<java.lang.Long,? extends java.lang.Object>: first, java.util.function.LongFunction<? extends java.lang.Object>: second) -> java.lang.Object
-- java.lang.Long -> CoinFunc(double: threshold, java.util.function.Function<java.lang.Long,? extends java.lang.Object>: first, java.util.function.LongUnaryOperator: second) -> java.lang.Object
-- java.lang.Long -> CoinFunc(double: threshold, java.util.function.LongUnaryOperator: first, java.util.function.Function<java.lang.Long,? extends java.lang.Object>: second) -> java.lang.Object
-- java.lang.Long -> CoinFunc(double: threshold, java.util.function.LongUnaryOperator: first, java.util.function.LongFunction<? extends java.lang.Object>: second) -> java.lang.Object
-- java.lang.Long -> CoinFunc(double: threshold, java.util.function.LongUnaryOperator: first, java.util.function.LongUnaryOperator: second) -> java.lang.Object
 
 
 ## ConstantContinuous
@@ -231,6 +223,13 @@ Creates a probability density given the values and optional weights provided, in
 
 - int -> Weibull(double: alpha, double: beta, java.lang.String[]...: mods) -> double
 - long -> Weibull(double: alpha, double: beta, java.lang.String[]...: mods) -> double
+
+
+## WeightedFuncs
+
+Allows for easy branching over multiple functions with specific weights.
+
+- long -> WeightedFuncs(java.lang.Object[]...: weightsAndFuncs) -> java.lang.Object
 
 
 ## Zipf

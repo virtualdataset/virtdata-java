@@ -1,4 +1,31 @@
 # CATEGORY datetime
+## DateTimeParser
+
+This function will parse a String containing a formatted date time, yielding a DateTime object. If no arguments are provided, then the format is set to
+
+```
+yyyy-MM-dd HH:mm:ss.SSSZ
+```
+
+. For details on formatting options, see @see [DateTimeFormat](https://www.joda.org/joda-time/apidocs/org/joda/time/format/DateTimeFormat.html)
+
+- java.lang.String -> DateTimeParser() -> org.joda.time.DateTime
+  - *notes:* Initialize the parser with the default pattern of <pre>yyyy-MM-dd HH:mm:ss.SSSZ</pre>.
+  - *ex:* `DateTimeParser()` - *parse any date in the yyyy-MM-dd HH:mm:ss.SSSZ format*
+- java.lang.String -> DateTimeParser(java.lang.String: dateTimePattern) -> org.joda.time.DateTime
+  - *notes:* Initialize the parser with the given pattern. With this form, if any input fails to parse,
+or is null or empty, then an exception is thrown.
+@param dateTimePattern The pattern which represents the incoming format.
+  - *ex:* `DateTimeParser('yyyy-MM-dd')` - *parse any date in the yyyy-MM-dd format*
+- java.lang.String -> DateTimeParser(java.lang.String: dateTimePattern, java.lang.String: defaultTime) -> org.joda.time.DateTime
+  - *notes:* Initialize the parser with the given pattern and default value. In this form, if any
+input fails to parse, then exceptions are suppressed and the default is provided instead.
+At initialization, the default is parsed as a sanity check.
+@param dateTimePattern The pattern which represents the incoming format.
+@param defaultTime An example of a formatted datetime string which is used as a default.
+  - *ex:* `DateTimeParser('yyyy-MM-dd','1999-12-31')` - *parse any date in the yyyy-MM-dd format, or return the DateTime represented by 1999-12-31*
+
+
 ## StartingEpochMillis
 
 This function sets the minimum long value to the equivalent unix epoch time in milliseconds. It simply adds the input value to this base value as determined by the provided time specifier. It wraps any overflow within this range as well.

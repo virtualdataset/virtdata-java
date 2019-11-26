@@ -367,14 +367,14 @@ Load a named value from the per-thread state map. The previous input value will 
 
 ## UnsetOrLoad
 
-Reads a long variable from the input, hashes and scales it to the unit interval 0.0d - 1.0d, then uses the result to determine whether to return null object or a loaded value.
+Reads a long variable from the input, hashes and scales it to the unit interval 0.0d - 1.0d, then uses the result to determine whether to return UNSET.value or a loaded value.
 
 - long -> UnsetOrLoad(double: ratio, java.lang.String: varname) -> java.lang.Object
 
 
 ## UnsetOrPass
 
-Reads a long variable from the thread local variable map, hashes and scales it to the unit interval 0.0d - 1.0d, then uses the result to determine whether to return a null object or the input value.
+Reads a long variable from the thread local variable map, hashes and scales it to the unit interval 0.0d - 1.0d, then uses the result to determine whether to return UNSET.value or the input value.
 
 - java.lang.Object -> UnsetOrPass(double: ratio, java.lang.String: varname) -> java.lang.Object
 
