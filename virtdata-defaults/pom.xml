@@ -44,9 +44,9 @@
                 <version>3.8.0</version>
                 <configuration>
                     <debug>false</debug>
-                    <!--<release>11</release>-->
-                    <source>11</source>
-                    <target>11</target>
+                    <release>12</release>
+                    <source>12</source>
+                    <target>12</target>
                     <!--<compilerArgument>-Xdoclint:all</compilerArgument>-->
                     <compilerArgument>-Xlint:all</compilerArgument>
 

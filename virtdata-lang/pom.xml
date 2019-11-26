@@ -51,9 +51,9 @@
                 <!--<artifactId>maven-compiler-plugin</artifactId>-->
                 <!--<version>3.8.0</version>-->
                 <!--<configuration>-->
-                    <!--<release>11</release>-->
-                    <!--<source>11</source>-->
-                    <!--<target>1.8</target>-->
+                    <!--<release>12</release>-->
+                    <!--<source>12</source>-->
+                    <!--<target>12</target>-->
                 <!--</configuration>-->
             <!--</plugin>-->
 
