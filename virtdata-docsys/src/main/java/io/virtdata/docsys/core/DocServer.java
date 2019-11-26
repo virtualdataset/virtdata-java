@@ -4,8 +4,6 @@ import io.virtdata.docsys.DocsysDefaultAppPath;
 import io.virtdata.docsys.api.Docs;
 import io.virtdata.docsys.api.WebServiceObject;
 import io.virtdata.docsys.handlers.FavIconHandler;
-import org.eclipse.jetty.rewrite.handler.RedirectRegexRule;
-import org.eclipse.jetty.rewrite.handler.RewriteHandler;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -142,11 +140,9 @@ public class DocServer implements Runnable {
             logger.warn("No service endpoints or doc paths have been added. Loading dynamically.");
         }
 
-        RewriteHandler rh = new RewriteHandler();
-        rh.addRule(new RedirectRegexRule("/","/docs/"));
-//        rh.addRule(new RedirectPatternRule("/","/docs/"));
-        handlers.addHandler(rh);
-//        ShutdownHandler shutdownHandler; // for easy recycles
+//        RewriteHandler rh = new RewriteHandler();
+//        rh.addRule(new RedirectRegexRule("/","/docs/"));
+//        handlers.addHandler(rh);
 
         // Favicon
         for (Path basePath : basePaths) {
@@ -178,7 +174,7 @@ public class DocServer implements Runnable {
             resourceHandler.setAcceptRanges(true);
 
             resourceHandler.setWelcomeFiles(new String[]{"index.html"});
-            resourceHandler.setRedirectWelcome(true);
+//            resourceHandler.setRedirectWelcome(true);
             Resource baseResource = new PathResource(basePath);
 
             if (basePath.toUri().toString().startsWith("jar:")) {
