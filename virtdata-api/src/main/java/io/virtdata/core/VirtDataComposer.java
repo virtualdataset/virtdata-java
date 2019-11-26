@@ -167,7 +167,8 @@ public class VirtDataComposer {
                     isThreadSafe = false;
                 }
             } catch (Exception e) {
-                return diagnostics.error(new RuntimeException("FUNCTION resolution failed: '" + flow.toString() + "': " + e.toString()));
+                String flowdata = flow!=null? flow.toString() : "undefined";
+                return diagnostics.error(new RuntimeException("FUNCTION resolution failed: '" + flowdata + "': " + e.toString()));
             }
         }
         ResolvedFunction composedFunction = assembly.getResolvedFunction(isThreadSafe);
