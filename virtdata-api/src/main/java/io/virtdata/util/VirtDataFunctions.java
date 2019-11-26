@@ -36,7 +36,6 @@ public class VirtDataFunctions {
 
     }
 
-
     /**
      * Adapt a functional object into a different type of functional object.
      *
@@ -64,7 +63,7 @@ public class VirtDataFunctions {
             case IntFunction:
                 return truncate ? adaptIntFunction(func, output) : adaptIntFunction(func, output);
             case Function:
-                return truncate ? adaptFunction(func, output) : adaptFunctionStrict(func, output);
+                return truncate ? (F) adaptFunction(func, output) : adaptFunctionStrict(func, output);
             default:
                 throw new RuntimeException("Unable to convert " + func.getClass().getCanonicalName() +
                         " to " + type.getCanonicalName() + (truncate ? " WITH " : " WITHOUT ") + "truncation");
@@ -92,8 +91,38 @@ public class VirtDataFunctions {
 
     }
 
-    private static <F> F adaptFunction(Object func, Class<?> output) {
-        throw new RuntimeException("This must be implemented, now that it is used.");
+    private static Function<?,?>  adaptFunction(Object func, Class<?> output) {
+        FuncType isaType = FuncType.valueOf(func.getClass());
+        switch (isaType) {
+            case LongFunction:
+                LongFunction<?> f1 = (LongFunction<?>)func;
+                Function<Long,?> rf1 = f1::apply;
+                return rf1;
+            case LongUnaryOperator:
+                LongUnaryOperator f2 = (LongUnaryOperator)func;
+                Function<Long,Long> rf2 = f2::applyAsLong;
+                return rf2;
+            case IntFunction:
+                IntFunction f3 = (IntFunction)func;
+                Function<Integer,?> rf3 = f3::apply;
+                return rf3;
+            case IntUnaryOperator:
+                IntUnaryOperator f4 = (IntUnaryOperator)func;
+                Function<Integer,?> rf4 = f4::applyAsInt;
+                return rf4;
+            case DoubleFunction:
+                DoubleFunction f5 = (DoubleFunction)func;
+                Function<Double,?> rf5 = f5::apply;
+                return rf5;
+            case DoubleUnaryOperator:
+                DoubleUnaryOperator f6 = (DoubleUnaryOperator)func;
+                Function<Double,?> rf6 = f6::applyAsDouble;
+                return rf6;
+            case Function:
+                return (Function<?,?>) func;
+            default:
+                throw new RuntimeException("Unable to map function:" + func);
+        }
     }
 
     private static <F> F adaptFunctionStrict(Object func, Class<?> output) {
