@@ -37,7 +37,7 @@
         DocsMenu
     },
     async asyncData() {
-      let paths = await fetch("/markdown.csv")
+      let paths = await fetch("/services/docs/markdown.csv")
         .then(res => {
           return res.text()
         })
@@ -56,7 +56,7 @@
         detailName = detailName.substr(0, detailName.length -3);
 
         //const mdMeta = resolve(key);
-        let rawMD = await fetch("/markdown/"+key)
+        let rawMD = await fetch("/services/docs/markdown/"+key)
           .then(res => res.text())
           .then(body => rawMD = rawMD + body)
 

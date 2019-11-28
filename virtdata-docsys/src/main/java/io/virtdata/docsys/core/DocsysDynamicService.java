@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Service(WebServiceObject.class)
 @Singleton
-@Path("/")
+@Path("/services/docs/")
 public class DocsysDynamicService implements WebServiceObject {
     private final static Logger logger = LoggerFactory.getLogger(DocsysDynamicService.class);
 
