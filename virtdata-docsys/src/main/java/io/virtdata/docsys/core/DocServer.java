@@ -4,7 +4,6 @@ import io.virtdata.docsys.DocsysDefaultAppPath;
 import io.virtdata.docsys.api.Docs;
 import io.virtdata.docsys.api.WebServiceObject;
 import io.virtdata.docsys.handlers.FavIconHandler;
-import org.eclipse.jetty.rewrite.handler.RedirectRegexRule;
 import org.eclipse.jetty.rewrite.handler.RewriteHandler;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.DefaultHandler;
@@ -143,7 +142,7 @@ public class DocServer implements Runnable {
         }
 
         RewriteHandler rh = new RewriteHandler();
-        rh.addRule(new RedirectRegexRule("/","/docs/"));
+//        rh.addRule(new RedirectRegexRule("/","/docs/"));
 //        rh.addRule(new RedirectPatternRule("/","/docs/"));
         handlers.addHandler(rh);
 //        ShutdownHandler shutdownHandler; // for easy recycles
@@ -178,7 +177,7 @@ public class DocServer implements Runnable {
             resourceHandler.setAcceptRanges(true);
 
             resourceHandler.setWelcomeFiles(new String[]{"index.html"});
-            resourceHandler.setRedirectWelcome(true);
+            resourceHandler.setRedirectWelcome(false);
             Resource baseResource = new PathResource(basePath);
 
             if (basePath.toUri().toString().startsWith("jar:")) {
