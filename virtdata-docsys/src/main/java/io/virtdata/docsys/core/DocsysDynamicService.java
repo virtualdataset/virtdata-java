@@ -124,15 +124,13 @@ public class DocsysDynamicService implements WebServiceObject {
         return list;
     }
 
-    /**
-     * @param pathspec the path as known to the manifest
-     * @return The contents of a file
-     */
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    @Path(value = "markdown/{pathspec: .*}")
-    public String getFile(@PathParam("pathspec") String pathspec) {
+    @Path("file")
+    public String getFileByPath(@QueryParam("path") String pathspec) {
+        return getFile(pathspec);
+    }
 
+    private String getFile(String pathspec) {
         pathspec = URLDecoder.decode(pathspec, StandardCharsets.UTF_8);
         for (java.nio.file.Path path : enabled.getPaths()) {
             java.nio.file.Path resolved = path.resolve(pathspec);
@@ -149,6 +147,17 @@ public class DocsysDynamicService implements WebServiceObject {
             }
         }
         throw new RuntimeException("Unable to find any valid file at '" + pathspec + "'");
+    }
+
+    /**
+     * @param pathspec the path as known to the manifest
+     * @return The contents of a file
+     */
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path(value = "markdown/{pathspec: .*}")
+    public String getFileInPath(@PathParam("pathspec") String pathspec) {
+        return getFileInPath(pathspec);
     }
 
     private void init(boolean reload) {

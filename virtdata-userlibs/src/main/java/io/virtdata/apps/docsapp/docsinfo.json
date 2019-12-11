@@ -6,15 +6,8 @@
   "see": {
     "Wikipedia: Beta distribution": "https://en.wikipedia.org/wiki/Beta_distribution"
   },
-  "forms": [
+  "ctors": [
     {
-      "notes": "This form consumes an int and produces a double",
-      "examples": [
-        {
-          "example": "int->Beta(1.0d,2.0d,'interpolate')->double",
-          "description": "This example provides an interpolated result with ..."
-        }
-      ],
       "input_type": "int",
       "name": "Beta",
       "args": [
@@ -31,7 +24,14 @@
           "type": "String..."
         }
       ],
-      "output_type": "double"
+      "output_type": "double",
+      "notes": "This form consumes an int and produces a double",
+      "examples": [
+        {
+          "example": "int->Beta(1.0d,2.0d,'interpolate')->double",
+          "description": "This example provides an interpolated result with ..."
+        }
+      ]
     }
   ]
 }
