@@ -10,6 +10,8 @@ import javax.lang.model.element.Modifier;
 import javax.tools.Diagnostic;
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class FunctionDocInfoWriter implements FuncEnumerator.Listener {
@@ -97,6 +99,8 @@ public class FunctionDocInfoWriter implements FuncEnumerator.Listener {
             for (List<String> example : ctor.getExamples()) {
                 ctors.add("add(new $T<$T>() {{$>\n", ArrayList.class, String.class);
                 for (String s : example) {
+                    Matcher m = Pattern.compile(Matcher.quoteReplacement("$")).matcher(s);
+                    s=m.replaceAll(m.quoteReplacement("$$"));
                     ctors.add("add(\"" + s + "\");\n");
                 }
                 ctors.add("$<}});\n");
