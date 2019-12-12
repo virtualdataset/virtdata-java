@@ -74,4 +74,6 @@ public interface DocsInfo extends Iterable<DocPathInfo> {
      * @return A map of all namespaces to each set of provided paths is returned.
      */
     Map<String, Set<Path>> getPathMap();
+
+    List<DocsPath> getNamespaces();
 }

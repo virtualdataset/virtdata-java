@@ -20,14 +20,14 @@ public class Docs implements DocsInfo {
 
     public Docs addFirstFoundPath(String... potentials) {
         Path pathIn = VirtDataResources.findPathIn(potentials);
-        if (pathIn==null || !Files.exists(pathIn)) {
+        if (pathIn == null || !Files.exists(pathIn)) {
             throw new RuntimeException("Unable to find a path in one of " + Arrays.stream(potentials).collect(Collectors.joining(",")));
         }
         return this.addPath(pathIn);
     }
 
     public Docs addPath(Path path) {
-        if (namespaces.peekLast()==null) {
+        if (namespaces.peekLast() == null) {
             throw new RuntimeException("You must add a namespace first.");
         }
         namespaces.peekLast().addPath(path);
@@ -42,9 +42,9 @@ public class Docs implements DocsInfo {
 
     @Override
     public DocsInfo merge(DocsInfo other) {
-        for (DocPathInfo docPathInfo : other) {
-            namespace(docPathInfo.getNameSpace());
-            for (Path path : docPathInfo) {
+        for (DocsPath namespace : other.getNamespaces()) {
+            this.namespace(namespace.getNameSpace());
+            for (Path path : namespace.getPaths()) {
                 addPath(path);
             }
         }
@@ -71,11 +71,16 @@ public class Docs implements DocsInfo {
 
     @Override
     public Map<String, Set<Path>> getPathMap() {
-        Map<String,Set<Path>> pm = new HashMap();
+        Map<String, Set<Path>> pm = new HashMap();
         for (DocsPath ns : this.namespaces) {
-            pm.put(ns.getNameSpace(),new HashSet<>(ns.getPaths()));
+            pm.put(ns.getNameSpace(), new HashSet<>(ns.getPaths()));
         }
         return pm;
+    }
+
+    @Override
+    public List<DocsPath> getNamespaces() {
+        return this.namespaces;
     }
 
     @Override
@@ -85,18 +90,18 @@ public class Docs implements DocsInfo {
     }
 
     public Map<String, Set<Path>> getPathMaps() {
-        Map<String,Set<Path>> maps = new HashMap<>();
+        Map<String, Set<Path>> maps = new HashMap<>();
         for (DocsPath namespace : namespaces) {
             Set<Path> paths = new HashSet<>();
             namespace.forEach(paths::add);
-            maps.put(namespace.getNameSpace(),paths);
+            maps.put(namespace.getNameSpace(), paths);
         }
 
         return maps;
     }
 
     public DocsInfo asDocsInfo() {
-        return (DocsInfo) this;
+        return this;
     }
 
     @Override
