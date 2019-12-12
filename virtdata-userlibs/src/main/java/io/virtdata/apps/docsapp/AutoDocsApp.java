@@ -1,5 +1,7 @@
 package io.virtdata.apps.docsapp;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.vladsch.flexmark.convert.html.FlexmarkHtmlParser;
 import io.virtdata.annotations.Category;
 import io.virtdata.core.VirtDataDocs;
@@ -18,8 +20,9 @@ public class AutoDocsApp {
     private final static String SPLIT = "split";
     private final static String COMBINED = "combined";
     private final static String ALL = "all";
-    private final static String DEFAULT_FILE="funcref";
-    private final static String fileExtension=".md";
+    private final static String DEFAULT_FILE = "funcref";
+    private static final String MARKDOWN = "markdown";
+    private static final String JSON = "json";
 
     // category -> funcname -> [docfuncdata, ...]
     private Map<Category, Map<String, List<DocFuncData>>> groupedModels = new HashMap<>();
@@ -27,6 +30,7 @@ public class AutoDocsApp {
     private String baseFileName = DEFAULT_FILE;
     private String print = ALL;
     private String categories = SPLIT;
+    private String format = MARKDOWN;
 
     public static void main(String[] args) {
         new AutoDocsApp().invoke(args);
@@ -54,7 +58,13 @@ public class AutoDocsApp {
                     if (!argval.equals(SPLIT) && !argval.equals(COMBINED)) {
                         throw new RuntimeException("categories must either be " + SPLIT + ", or " + COMBINED + ".");
                     }
-                    categories = argval;
+                    this.categories = argval;
+                    break;
+                case "format":
+                    if (!argval.equals(MARKDOWN) && !argval.equals(JSON)) {
+                        throw new RuntimeException("format must either be " + MARKDOWN + ", or " + JSON + ".");
+                    }
+                    this.format = argval;
                     break;
                 default:
             }
@@ -75,56 +85,60 @@ public class AutoDocsApp {
         }
 
 
-        StringBuilder sb = new StringBuilder();
+//        StringBuilder sb = new StringBuilder();
 //        Map<Category,String> docsByCategory=new HashMap<>();
 
-        Map<String,Set<Category>> assignments = new HashMap<>();
+        Map<String, Set<Category>> assignments = new HashMap<>();
         // Map single category annotation to global Name -> Category assignment
         for (DocFuncData docModel : docModels) {
 
             Set<Category> listForFuncName = assignments.getOrDefault(docModel.getClassName(), new HashSet<>());
-            assignments.put(docModel.getClassName(),listForFuncName);
-            if (listForFuncName.size()>0) {
-                logger.warn("Func name " +  docModel.getClassName() + " has " + listForFuncName.size() + " multiple category annotations:");
+            assignments.put(docModel.getClassName(), listForFuncName);
+            if (listForFuncName.size() > 0) {
+                logger.warn("Func name " + docModel.getClassName() + " has " + listForFuncName.size() + " multiple category annotations:");
             }
             listForFuncName.addAll(Arrays.asList(docModel.getCategories()));
             logger.info("Assigning " + docModel.getClassName() + " to categories " + listForFuncName.toString());
         }
 
-        Set<Category> generalSet = new HashSet<Category>() {{ add(Category.general); }};
+        Set<Category> generalSet = new HashSet<>() {{
+            add(Category.general);
+        }};
         // regroup docs under categories
         // category -> funcname -> [docfuncdata, ...]
         Map<Category, Map<String, List<DocFuncData>>> regrouped = new HashMap<>();
         for (DocFuncData docModel : docModels) {
             Set<Category> assignment = assignments.getOrDefault(docModel.getClassName(), generalSet);
-            if (assignment.size()==0) {
-                assignment=generalSet;
+            if (assignment.size() == 0) {
+                assignment = generalSet;
             }
-            logger.info("looking up assignment for " + docModel.getClassName() +":" + assignment.toString());
+            logger.info("looking up assignment for " + docModel.getClassName() + ":" + assignment.toString());
             for (Category category : assignment) {
                 Map<String, List<DocFuncData>> assignToCategory = regrouped.getOrDefault(category, new HashMap<>());
-                regrouped.put(category,assignToCategory);
+                regrouped.put(category, assignToCategory);
 
                 List<DocFuncData> assignToClass = assignToCategory.getOrDefault(docModel.getClassName(), new ArrayList<>());
-                assignToCategory.put(docModel.getClassName(),assignToClass);
+                assignToCategory.put(docModel.getClassName(), assignToClass);
 
                 assignToClass.add(docModel);
             }
         }
-        groupedModels=regrouped;
+        groupedModels = regrouped;
 
 
-        Map<String,Writer> writers = new HashMap<>();
+        Map<String, Writer> writers = new HashMap<>();
         Writer writer = new OutputStreamWriter(System.out);
         try {
+
+            String extension = (this.format.equals(MARKDOWN)) ? ".md" : ".json";
 
             for (Category category : Category.values()) {
                 if (groupedModels.keySet().contains(category)) {
 
                     if (!this.baseFileName.isEmpty() && this.categories.equals(SPLIT)) {
-                        writer = writers.getOrDefault(category.toString(), new FileWriter(baseFileName + "_" + category.toString() + fileExtension));
+                        writer = writers.getOrDefault(category.toString(), new FileWriter(baseFileName + "_" + category.toString() + extension));
                     } else if (!this.baseFileName.isEmpty() && this.categories.equals(COMBINED)) {
-                        writer = writers.getOrDefault(baseFileName + fileExtension, new FileWriter(baseFileName));
+                        writer = writers.getOrDefault(baseFileName + extension, new FileWriter(baseFileName));
                     }
 
                     String docs = writeCategoryDocs(category, groupedModels.get(category));
@@ -142,34 +156,18 @@ public class AutoDocsApp {
         }
     }
 
-    private String replacePatterns(String docdata) {
-        docdata = docdata.replaceAll("<Object","&lt;Object");
-        docdata = docdata.replaceAll("Object>","Object&gt;");
-        docdata = docdata.replaceAll("java.lang.", "");
-        docdata = docdata.replaceAll("^\\s*</?pre>\\s*\n", "\n```\n");
-        docdata = docdata.replaceAll("(<p>|</p>| \n)+", "\n");
-        docdata = docdata.replaceAll("<pre>", "`");
-        docdata = docdata.replaceAll("</pre>", "`");
-        docdata = docdata.replaceAll("\\{@link (.+?)}", "$1");
-        docdata = docdata.replaceAll("(?m)@param .*\n", "");
-        docdata = docdata.replaceAll("(?m)\n\n+", "\n\n");
-        docdata = docdata.replaceAll("(?m)\\[]...:","...");
-        docdata = docdata.replaceAll("(?m)@see ","See ");
-        return docdata;
-    }
-
-
     private String writeCategoryDocs(Category category, Map<String, List<DocFuncData>> groupedDocs) {
 
         StringBuilder sb = new StringBuilder();
         ArrayList<String> funcNames = new ArrayList<>(groupedDocs.keySet());
         Collections.sort(funcNames);
-        sb.append("# CATEGORY ").append(category).append("\n");
+
+        List<FunctionDoc> fdocs = new ArrayList<>(groupedDocs.size());
 
         for (String name : funcNames) {
-            List<DocFuncData> docs = groupedDocs.get(name);
+            FunctionDoc fdoc = new FunctionDoc(name);
 
-            sb.append("## ").append(name).append("\n\n");
+            List<DocFuncData> docs = groupedDocs.get(name);
 
             List<DocFuncData> classdocs = docs.stream()
                     .filter(d -> d.getClassJavadoc() != null && !d.getClassJavadoc().isEmpty())
@@ -181,6 +179,7 @@ public class AutoDocsApp {
                     .distinct()
                     .collect(Collectors.toList());
 
+
             if (distinctClassDocs.size() == 0) {
                 logger.warn("There were no class docs found for types named " + name);
             }
@@ -188,48 +187,101 @@ public class AutoDocsApp {
                 logger.warn("There were multiple class docs found for types named " + name);
             }
 
-
             if (distinctClassDocs.size() == 1) {
                 String classdoc = distinctClassDocs.get(0);
                 classdoc = parseHtmlToMarkdown(classdoc);
                 sb.append(classdoc);
-                if (!classdoc.endsWith("\n\n")) {
-                    sb.append("\n");
-                }
                 if (!classdoc.endsWith("\n")) {
-                    sb.append("\n");
+                    classdoc=classdoc + "\n";
                 }
+                if (!classdoc.endsWith("\n\n")) {
+                    classdoc=classdoc + "\n";
+                }
+                fdoc.setClassDocs(classdoc);
             }
 
             for (DocFuncData doc : docs) {
-                List<DocCtorData> ctors = doc.getCtors();
-                for (DocCtorData ctor : ctors) {
-                    sb.append("- ").append(doc.getInType()).append(" -> ");
-                    sb.append(doc.getClassName());
-                    sb.append("(");
-                    sb.append(
-                            ctor.getArgs().entrySet().stream().map(
-                                    e -> e.getValue() + ": " + e.getKey()
-                            ).collect(Collectors.joining(", "))
-                    );
-                    sb.append(")");
-                    sb.append(" -> ").append(doc.getOutType()).append("\n");
+                fdoc.addCategories(doc.getCategories());
 
-                    String ctorDoc = ctor.getCtorJavaDoc();
-                    if (!ctorDoc.isEmpty()) {
-                        sb.append("  - *notes:* ").append(ctorDoc);
+                for (DocCtorData ctor : doc.getCtors()) {
+                    fdoc.addCtor(ctor);
+                }
+            }
+            fdocs.add(fdoc);
+        }
+
+        if (format.equals(MARKDOWN)) {
+
+            sb.append("# CATEGORY ").append(category).append("\n");
+
+            for (String name : funcNames) {
+
+                List<DocFuncData> docs = groupedDocs.get(name);
+
+                sb.append("## ").append(name).append("\n\n");
+
+                List<DocFuncData> classdocs = docs.stream()
+                        .filter(d -> d.getClassJavadoc() != null && !d.getClassJavadoc().isEmpty())
+                        .collect(Collectors.toList());
+
+                List<String> distinctClassDocs = classdocs.stream()
+                        .map(DocFuncData::getClassJavadoc)
+                        .map(String::trim)
+                        .distinct()
+                        .collect(Collectors.toList());
+
+                if (distinctClassDocs.size() == 0) {
+                    logger.warn("There were no class docs found for types named " + name);
+                }
+                if (distinctClassDocs.size() > 1) {
+                    logger.warn("There were multiple class docs found for types named " + name);
+                }
+
+                if (distinctClassDocs.size() == 1) {
+                    String classdoc = distinctClassDocs.get(0);
+                    classdoc = parseHtmlToMarkdown(classdoc);
+                    sb.append(classdoc);
+                    if (!classdoc.endsWith("\n\n")) {
+                        sb.append("\n");
                     }
-                    for (List<String> example : ctor.getExamples()) {
-                        sb.append("  - *ex:* `").append(example.get(0)).append("`");
-                        if (example.size() > 1) {
-                            sb.append(" - *").append(example.get(1)).append("*");
-                        }
+                    if (!classdoc.endsWith("\n")) {
                         sb.append("\n");
                     }
                 }
+
+                for (DocFuncData doc : docs) {
+                    List<DocCtorData> ctors = doc.getCtors();
+                    for (DocCtorData ctor : ctors) {
+                        sb.append("- ").append(doc.getInType()).append(" -> ");
+                        sb.append(doc.getClassName());
+                        sb.append("(");
+                        sb.append(
+                                ctor.getArgs().entrySet().stream().map(
+                                        e -> e.getValue() + ": " + e.getKey()
+                                ).collect(Collectors.joining(", "))
+                        );
+                        sb.append(")");
+                        sb.append(" -> ").append(doc.getOutType()).append("\n");
+
+                        String ctorDoc = ctor.getCtorJavaDoc();
+                        if (!ctorDoc.isEmpty()) {
+                            sb.append("  - *notes:* ").append(ctorDoc);
+                        }
+                        for (List<String> example : ctor.getExamples()) {
+                            sb.append("  - *ex:* `").append(example.get(0)).append("`");
+                            if (example.size() > 1) {
+                                sb.append(" - *").append(example.get(1)).append("*");
+                            }
+                            sb.append("\n");
+                        }
+                    }
+                }
+                sb.append("\n");
+                sb.append("\n");
             }
-            sb.append("\n");
-            sb.append("\n");
+        } else if (format.equals(JSON)) {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            sb.append(gson.toJson(fdocs));
         }
         return sb.toString();
     }
