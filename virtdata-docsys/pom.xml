@@ -16,8 +16,6 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
         <flexmark-version>0.50.20</flexmark-version>
         <!--        <jetty-version>10.0.0-alpha0</jetty-version>-->
 <!--        <jetty-version>9.4.19.v20190610</jetty-version>-->
@@ -175,6 +173,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <release>12</release>
+                    <source>12</source>
+                    <target>12</target>
                 </configuration>
             </plugin>
             <plugin>
