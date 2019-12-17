@@ -7,6 +7,7 @@ public class DocsPath implements DocPathInfo {
 
     private final Set<Path> paths = new HashSet<>();
     private String namespace;
+    private boolean enabledByDefault = false;
 
     public DocsPath() {}
 
@@ -33,6 +34,11 @@ public class DocsPath implements DocPathInfo {
     }
 
     @Override
+    public boolean isEnabledByDefault() {
+        return enabledByDefault;
+    }
+
+    @Override
     public String toString() {
         return "DocPath{" +
                 "namespace='" + namespace + '\'' +
@@ -45,8 +51,18 @@ public class DocsPath implements DocPathInfo {
         return this;
     }
 
+    public DocsPath enabledByDefault() {
+        this.enabledByDefault=true;
+        return this;
+    }
+
     @Override
     public Iterator<Path> iterator() {
         return this.paths.iterator();
+    }
+
+    public DocsPath setEnabledByDefault(boolean enabledByDefault) {
+        this.enabledByDefault=enabledByDefault;
+        return this;
     }
 }

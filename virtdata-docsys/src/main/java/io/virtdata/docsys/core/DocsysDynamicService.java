@@ -1,6 +1,7 @@
 package io.virtdata.docsys.core;
 
 import io.virtdata.annotations.Service;
+import io.virtdata.docsys.api.DocPathInfo;
 import io.virtdata.docsys.api.Docs;
 import io.virtdata.docsys.api.DocsInfo;
 import io.virtdata.docsys.api.WebServiceObject;
@@ -26,8 +27,9 @@ public class DocsysDynamicService implements WebServiceObject {
     private DocsInfo docsinfo;
     private DocsInfo enabled;
     private DocsInfo disabled;
+
     private AtomicLong version = new AtomicLong(System.nanoTime());
-    private Set<String> enables = new HashSet<>();
+    private final Set<String> enables = new HashSet<>();
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -51,9 +53,10 @@ public class DocsysDynamicService implements WebServiceObject {
             @QueryParam("reload") boolean reload
     ) {
 
-        enables = (enable !=null && !enable.isEmpty()) ?
-            new HashSet<>(List.of(enable.split("[, ;]"))) :
-                Set.of();
+        if (enable!=null && !enable.isEmpty()) {
+            enables.clear();
+            enables.addAll(List.of(enable.split("[, ;]")));
+        }
 
         init(reload);
         enable(enables);
@@ -177,10 +180,26 @@ public class DocsysDynamicService implements WebServiceObject {
     }
 
     private void enable(Set<String> enabled) {
-        if (enabled.isEmpty()) {
+
+        Set<String> toEnable = new HashSet<>();
+        if (this.enables !=null) {
+            toEnable.addAll(this.enables);
+        }
+
+        for (DocPathInfo nsinfo : docsinfo) {
+            // add namespaces which are neither enabled nor disabled to the default group
+            if (nsinfo.isEnabledByDefault()) {
+                if (disabled!=null && disabled.getPathMap().containsKey(nsinfo.getNameSpace())) {
+                    continue;
+                }
+                enables.add(nsinfo.getNameSpace());
+            }
+        }
+
+        if (enabled.isEmpty()) { // Nothing is enabled or enabled by default, so enable everything
             this.enabled = new Docs().merge(docsinfo);
             this.disabled = new Docs().asDocsInfo();
-        } else {
+        } else { // At least one thing was enabled by default, or previously enabled specifically
             this.disabled = new Docs().merge(docsinfo);
             this.enabled = disabled.remove(enabled);
         }

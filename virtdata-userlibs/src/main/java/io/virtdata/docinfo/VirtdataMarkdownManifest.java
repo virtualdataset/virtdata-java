@@ -11,7 +11,9 @@ public class VirtdataMarkdownManifest implements DocsysDynamicManifest {
     public DocsInfo getDocs() {
         return new Docs().namespace("virtdata-docs").addFirstFoundPath(
                 "virtdata-userlibs/src/main/resources/docs-for-virtdata/",
-                "docs-for-virtdata/").asDocsInfo();
+                "docs-for-virtdata/")
+                .setEnabledByDefault(false)
+                .asDocsInfo();
     }
 
 }

@@ -1,23 +1,16 @@
 <template>
     <v-app>
-        <v-navigation-drawer
-                v-model="drawer"
-                app
-        >
+        <v-navigation-drawer v-model="drawer" app>
             <docs-menu :categories="categories"/>
         </v-navigation-drawer>
 
-        <v-app-bar
-                app
-                color="secondary"
-        >
+        <v-app-bar app color="secondary">
             <v-app-bar-nav-icon @click.stop="drawer = !drawer"/>
             <v-toolbar-title>DS Bench Documentation</v-toolbar-title>
         </v-app-bar>
 
         <v-content>
-            <v-container
-            >
+            <v-container>
                 <v-row align="stretch">
 
                     <div class="Doc">
@@ -31,10 +24,7 @@
             </v-container>
         </v-content>
 
-        <v-footer
-                app
-                color="secondary"
-        >
+        <v-footer app color="secondary">
             <span>&copy; 2019</span>
         </v-footer>
 

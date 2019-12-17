@@ -11,6 +11,8 @@ public class DocsysDefaultAppPath implements DocsysStaticManifest {
     public DocsInfo getDocs() {
         return new Docs().namespace("docsys-default-app").addFirstFoundPath(
                 "virtdata-docsys/src/main/resources/docsys-guidebook/",
-                "docsys-guidebook/").asDocsInfo();
+                "docsys-guidebook/")
+                .setEnabledByDefault(true)
+                .asDocsInfo();
     }
 }

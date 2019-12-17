@@ -32,8 +32,17 @@ public class Docs implements DocsInfo {
         }
         namespaces.peekLast().addPath(path);
         return this;
-
     }
+
+    public Docs setEnabledByDefault(boolean enabledByDefault) {
+        if (namespaces.peekLast() == null) {
+            throw new RuntimeException("You must add a namespace first.");
+        }
+        namespaces.peekLast().setEnabledByDefault(enabledByDefault);
+        return this;
+    }
+
+
 
     private Docs addNamespace(String namespace) {
         namespaces.add(new DocsPath(namespace));

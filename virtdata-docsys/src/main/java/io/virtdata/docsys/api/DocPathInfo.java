@@ -34,4 +34,6 @@ public interface DocPathInfo extends Iterable<Path> {
     String getNameSpace();
 
     List<Path> getPaths();
+
+    boolean isEnabledByDefault();
 }

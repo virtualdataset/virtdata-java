@@ -5,22 +5,14 @@
 
 "use strict";
 
-// CONCATENATED MODULE: ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vuetify-loader/lib/loader.js??ref--16-0!./node_modules/vue-loader/lib??vue-loader-options!./components/DocsMenu.vue?vue&type=template&id=1bed1122&
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"menu"},[_c('v-list',{attrs:{"dense":""}},_vm._l((_vm.categories),function(category){return _c('v-list-group',{key:category,attrs:{"link":""},scopedSlots:_vm._u([{key:"activator",fn:function(){return [_c('v-list-item-content',[_c('v-list-item-title',{staticClass:"text-capitalize"},[_vm._v(_vm._s(category.category))])],1)]},proxy:true}],null,true)},[_vm._v(" "),_vm._l((category.docs),function(doc,i){return _c('v-list-item',{key:i,attrs:{"link":"","href":doc.filename}},[_c('router-link',{attrs:{"to":doc.filename}},[_c('v-list-item-title',[_vm._v("\n                "+_vm._s(doc.attributes.title)+"\n          ")])],1)],1)})],2)}),1)],1)}
+// CONCATENATED MODULE: ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vuetify-loader/lib/loader.js??ref--16-0!./node_modules/vue-loader/lib??vue-loader-options!./components/DocsMenu.vue?vue&type=template&id=7e610957&
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"menu"},[_c('v-list',{attrs:{"dense":""}},_vm._l((_vm.categories),function(category){return _c('v-list-group',{key:category,attrs:{"link":""},scopedSlots:_vm._u([{key:"activator",fn:function(){return [_c('v-list-item-content',[_c('v-list-item-title',{staticClass:"text-capitalize"},[_vm._v(_vm._s(category.category))])],1)]},proxy:true}],null,true)},[_vm._v(" "),_vm._l((category.docs),function(doc,i){return _c('v-list-item',{key:i,attrs:{"link":"","href":doc.filename}},[_c('router-link',{attrs:{"to":doc.filename}},[_c('v-list-item-title',[_vm._v(_vm._s(doc.attributes.title))])],1)],1)})],2)}),1)],1)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./components/DocsMenu.vue?vue&type=template&id=1bed1122&
+// CONCATENATED MODULE: ./components/DocsMenu.vue?vue&type=template&id=7e610957&
 
 // CONCATENATED MODULE: ./node_modules/babel-loader/lib??ref--2-0!./node_modules/vuetify-loader/lib/loader.js??ref--16-0!./node_modules/vue-loader/lib??vue-loader-options!./components/DocsMenu.vue?vue&type=script&lang=js&
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -106,12 +98,12 @@ installComponents_default()(component, {VList: VList["a" /* default */],VListGro
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vuetify-loader/lib/loader.js??ref--16-0!./node_modules/vue-loader/lib??vue-loader-options!./pages/docs/index.vue?vue&type=template&id=27e20eed&
+// CONCATENATED MODULE: ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vuetify-loader/lib/loader.js??ref--16-0!./node_modules/vue-loader/lib??vue-loader-options!./pages/docs/index.vue?vue&type=template&id=1021cffe&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('v-app',[_c('v-navigation-drawer',{attrs:{"app":""},model:{value:(_vm.drawer),callback:function ($$v) {_vm.drawer=$$v},expression:"drawer"}},[_c('docs-menu',{attrs:{"categories":_vm.categories}})],1),_vm._v(" "),_c('v-app-bar',{attrs:{"app":"","color":"secondary"}},[_c('v-app-bar-nav-icon',{on:{"click":function($event){$event.stopPropagation();_vm.drawer = !_vm.drawer}}}),_vm._v(" "),_c('v-toolbar-title',[_vm._v("DS Bench Documentation")])],1),_vm._v(" "),_c('v-content'),_vm._v(" "),_c('v-footer',{attrs:{"app":"","color":"secondary"}},[_c('span',[_vm._v("© 2019")])])],1)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./pages/docs/index.vue?vue&type=template&id=27e20eed&
+// CONCATENATED MODULE: ./pages/docs/index.vue?vue&type=template&id=1021cffe&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es7.array.includes.js
 var es7_array_includes = __webpack_require__(52);
@@ -169,14 +161,6 @@ var DocsMenu = __webpack_require__(207);
 
 
 
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
