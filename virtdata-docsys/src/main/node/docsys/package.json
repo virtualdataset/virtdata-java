@@ -5,7 +5,7 @@
   "author": "Sebastián Estévez",
   "private": true,
   "scripts": {
-    "dev": "nuxt",
+    "dev": "/node_modules/nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate"
@@ -15,7 +15,7 @@
     "front-matter": "^3.0.2",
     "markdown-it": "^10.0.0",
     "node-fetch": "^2.6.0",
-    "nuxt": "^2.0.0"
+    "nuxt": "^2.11.0"
   },
   "devDependencies": {}
 }
