@@ -8,7 +8,7 @@
           </v-list-item-content>
         </template>
 
-        <v-list-item v-for="(doc, i) in category.docs" :key="i" link :href="doc.filename">
+        <v-list-item v-for="(doc, i) in category.docs" :key="i" link :to="doc.filename">
           <router-link :to="doc.filename">
             <v-list-item-title>{{doc.attributes.title}}</v-list-item-title>
           </router-link>

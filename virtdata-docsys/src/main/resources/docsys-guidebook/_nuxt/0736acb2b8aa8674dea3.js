@@ -1,16 +1,16 @@
-(window["webpackJsonp"] = window["webpackJsonp"] || []).push([[3],{
+(window["webpackJsonp"] = window["webpackJsonp"] || []).push([[4],{
 
-/***/ 207:
+/***/ 210:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 
-// CONCATENATED MODULE: ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vuetify-loader/lib/loader.js??ref--16-0!./node_modules/vue-loader/lib??vue-loader-options!./components/DocsMenu.vue?vue&type=template&id=7e610957&
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"menu"},[_c('v-list',{attrs:{"dense":""}},_vm._l((_vm.categories),function(category){return _c('v-list-group',{key:category,attrs:{"link":""},scopedSlots:_vm._u([{key:"activator",fn:function(){return [_c('v-list-item-content',[_c('v-list-item-title',{staticClass:"text-capitalize"},[_vm._v(_vm._s(category.category))])],1)]},proxy:true}],null,true)},[_vm._v(" "),_vm._l((category.docs),function(doc,i){return _c('v-list-item',{key:i,attrs:{"link":"","href":doc.filename}},[_c('router-link',{attrs:{"to":doc.filename}},[_c('v-list-item-title',[_vm._v(_vm._s(doc.attributes.title))])],1)],1)})],2)}),1)],1)}
+// CONCATENATED MODULE: ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vuetify-loader/lib/loader.js??ref--16-0!./node_modules/vue-loader/lib??vue-loader-options!./components/DocsMenu.vue?vue&type=template&id=5aa364f2&
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"menu"},[_c('v-list',{attrs:{"dense":""}},_vm._l((_vm.categories),function(category){return _c('v-list-group',{key:category,attrs:{"link":""},scopedSlots:_vm._u([{key:"activator",fn:function(){return [_c('v-list-item-content',[_c('v-list-item-title',{staticClass:"text-capitalize"},[_vm._v(_vm._s(category.category))])],1)]},proxy:true}],null,true)},[_vm._v(" "),_vm._l((category.docs),function(doc,i){return _c('v-list-item',{key:i,attrs:{"link":"","to":doc.filename}},[_c('router-link',{attrs:{"to":doc.filename}},[_c('v-list-item-title',[_vm._v(_vm._s(doc.attributes.title))])],1)],1)})],2)}),1)],1)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./components/DocsMenu.vue?vue&type=template&id=7e610957&
+// CONCATENATED MODULE: ./components/DocsMenu.vue?vue&type=template&id=5aa364f2&
 
 // CONCATENATED MODULE: ./node_modules/babel-loader/lib??ref--2-0!./node_modules/vuetify-loader/lib/loader.js??ref--16-0!./node_modules/vue-loader/lib??vue-loader-options!./components/DocsMenu.vue?vue&type=script&lang=js&
 //
@@ -44,17 +44,17 @@ var staticRenderFns = []
 var componentNormalizer = __webpack_require__(38);
 
 // EXTERNAL MODULE: ./node_modules/vuetify-loader/lib/runtime/installComponents.js
-var installComponents = __webpack_require__(188);
+var installComponents = __webpack_require__(189);
 var installComponents_default = /*#__PURE__*/__webpack_require__.n(installComponents);
 
 // EXTERNAL MODULE: ./node_modules/vuetify/lib/components/VList/VList.js
-var VList = __webpack_require__(211);
+var VList = __webpack_require__(215);
 
 // EXTERNAL MODULE: ./node_modules/vuetify/lib/components/VList/VListGroup.js + 3 modules
-var VListGroup = __webpack_require__(235);
+var VListGroup = __webpack_require__(239);
 
 // EXTERNAL MODULE: ./node_modules/vuetify/lib/components/VList/VListItem.js
-var VListItem = __webpack_require__(198);
+var VListItem = __webpack_require__(199);
 
 // EXTERNAL MODULE: ./node_modules/vuetify/lib/components/VList/index.js + 7 modules
 var components_VList = __webpack_require__(179);
@@ -92,7 +92,7 @@ installComponents_default()(component, {VList: VList["a" /* default */],VListGro
 
 /***/ }),
 
-/***/ 382:
+/***/ 386:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -106,10 +106,10 @@ var staticRenderFns = []
 // CONCATENATED MODULE: ./pages/docs/_slug.vue?vue&type=template&id=b2c4292a&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es7.array.includes.js
-var es7_array_includes = __webpack_require__(52);
+var es7_array_includes = __webpack_require__(53);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.string.includes.js
-var es6_string_includes = __webpack_require__(53);
+var es6_string_includes = __webpack_require__(54);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.match.js
 var es6_regexp_match = __webpack_require__(90);
@@ -121,10 +121,10 @@ var slicedToArray = __webpack_require__(15);
 var es6_array_from = __webpack_require__(124);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.to-string.js
-var es6_regexp_to_string = __webpack_require__(55);
+var es6_regexp_to_string = __webpack_require__(56);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.date.to-string.js
-var es6_date_to_string = __webpack_require__(56);
+var es6_date_to_string = __webpack_require__(57);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
 var web_dom_iterable = __webpack_require__(13);
@@ -133,19 +133,19 @@ var web_dom_iterable = __webpack_require__(13);
 var es6_object_to_string = __webpack_require__(7);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.string.iterator.js
-var es6_string_iterator = __webpack_require__(57);
+var es6_string_iterator = __webpack_require__(58);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.set.js
-var es6_set = __webpack_require__(208);
+var es6_set = __webpack_require__(212);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.split.js
-var es6_regexp_split = __webpack_require__(54);
+var es6_regexp_split = __webpack_require__(55);
 
 // EXTERNAL MODULE: ./node_modules/regenerator-runtime/runtime.js
-var runtime = __webpack_require__(58);
+var runtime = __webpack_require__(59);
 
 // EXTERNAL MODULE: ./components/DocsMenu.vue + 4 modules
-var DocsMenu = __webpack_require__(207);
+var DocsMenu = __webpack_require__(210);
 
 // CONCATENATED MODULE: ./node_modules/babel-loader/lib??ref--2-0!./node_modules/vuetify-loader/lib/loader.js??ref--16-0!./node_modules/vue-loader/lib??vue-loader-options!./pages/docs/_slug.vue?vue&type=script&lang=js&
 
@@ -195,11 +195,11 @@ var DocsMenu = __webpack_require__(207);
 //
 
 
-var fetch = __webpack_require__(218);
+var fetch = __webpack_require__(222);
 
-var fm = __webpack_require__(219);
+var fm = __webpack_require__(223);
 
-var MarkdownIt = __webpack_require__(309),
+var MarkdownIt = __webpack_require__(313),
     md = new MarkdownIt();
 
 /* harmony default export */ var _slugvue_type_script_lang_js_ = ({
@@ -359,35 +359,35 @@ var MarkdownIt = __webpack_require__(309),
 var componentNormalizer = __webpack_require__(38);
 
 // EXTERNAL MODULE: ./node_modules/vuetify-loader/lib/runtime/installComponents.js
-var installComponents = __webpack_require__(188);
+var installComponents = __webpack_require__(189);
 var installComponents_default = /*#__PURE__*/__webpack_require__.n(installComponents);
 
 // EXTERNAL MODULE: ./node_modules/vuetify/lib/components/VApp/VApp.js
-var VApp = __webpack_require__(374);
+var VApp = __webpack_require__(378);
 
 // EXTERNAL MODULE: ./node_modules/vuetify/lib/components/VAppBar/VAppBar.js + 2 modules
-var VAppBar = __webpack_require__(383);
+var VAppBar = __webpack_require__(388);
 
 // EXTERNAL MODULE: ./node_modules/vuetify/lib/components/VAppBar/VAppBarNavIcon.js + 4 modules
-var VAppBarNavIcon = __webpack_require__(381);
+var VAppBarNavIcon = __webpack_require__(387);
 
 // EXTERNAL MODULE: ./node_modules/vuetify/lib/components/VGrid/VContainer.js + 1 modules
-var VContainer = __webpack_require__(384);
+var VContainer = __webpack_require__(389);
 
 // EXTERNAL MODULE: ./node_modules/vuetify/lib/components/VContent/VContent.js
-var VContent = __webpack_require__(375);
+var VContent = __webpack_require__(379);
 
 // EXTERNAL MODULE: ./node_modules/vuetify/lib/components/VFooter/VFooter.js
-var VFooter = __webpack_require__(376);
+var VFooter = __webpack_require__(380);
 
 // EXTERNAL MODULE: ./node_modules/vuetify/lib/components/VNavigationDrawer/VNavigationDrawer.js + 11 modules
-var VNavigationDrawer = __webpack_require__(378);
+var VNavigationDrawer = __webpack_require__(382);
 
 // EXTERNAL MODULE: ./node_modules/vuetify/lib/components/VGrid/VRow.js
-var VRow = __webpack_require__(377);
+var VRow = __webpack_require__(381);
 
 // EXTERNAL MODULE: ./node_modules/vuetify/lib/components/VToolbar/index.js
-var VToolbar = __webpack_require__(223);
+var VToolbar = __webpack_require__(227);
 
 // CONCATENATED MODULE: ./pages/docs/_slug.vue
 
