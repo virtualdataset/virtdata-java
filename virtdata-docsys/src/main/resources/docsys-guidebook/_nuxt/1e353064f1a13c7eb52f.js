@@ -1841,15 +1841,19 @@ if (true) {
 
 
 var router_2f902b08 = function _2f902b08() {
-  return Object(utils["j" /* interopDefault */])(Promise.all(/* import() | pages/docs/index */[__webpack_require__.e(0), __webpack_require__.e(4)]).then(__webpack_require__.bind(null, 380)));
+  return Object(utils["j" /* interopDefault */])(Promise.all(/* import() | pages/docs/index */[__webpack_require__.e(0), __webpack_require__.e(5)]).then(__webpack_require__.bind(null, 383)));
 };
 
 var router_32fd6d98 = function _32fd6d98() {
-  return Object(utils["j" /* interopDefault */])(Promise.all(/* import() | pages/docs/_slug */[__webpack_require__.e(0), __webpack_require__.e(8), __webpack_require__.e(3)]).then(__webpack_require__.bind(null, 382)));
+  return Object(utils["j" /* interopDefault */])(Promise.all(/* import() | pages/docs/_slug */[__webpack_require__.e(0), __webpack_require__.e(9), __webpack_require__.e(4)]).then(__webpack_require__.bind(null, 386)));
 };
 
 var router_eee88878 = function _eee88878() {
-  return Object(utils["j" /* interopDefault */])(__webpack_require__.e(/* import() | pages/index */ 5).then(__webpack_require__.bind(null, 379)));
+  return Object(utils["j" /* interopDefault */])(__webpack_require__.e(/* import() | pages/index */ 6).then(__webpack_require__.bind(null, 384)));
+};
+
+var router_90927c5e = function _90927c5e() {
+  return Object(utils["j" /* interopDefault */])(__webpack_require__.e(/* import() | pages/_ */ 3).then(__webpack_require__.bind(null, 385)));
 };
 
 vue_runtime_esm["a" /* default */].use(vue_router_esm["a" /* default */]);
@@ -1871,6 +1875,10 @@ var routerOptions = {
     path: "/",
     component: router_eee88878,
     name: "index"
+  }, {
+    path: "/*",
+    component: router_90927c5e,
+    name: "all"
   }],
   fallback: false
 };
@@ -3090,4 +3098,4 @@ var middleware = {};
 
 /***/ })
 
-},[[128,6,2,7]]]);
+},[[128,7,2,8]]]);
