@@ -106,10 +106,10 @@ var staticRenderFns = []
 // CONCATENATED MODULE: ./pages/docs/_slug.vue?vue&type=template&id=b2c4292a&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es7.array.includes.js
-var es7_array_includes = __webpack_require__(53);
+var es7_array_includes = __webpack_require__(52);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.string.includes.js
-var es6_string_includes = __webpack_require__(54);
+var es6_string_includes = __webpack_require__(53);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.match.js
 var es6_regexp_match = __webpack_require__(90);
@@ -121,10 +121,10 @@ var slicedToArray = __webpack_require__(15);
 var es6_array_from = __webpack_require__(124);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.to-string.js
-var es6_regexp_to_string = __webpack_require__(56);
+var es6_regexp_to_string = __webpack_require__(55);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.date.to-string.js
-var es6_date_to_string = __webpack_require__(57);
+var es6_date_to_string = __webpack_require__(56);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
 var web_dom_iterable = __webpack_require__(13);
@@ -133,16 +133,16 @@ var web_dom_iterable = __webpack_require__(13);
 var es6_object_to_string = __webpack_require__(7);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.string.iterator.js
-var es6_string_iterator = __webpack_require__(58);
+var es6_string_iterator = __webpack_require__(57);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.set.js
 var es6_set = __webpack_require__(212);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.split.js
-var es6_regexp_split = __webpack_require__(55);
+var es6_regexp_split = __webpack_require__(54);
 
 // EXTERNAL MODULE: ./node_modules/regenerator-runtime/runtime.js
-var runtime = __webpack_require__(59);
+var runtime = __webpack_require__(58);
 
 // EXTERNAL MODULE: ./components/DocsMenu.vue + 4 modules
 var DocsMenu = __webpack_require__(210);

@@ -11,6 +11,7 @@ import java.util.function.LongUnaryOperator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SuppressWarnings("rawtypes")
 public class FunctionAssemblerTest {
 
     @Test

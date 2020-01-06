@@ -1,17 +1,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <artifactId>virtdata-defaults</artifactId>
+        <groupId>io.virtdata</groupId>
+        <version>2.11.48-SNAPSHOT</version>
+        <relativePath>../virtdata-defaults</relativePath>
+    </parent>
+
     <artifactId>virtdata-docsys</artifactId>
     <packaging>jar</packaging>
     <name>virtdata-docsys</name>
     <url>http://docs.virtdata.io/</url>
 
-    <parent>
-        <artifactId>virtdata-defaults</artifactId>
-        <groupId>io.virtdata</groupId>
-        <version>2.11.46-SNAPSHOT</version>
-        <relativePath>../virtdata-defaults</relativePath>
-    </parent>
 
 
     <properties>
@@ -25,6 +26,25 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>io.virtdata</groupId>
+            <artifactId>virtdata-api</artifactId>
+            <version>2.11.48-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>io.virtdata</groupId>-->
+<!--            <artifactId>virtdata-processors</artifactId>-->
+<!--            <version>2.11.46-SNAPSHOT</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>io.virtdata</groupId>-->
+<!--            <artifactId>virtdata-annotations</artifactId>-->
+<!--            <version>2.11.46-SNAPSHOT</version>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
+
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
@@ -146,23 +166,6 @@
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>
             <version>1.1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>io.virtdata</groupId>
-            <artifactId>virtdata-processors</artifactId>
-            <version>2.11.46-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>io.virtdata</groupId>
-            <artifactId>virtdata-annotations</artifactId>
-            <version>2.11.46-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.virtdata</groupId>
-            <artifactId>virtdata-api</artifactId>
-            <version>2.11.46-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 
