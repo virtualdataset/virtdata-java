@@ -5,14 +5,14 @@ import io.virtdata.docsys.api.*;
 import java.util.ServiceLoader;
 
 /**
- * The standard way to load and use all of the {@link DocsPath}
+ * The standard way to load and use all of the {@link DocNameSpaceImpl}
  * instances which are present in the runtime via SPI.
  *
  * This implementation ensures that names space collisions are known.
  */
 public class DocsysPathLoader {
 
-    public static DocsInfo loadStaticPaths() {
+    public static DocNameSpacesBinder loadStaticPaths() {
         ServiceLoader<DocsysStaticManifest> loader = ServiceLoader.load(DocsysStaticManifest.class);
         Docs docs = new Docs();
         for (DocsysStaticManifest docPathInfos : loader) {
@@ -21,7 +21,7 @@ public class DocsysPathLoader {
         return docs;
     }
 
-    public static DocsInfo loadDynamicPaths() {
+    public static DocNameSpacesBinder loadDynamicPaths() {
         ServiceLoader<DocsysDynamicManifest> loader = ServiceLoader.load(DocsysDynamicManifest.class);
         Docs docs = new Docs();
         for (DocsysDynamicManifest docPathInfos : loader) {

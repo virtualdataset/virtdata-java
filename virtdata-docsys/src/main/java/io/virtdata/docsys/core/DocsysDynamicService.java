@@ -3,9 +3,9 @@ package io.virtdata.docsys.core;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.jaxrs.annotation.JacksonFeatures;
 import io.virtdata.annotations.Service;
-import io.virtdata.docsys.api.DocPathInfo;
+import io.virtdata.docsys.api.DocNameSpace;
 import io.virtdata.docsys.api.Docs;
-import io.virtdata.docsys.api.DocsInfo;
+import io.virtdata.docsys.api.DocNameSpacesBinder;
 import io.virtdata.docsys.api.WebServiceObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,9 +26,9 @@ import java.util.concurrent.atomic.AtomicLong;
 public class DocsysDynamicService implements WebServiceObject {
     private final static Logger logger = LoggerFactory.getLogger(DocsysDynamicService.class);
 
-    private DocsInfo docsinfo;
-    private DocsInfo enabled;
-    private DocsInfo disabled;
+    private DocNameSpacesBinder docsinfo;
+    private DocNameSpacesBinder enabled;
+    private DocNameSpacesBinder disabled;
 
     private AtomicLong version = new AtomicLong(System.nanoTime());
     private final Set<String> enables = new HashSet<>();
@@ -189,7 +189,7 @@ public class DocsysDynamicService implements WebServiceObject {
             toEnable.addAll(this.enables);
         }
 
-        for (DocPathInfo nsinfo : docsinfo) {
+        for (DocNameSpace nsinfo : docsinfo) {
             // add namespaces which are neither enabled nor disabled to the default group
             if (nsinfo.isEnabledByDefault()) {
                 if (disabled!=null && disabled.getPathMap().containsKey(nsinfo.getNameSpace())) {

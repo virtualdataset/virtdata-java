@@ -3,24 +3,24 @@ package io.virtdata.docsys.api;
 import java.nio.file.Path;
 import java.util.*;
 
-public class DocsPath implements DocPathInfo {
+public class DocNameSpaceImpl implements DocNameSpace {
 
     private final Set<Path> paths = new HashSet<>();
     private String namespace;
     private boolean enabledByDefault = false;
 
-    public DocsPath() {}
+    public DocNameSpaceImpl() {}
 
-    public static DocsPath of(String descriptiveName, Path path) {
-        return new DocsPath().setNameSpace(descriptiveName).addPath(path);
+    public static DocNameSpaceImpl of(String descriptiveName, Path path) {
+        return new DocNameSpaceImpl().setNameSpace(descriptiveName).addPath(path);
     }
 
-    private DocsPath setNameSpace(String namespace) {
+    private DocNameSpaceImpl setNameSpace(String namespace) {
         this.namespace = namespace;
         return this;
     }
 
-    public DocsPath(String name) {
+    public DocNameSpaceImpl(String name) {
         this.namespace = name;
     }
 
@@ -46,12 +46,12 @@ public class DocsPath implements DocPathInfo {
                 '}';
     }
 
-    public DocsPath addPath(Path path) {
+    public DocNameSpaceImpl addPath(Path path) {
         this.paths.add(path);
         return this;
     }
 
-    public DocsPath enabledByDefault() {
+    public DocNameSpaceImpl enabledByDefault() {
         this.enabledByDefault=true;
         return this;
     }
@@ -61,7 +61,7 @@ public class DocsPath implements DocPathInfo {
         return this.paths.iterator();
     }
 
-    public DocsPath setEnabledByDefault(boolean enabledByDefault) {
+    public DocNameSpaceImpl setEnabledByDefault(boolean enabledByDefault) {
         this.enabledByDefault=enabledByDefault;
         return this;
     }
