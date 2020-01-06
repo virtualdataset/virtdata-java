@@ -17,5 +17,4 @@ public class VirtDataDocsIntegratedTest {
     public void testGetAllDocs() {
         List<DocFuncData> allDocs = VirtDataDocs.getAllDocs();
     }
-
 }

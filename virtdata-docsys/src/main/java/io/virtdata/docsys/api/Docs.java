@@ -7,9 +7,9 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Docs implements DocNameSpacesBinder {
+public class Docs implements DocsInfo {
 
-    private LinkedList<DocNameSpaceImpl> namespaces = new LinkedList<>();
+    private LinkedList<DocsPath> namespaces = new LinkedList<>();
 
     public Docs() {
     }
@@ -45,13 +45,13 @@ public class Docs implements DocNameSpacesBinder {
 
 
     private Docs addNamespace(String namespace) {
-        namespaces.add(new DocNameSpaceImpl(namespace));
+        namespaces.add(new DocsPath(namespace));
         return this;
     }
 
     @Override
-    public DocNameSpacesBinder merge(DocNameSpacesBinder other) {
-        for (DocNameSpaceImpl namespace : other.getNamespaces()) {
+    public DocsInfo merge(DocsInfo other) {
+        for (DocsPath namespace : other.getNamespaces()) {
             this.namespace(namespace.getNameSpace());
             for (Path path : namespace.getPaths()) {
                 addPath(path);
@@ -61,10 +61,8 @@ public class Docs implements DocNameSpacesBinder {
     }
 
     @Override
-    public DocNameSpacesBinder merge(DocNameSpace pathInfo) {
+    public DocsInfo merge(DocPathInfo pathInfo) {
         this.namespace(pathInfo.getNameSpace());
-        this.namespaces.peekLast().setEnabledByDefault(pathInfo.isEnabledByDefault());
-
         for (Path path : pathInfo) {
             this.addPath(path);
         }
@@ -74,7 +72,7 @@ public class Docs implements DocNameSpacesBinder {
     @Override
     public List<Path> getPaths() {
         List<Path> paths = new ArrayList<>();
-        for (DocNameSpaceImpl ns : this.namespaces) {
+        for (DocsPath ns : this.namespaces) {
             paths.addAll(ns.getPaths());
         }
         return paths;
@@ -83,26 +81,26 @@ public class Docs implements DocNameSpacesBinder {
     @Override
     public Map<String, Set<Path>> getPathMap() {
         Map<String, Set<Path>> pm = new HashMap();
-        for (DocNameSpaceImpl ns : this.namespaces) {
+        for (DocsPath ns : this.namespaces) {
             pm.put(ns.getNameSpace(), new HashSet<>(ns.getPaths()));
         }
         return pm;
     }
 
     @Override
-    public List<DocNameSpaceImpl> getNamespaces() {
+    public List<DocsPath> getNamespaces() {
         return this.namespaces;
     }
 
     @Override
-    public Iterator<DocNameSpace> iterator() {
-        List<DocNameSpace> pathinfos = new ArrayList<>(this.namespaces);
+    public Iterator<DocPathInfo> iterator() {
+        List<DocPathInfo> pathinfos = new ArrayList<>(this.namespaces);
         return pathinfos.iterator();
     }
 
     public Map<String, Set<Path>> getPathMaps() {
         Map<String, Set<Path>> maps = new HashMap<>();
-        for (DocNameSpaceImpl namespace : namespaces) {
+        for (DocsPath namespace : namespaces) {
             Set<Path> paths = new HashSet<>();
             namespace.forEach(paths::add);
             maps.put(namespace.getNameSpace(), paths);
@@ -111,20 +109,16 @@ public class Docs implements DocNameSpacesBinder {
         return maps;
     }
 
-    public DocNameSpacesBinder asDocsInfo() {
+    public DocsInfo asDocsInfo() {
         return this;
     }
 
-    public DocNameSpace getLastNameSpace() {
-        return this.namespaces.peekLast();
-    }
-
     @Override
-    public DocNameSpacesBinder remove(Set<String> namespaces) {
+    public DocsInfo remove(Set<String> namespaces) {
         Docs removed = new Docs();
-        ListIterator<DocNameSpaceImpl> iter = this.namespaces.listIterator();
+        ListIterator<DocsPath> iter = this.namespaces.listIterator();
         while (iter.hasNext()) {
-            DocNameSpaceImpl next = iter.next();
+            DocsPath next = iter.next();
             if (namespaces.contains(next.getNameSpace())) {
                 iter.previous();
                 iter.remove();

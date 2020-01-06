@@ -47,7 +47,6 @@ public class VirtDataFunctions {
      * @param <F>      The type of function object needed.
      * @return An instance of F
      */
-    @SuppressWarnings("unchecked")
     public static <F> F adapt(Object func, Class<F> type, Class<?> output, boolean truncate) {
         FuncType funcType = FuncType.valueOf(type);
         switch (funcType) {

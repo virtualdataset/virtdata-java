@@ -26,9 +26,9 @@ import java.util.Set;
  * }
  * }</pre>
  *
- * Internally, The namespace entries are represented by {@link DocNameSpace} types.
+ * Internally, The namespace entries are represented by {@link DocPathInfo} types.
  */
-public interface DocNameSpacesBinder extends Iterable<DocNameSpace> {
+public interface DocsInfo extends Iterable<DocPathInfo> {
 
     /**
      * The result of merging two DocsInfo elements together
@@ -39,7 +39,7 @@ public interface DocNameSpacesBinder extends Iterable<DocNameSpace> {
      * @param other The DocsInfo containing namespaces to overlay into this DocsInfo
      * @return
      */
-    DocNameSpacesBinder merge(DocNameSpacesBinder other);
+    DocsInfo merge(DocsInfo other);
 
     /**
      * The result of merging a DocPathInfo entry into a DocsInfo element
@@ -49,7 +49,7 @@ public interface DocNameSpacesBinder extends Iterable<DocNameSpace> {
      * @param other The namespace entry to overlay into this DocsInfo
      * @return
      */
-    DocNameSpacesBinder merge(DocNameSpace other);
+    DocsInfo merge(DocPathInfo other);
 
     /**
      * The result of removing a set of namespaces from a DocsInfo element
@@ -63,7 +63,7 @@ public interface DocNameSpacesBinder extends Iterable<DocNameSpace> {
      *                  be present.
      * @return A new DocsInfo object representing what was actually removed.
      */
-    DocNameSpacesBinder remove(Set<String> namespaces);
+    DocsInfo remove(Set<String> namespaces);
 
     /**
      * @return All paths in all namespaces are returned, in no guaranteed order.
@@ -75,5 +75,5 @@ public interface DocNameSpacesBinder extends Iterable<DocNameSpace> {
      */
     Map<String, Set<Path>> getPathMap();
 
-    List<DocNameSpaceImpl> getNamespaces();
+    List<DocsPath> getNamespaces();
 }

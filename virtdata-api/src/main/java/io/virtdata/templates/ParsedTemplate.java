@@ -343,10 +343,11 @@ public class ParsedTemplate {
     /**
      * Return the parsed template in (<em>literal, variable, ..., ..., literal</em>) form.
      *
-     * @return A list of spans
+     * @return
      */
     public String[] getSpans() {
         return spans;
     }
+
 
 }

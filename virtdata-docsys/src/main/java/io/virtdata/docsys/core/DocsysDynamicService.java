@@ -1,11 +1,9 @@
 package io.virtdata.docsys.core;
 
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.jaxrs.annotation.JacksonFeatures;
 import io.virtdata.annotations.Service;
-import io.virtdata.docsys.api.DocNameSpace;
+import io.virtdata.docsys.api.DocPathInfo;
 import io.virtdata.docsys.api.Docs;
-import io.virtdata.docsys.api.DocNameSpacesBinder;
+import io.virtdata.docsys.api.DocsInfo;
 import io.virtdata.docsys.api.WebServiceObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,9 +24,9 @@ import java.util.concurrent.atomic.AtomicLong;
 public class DocsysDynamicService implements WebServiceObject {
     private final static Logger logger = LoggerFactory.getLogger(DocsysDynamicService.class);
 
-    private DocNameSpacesBinder docsinfo;
-    private DocNameSpacesBinder enabled;
-    private DocNameSpacesBinder disabled;
+    private DocsInfo docsinfo;
+    private DocsInfo enabled;
+    private DocsInfo disabled;
 
     private AtomicLong version = new AtomicLong(System.nanoTime());
     private final Set<String> enables = new HashSet<>();
@@ -44,21 +42,20 @@ public class DocsysDynamicService implements WebServiceObject {
      * If no enable= parameter is provided, then this call simply provides a map of
      * namespaces which are enabled and disabled.
      *
-     * @param enableParam A set of namespaces to enable, or no provided value to enable all namespaces
+     * @param enable A set of namespaces to enable, or no provided value to enable all namespaces
      * @return A view of the namespaces known to this service
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("namespaces")
-    @JacksonFeatures(serializationEnable =  { SerializationFeature.INDENT_OUTPUT })
     public Map<String, Map<String, Set<java.nio.file.Path>>> getNamespaces(
-            @QueryParam("enable") String enableParam,
+            @QueryParam("enable") String enable,
             @QueryParam("reload") boolean reload
     ) {
 
-        if (enableParam!=null && !enableParam.isEmpty()) {
+        if (enable!=null && !enable.isEmpty()) {
             enables.clear();
-            enables.addAll(List.of(enableParam.split("[, ;]")));
+            enables.addAll(List.of(enable.split("[, ;]")));
         }
 
         init(reload);
@@ -91,7 +88,7 @@ public class DocsysDynamicService implements WebServiceObject {
     }
 
     /**
-     * @return Provide a list of all files from all enabled namespaces
+     * @return Provide a lit of all files from all enabled namespaces
      * where the file path ends with '.md'
      */
     @GET
@@ -189,7 +186,7 @@ public class DocsysDynamicService implements WebServiceObject {
             toEnable.addAll(this.enables);
         }
 
-        for (DocNameSpace nsinfo : docsinfo) {
+        for (DocPathInfo nsinfo : docsinfo) {
             // add namespaces which are neither enabled nor disabled to the default group
             if (nsinfo.isEnabledByDefault()) {
                 if (disabled!=null && disabled.getPathMap().containsKey(nsinfo.getNameSpace())) {

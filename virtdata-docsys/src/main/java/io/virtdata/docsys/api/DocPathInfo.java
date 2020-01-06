@@ -22,7 +22,7 @@ import java.util.List;
  * of detailed docs to a single known namespace.
  *
  */
-public interface DocNameSpace extends Iterable<Path> {
+public interface DocPathInfo extends Iterable<Path> {
 
     /**
      * A simple name which can be used to nest the enclosed path within a larger

@@ -5,5 +5,5 @@ package io.virtdata.docsys.api;
  * paths to be hosted as static content.
  */
 public interface DocsysStaticManifest {
-    DocNameSpacesBinder getDocs();
+    DocsInfo getDocs();
 }
