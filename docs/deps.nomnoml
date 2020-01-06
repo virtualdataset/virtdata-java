@@ -1,0 +1,34 @@
+#direction: right
+#zoom: 1
+#spacing: 20
+#ranker: longest-path
+#padding: 20
+[virtdata-userlibs]
+[virtdata-userlibs] -> [virtdata-realdata]
+[virtdata-userlibs] -> [virtdata-lib-realer]
+[virtdata-userlibs] -> [virtdata-lib-random]
+[virtdata-userlibs] -> [virtdata-lib-basics]
+[virtdata-userlibs] -> [virtdata-lib-curves4]
+[virtdata-userlibs] -> [virtdata-docsys]
+//[virtdata-userlibs] -> [virtdata-api]
+
+[ALL] -> [virtdata-api]
+[virtdata-processors]
+//[virtdata-realdata] -> [virtdata-api]
+[virtdata-processors] -> [virtdata-annotations]
+[virtdata-lib-realer] -> [virtdata-lib-basics]
+//[virtdata-lib-random] -> [virtdata-api]
+//[virtdata-lib-curves4] -> [virtdata-api]
+//[virtdata-lib-basics] -> [virtdata-api]
+[virtdata-lang]
+
+//[virtdata-docsys] -> [virtdata-processors]
+//[virtdata-docsys] -> [virtdata-annotations]
+//[virtdata-docsys] -> [virtdata-api]
+
+[virtdata-api] -> [virtdata-processors]
+[virtdata-api] -> [virtdata-annotations]
+[virtdata-api] -> [virtdata-lang]
+
+
+

@@ -1,9 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>virtdata-lib-basics</artifactId>
-    <packaging>jar</packaging>
-
     <parent>
         <artifactId>virtdata-defaults</artifactId>
         <groupId>io.virtdata</groupId>
@@ -12,11 +9,19 @@
     </parent>
 
 
+
+    <artifactId>virtdata-lib-basics</artifactId>
+    <packaging>jar</packaging>
     <name>virtdata-lib-basics</name>
     <url>http://virtdata.io/</url>
 
     <dependencies>
 
+        <dependency>
+            <groupId>io.virtdata</groupId>
+            <artifactId>virtdata-api</artifactId>
+            <version>2.11.46-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
@@ -31,11 +36,6 @@
             <groupId>org.mvel</groupId>
             <artifactId>mvel2</artifactId>
             <version>2.4.3.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>io.virtdata</groupId>
-            <artifactId>virtdata-api</artifactId>
-            <version>2.11.46-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

@@ -1,5 +1,7 @@
 package io.virtdata.docsys.core;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.jaxrs.annotation.JacksonFeatures;
 import io.virtdata.annotations.Service;
 import io.virtdata.docsys.api.DocPathInfo;
 import io.virtdata.docsys.api.Docs;
@@ -42,20 +44,21 @@ public class DocsysDynamicService implements WebServiceObject {
      * If no enable= parameter is provided, then this call simply provides a map of
      * namespaces which are enabled and disabled.
      *
-     * @param enable A set of namespaces to enable, or no provided value to enable all namespaces
+     * @param enableParam A set of namespaces to enable, or no provided value to enable all namespaces
      * @return A view of the namespaces known to this service
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("namespaces")
+    @JacksonFeatures(serializationEnable =  { SerializationFeature.INDENT_OUTPUT })
     public Map<String, Map<String, Set<java.nio.file.Path>>> getNamespaces(
-            @QueryParam("enable") String enable,
+            @QueryParam("enable") String enableParam,
             @QueryParam("reload") boolean reload
     ) {
 
-        if (enable!=null && !enable.isEmpty()) {
+        if (enableParam!=null && !enableParam.isEmpty()) {
             enables.clear();
-            enables.addAll(List.of(enable.split("[, ;]")));
+            enables.addAll(List.of(enableParam.split("[, ;]")));
         }
 
         init(reload);
@@ -88,7 +91,7 @@ public class DocsysDynamicService implements WebServiceObject {
     }
 
     /**
-     * @return Provide a lit of all files from all enabled namespaces
+     * @return Provide a list of all files from all enabled namespaces
      * where the file path ends with '.md'
      */
     @GET
