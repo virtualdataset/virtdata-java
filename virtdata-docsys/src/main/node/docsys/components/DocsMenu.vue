@@ -1,7 +1,7 @@
 <template>
   <div class="menu">
     <v-list dense>
-      <v-list-group link v-for="category in categories" :key="category" value="true">
+      <v-list-group link v-for="category in categories" :key="category">
         <template v-slot:activator>
           <v-list-item-content>
             <v-list-item-title class="text-capitalize">{{category.category}}</v-list-item-title>
