@@ -285,7 +285,7 @@ public class VirtDataResources {
             fileSystem = FileSystems.getFileSystem(uri);
         } catch (FileSystemNotFoundException ignored) {
             try {
-                fileSystem = FileSystems.newFileSystem(uri, Collections.EMPTY_MAP);
+                fileSystem = FileSystems.newFileSystem(uri, new HashMap<>());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
