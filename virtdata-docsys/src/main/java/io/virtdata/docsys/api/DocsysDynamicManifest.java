@@ -7,5 +7,5 @@ import io.virtdata.docsys.core.DocsysDynamicService;
  * paths to be shared via the {@link DocsysDynamicService}.
  */
 public interface DocsysDynamicManifest {
-    DocsInfo getDocs();
+    DocsBinder getDocs();
 }

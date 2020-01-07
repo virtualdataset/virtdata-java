@@ -7,9 +7,9 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Docs implements DocsInfo {
+public class Docs implements DocsBinder {
 
-    private LinkedList<DocsPath> namespaces = new LinkedList<>();
+    private LinkedList<DocsNameSpaceImpl> namespaces = new LinkedList<>();
 
     public Docs() {
     }
@@ -44,15 +44,16 @@ public class Docs implements DocsInfo {
 
 
 
-    private Docs addNamespace(String namespace) {
-        namespaces.add(new DocsPath(namespace));
+    private Docs addNamespace(String name) {
+        namespaces.add(new DocsNameSpaceImpl(name));
         return this;
     }
 
     @Override
-    public DocsInfo merge(DocsInfo other) {
-        for (DocsPath namespace : other.getNamespaces()) {
-            this.namespace(namespace.getNameSpace());
+    public DocsBinder merge(DocsBinder other) {
+        for (DocsNameSpace namespace : other.getNamespaces()) {
+            this.namespace(namespace.getName());
+            setEnabledByDefault(namespace.isEnabledByDefault());
             for (Path path : namespace.getPaths()) {
                 addPath(path);
             }
@@ -61,9 +62,10 @@ public class Docs implements DocsInfo {
     }
 
     @Override
-    public DocsInfo merge(DocPathInfo pathInfo) {
-        this.namespace(pathInfo.getNameSpace());
-        for (Path path : pathInfo) {
+    public DocsBinder merge(DocsNameSpace namespace) {
+        this.namespace(namespace.getName());
+        setEnabledByDefault(namespace.isEnabledByDefault());
+        for (Path path : namespace) {
             this.addPath(path);
         }
         return this.asDocsInfo();
@@ -72,7 +74,7 @@ public class Docs implements DocsInfo {
     @Override
     public List<Path> getPaths() {
         List<Path> paths = new ArrayList<>();
-        for (DocsPath ns : this.namespaces) {
+        for (DocsNameSpaceImpl ns : this.namespaces) {
             paths.addAll(ns.getPaths());
         }
         return paths;
@@ -81,45 +83,45 @@ public class Docs implements DocsInfo {
     @Override
     public Map<String, Set<Path>> getPathMap() {
         Map<String, Set<Path>> pm = new HashMap();
-        for (DocsPath ns : this.namespaces) {
-            pm.put(ns.getNameSpace(), new HashSet<>(ns.getPaths()));
+        for (DocsNameSpaceImpl ns : this.namespaces) {
+            pm.put(ns.getName(), new HashSet<>(ns.getPaths()));
         }
         return pm;
     }
 
     @Override
-    public List<DocsPath> getNamespaces() {
-        return this.namespaces;
+    public List<DocsNameSpace> getNamespaces() {
+        return new LinkedList<>(this.namespaces);
     }
 
     @Override
-    public Iterator<DocPathInfo> iterator() {
-        List<DocPathInfo> pathinfos = new ArrayList<>(this.namespaces);
+    public Iterator<DocsNameSpace> iterator() {
+        List<DocsNameSpace> pathinfos = new ArrayList<>(this.namespaces);
         return pathinfos.iterator();
     }
 
     public Map<String, Set<Path>> getPathMaps() {
         Map<String, Set<Path>> maps = new HashMap<>();
-        for (DocsPath namespace : namespaces) {
+        for (DocsNameSpaceImpl namespace : namespaces) {
             Set<Path> paths = new HashSet<>();
             namespace.forEach(paths::add);
-            maps.put(namespace.getNameSpace(), paths);
+            maps.put(namespace.getName(), paths);
         }
 
         return maps;
     }
 
-    public DocsInfo asDocsInfo() {
+    public DocsBinder asDocsInfo() {
         return this;
     }
 
     @Override
-    public DocsInfo remove(Set<String> namespaces) {
+    public DocsBinder remove(Set<String> namespaces) {
         Docs removed = new Docs();
-        ListIterator<DocsPath> iter = this.namespaces.listIterator();
+        ListIterator<DocsNameSpaceImpl> iter = this.namespaces.listIterator();
         while (iter.hasNext()) {
-            DocsPath next = iter.next();
-            if (namespaces.contains(next.getNameSpace())) {
+            DocsNameSpaceImpl next = iter.next();
+            if (namespaces.contains(next.getName())) {
                 iter.previous();
                 iter.remove();
                 removed.merge(next);
