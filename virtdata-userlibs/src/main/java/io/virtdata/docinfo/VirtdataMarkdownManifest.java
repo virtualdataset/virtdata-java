@@ -13,7 +13,7 @@ public class VirtdataMarkdownManifest implements DocsysDynamicManifest {
                 "virtdata-userlibs/src/main/resources/docs-for-virtdata/",
                 "docs-for-virtdata/")
                 .setEnabledByDefault(false)
-                .asDocsInfo();
+                .asDocsBinder();
     }
 
 }

@@ -7,6 +7,12 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * The Docs class is a utility class that makes it easy to enumerate docs for a component.
+ * The primary info type which is used by the doc system is the DocsBinder.
+ * A DocsBinder contains zero or more {@link DocsNameSpace}. A DocsNameSpace has a name,
+ * a set of paths, and a flag that sets it enabled or disabled by default.
+ */
 public class Docs implements DocsBinder {
 
     private LinkedList<DocsNameSpaceImpl> namespaces = new LinkedList<>();
@@ -58,7 +64,7 @@ public class Docs implements DocsBinder {
                 addPath(path);
             }
         }
-        return this.asDocsInfo();
+        return this.asDocsBinder();
     }
 
     @Override
@@ -68,7 +74,7 @@ public class Docs implements DocsBinder {
         for (Path path : namespace) {
             this.addPath(path);
         }
-        return this.asDocsInfo();
+        return this.asDocsBinder();
     }
 
     @Override
@@ -111,7 +117,7 @@ public class Docs implements DocsBinder {
         return maps;
     }
 
-    public DocsBinder asDocsInfo() {
+    public DocsBinder asDocsBinder() {
         return this;
     }
 

@@ -198,7 +198,7 @@ public class DocsysDynamicService implements WebServiceObject {
 
         if (enabled.isEmpty()) { // Nothing is enabled or enabled by default, so enable everything
             this.enabled = new Docs().merge(docsinfo);
-            this.disabled = new Docs().asDocsInfo();
+            this.disabled = new Docs().asDocsBinder();
         } else { // At least one thing was enabled by default, or previously enabled specifically
             this.disabled = new Docs().merge(docsinfo);
             this.enabled = disabled.remove(enabled);

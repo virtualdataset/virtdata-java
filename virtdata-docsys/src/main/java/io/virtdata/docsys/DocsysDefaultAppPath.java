@@ -13,6 +13,6 @@ public class DocsysDefaultAppPath implements DocsysStaticManifest {
                 "virtdata-docsys/src/main/resources/docsys-guidebook/",
                 "docsys-guidebook/")
                 .setEnabledByDefault(true)
-                .asDocsInfo();
+                .asDocsBinder();
     }
 }
