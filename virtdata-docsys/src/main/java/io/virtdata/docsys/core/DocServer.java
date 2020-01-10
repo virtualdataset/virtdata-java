@@ -9,8 +9,11 @@ import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.servlet.FilterHolder;
+import org.eclipse.jetty.servlet.FilterMapping;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.eclipse.jetty.util.resource.JarResource;
 import org.eclipse.jetty.util.resource.PathResource;
 import org.eclipse.jetty.util.resource.Resource;
@@ -21,16 +24,14 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.DispatcherType;
 import javax.servlet.ServletRegistration;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.AccessMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class DocServer implements Runnable {
@@ -157,7 +158,7 @@ public class DocServer implements Runnable {
             }
         }
 
-        if (basePaths.size()==0) {
+        if (basePaths.size() == 0) {
             Docs docs = new Docs();
             // Load static path contexts which are published within the runtime.
             docs.merge(DocsysPathLoader.loadStaticPaths());
@@ -182,7 +183,7 @@ public class DocServer implements Runnable {
 
             if (basePath.toUri().toString().startsWith("jar:")) {
                 try {
-                    baseResource=JarResource.newResource(basePath.toUri());
+                    baseResource = JarResource.newResource(basePath.toUri());
                 } catch (MalformedURLException e) {
                     throw new RuntimeException(e);
                 }
@@ -213,13 +214,30 @@ public class DocServer implements Runnable {
                 .stream()
                 .map(Class::getCanonicalName)
                 .collect(Collectors.joining(","));
-        rc.property(ServerProperties.PROVIDER_CLASSNAMES,classnames);
+        rc.property(ServerProperties.PROVIDER_CLASSNAMES, classnames);
 //        servlets.setInitParameter(ServerProperties.PROVIDER_CLASSNAMES,
 //                classnames
 //        );
         ServletContextHandler sch = new ServletContextHandler();
         sch.setContextPath("/*");
-        sch.addServlet(servlets,"/*");
+        sch.addServlet(servlets, "/*");
+
+        FilterHolder filter = new FilterHolder();
+        filter.setInitParameter("allowedOrigins", "*");
+        filter.setInitParameter("allowedMethods", "POST,GET,OPTIONS,PUT,DELETE,HEAD");
+        filter.setInitParameter("allowedHeaders", "X-PINGOTHER, Origin, X-Requested-With, Content-Type, Accept");
+        filter.setInitParameter("preflightMaxAge", "1800");
+        filter.setInitParameter("allowCredentials", "true");
+
+        CrossOriginFilter corsFilter = new CrossOriginFilter();
+        filter.setFilter(corsFilter);
+
+        FilterMapping filterMapping = new FilterMapping();
+        filterMapping.setDispatcherTypes(EnumSet.of(DispatcherType.REQUEST));
+        filterMapping.setPathSpec("/*");
+        filterMapping.setServletName("cross-origin");
+
+        sch.addFilter(filter,"/*", EnumSet.of(DispatcherType.REQUEST,DispatcherType.ASYNC));
 
         handlers.addHandler(sch);
 
@@ -230,6 +248,13 @@ public class DocServer implements Runnable {
 
         handlers.addHandler(defaultHandler);
 
+
+
+//        FilterMapping corsMapping = new FilterMapping();
+//        corsMapping.set
+//
+//        ServletHandler CorsHandler = new ServletHandler();
+//        CorsHandler.setH
 
         server.setHandler(handlers);
         for (Connector connector : server.getConnectors()) {
@@ -253,7 +278,7 @@ public class DocServer implements Runnable {
             logger.info("Started documentation server at http://" + bindHost + ":" + bindPort + "/");
             server.join();
         } catch (Exception e) {
-            logger.error(e.getMessage(),e);
+            logger.error(e.getMessage(), e);
             e.printStackTrace(System.out);
             System.exit(2);
         }
