@@ -30,7 +30,7 @@ public class DocServerApp {
     }
 
     public static void main(String[] args) {
-        if (args.length > 0 && args[0].equals("help")) {
+        if (args.length > 0 && args[0].contains("help")) {
             showHelp();
         } else {
             runServer(args);
@@ -60,12 +60,14 @@ public class DocServerApp {
         DocServer server = new DocServer();
         for (int i = 0; i < serverArgs.length; i++) {
             String arg = serverArgs[i];
-            if (arg.matches("http//.*")) {
+            if (arg.matches("http://.*")) {
                 server.withURL(arg);
             } else if (Files.exists(Path.of(arg))) {
                 server.addPaths(Path.of(arg));
             } else if (arg.matches("\\d+")) {
                 server.withPort(Integer.parseInt(arg));
+            } else if (arg.matches("--public")) {
+                server.withHost("0.0.0.0");
             }
         }
 //
