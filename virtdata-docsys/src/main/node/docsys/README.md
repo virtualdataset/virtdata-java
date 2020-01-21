@@ -1,6 +1,6 @@
 # eb-docs
 
-> docs for engineblock
+> guidebook for engineblock
 
 ## Build Setup
 

@@ -1,12 +1,14 @@
 <template>
+  <!-- https://github.com/Microsoft/vscode-recipes/tree/master/vuejs-cli -->
     <div class="container">
-        <recursive-menu/>
+<!--        <recursive-menu/>-->
         <div>
             <logo/>
             <h1 class="title">DS Bench</h1>
             <h2 class="subtitle">Simple and Powerful Benchmarking for Databases</h2>
             <div class="links">
-                <a href="/docs" target="_blank" class="button--purple">Documentation</a>
+                <nuxt-link to="/docs/" class="button--purple">Documentation</nuxt-link>
+                <a href="https://community.datastax.com/spaces/TBD/" class="button--purple">Community Site</a>
             </div>
         </div>
     </div>
@@ -25,7 +27,7 @@
 <style>
     .container {
         margin: 0 auto;
-        min-height: 100vh;
+        min-height: 60vh;
         display: flex;
         justify-content: center;
         align-items: center;

@@ -1,11 +1,12 @@
 {
-  "name": "guidebook",
+  "name": "eb-docs",
   "version": "1.0.0",
-  "description": "Docs App for EB Ecosystem",
-  "author": "Sebastian Estevez & Jonathan Shook",
+  "description": "docs for engineblock",
+  "author": "Sebastián Estévez",
   "private": true,
   "scripts": {
-    "dev": "nuxt",
+    "dev": "nuxt dev",
+    "dev-debug": "node --inspect node_modules/.bin/nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate"
@@ -13,9 +14,9 @@
   "dependencies": {
     "@nuxtjs/vuetify": "^1.9.0",
     "front-matter": "^3.0.2",
-    "markdown-it-smartarrows": "^1.0.1",
-    "markdown-it-vue": "^1.0.11",
+    "markdown-it": "^10.0.0",
     "node-fetch": "^2.6.0",
     "nuxt": "^2.11.0"
-  }
+  },
+  "devDependencies": {}
 }
