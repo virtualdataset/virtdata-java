@@ -60,7 +60,12 @@ public class DocServerApp {
         DocServer server = new DocServer();
         for (int i = 0; i < serverArgs.length; i++) {
             String arg = serverArgs[i];
-            if (arg.matches("http://.*")) {
+            if (arg.matches(".*://.*")) {
+                if (!arg.toLowerCase().contains("http://")) {
+                    String suggested = arg.toLowerCase().replaceAll("https","http");
+                    throw new RuntimeException("ERROR:\nIn this release, only 'http://' URLs are supported.\nTLS will be added in a future release.\nSee https://github.com/datastax/dsbench-labs/issues/29\n" +
+                            "Consider using " + suggested);
+                }
                 server.withURL(arg);
             } else if (Files.exists(Path.of(arg))) {
                 server.addPaths(Path.of(arg));

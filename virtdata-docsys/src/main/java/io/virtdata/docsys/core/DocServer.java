@@ -17,6 +17,7 @@ import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.eclipse.jetty.util.resource.JarResource;
 import org.eclipse.jetty.util.resource.PathResource;
 import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.server.model.ResourceMethod;
@@ -34,6 +35,9 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * For examples, see <a href="https://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/tree/examples/embedded/src/main/java/org/eclipse/jetty/embedded/">embedded examlpes</a>
+ */
 public class DocServer implements Runnable {
 
     private final static Logger logger = LoggerFactory.getLogger(DocServer.class);
@@ -62,6 +66,7 @@ public class DocServer implements Runnable {
             URL url = new URL(urlSpec);
             this.bindPort = url.getPort();
             this.bindHost = url.getHost();
+            this.bindScheme = url.getProtocol();
             if (url.getPath() != null && url.getPath().isEmpty()) {
                 throw new UnsupportedOperationException("You may not specify a path for the hosting URL.");
             }
@@ -264,18 +269,29 @@ public class DocServer implements Runnable {
             }
         }
         try {
-            ServerConnector sc = null;
+            List<Connector> connectors = new ArrayList<>();
+
             if (bindScheme.equals("http")) {
-                sc = new ServerConnector(server);
+                ServerConnector sc = new ServerConnector(server);
                 sc.setPort(bindPort);
                 sc.setHost(bindHost);
-                server.setConnectors(new Connector[]{sc});
+//                sc.setDefaultProtocol(bindScheme);
+                connectors.add(sc);
             } else if (bindScheme.equals("https")) {
-                throw new UnsupportedOperationException("TLS is not supported yet");
+                SslContextFactory.Server server1 = new SslContextFactory.Server();
+                ServerConnector sc = new ServerConnector(server,server1);
+                sc.setPort(bindPort);
+                sc.setHost(bindHost);
+//                sc.setDefaultProtocol(bindScheme);
+                connectors.add(sc);
             }
 
+            server.setConnectors(connectors.toArray(new Connector[0]));
+
             server.start();
-            logger.info("Started documentation server at http://" + bindHost + ":" + bindPort + "/");
+            logger.info("Started documentation server at "+ bindScheme + "://" + bindHost + ":" + bindPort + "/");
+            System.out.println("Started documentation server at "+ bindScheme + "://" + bindHost + ":" + bindPort + "/");
+
             server.join();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
