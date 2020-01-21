@@ -5,6 +5,7 @@ import io.virtdata.apps.valuesapp.ValuesCheckerApp;
 import io.virtdata.docsys.core.DocServerApp;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * This just routes the user to the correct sub-app depending on the leading verb, stripping it off in the process.
@@ -40,7 +41,7 @@ public class VirtDataMainApp {
         } else if (appSelection.toLowerCase().equals(APP_DOCSERVER)) {
             DocServerApp.main(appArgs);
         } else {
-            System.err.println("Error in command line. The first argument must be " + APP_GENDOCS + " or " + APP_TESTMAPPER);
+            System.err.println("Error in command line. The first argument must one of " + Arrays.stream(names).collect(Collectors.joining(",")));
         }
     }
 }

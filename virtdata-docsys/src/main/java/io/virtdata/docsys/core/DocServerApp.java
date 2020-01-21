@@ -86,7 +86,9 @@ public class DocServerApp {
                         " [path]... " + "\n" +
                         "\n" +
                         "If [url] is provided, then the scheme, address and port are all taken from it.\n" +
-                        "Any additional paths are served from the filesystem, in addition to the internal ones.\n"
+                        "Any additional paths are served from the filesystem, in addition to the internal ones.\n" +
+                        "\n" +
+                        "For now, only http:// is supported."
         );
     }
 

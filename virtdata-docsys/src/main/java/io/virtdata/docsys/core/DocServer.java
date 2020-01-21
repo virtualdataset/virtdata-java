@@ -36,7 +36,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * For examples, see <a href="https://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/tree/examples/embedded/src/main/java/org/eclipse/jetty/embedded/">embedded examlpes</a>
+ * For examples, see <a href="https://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/tree/examples/embedded/src/main/java/org/eclipse/jetty/embedded/">embedded examples</a>
  */
 public class DocServer implements Runnable {
 
@@ -67,9 +67,10 @@ public class DocServer implements Runnable {
             this.bindPort = url.getPort();
             this.bindHost = url.getHost();
             this.bindScheme = url.getProtocol();
-            if (url.getPath() != null && url.getPath().isEmpty()) {
-                throw new UnsupportedOperationException("You may not specify a path for the hosting URL.");
+            if (url.getPath() != null && !url.getPath().equals("/") && !url.getPath().equals("")) {
+                throw new UnsupportedOperationException("You may not specify a path for the hosting URL. (specified '" + url.getPath() + "')");
             }
+
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
