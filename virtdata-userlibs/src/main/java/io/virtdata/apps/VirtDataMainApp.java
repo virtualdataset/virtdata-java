@@ -15,6 +15,7 @@ public class VirtDataMainApp {
     private final static String APP_TESTMAPPER = "testmapper";
     private final static String APP_GENDOCS = "gendocs";
     private final static String APP_DOCSERVER = "docserver";
+    private final static String[] names = new String[]{APP_DOCSERVER, APP_GENDOCS, APP_TESTMAPPER};
 
     public static boolean hasNamedApp(String appname) {
         return (appname.equals(APP_TESTMAPPER)
