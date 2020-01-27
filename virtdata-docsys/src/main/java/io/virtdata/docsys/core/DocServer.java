@@ -294,12 +294,13 @@ public class DocServer implements Runnable {
 
             server.start();
 
-            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                Desktop.getDesktop().browse(new URI(bindScheme + "://" + bindHost + ":" + bindPort + "/"));
-            }
             logger.info("Started documentation server at "+ bindScheme + "://" + bindHost + ":" + bindPort + "/");
-            System.out.println("Opening documentation server at "+ bindScheme + "://" + bindHost + ":" + bindPort + "/");
-            System.out.println("If the app did not open automatically in your browser use the url above to browse.");
+
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                System.out.println("Browsing to documentation server at "+ bindScheme + "://" + bindHost + ":" + bindPort + "/");
+                Desktop.getDesktop().browse(new URI(bindScheme + "://" + bindHost + ":" + bindPort + "/"));
+                System.out.println("If the docs app did not open automatically in your browser, open to the the url above.");
+            }
 
             server.join();
         } catch (Exception e) {
