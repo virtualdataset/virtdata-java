@@ -48,12 +48,12 @@ export default {
     */
     vuetify: {
         theme: {
-            dark: true,
+            dark: false,
             themes: {
-                dark: {
-                    primary: '#FF7D2B',
-                    secondary: '#0C153A',
-                    accent: '#FF7D2B',
+                light: {
+                    primary: '#51DDBD',
+                    secondary: '#2D4ADE',
+                    accent: '#FA7D2B',
                 }
             }
         }
