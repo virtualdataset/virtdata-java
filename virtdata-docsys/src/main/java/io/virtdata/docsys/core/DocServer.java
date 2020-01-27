@@ -298,7 +298,8 @@ public class DocServer implements Runnable {
                 Desktop.getDesktop().browse(new URI(bindScheme + "://" + bindHost + ":" + bindPort + "/"));
             }
             logger.info("Started documentation server at "+ bindScheme + "://" + bindHost + ":" + bindPort + "/");
-            System.out.println("Started documentation server at "+ bindScheme + "://" + bindHost + ":" + bindPort + "/");
+            System.out.println("Opening documentation server at "+ bindScheme + "://" + bindHost + ":" + bindPort + "/");
+            System.out.println("If the app did not open automatically in your browser use the url above to browse.");
 
             server.join();
         } catch (Exception e) {
