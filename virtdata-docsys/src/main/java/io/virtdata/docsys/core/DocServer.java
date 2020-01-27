@@ -27,12 +27,15 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.ServletRegistration;
+import java.awt.*;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.nio.file.AccessMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -290,6 +293,10 @@ public class DocServer implements Runnable {
             server.setConnectors(connectors.toArray(new Connector[0]));
 
             server.start();
+
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                Desktop.getDesktop().browse(new URI(bindScheme + "://" + bindHost + ":" + bindPort + "/"));
+            }
             logger.info("Started documentation server at "+ bindScheme + "://" + bindHost + ":" + bindPort + "/");
             System.out.println("Started documentation server at "+ bindScheme + "://" + bindHost + ":" + bindPort + "/");
 
