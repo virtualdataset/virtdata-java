@@ -294,7 +294,7 @@ public class DocServer implements Runnable {
 
             server.start();
 
-            logger.info("Started documentation server at "+ bindScheme + "://" + bindHost + ":" + bindPort + "/");
+            System.out.println("Started documentation server at "+ bindScheme + "://" + bindHost + ":" + bindPort + "/");
 
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                 System.out.println("Browsing to documentation server at "+ bindScheme + "://" + bindHost + ":" + bindPort + "/");
