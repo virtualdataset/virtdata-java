@@ -7,7 +7,8 @@
       <!-- Use active_category and active_topic to select inactive -->
 
       <v-list dense>
-        <v-list-item>
+        <v-list-item 
+          v-if="$vuetify.breakpoint.mdAndDown">
           <v-list-item-action>
             <v-switch flat inset v-model="lockmenu" @change="setLockMenu"></v-switch>
           </v-list-item-action>
@@ -21,7 +22,7 @@
 
           <template v-slot:activator>
             <v-list-item-content>
-<!--              <router-link :to="{ name: 'docs-slug', params: {lockmenu:lockmenu}}">-->
+<!--                <router-link :to="{ name: 'docs-slug', params: {lockmenu:lockmenu}}"> -->
                 <router-link :to="{path: category.category+'.html'}">
                 <v-list-item-title>
                   {{category.categoryName}}
@@ -31,7 +32,7 @@
           </template>
 
           <v-list-item v-for="(doc, i) in category.docs" :key="i" link :to="doc.filename">
-<!--            <router-link :to="{ name: 'docs-slug', params: {lockmenu:lockmenu}}">-->
+<!--              <router-link :to="{ name: 'docs-slug', params: {lockmenu:lockmenu}}"> -->
               <router-link :to="{ path: doc.filename + '.html'}">
               <v-list-item-title>{{doc.attributes.title}}</v-list-item-title>
             </router-link>
@@ -52,10 +53,14 @@
             active_topic: String
         },
         data(context) {
+            let lockmenu = this.$store.state.docs.isMenuLocked;
+            if (lockmenu == null){
+              lockmenu = false
+            }
             console.log("data says context is: " + context);
             // console.log("g says" + this.$getters.docs.drawerState);
             return {
-                lockmenu: false,
+                lockmenu: lockmenu,
                 drawer: null
             }
         },
@@ -73,16 +78,10 @@
                 console.log("mutation type " + mutation.type);
                 if (mutation.type === 'docs/toggleDrawerState') {
                     this.drawer=this.$store.state.docs.isDrawerOpen;
-                } else if (mutation.type === 'docs/toggleDrawerLock') {
-                    this.lockmenu=this.$store.state.docs.isDrawerLocked;
+                } else if (mutation.type === 'docs/setMenuLock') {
+                    this.lockmenu=this.$store.state.docs.isMenuLocked;
                 }
             });
         },
-        // computed: {
-        //     drawerState() {
-        //         console.log("getting drawerState...");
-        //         return this.$store.getters.drawerState;
-        //     }
-        // },
     }
 </script>
