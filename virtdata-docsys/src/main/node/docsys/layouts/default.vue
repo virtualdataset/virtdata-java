@@ -1,7 +1,7 @@
 <template>
   <div>
-      <nuxt />
- </div>
+    <nuxt />
+  </div>
 </template>
 
 <style>
@@ -53,4 +53,3 @@
     background-color: #35495e;
   }
 </style>
-

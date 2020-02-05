@@ -5,7 +5,8 @@
 </template>
 <script>
     import MarkdownItVue from 'markdown-it-vue'
-    //import 'markdown-it-vue/dist/markdown-it-vue.css'
+    // import 'markdown-it-vue/dist/markdown-it-vue.css'
+    // var hljs = require('highlight.js');
 
     // let msa = require('markdown-it-smartarrows');
     // this.use(msa);
@@ -14,15 +15,49 @@
         name: "MarkdownVue",
         components: {MarkdownItVue},
         mounted() {
-          console.log("mounted");
+            console.log("mounted");
         },
+
         props: {
             mdcontent: String,
             mdoptions: Object
+
+            // mdoptions: {
+            //     type: Object,
+            //     default: {
+            //         markdownIt: {
+            //             linkify: true
+            //         },
+            //         linkAttributes: {
+            //             attrs: {
+            //                 target: '_blank',
+            //                 rel: 'noopener'
+            //             }
+            //         }
+            //     }
+            // }
         }
     }
 </script>
 <style>
+
+  code.hljs::before,code:before {
+    content: '';
+  }
+  .v-application code:before,.v-application code:after {
+    content: '';
+  }
+
+  code::before {
+    content: '';
+  }
+
+  code:after {
+    content: '';
+  }
+  code::after {
+    content: '';
+  }
 
   .md-body {
     justify-content: left;

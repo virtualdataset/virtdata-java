@@ -9,7 +9,7 @@ export default {
     ** Headers of the page
     */
     head: {
-        titleTemplate: '%s - ' + process.env.npm_package_name,
+        titleTemplate: '%s' + "DSBench Guidebook",
         title: process.env.npm_package_name || '',
         meta: [
             {charset: 'utf-8'},
@@ -41,7 +41,12 @@ export default {
     /*
     ** Nuxt.js modules
     */
-    modules: [],
+    modules: [
+        '@nuxtjs/axios'
+    ],
+    axios: {
+
+    },
     /*
     ** vuetify module configuration
     ** https://github.com/nuxt-community/vuetify-module

@@ -7,11 +7,15 @@
                :active_category_name="active_category_name"
                :active_topic="active_topic"/>
 
-    <v-app-bar app dark color="secondary">
-      <v-app-bar-nav-icon color="primary" @click.stop="toggleDrawer"/>
+    <v-app-bar app dark color="secondary" collapse-on-scroll dense >
+      <v-app-bar-nav-icon @click.stop="toggleDrawer"/>
       <v-toolbar-title>DS Bench Documentation</v-toolbar-title>
-    </v-app-bar>
+      <v-spacer></v-spacer>
+      <v-toolbar-items>
+        <v-btn text href="https://github.com/datastax/dsbench-labs/wiki/Submitting-Feedback">SUBMIT FEEDBACK</v-btn>
+      </v-toolbar-items>
 
+    </v-app-bar>
 
     <v-content>
       <v-container>
@@ -31,13 +35,11 @@
       </v-container>
     </v-content>
 
-    <v-footer dark app color="secondary">
+    <v-footer app dark color="secondary">
       <span>&copy; 2020</span>
     </v-footer>
 
   </v-app>
- 
-
 </template>
 <script>
     import get_data from '~/mixins/get_data.js';
@@ -48,6 +50,19 @@
         mixins: [get_data],
         components: {
             DocsMenu, MarkdownVue
+        },
+        computed: {
+            isDrawerOpen() {
+                return this.$store.state.docs.isDrawerOpen;
+            },
+            isDrawerOpen2() {
+                return this.$store.getters.drawerState;
+            }
+        },
+        methods: {
+            toggleDrawer() {
+                this.$store.commit('docs/toggleDrawerState');
+            }
         },
         data(context) {
             console.log("data context.params:" + JSON.stringify(context.params));
@@ -73,19 +88,6 @@
                         }
                     }
                 }
-            }
-        },
-        computed: {
-            isDrawerOpen() {
-                return this.$store.state.docs.isDrawerOpen;
-            },
-            isDrawerOpen2() {
-                return this.$store.getters.drawerState;
-            }
-        },
-        methods: {
-            toggleDrawer() {
-                this.$store.commit('docs/toggleDrawerState');
             }
         }
     }

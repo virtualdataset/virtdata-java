@@ -11,6 +11,7 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "@nuxtjs/axios": "^5.9.3",
     "@nuxtjs/vuetify": "^1.9.0",
     "front-matter": "^3.0.2",
     "markdown-it-smartarrows": "^1.0.1",

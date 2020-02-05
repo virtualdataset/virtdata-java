@@ -1,5 +1,5 @@
 #!/bin/bash
 rm -rf dist .nuxt
 npm run generate
-rm -rf ../../resources/dsbench-guidebook
-mv dist ../../resources/dsbench-guidebook
+rm -rf ../../resources/docsys-guidebook
+mv dist ../../resources/docsys-guidebook

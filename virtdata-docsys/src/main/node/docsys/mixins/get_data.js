@@ -1,15 +1,25 @@
 // asyncData in multiple mixins seems to be broken, or worse, working as designed
 export default {
   async asyncData(context) {
-    console.log("async loading get_categories data: context: " + context);
-    var fm = require('front-matter');
 
     if (context.req) {
       console.log("avoiding server-side async");
       return;
     }
 
-    let paths = await fetch("http://localhost:12345/services/docs/markdown.csv")
+    let baseurl = document.location.href.split('/').slice(0,3).join('/');
+    if (context.isDev && baseurl.includes(":3000")) {
+      console.log("Dev mode: remapping 3000 to 12345 for split dev environment.");
+      baseurl = baseurl.replace("3000","12345");
+    }
+
+    let services = baseurl + "/services";
+
+    console.log("async loading get_categories data: context: " + context);
+    var fm = require('front-matter');
+
+
+    let paths = await fetch(services+"/docs/markdown.csv")
       .then(res => {
         return res.text()
       })
@@ -32,7 +42,7 @@ export default {
 
       //const mdMeta = resolve(key);
       let rawMD = "";
-      await fetch("http://localhost:12345/services/docs/markdown/" + key)
+      await fetch(services + "/docs/markdown/" + key)
         .then(res => res.text())
         .then(body => rawMD = body);
 
@@ -122,7 +132,12 @@ export default {
     var fm = require('front-matter');
 
     let docbody = "";
-    let rawMD = await fetch("http://localhost:12345/services/docs/markdown/" + docname)
+
+    let mdPath = services + '/docs/markdown/' + docname;
+
+    // let rawMD = await context.$axios.$get(mdPath);
+
+    let rawMD = await fetch(services + "/docs/markdown/" + docname)
       .then(res => res.text())
       .then(body => docbody = body);
 
