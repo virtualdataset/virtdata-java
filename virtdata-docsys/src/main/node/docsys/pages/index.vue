@@ -9,7 +9,7 @@
               Testing</h2>
             <div class="links">
                 <nuxt-link to="/docs/" class="button--purple">Documentation</nuxt-link>
-                <a href="https://community.datastax.com/spaces/TBD/" class="button--purple">Community Site</a>
+                <a href="https://community.datastax.com/spaces/51/index.html" class="button--purple">Community Site</a>
             </div>
         </div>
     </div>
