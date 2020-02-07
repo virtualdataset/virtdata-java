@@ -7,14 +7,14 @@ import io.virtdata.generated.VirtDataParser;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CodePointCharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
 
 public class VirtDataDSL {
-    private final static Logger logger  = LoggerFactory.getLogger(VirtDataDSL.class);
+    private final static Logger logger  = LogManager.getLogger(VirtDataDSL.class);
 
     public static VirtDataDSL.ParseResult parse(String input) {
 

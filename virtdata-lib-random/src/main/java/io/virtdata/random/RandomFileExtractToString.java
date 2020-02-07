@@ -23,8 +23,8 @@ import io.virtdata.util.VirtDataResources;
 import org.apache.commons.math3.distribution.IntegerDistribution;
 import org.apache.commons.math3.distribution.UniformIntegerDistribution;
 import org.apache.commons.math3.random.MersenneTwister;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.nio.CharBuffer;
 import java.util.function.LongFunction;
@@ -32,8 +32,7 @@ import java.util.function.LongFunction;
 @DeprecatedFunction("random mappers are not deterministic. They will be replaced with hash-based functions.")
 public class RandomFileExtractToString implements LongFunction<String> {
 
-    private final static Logger logger = LoggerFactory.getLogger(RandomFileExtractToString.class);
-    private static CharBuffer fileDataImage =null;
+    private final static Logger logger  = LogManager.getLogger(RandomFileExtractToString.class);private static CharBuffer fileDataImage =null;
 
     private int minsize, maxsize;
     private final MersenneTwister rng;

@@ -21,8 +21,8 @@ package io.virtdata.libbasics.shared.from_long.to_bigdecimal;
 import io.virtdata.annotations.Categories;
 import io.virtdata.annotations.Category;
 import io.virtdata.annotations.ThreadSafeMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.math.BigDecimal;
 import java.util.function.LongFunction;
@@ -33,9 +33,7 @@ import java.util.function.LongFunction;
 @ThreadSafeMapper
 @Categories({Category.conversion})
 public class ModuloToBigDecimal implements LongFunction<BigDecimal> {
-    private final static Logger logger = LoggerFactory.getLogger(ModuloToBigDecimal.class);
-
-    private final long modulo;
+    private final static Logger logger  = LogManager.getLogger(ModuloToBigDecimal.class);private final long modulo;
 
     public ModuloToBigDecimal() {
         this.modulo = Long.MAX_VALUE;

@@ -2,8 +2,8 @@ package io.virtdata.apps.valuesapp;
 
 import io.virtdata.api.DataMapper;
 import io.virtdata.core.VirtData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,9 +13,7 @@ import java.util.concurrent.locks.Lock;
 
 public class ValuesCheckerRunnable implements Runnable {
 
-    private final static Logger logger = LoggerFactory.getLogger(ValuesCheckerRunnable.class);
-
-    private final Condition goTime;
+    private final static Logger logger  = LogManager.getLogger(ValuesCheckerRunnable.class);private final Condition goTime;
     private final Lock lock;
     private final long start;
     private final long end;

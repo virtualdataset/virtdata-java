@@ -2,8 +2,8 @@ package io.virtdata.docsys.core;
 
 import io.virtdata.annotations.Service;
 import io.virtdata.docsys.api.WebServiceObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import javax.inject.Singleton;
 import javax.ws.rs.GET;
@@ -17,7 +17,8 @@ import javax.ws.rs.core.MediaType;
 @Singleton
 @Path("_")
 public class DocServerStatusEndpoint implements WebServiceObject {
-    private final Logger logger = LoggerFactory.getLogger(DocServerStatusEndpoint.class);
+    private final static Logger logger =
+            LogManager.getLogger(DocServerStatusEndpoint.class);
 
     @Context
     private Configuration config;

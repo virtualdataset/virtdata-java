@@ -1,18 +1,11 @@
 package io.virtdata.docsys.core;
 
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.core.joran.spi.JoranException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class DocServerApp {
     public final static String APPNAME_DOCSERVER = "docserver";
-    private final static Logger logger;
+//    private final static Logger logger;
 
     static {
         // defer to an extant logger context if it is there, otherwise

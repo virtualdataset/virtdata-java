@@ -1,8 +1,8 @@
 package io.virtdata.core;
 
 import io.virtdata.api.DataMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -10,9 +10,7 @@ import java.util.Optional;
 
 public class ResolverDiagnostics {
 
-    private final static Logger logger = LoggerFactory.getLogger(ResolverDiagnostics.class);
-
-    private ResolvedFunction resolvedFunction;
+    private final static Logger logger  = LogManager.getLogger(ResolverDiagnostics.class);private ResolvedFunction resolvedFunction;
     private final StringBuilder log = new StringBuilder();
     private Throwable error;
 

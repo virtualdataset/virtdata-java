@@ -6,8 +6,8 @@ import io.virtdata.generated.VirtDataParser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -16,9 +16,7 @@ import java.util.Stack;
 import java.util.regex.Pattern;
 
 public class VirtDataBuilder extends VirtDataBaseListener {
-    private final static Logger logger = LoggerFactory.getLogger(VirtDataBuilder.class);
-
-    private VirtDataAST model = new VirtDataAST();
+    private final static Logger logger  = LogManager.getLogger(VirtDataBuilder.class);private VirtDataAST model = new VirtDataAST();
     private List<ErrorNode> errorNodes = new ArrayList<>();
 
     private Stack<VirtDataParser.VirtdataFlowContext> flowContexts = new Stack<>();

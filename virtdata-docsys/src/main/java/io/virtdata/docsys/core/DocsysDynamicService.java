@@ -5,8 +5,8 @@ import io.virtdata.docsys.api.DocsNameSpace;
 import io.virtdata.docsys.api.Docs;
 import io.virtdata.docsys.api.DocsBinder;
 import io.virtdata.docsys.api.WebServiceObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import javax.inject.Singleton;
 import javax.ws.rs.*;
@@ -22,9 +22,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Singleton
 @Path("/services/docs/")
 public class DocsysDynamicService implements WebServiceObject {
-    private final static Logger logger = LoggerFactory.getLogger(DocsysDynamicService.class);
-
-    private DocsBinder docsinfo;
+    private final static Logger logger  = LogManager.getLogger(DocsysDynamicService.class);private DocsBinder docsinfo;
     private DocsBinder enabled;
     private DocsBinder disabled;
 

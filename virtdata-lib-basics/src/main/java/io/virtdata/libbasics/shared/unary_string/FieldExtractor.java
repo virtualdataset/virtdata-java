@@ -2,8 +2,8 @@ package io.virtdata.libbasics.shared.unary_string;
 
 import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.Arrays;
 import java.util.function.Function;
@@ -15,9 +15,7 @@ import java.util.function.Function;
 @ThreadSafeMapper
 public class FieldExtractor implements Function<String,String> {
 
-    private final static Logger logger = LoggerFactory.getLogger(FieldExtractor.class);
-
-    private final String fields;
+    private final static Logger logger  = LogManager.getLogger(FieldExtractor.class);private final String fields;
     private final String splitDelim;
     private final String printDelim;
     private final int maxIdx;

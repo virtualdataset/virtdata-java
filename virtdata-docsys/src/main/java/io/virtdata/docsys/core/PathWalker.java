@@ -1,7 +1,7 @@
 package io.virtdata.docsys.core;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -12,9 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PathWalker {
-    private final static Logger logger = LoggerFactory.getLogger(PathWalker.class);
-
-    public static void walk(Path p, PathVisitor v) {
+    private final static Logger logger  = LogManager.getLogger(PathWalker.class);public static void walk(Path p, PathVisitor v) {
         walk(p,v,PathWalker.WALK_ALL);
     }
 

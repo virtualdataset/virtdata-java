@@ -6,15 +6,13 @@ import io.virtdata.ast.VirtDataFlow;
 import io.virtdata.parser.VirtDataDSL;
 import io.virtdata.templates.BindPoint;
 import org.apache.commons.lang3.ClassUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.*;
 
 public class VirtData {
-    private final static Logger logger = LoggerFactory.getLogger(VirtData.class);
-
-    /**
+    private final static Logger logger  = LogManager.getLogger(VirtData.class);/**
      * Create a bindings template from the pair-wise names and specifiers.
      * Each even-numbered (starting with zero) argument is a binding name,
      * and each odd-numbered (starting with one) argument is a binding spec.

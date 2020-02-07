@@ -21,8 +21,8 @@ package io.virtdata.libbasics.shared.from_long.to_string;
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.libbasics.shared.from_long.to_int.HashRange;
 import io.virtdata.util.VirtDataResources;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +34,7 @@ import java.util.function.LongFunction;
  */
 @ThreadSafeMapper
 public class HashedLineToString implements LongFunction<String> {
-    private final static Logger logger = LoggerFactory.getLogger(HashedLineToString.class);
-    private final HashRange indexRange;
+    private final static Logger logger  = LogManager.getLogger(HashedLineToString.class);private final HashRange indexRange;
 
     private List<String> lines = new ArrayList<>();
 

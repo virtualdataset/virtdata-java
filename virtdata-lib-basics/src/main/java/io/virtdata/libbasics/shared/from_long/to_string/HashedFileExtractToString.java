@@ -22,8 +22,8 @@ import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.libbasics.shared.from_long.to_int.HashRange;
 import io.virtdata.util.VirtDataResources;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.nio.CharBuffer;
 import java.util.function.LongFunction;
@@ -37,8 +37,7 @@ import java.util.function.LongFunction;
 @ThreadSafeMapper
 public class HashedFileExtractToString implements LongFunction<String> {
 
-    private final static Logger logger = LoggerFactory.getLogger(HashedFileExtractToString.class);
-    private static CharBuffer fileDataImage =null;
+    private final static Logger logger  = LogManager.getLogger(HashedFileExtractToString.class);private static CharBuffer fileDataImage =null;
     private final HashRange sizeRange;
     private final HashRange positionRange;
 

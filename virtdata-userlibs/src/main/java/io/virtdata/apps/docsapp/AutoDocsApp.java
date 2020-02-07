@@ -7,8 +7,8 @@ import io.virtdata.annotations.Category;
 import io.virtdata.core.VirtDataDocs;
 import io.virtdata.processors.DocCtorData;
 import io.virtdata.processors.DocFuncData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.io.*;
 import java.security.InvalidParameterException;
@@ -16,8 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class AutoDocsApp {
-    private final static Logger logger = LoggerFactory.getLogger(AutoDocsApp.class);
-    private final static String SPLIT = "split";
+    private final static Logger logger  = LogManager.getLogger(AutoDocsApp.class);private final static String SPLIT = "split";
     private final static String COMBINED = "combined";
     private final static String ALL = "all";
     private final static String DEFAULT_FILE = "funcref";

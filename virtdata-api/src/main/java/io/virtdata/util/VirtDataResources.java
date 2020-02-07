@@ -19,8 +19,8 @@ package io.virtdata.util;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.io.*;
 import java.net.URI;
@@ -35,9 +35,7 @@ import java.util.stream.Collectors;
 
 public class VirtDataResources {
     public final static String DATA_DIR = "data";
-    private final static Logger logger = LoggerFactory.getLogger(VirtDataResources.class);
-
-    public static CharBuffer readDataFileToCharBuffer(String basename) {
+    private final static Logger logger  = LogManager.getLogger(VirtDataResources.class);public static CharBuffer readDataFileToCharBuffer(String basename) {
         return loadFileToCharBuffer(basename, DATA_DIR);
     }
 

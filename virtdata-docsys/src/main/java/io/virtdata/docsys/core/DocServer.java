@@ -22,8 +22,8 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.server.model.ResourceMethod;
 import org.glassfish.jersey.servlet.ServletContainer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.ServletRegistration;
@@ -43,8 +43,7 @@ import java.util.stream.Collectors;
  */
 public class DocServer implements Runnable {
 
-    private final static Logger logger = LoggerFactory.getLogger(DocServer.class);
-    private final List<Path> basePaths = new ArrayList<>();
+    private final static Logger logger  = LogManager.getLogger(DocServer.class);private final List<Path> basePaths = new ArrayList<>();
     private final List<Class> servletClasses = new ArrayList<>();
     private ServletContextHandler contextHandler;
     private ServletHolder servletHolder;

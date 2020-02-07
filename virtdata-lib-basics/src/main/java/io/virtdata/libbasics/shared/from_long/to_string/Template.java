@@ -3,8 +3,8 @@ package io.virtdata.libbasics.shared.from_long.to_string;
 import io.virtdata.annotations.Example;
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.util.VirtDataFunctions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +35,7 @@ import java.util.regex.Pattern;
  */
 @ThreadSafeMapper
 public class Template implements LongFunction<String> {
-    private final static Logger logger = LoggerFactory.getLogger(Template.class);
-
-    private static final String EXPR_BEGIN = "[[";
+    private final static Logger logger  = LogManager.getLogger(Template.class);private static final String EXPR_BEGIN = "[[";
     private static final String EXPR_END = "]]";
     private final static ThreadLocal<StringBuilder> sb = ThreadLocal.withInitial(StringBuilder::new);
     private final String rawTemplate;

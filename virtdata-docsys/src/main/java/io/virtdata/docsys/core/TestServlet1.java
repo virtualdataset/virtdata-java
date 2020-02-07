@@ -1,8 +1,8 @@
 package io.virtdata.docsys.core;
 
 import io.virtdata.docsys.api.WebServiceObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import javax.inject.Singleton;
 import javax.ws.rs.GET;
@@ -17,7 +17,8 @@ import java.util.Set;
 @Singleton
 @Path("test1")
 public class TestServlet1 implements WebServiceObject {
-    private final Logger logger = LoggerFactory.getLogger(TestServlet1.class);
+    private final static Logger logger =
+            LogManager.getLogger(TestServlet1.class);
 
 //    @Context
 //    private Configuration config;

@@ -3,8 +3,8 @@ package io.virtdata.core;
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.api.config.ConfigAware;
 import org.apache.commons.lang3.ClassUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -16,8 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class VirtDataFunctionResolver {
-    private final static Logger logger = LoggerFactory.getLogger(VirtDataFunctionResolver.class);
-    private final static MethodHandles.Lookup lookup = MethodHandles.publicLookup();
+    private final static Logger logger  = LogManager.getLogger(VirtDataFunctionResolver.class);private final static MethodHandles.Lookup lookup = MethodHandles.publicLookup();
     private final VirtDataFunctionFinder virtDataFunctionFinder = new VirtDataFunctionFinder();
 
     public List<ResolvedFunction> resolveFunctions(Class<?> returnType, Class<?> inputType, String functionName, Map<String,?> customParameters, Object... parameters) {

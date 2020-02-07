@@ -4,8 +4,9 @@
 <!--        <recursive-menu/>-->
         <div>
             <logo/>
-            <h1 class="title">DS Bench</h1>
-            <h2 class="subtitle">Simple and Powerful Benchmarking for Databases</h2>
+            <h1 class="title">Virtdata Guidebook</h1>
+            <h2 class="subtitle">Virtual Datasets for Scalable
+              Testing</h2>
             <div class="links">
                 <nuxt-link to="/docs/" class="button--purple">Documentation</nuxt-link>
                 <a href="https://community.datastax.com/spaces/TBD/" class="button--purple">Community Site</a>

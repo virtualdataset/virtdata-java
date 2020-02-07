@@ -2,8 +2,8 @@ package io.virtdata.core;
 
 import io.virtdata.api.DataMapper;
 import io.virtdata.api.VirtDataFunctionLibrary;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,9 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class VirtDataLibraries implements VirtDataFunctionLibrary  {
-    private final static Logger logger = LoggerFactory.getLogger(VirtDataLibraries.class);
-
-    private static VirtDataLibraries instance = new VirtDataLibraries();
+    private final static Logger logger  = LogManager.getLogger(VirtDataLibraries.class);private static VirtDataLibraries instance = new VirtDataLibraries();
     private final Map<String,DataMapper<?>> threadSafeCache = new HashMap<>();
 
     private final VirtDataFunctionResolver resolver = new VirtDataFunctionResolver();

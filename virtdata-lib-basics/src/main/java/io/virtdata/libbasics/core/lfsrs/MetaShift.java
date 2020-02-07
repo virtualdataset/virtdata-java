@@ -1,16 +1,14 @@
 package io.virtdata.libbasics.core.lfsrs;
 
 import io.virtdata.util.VirtDataResources;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.List;
 import java.util.function.LongUnaryOperator;
 
 public class MetaShift {
-    private final static Logger logger = LoggerFactory.getLogger(MetaShift.class);
-
-    public static Func forSizeAndBank(long size, int selector) {
+    private final static Logger logger  = LogManager.getLogger(MetaShift.class);public static Func forSizeAndBank(long size, int selector) {
         GaloisData data = Masks.forPeriodAndBank(size, selector);
         return new Func(data);
     }

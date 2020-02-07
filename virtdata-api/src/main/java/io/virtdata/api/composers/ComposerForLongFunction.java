@@ -2,15 +2,13 @@ package io.virtdata.api.composers;
 
 import io.virtdata.api.FunctionType;
 import io.virtdata.api.ValueType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.function.*;
 
 public class ComposerForLongFunction implements FunctionComposer<LongFunction<?>> {
-    private final static Logger logger = LoggerFactory.getLogger(ComposerForLongFunction.class);
-
-    private final LongFunction<?> inner;
+    private final static Logger logger  = LogManager.getLogger(ComposerForLongFunction.class);private final LongFunction<?> inner;
 
     public ComposerForLongFunction(LongFunction<?> inner) {
         this.inner = inner;

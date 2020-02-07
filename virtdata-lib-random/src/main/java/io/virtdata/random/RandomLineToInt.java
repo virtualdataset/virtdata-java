@@ -5,17 +5,15 @@ import io.virtdata.util.VirtDataResources;
 import org.apache.commons.math3.distribution.IntegerDistribution;
 import org.apache.commons.math3.distribution.UniformIntegerDistribution;
 import org.apache.commons.math3.random.MersenneTwister;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.List;
 import java.util.function.LongToIntFunction;
 
 @DeprecatedFunction("random mappers are not deterministic. They will be replaced with hash-based functions.")
 public class RandomLineToInt implements LongToIntFunction {
-    private final static Logger logger = LoggerFactory.getLogger(RandomLineToInt.class);
-
-    private final List<String> lines;
+    private final static Logger logger  = LogManager.getLogger(RandomLineToInt.class);private final List<String> lines;
 
     private final MersenneTwister rng;
     private final IntegerDistribution itemDistribution;

@@ -19,8 +19,8 @@
 package io.virtdata.libbasics.shared.from_long.to_long;
 
 import io.virtdata.annotations.ThreadSafeMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.function.LongUnaryOperator;
 
@@ -29,9 +29,7 @@ import java.util.function.LongUnaryOperator;
  */
 @ThreadSafeMapper
 public class ModuloToLong implements LongUnaryOperator {
-    private final static Logger logger = LoggerFactory.getLogger(ModuloToLong.class);
-
-    private final long modulo;
+    private final static Logger logger  = LogManager.getLogger(ModuloToLong.class);private final long modulo;
 
     public ModuloToLong(long modulo) {
         this.modulo=modulo;

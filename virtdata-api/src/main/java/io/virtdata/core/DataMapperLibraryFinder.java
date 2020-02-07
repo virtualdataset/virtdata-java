@@ -15,8 +15,8 @@
 package io.virtdata.core;
 
 import io.virtdata.api.DataMapperLibrary;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,7 +27,8 @@ import java.util.stream.Collectors;
  */
 public class DataMapperLibraryFinder {
 
-    private static final Logger logger = LoggerFactory.getLogger(DataMapperLibrary.class);
+    private static final Logger logger =
+            LogManager.getLogger(DataMapperLibrary.class);
 
     private static final Map<String, DataMapperLibrary> libraries = new ConcurrentHashMap<>();
 

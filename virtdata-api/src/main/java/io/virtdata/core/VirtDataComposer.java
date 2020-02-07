@@ -8,8 +8,8 @@ import io.virtdata.ast.FunctionCall;
 import io.virtdata.ast.VirtDataFlow;
 import io.virtdata.parser.VirtDataDSL;
 import org.apache.commons.lang3.ClassUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.lang.invoke.MethodHandles;
 import java.util.*;
@@ -53,8 +53,7 @@ import java.util.stream.Collectors;
 public class VirtDataComposer {
 
     private final static String PREAMBLE = "compose ";
-    private final static Logger logger = LoggerFactory.getLogger(DataMapperLibrary.class);
-    private final static MethodHandles.Lookup lookup = MethodHandles.publicLookup();
+    private final static Logger logger  = LogManager.getLogger(DataMapperLibrary.class);private final static MethodHandles.Lookup lookup = MethodHandles.publicLookup();
 
     private final VirtDataFunctionLibrary functionLibrary;
     private final Map<String,Object> customElements = new HashMap<>();

@@ -20,8 +20,8 @@ package io.virtdata.libbasics.shared.from_long.to_string;
 
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.util.VirtDataResources;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +33,7 @@ import java.util.function.LongFunction;
  */
 @ThreadSafeMapper
 public class ModuloLineToString implements LongFunction<String> {
-    private final static Logger logger = LoggerFactory.getLogger(ModuloLineToString.class);
-
-    private List<String> lines = new ArrayList<>();
+    private final static Logger logger  = LogManager.getLogger(ModuloLineToString.class);private List<String> lines = new ArrayList<>();
 
     private String filename;
 

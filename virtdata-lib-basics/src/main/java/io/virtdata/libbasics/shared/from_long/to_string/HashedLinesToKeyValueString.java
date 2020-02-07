@@ -20,8 +20,8 @@ package io.virtdata.libbasics.shared.from_long.to_string;
 
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.libbasics.shared.from_long.to_collection.HashedLineToStringStringMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.Map;
 import java.util.function.LongFunction;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  */
 @ThreadSafeMapper
 public class HashedLinesToKeyValueString implements LongFunction<String> {
-    private static final Logger logger = LoggerFactory.getLogger(HashedLinesToKeyValueString.class);
+    private static final Logger logger = LogManager.getLogger(HashedLinesToKeyValueString.class);
 
     private final HashedLineToStringStringMap lineDataMapper;
 

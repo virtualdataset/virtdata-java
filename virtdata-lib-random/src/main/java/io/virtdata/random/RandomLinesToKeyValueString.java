@@ -20,8 +20,8 @@ package io.virtdata.random;
 
 import io.virtdata.annotations.DeprecatedFunction;
 import org.apache.commons.math3.random.MersenneTwister;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.Map;
 import java.util.function.LongFunction;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 
 @DeprecatedFunction("random mappers are not deterministic. They will be replaced with hash-based functions.")
 public class RandomLinesToKeyValueString implements LongFunction<String> {
-    private static final Logger logger = LoggerFactory.getLogger(RandomLinesToKeyValueString.class);
+    private static final Logger logger = LogManager.getLogger(RandomLinesToKeyValueString.class);
 
     private final RandomLineToStringMap lineDataMapper;
     private final MersenneTwister rng;

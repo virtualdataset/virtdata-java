@@ -2,8 +2,8 @@ package io.virtdata.libbasics.shared.from_long.to_int;
 
 import io.virtdata.annotations.ThreadSafeMapper;
 import io.virtdata.util.VirtDataResources;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.List;
 import java.util.function.LongToIntFunction;
@@ -14,9 +14,7 @@ import java.util.function.LongToIntFunction;
  */
 @ThreadSafeMapper
 public class HashedLineToInt implements LongToIntFunction {
-    private final static Logger logger = LoggerFactory.getLogger(HashedLineToInt.class);
-
-    private int[] values;
+    private final static Logger logger  = LogManager.getLogger(HashedLineToInt.class);private int[] values;
     private final String filename;
     private final Hash intHash;
 
